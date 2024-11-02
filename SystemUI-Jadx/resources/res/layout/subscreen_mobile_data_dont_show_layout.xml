@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/Theme.SystemUI.Dialog.Alert"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textSize="14sp"
+            android:textColor="?android:attr/textColorAlertDialogListItem"
+            android:id="@+id/mobile_data_message_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/subscreen_dialog_checbox_top_margin"
+            android:layout_marginStart="@dimen/subscreen_dialog_body_start_margin"
+            style="?android:attr/textAppearance"/>
+        <CheckBox
+            android:textColor="?android:attr/textColorAlertDialogListItem"
+            android:id="@+id/do_not_show_again"
+            android:padding="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/subscreen_dialog_checbox_bottom_margin"
+            android:text="@string/mobile_data_tile_do_not_show_again_text"
+            style="?android:attr/textAppearance"/>
+    </LinearLayout>
+</ScrollView>

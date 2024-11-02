@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:androidprv="http://schemas.android.com/apk/prv/res/android" xmlns:android="http://schemas.android.com/apk/res/android"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:textColor="?unknown_attr_ref: 112016e"
+    android:ellipsize="marquee"
+    android:gravity="center_vertical"
+    android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/screenrecord_spinner_height"
+    android:singleLine="true"
+    android:paddingStart="@dimen/screenrecord_spinner_text_padding_start"
+    android:paddingEnd="@dimen/screenrecord_spinner_text_padding_end"/>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:accessibilityHeading="true">
+    <TextView
+        android:textAppearance="@style/TextAppearance.Font_Semi_Bold"
+        android:textSize="13sp"
+        android:textColor="@color/control_main_subheader_text"
+        android:gravity="start|center_vertical"
+        android:layout_gravity="bottom"
+        android:id="@+id/controls_custom_main_zone_header"
+        android:paddingTop="11.75dp"
+        android:paddingBottom="@dimen/basic_interaction_subheader_bottom_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/basic_interaction_subheader_min_height"
+        android:paddingHorizontal="@dimen/accessibility_focus_highlight_stroke_width"/>
+</LinearLayout>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="@color/control_action_background_ripple">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/control_action_background_on"/>
+            <size
+                android:height="@dimen/control_action_icon_size"
+                android:width="@dimen/control_action_icon_size"/>
+        </shape>
+    </item>
+</ripple>

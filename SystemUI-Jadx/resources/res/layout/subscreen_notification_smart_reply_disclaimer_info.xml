@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="24dp"
+    android:paddingVertical="12dp">
+    <TextView
+        android:textSize="@dimen/subscreen_noti_dialog_content_text_size_b5"
+        android:textColor="@color/subscreen_notification_dialog_content_text_color_b5"
+        android:textColorLink="@color/subscreen_notification_dialog_content_text_color_b5"
+        android:id="@+id/smart_reply_ai_disclaimer_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

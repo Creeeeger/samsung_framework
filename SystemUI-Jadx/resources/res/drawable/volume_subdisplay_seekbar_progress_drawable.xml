@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:paddingMode="stack">
+    <item
+        android:gravity="center"
+        android:id="@android:id/background"
+        android:height="4dp"
+        android:drawable="@drawable/fs_progress_bar"/>
+    <item
+        android:gravity="center"
+        android:id="@android:id/secondaryProgress"
+        android:height="4dp">
+        <clip android:drawable="@drawable/fs_progress_bar"/>
+    </item>
+    <item
+        android:gravity="center"
+        android:id="@android:id/progress"
+        android:height="4dp">
+        <clip android:drawable="@drawable/fs_progress_bar"/>
+    </item>
+</layer-list>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:id="@+id/task_stack_view"
+    android:layout_width="@dimen/navigation_key_width"
+    android:layout_height="match_parent"
+    android:scaleType="center"
+    android:layout_weight="0"/>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:radius="@dimen/mw_divider_panel_buttons_radius"/>
+    <size
+        android:height="@dimen/mw_divider_panel_height"
+        android:width="@dimen/mw_divider_panel_width"/>
+    <solid android:color="@color/mw_divider_panel_button_color_bg"/>
+</shape>

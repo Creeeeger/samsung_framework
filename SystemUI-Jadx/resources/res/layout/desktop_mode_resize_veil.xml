@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/desktop_mode_resize_veil_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_gravity="center"
+        android:id="@+id/veil_application_icon"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:contentDescription="@string/app_icon_text"/>
+</FrameLayout>

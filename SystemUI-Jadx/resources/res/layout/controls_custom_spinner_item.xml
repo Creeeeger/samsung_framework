@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:textAppearance="@style/TextAppearance.Font_Semi_Bold"
+    android:textSize="19sp"
+    android:textColor="@color/control_spinner_item_single_text_color"
+    android:ellipsize="end"
+    android:id="@+id/controls_spinner_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:maxLines="1"
+    android:paddingStart="20dp"
+    android:paddingEnd="6dp"/>

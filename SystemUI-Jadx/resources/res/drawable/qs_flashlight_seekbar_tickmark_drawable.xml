@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@color/qs_flashlight_seekbar_tickmark_color"/>
+    <size
+        android:height="@dimen/qs_flashlight_seekbar_tickmark_drawable_height"
+        android:width="@dimen/qs_flashlight_seekbar_tickmark_drawable_width"/>
+</shape>

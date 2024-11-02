@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@interpolator/sine_in_out_60"
+    android:shareInterpolator="true">
+    <scale
+        android:duration="300"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:fromXScale="95%"
+        android:toXScale="100%"
+        android:fromYScale="95%"
+        android:toYScale="100%"/>
+    <alpha
+        android:duration="300"
+        android:fromAlpha="0"
+        android:toAlpha="1"/>
+</set>

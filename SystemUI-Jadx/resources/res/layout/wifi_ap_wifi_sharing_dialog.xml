@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/Theme.SystemUI.Dialog"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/wifi_ap_pref_paddingTop"
+    android:paddingBottom="@dimen/wifi_ap_pref_paddingBottom"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_size_standard"
+    android:minHeight="@dimen/listItemMinHeight">
+    <TextView
+        android:textSize="17sp"
+        android:textColor="?android:attr/textColorAlertDialogListItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:text="@string/mobile_hotspot_dialog_wifi_sharing_enable_text"
+        android:paddingStart="4dp"
+        style="?android:attr/textAppearance"/>
+</LinearLayout>

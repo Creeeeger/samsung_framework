@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="51dp"
+    android:width="51dp"
+    android:viewportWidth="51"
+    android:viewportHeight="51">
+    <path
+        android:fillColor="@color/touchpad_stroke_color"
+        android:pathData="M13.5,37.5l3,-0l0,-24l-3,-0z"
+        android:strokeColor="#00000000"
+        android:strokeWidth="1"
+        android:fillType="nonZero"/>
+    <path
+        android:fillColor="@color/touchpad_stroke_color"
+        android:pathData="M13.5,37.5l24,-0l0,-3l-24,-0z"
+        android:strokeColor="#00000000"
+        android:strokeWidth="1"
+        android:fillType="nonZero"/>
+</vector>

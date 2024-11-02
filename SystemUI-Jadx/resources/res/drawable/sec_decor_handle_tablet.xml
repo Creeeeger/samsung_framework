@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="2.4dp"/>
+            <size
+                android:height="4.8dp"
+                android:width="50dp"/>
+            <solid android:color="@color/sec_decor_handle_stroke_color"/>
+        </shape>
+    </item>
+    <item android:id="@+id/fill_view">
+        <inset android:inset="@dimen/sec_decor_handle_stroke_thickness">
+            <shape android:shape="rectangle">
+                <corners android:radius="1.9dp"/>
+                <size
+                    android:height="3.8dp"
+                    android:width="49dp"/>
+                <solid android:color="@color/sec_decor_handle_selector"/>
+            </shape>
+        </inset>
+    </item>
+</layer-list>

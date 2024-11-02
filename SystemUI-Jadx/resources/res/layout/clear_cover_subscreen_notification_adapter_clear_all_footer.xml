@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="18dp"
+    android:layout_marginStart="18dp"
+    android:layout_marginEnd="18dp">
+    <FrameLayout
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/subcreen_item_clear_all_layout"
+        android:background="@drawable/clear_cover_subscreen_notification_button_background"
+        android:layout_width="match_parent"
+        android:layout_height="32dp">
+        <TextView
+            android:textSize="@dimen/clear_cover_subscreen_noti_clear_all_text_size"
+            android:textColor="@color/subscreen_notification_text_color"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:id="@+id/subcreen_item_clear_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clear_all_notifications_text"
+            android:fontFamily="roboto-medium"/>
+    </FrameLayout>
+</FrameLayout>

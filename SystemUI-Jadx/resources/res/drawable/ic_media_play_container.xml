@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:drawable="@drawable/res_0x7f08047d_ic_media_play_container__0">
+    <target
+        android:name="_R_G_L_0_G_D_0_P_0"
+        android:animation="@drawable/res_0x7f08047e_ic_media_play_container__1"/>
+    <target
+        android:name="time_group"
+        android:animation="@drawable/res_0x7f08047f_ic_media_play_container__2"/>
+</animated-vector>

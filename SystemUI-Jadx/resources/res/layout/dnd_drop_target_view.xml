@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.wm.shell.draganddrop.DropTargetView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="left"
+    android:id="@+id/drop_target"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_gravity="center"
+        android:id="@+id/patial_blur_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:id="@+id/dnd_drop_target_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+            android:textSize="@dimen/dnd_drop_target_text_size"
+            android:textColor="@color/drop_target_text_color"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:id="@+id/dnd_drop_target_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="sec"
+            android:textAlignment="center"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:textFontWeight="400"/>
+    </LinearLayout>
+</com.android.wm.shell.draganddrop.DropTargetView>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@color/transparent"/>
+    <stroke
+        android:width="@dimen/importance_ring_stroke_width"
+        android:color="@android:color/search_url_text"/>
+    <size
+        android:height="@dimen/subscreen_noti_sub_icon_size_b5"
+        android:width="@dimen/subscreen_noti_sub_icon_size_b5"/>
+</shape>

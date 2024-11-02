@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="kg_pattern_eca_margin_bottom_tablet">0dp</dimen>
+    <dimen name="kg_pattern_lock_pattern_view_height_tablet">240dp</dimen>
+    <dimen name="kg_pattern_lock_pattern_view_margin_bottom_tablet">6dp</dimen>
+    <dimen name="kg_pattern_lock_pattern_view_width_tablet">240dp</dimen>
+    <dimen name="kg_pattern_message_area_margin_bottom_tablet">12dp</dimen>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="kg_arrow_view_side_margin_tablet_ratio">0.1</dimen>
+    <dimen name="kg_message_area_width_tablet">235dp</dimen>
+    <dimen name="kg_pin_klondike_font_size_tablet">6dp</dimen>
+    <dimen name="kg_pin_num_pad_font_size_tablet">22dp</dimen>
+    <dimen name="kg_prev_message_area_margin_bottom">70dp</dimen>
+    <dimen name="kg_security_input_box_width_tablet">@dimen/kg_message_area_width_tablet</dimen>
+    <dimen name="kg_security_view_side_margin_tablet">16dp</dimen>
+    <dimen name="tablet_num_pad_key_size_ratio">0.092</dimen>
+</resources>

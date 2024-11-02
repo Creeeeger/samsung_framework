@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.systemui.screenshot.ScreenshotView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/FloatingOverlay"
+    android:id="@+id/screenshot_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:importantForAccessibility="no">
+    <ImageView
+        android:id="@+id/screenshot_scrolling_scrim"
+        android:visibility="gone"
+        android:clickable="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"/>
+    <ImageView
+        android:id="@+id/screenshot_flash"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@android:color/white"
+        android:elevation="7dp"/>
+    <include
+        android:id="@+id/screenshot_static"
+        layout="@layout/screenshot_static"/>
+</com.android.systemui.screenshot.ScreenshotView>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="controls_content_margin_horizontal">40dp</dimen>
+    <dimen name="controls_header_horizontal_padding">28dp</dimen>
+    <dimen name="large_screen_shade_header_height">56dp</dimen>
+    <dimen name="mr_dialog_fixed_width_major">50%</dimen>
+    <dimen name="mr_dialog_fixed_width_minor">70%</dimen>
+    <dimen name="status_bar_icon_padding">1dp</dimen>
+    <dimen name="widget_big_font_size">100dp</dimen>
+</resources>

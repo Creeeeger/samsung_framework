@@ -1,0 +1,13 @@
+package com.android.keyguard;
+
+import java.io.PrintWriter;
+
+/* compiled from: qb/87000731 7862a37e62df4d72b2921859baacdc80ea0c935793521606c8e11db53cc87e4f */
+/* loaded from: classes.dex */
+public abstract /* synthetic */ class LockIconView$$ExternalSyntheticOutline0 {
+    public static StringBuilder m(StringBuilder sb, float f, PrintWriter printWriter, String str) {
+        sb.append(f);
+        printWriter.println(sb.toString());
+        return new StringBuilder(str);
+    }
+}

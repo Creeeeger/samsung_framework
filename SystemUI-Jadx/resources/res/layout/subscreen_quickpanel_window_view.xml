@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.systemui.subscreen.SubScreenQuickPanelWindowView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/subscreen_quickpanel_window_view"
+    android:background="@color/transparent"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:importantForAccessibility="no">
+    <com.android.systemui.subscreen.SubScreenQuickPanelRootView
+        android:gravity="center"
+        android:orientation="vertical"
+        android:id="@+id/subscreen_quickpanel_blur_view"
+        android:background="@color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="720px"/>
+</com.android.systemui.subscreen.SubScreenQuickPanelWindowView>

@@ -1,0 +1,15 @@
+package com.android.systemui.shared.launcher;
+
+import android.view.InsetsController;
+import android.view.animation.Interpolator;
+
+/* compiled from: qb/87000731 7862a37e62df4d72b2921859baacdc80ea0c935793521606c8e11db53cc87e4f */
+/* loaded from: classes2.dex */
+public final class WindowManagerWrapper {
+    public static final WindowManagerWrapper sInstance;
+
+    static {
+        Interpolator interpolator = InsetsController.RESIZE_INTERPOLATOR;
+        sInstance = new WindowManagerWrapper();
+    }
+}

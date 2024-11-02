@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="keyguard_bottom_area_emergency_button_area_min_height_tablet">36dp</dimen>
+    <dimen name="kg_lock_icon_top_margin_tablet">12dp</dimen>
+    <dimen name="kg_message_area_width_tablet">360dp</dimen>
+    <dimen name="kg_pin_container_margin_bottom_tablet">16dp</dimen>
+    <dimen name="kg_pin_klondike_font_size_tablet">6dp</dimen>
+    <dimen name="kg_pin_num_pad_font_size_tablet">22dp</dimen>
+</resources>

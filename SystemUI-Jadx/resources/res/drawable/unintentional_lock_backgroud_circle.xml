@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <size
+        android:height="@dimen/unintentional_lock_screen_white_circle_size"
+        android:width="@dimen/unintentional_lock_screen_white_circle_size"/>
+    <solid android:color="#fafafa"/>
+</shape>

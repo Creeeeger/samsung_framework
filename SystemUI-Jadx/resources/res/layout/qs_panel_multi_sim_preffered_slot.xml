@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.systemui.settings.multisim.MultiSIMPreferredSlotView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:id="@+id/qs_multi_sim_preffered_slot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/slot_button_group"
+        android:tag="expand_anim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@drawable/qs_panel_multi_sim_button_divider"
+        android:showDividers="middle"/>
+</com.android.systemui.settings.multisim.MultiSIMPreferredSlotView>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:id="@+id/sec_global_actions_bottomtextview"
+    android:clickable="false"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp">
+    <TextView
+        android:textSize="13dp"
+        android:ellipsize="marquee"
+        android:gravity="center_horizontal"
+        android:id="@+id/sec_global_actions_state"
+        android:fadingEdge="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
+        android:shadowColor="#99000000"
+        android:fontFamily="roboto_regular"/>
+</FrameLayout>

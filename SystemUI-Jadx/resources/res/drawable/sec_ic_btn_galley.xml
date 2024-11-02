@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="@color/sec_select_photo_id_button_ripple_color">
+    <item>
+        <shape android:shape="oval">
+            <size
+                android:height="@dimen/sec_avatar_size_in_picker"
+                android:width="@dimen/sec_avatar_size_in_picker"/>
+            <solid android:color="@color/sec_gallery_button_color"/>
+        </shape>
+    </item>
+    <item android:drawable="@drawable/sec_gallery_icon"/>
+</ripple>

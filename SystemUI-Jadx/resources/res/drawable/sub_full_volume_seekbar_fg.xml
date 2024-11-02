@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <corners android:radius="@dimen/sub_full_volume_seekbar_radius"/>
+    <solid android:color="@color/volume_panel_fg_color"/>
+</shape>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="bottom|center_horizontal"
+    android:id="@+id/scroll_wheel_bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="20dp"
+    android:layout_marginBottom="20dp"
+    android:layoutDirection="ltr"
+    android:layout_marginStart="7dp"
+    android:layout_marginEnd="7dp">
+    <com.android.wm.shell.controlpanel.widget.CustomWheelView xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:layout_gravity="bottom|center_horizontal"
+        android:id="@+id/custom_wheel_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutDirection="ltr"
+        custom:dashGap="8dp"
+        custom:dashLength="1dp"
+        custom:dashThickness="@dimen/scroll_wheel_dashthickness"
+        custom:splitOrientation="vertical"/>
+</RelativeLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:ordering="together">
+    <set android:ordering="sequentially">
+        <objectAnimator
+            android:interpolator="@drawable/res_0x7f08030f_sec_eq_stop_2__5__0"
+            android:duration="216"
+            android:valueFrom="M -0.002 -2.209 C -0.002 -2.209 -0.002 2.209 -0.002 2.209 "
+            android:valueTo="M -0.002 -3.85 C -0.002 -3.85 -0.002 3.85 -0.002 3.85 "
+            android:valueType="pathType"
+            android:propertyName="pathData"/>
+        <objectAnimator
+            android:interpolator="@drawable/res_0x7f080310_sec_eq_stop_2__5__1"
+            android:duration="433"
+            android:valueFrom="M -0.002 -3.85 C -0.002 -3.85 -0.002 3.85 -0.002 3.85 "
+            android:valueTo="M -0.005 -0.17 C -0.005 -0.17 -0.005 0.17 -0.005 0.17 "
+            android:valueType="pathType"
+            android:propertyName="pathData"/>
+        <objectAnimator
+            android:duration="466"
+            android:valueFrom="M -0.005 -0.17 C -0.005 -0.17 -0.005 0.17 -0.005 0.17 "
+            android:valueTo="M -0.005 -0.17 C -0.005 -0.17 -0.005 0.17 -0.005 0.17 "
+            android:valueType="pathType"
+            android:propertyName="pathData"/>
+    </set>
+</set>

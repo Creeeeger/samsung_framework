@@ -1,0 +1,207 @@
+package com.android.wm.shell.pip;
+
+import android.R;
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
+import android.view.SurfaceControl;
+import android.view.SurfaceSession;
+import android.window.TaskSnapshot;
+import com.android.keyguard.KeyguardSecUpdateMonitorImpl$$ExternalSyntheticOutline0;
+
+/* compiled from: qb/87000731 7862a37e62df4d72b2921859baacdc80ea0c935793521606c8e11db53cc87e4f */
+/* loaded from: classes2.dex */
+public abstract class PipContentOverlay {
+    public SurfaceControl mLeash;
+
+    public abstract void attach(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl);
+
+    public void detach(SurfaceControl.Transaction transaction) {
+        SurfaceControl surfaceControl = this.mLeash;
+        if (surfaceControl != null && surfaceControl.isValid()) {
+            KeyguardSecUpdateMonitorImpl$$ExternalSyntheticOutline0.m(6, new StringBuilder("[PipContentOverlay] detach caller="), "PipTaskOrganizer");
+            transaction.remove(this.mLeash);
+            transaction.apply();
+        }
+    }
+
+    public abstract void onAnimationEnd(SurfaceControl.Transaction transaction);
+
+    public abstract void onAnimationUpdate(SurfaceControl.Transaction transaction, Rect rect, float f);
+
+    /* compiled from: qb/87000731 7862a37e62df4d72b2921859baacdc80ea0c935793521606c8e11db53cc87e4f */
+    /* loaded from: classes2.dex */
+    public final class PipAppIconOverlay extends PipContentOverlay {
+        public final Rect mAppBounds;
+        public Bitmap mBitmap;
+        public final int mOverlayHalfSize;
+        public final Matrix mTmpTransform = new Matrix();
+        public final float[] mTmpFloat9 = new float[9];
+
+        public PipAppIconOverlay(Context context, Rect rect, Rect rect2, Drawable drawable, int i) {
+            int min = Math.min((int) TypedValue.applyDimension(1, 72.0f, context.getResources().getDisplayMetrics()), i);
+            int width = rect.width();
+            int height = rect.height();
+            int max = Math.max(Math.max(width, height), Math.max(rect2.width(), rect2.height())) + 1;
+            int i2 = max >> 1;
+            this.mOverlayHalfSize = i2;
+            this.mAppBounds = new Rect(0, 0, width, height);
+            this.mBitmap = Bitmap.createBitmap(max, max, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas();
+            canvas.setBitmap(this.mBitmap);
+            TypedArray obtainStyledAttributes = context.obtainStyledAttributes(new int[]{R.attr.colorBackground});
+            try {
+                int color = obtainStyledAttributes.getColor(0, 0);
+                canvas.drawRGB(Color.red(color), Color.green(color), Color.blue(color));
+                obtainStyledAttributes.recycle();
+                int i3 = min / 2;
+                int i4 = i2 - i3;
+                int i5 = i3 + i2;
+                drawable.setBounds(new Rect(i4, i4, i5, i5));
+                drawable.draw(canvas);
+                this.mBitmap = this.mBitmap.copy(Bitmap.Config.HARDWARE, false);
+                this.mLeash = new SurfaceControl.Builder(new SurfaceSession()).setCallsite("PipContentOverlay$PipAppIconOverlay").setName("PipContentOverlay").build();
+            } catch (Throwable th) {
+                obtainStyledAttributes.recycle();
+                throw th;
+            }
+        }
+
+        @Override // com.android.wm.shell.pip.PipContentOverlay
+        public final void attach(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl) {
+            transaction.show(this.mLeash);
+            transaction.setLayer(this.mLeash, Integer.MAX_VALUE);
+            transaction.setBuffer(this.mLeash, this.mBitmap.getHardwareBuffer());
+            transaction.setAlpha(this.mLeash, 0.0f);
+            transaction.reparent(this.mLeash, surfaceControl);
+            transaction.apply();
+        }
+
+        @Override // com.android.wm.shell.pip.PipContentOverlay
+        public final void detach(SurfaceControl.Transaction transaction) {
+            super.detach(transaction);
+            Bitmap bitmap = this.mBitmap;
+            if (bitmap != null && !bitmap.isRecycled()) {
+                this.mBitmap.recycle();
+            }
+        }
+
+        @Override // com.android.wm.shell.pip.PipContentOverlay
+        public final void onAnimationUpdate(SurfaceControl.Transaction transaction, Rect rect, float f) {
+            float f2;
+            Matrix matrix = this.mTmpTransform;
+            matrix.reset();
+            Rect rect2 = this.mAppBounds;
+            int centerX = rect2.centerX();
+            int centerY = rect2.centerY();
+            int i = this.mOverlayHalfSize;
+            matrix.setTranslate(centerX - i, centerY - i);
+            matrix.postScale(rect2.width() / rect.width(), rect2.height() / rect.height(), centerX, centerY);
+            SurfaceControl.Transaction matrix2 = transaction.setMatrix(this.mLeash, matrix, this.mTmpFloat9);
+            SurfaceControl surfaceControl = this.mLeash;
+            if (f < 0.5f) {
+                f2 = 0.0f;
+            } else {
+                f2 = 2.0f * (f - 0.5f);
+            }
+            matrix2.setAlpha(surfaceControl, f2);
+        }
+
+        @Override // com.android.wm.shell.pip.PipContentOverlay
+        public final void onAnimationEnd(SurfaceControl.Transaction transaction) {
+        }
+    }
+
+    /* compiled from: qb/87000731 7862a37e62df4d72b2921859baacdc80ea0c935793521606c8e11db53cc87e4f */
+    /* loaded from: classes2.dex */
+    public final class PipColorOverlay extends PipContentOverlay {
+        public final Context mContext;
+
+        public PipColorOverlay(Context context) {
+            this.mContext = context;
+            this.mLeash = new SurfaceControl.Builder(new SurfaceSession()).setCallsite("PipContentOverlay$PipColorOverlay").setName("PipContentOverlay").setColorLayer().build();
+        }
+
+        @Override // com.android.wm.shell.pip.PipContentOverlay
+        public final void attach(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl) {
+            KeyguardSecUpdateMonitorImpl$$ExternalSyntheticOutline0.m(6, new StringBuilder("[PipColorOverlay] attached caller="), "PipTaskOrganizer");
+            transaction.show(this.mLeash);
+            transaction.setLayer(this.mLeash, Integer.MAX_VALUE);
+            SurfaceControl surfaceControl2 = this.mLeash;
+            TypedArray obtainStyledAttributes = this.mContext.obtainStyledAttributes(new int[]{R.attr.colorBackground});
+            try {
+                int color = obtainStyledAttributes.getColor(0, 0);
+                float[] fArr = {Color.red(color) / 255.0f, Color.green(color) / 255.0f, Color.blue(color) / 255.0f};
+                obtainStyledAttributes.recycle();
+                transaction.setColor(surfaceControl2, fArr);
+                transaction.setAlpha(this.mLeash, 0.0f);
+                transaction.reparent(this.mLeash, surfaceControl);
+                transaction.apply();
+            } catch (Throwable th) {
+                obtainStyledAttributes.recycle();
+                throw th;
+            }
+        }
+
+        @Override // com.android.wm.shell.pip.PipContentOverlay
+        public final void onAnimationUpdate(SurfaceControl.Transaction transaction, Rect rect, float f) {
+            float f2;
+            SurfaceControl surfaceControl = this.mLeash;
+            if (f < 0.5f) {
+                f2 = 0.0f;
+            } else {
+                f2 = 2.0f * (f - 0.5f);
+            }
+            transaction.setAlpha(surfaceControl, f2);
+        }
+
+        @Override // com.android.wm.shell.pip.PipContentOverlay
+        public final void onAnimationEnd(SurfaceControl.Transaction transaction) {
+        }
+    }
+
+    /* compiled from: qb/87000731 7862a37e62df4d72b2921859baacdc80ea0c935793521606c8e11db53cc87e4f */
+    /* loaded from: classes2.dex */
+    public final class PipSnapshotOverlay extends PipContentOverlay {
+        public final TaskSnapshot mSnapshot;
+        public final Rect mSourceRectHint;
+
+        public PipSnapshotOverlay(TaskSnapshot taskSnapshot, Rect rect) {
+            this.mSnapshot = taskSnapshot;
+            this.mSourceRectHint = new Rect(rect);
+            this.mLeash = new SurfaceControl.Builder(new SurfaceSession()).setCallsite("PipContentOverlay$PipSnapshotOverlay").setName("PipContentOverlay").build();
+        }
+
+        @Override // com.android.wm.shell.pip.PipContentOverlay
+        public final void attach(SurfaceControl.Transaction transaction, SurfaceControl surfaceControl) {
+            KeyguardSecUpdateMonitorImpl$$ExternalSyntheticOutline0.m(6, new StringBuilder("[PipSnapshotOverlay] attached caller="), "PipTaskOrganizer");
+            TaskSnapshot taskSnapshot = this.mSnapshot;
+            float width = taskSnapshot.getTaskSize().x / taskSnapshot.getHardwareBuffer().getWidth();
+            float height = taskSnapshot.getTaskSize().y / taskSnapshot.getHardwareBuffer().getHeight();
+            transaction.show(this.mLeash);
+            transaction.setLayer(this.mLeash, Integer.MAX_VALUE);
+            transaction.setBuffer(this.mLeash, taskSnapshot.getHardwareBuffer());
+            SurfaceControl surfaceControl2 = this.mLeash;
+            Rect rect = this.mSourceRectHint;
+            transaction.setPosition(surfaceControl2, -rect.left, -rect.top);
+            transaction.setScale(this.mLeash, width, height);
+            transaction.reparent(this.mLeash, surfaceControl);
+            transaction.apply();
+        }
+
+        @Override // com.android.wm.shell.pip.PipContentOverlay
+        public final void onAnimationEnd(SurfaceControl.Transaction transaction) {
+            transaction.remove(this.mLeash);
+        }
+
+        @Override // com.android.wm.shell.pip.PipContentOverlay
+        public final void onAnimationUpdate(SurfaceControl.Transaction transaction, Rect rect, float f) {
+        }
+    }
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingLeft="24dp"
+    android:paddingTop="18dp"
+    android:paddingRight="24dp"
+    android:paddingBottom="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/controls_pin_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        app:hintEnabled="false">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/controls_pin_input"
+            android:longClickable="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="36dp"
+            android:inputType="numberPassword"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginTop="8dp">
+        <CheckBox
+            android:id="@+id/controls_pin_use_alpha"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="-4dp"/>
+        <TextView
+            android:textSize="16sp"
+            android:id="@+id/controls_pin_use_alpha_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    </LinearLayout>
+</LinearLayout>

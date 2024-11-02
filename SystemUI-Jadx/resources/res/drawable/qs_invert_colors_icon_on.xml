@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:drawable="@drawable/res_0x7f080592_qs_invert_colors_icon_on__2">
+    <target
+        android:name="_R_G_L_0_G_D_0_P_0"
+        android:animation="@drawable/res_0x7f080590_qs_invert_colors_icon_on__0"/>
+    <target
+        android:name="time_group"
+        android:animation="@drawable/res_0x7f080591_qs_invert_colors_icon_on__1"/>
+</animated-vector>
