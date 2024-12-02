@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="abc_action_bar_default_height_material">48dp</dimen>
+    <dimen name="abc_text_size_subtitle_material_toolbar">12dp</dimen>
+    <dimen name="abc_text_size_title_material_toolbar">14dp</dimen>
+    <dimen name="sec_fingerprint_enroll_1st_layout_ratio">4.1</dimen>
+    <dimen name="sec_fingerprint_enroll_2nd_layout_ratio">1.7</dimen>
+    <dimen name="sec_fingerprint_enroll_3rd_layout_ratio">0.9</dimen>
+    <dimen name="sec_fingerprint_enroll_4th_layout_ratio">3.4</dimen>
+    <dimen name="sec_fingerprint_register_guide_clip_width_ratio">0.375</dimen>
+    <dimen name="sec_fingerprint_register_guide_height_ratio">0.48</dimen>
+    <dimen name="sec_fingerprint_register_marginTop_ratio">0</dimen>
+    <dimen name="sec_fingerprint_register_progress_first_vi_height_ratio">@dimen/sec_fingerprint_register_progress_first_vi_height_ratio_tablet_land</dimen>
+    <dimen name="sec_fingerprint_register_progress_vi_height_ratio">@dimen/sec_fingerprint_register_progress_vi_height_ratio_tablet_land</dimen>
+    <dimen name="sec_fingerprint_register_width_ratio">0.5</dimen>
+</resources>

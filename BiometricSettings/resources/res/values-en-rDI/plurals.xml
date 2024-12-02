@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="biometric_dialog_credential_too_many_attempts">
+        <item quantity="one">IDS_ST_POP_TRY_AGAIN_IN_1_SECOND</item>
+        <item quantity="other">IDS_ST_POP_TRY_AGAIN_IN_PD_SECONDS %d</item>
+    </plurals>
+    <plurals name="biometric_dialog_credential_too_many_attempts_min">
+        <item quantity="one">IDS_ST_POP_TRY_AGAIN_IN_1_MINUTE</item>
+        <item quantity="other">IDS_ST_POP_TRY_AGAIN_IN_PD_MINUTES %d</item>
+    </plurals>
+    <plurals name="sec_incorrect_password_attempts_left">
+        <item quantity="zero">PLURAL_ZERO_SFOLDER_BODY_INCORRECT_PASSWORD_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="one">PLURAL_ONE_SFOLDER_BODY_INCORRECT_PASSWORD_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="two">PLURAL_TWO_SFOLDER_BODY_INCORRECT_PASSWORD_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="few">PLURAL_FEW_SFOLDER_BODY_INCORRECT_PASSWORD_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="many">PLURAL_MANY_SFOLDER_BODY_INCORRECT_PASSWORD_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="other">PLURAL_OTHER_SFOLDER_BODY_INCORRECT_PASSWORD_PD_ATTEMPTS_LEFT %d</item>
+    </plurals>
+    <plurals name="sec_incorrect_pattern_attempts_left">
+        <item quantity="zero">PLURAL_ZERO_SFOLDER_BODY_INCORRECT_PATTERN_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="one">PLURAL_ONE_SFOLDER_BODY_INCORRECT_PATTERN_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="two">PLURAL_TWO_SFOLDER_BODY_INCORRECT_PATTERN_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="few">PLURAL_FEW_SFOLDER_BODY_INCORRECT_PATTERN_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="many">PLURAL_MANY_SFOLDER_BODY_INCORRECT_PATTERN_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="other">PLURAL_OTHER_SFOLDER_BODY_INCORRECT_PATTERN_PD_ATTEMPTS_LEFT %d</item>
+    </plurals>
+    <plurals name="sec_incorrect_pin_attempts_left">
+        <item quantity="zero">PLURAL_ZERO_SFOLDER_BODY_INCORRECT_PIN_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="one">PLURAL_ONE_SFOLDER_BODY_INCORRECT_PIN_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="two">PLURAL_TWO_SFOLDER_BODY_INCORRECT_PIN_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="few">PLURAL_FEW_SFOLDER_BODY_INCORRECT_PIN_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="many">PLURAL_MANY_SFOLDER_BODY_INCORRECT_PIN_PD_ATTEMPTS_LEFT %d</item>
+        <item quantity="other">PLURAL_OTHER_SFOLDER_BODY_INCORRECT_PIN_PD_ATTEMPTS_LEFT %d</item>
+    </plurals>
+    <plurals name="sec_lockpattern_too_many_failed_confirmation_attempts_footer_min">
+        <item quantity="one">IDS_ST_POP_TRY_AGAIN_IN_1_MINUTE</item>
+        <item quantity="other">IDS_ST_POP_TRY_AGAIN_IN_PD_MINUTES %d</item>
+    </plurals>
+    <plurals name="sec_lockpattern_too_many_failed_confirmation_attempts_footer_sec">
+        <item quantity="one">IDS_ST_POP_TRY_AGAIN_IN_1_SECOND</item>
+        <item quantity="other">IDS_ST_POP_TRY_AGAIN_IN_PD_SECONDS %d</item>
+    </plurals>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="@color/biometrics_common_bottom_bar_ripple_effect_color">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="18dp"/>
+            <solid android:color="@color/biometrics_common_suw_next_button_background_color"/>
+        </shape>
+    </item>
+</ripple>

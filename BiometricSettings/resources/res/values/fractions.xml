@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <fraction name="auth_credential_foldable_main_height_percent">56%</fraction>
+    <fraction name="auth_credential_foldable_main_width_percent">63%</fraction>
+    <fraction name="face_enroll_layout_padding_percent_winner">5%</fraction>
+    <fraction name="face_enroll_preview_rect_width_percent">62%</fraction>
+    <fraction name="face_enroll_preview_top_margin_percent_tablet_only_face">6%</fraction>
+    <fraction name="face_enroll_preview_width_percent">89%</fraction>
+    <fraction name="face_enroll_top_margin_percent">12.5%</fraction>
+    <fraction name="face_enroll_top_margin_percent_tablet_portrait">18%</fraction>
+    <fraction name="face_enroll_width_percent_tablet">42.5%</fraction>
+    <fraction name="face_verification_feedback_text_left_margin_percent">12.5%</fraction>
+    <fraction name="face_verification_feedback_text_right_margin_percent">12.5%</fraction>
+    <fraction name="face_verification_feedback_text_top_margin_percent">6.6%</fraction>
+    <fraction name="face_verification_width_percent_flip_cover">94.5%</fraction>
+    <fraction name="face_verification_width_percent_land">50.56%</fraction>
+    <fraction name="face_verification_width_percent_portrait">60%</fraction>
+    <fraction name="fingerprint_verification_width_percent_flip_cover">94.5%</fraction>
+    <fraction name="fingerprint_verification_width_percent_land">60%</fraction>
+    <fraction name="fingerprint_verification_width_percent_land_tablet">37.5%</fraction>
+    <fraction name="fingerprint_verification_width_percent_land_winner">60%</fraction>
+    <fraction name="fingerprint_verification_width_percent_portrait">94.5%</fraction>
+    <fraction name="fingerprint_verification_width_percent_portrait_tablet">60%</fraction>
+    <fraction name="fingerprint_verification_width_percent_portrait_winner">68.36%</fraction>
+    <fraction name="intelligent_enroll_guide_button_width">50%</fraction>
+    <fraction name="intelligent_enroll_masking_height_percent_tablet">40%</fraction>
+    <fraction name="intelligent_enroll_masking_width_percent_tablet">25%</fraction>
+    <fraction name="intelligent_enroll_preview_height_percent">45.6%</fraction>
+    <fraction name="intelligent_enroll_preview_side_margin_percent_tablet">33.15%</fraction>
+    <fraction name="intelligent_enroll_preview_side_margin_percent_winner_main">17%</fraction>
+    <fraction name="intelligent_enroll_rectangle_height_percent">87%</fraction>
+    <fraction name="intelligent_enroll_rectangle_width_percent">73%</fraction>
+    <fraction name="intelligent_verification_land_height_percent">70.5%</fraction>
+    <fraction name="intelligent_verification_preview_iris_height_percent">29.19%</fraction>
+</resources>
