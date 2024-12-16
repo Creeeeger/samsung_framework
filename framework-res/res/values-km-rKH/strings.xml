@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">និយាយ​ទៅ​កាន់ Bixby</string>
     <string name="accessibility_corner_action_type_zoom_in">ពង្រីក</string>
     <string name="accessibility_corner_action_type_zoom_out">បង្រួម</string>
+    <string name="accessibility_dialog_button_allow_samsung">អនុញ្ញាត</string>
+    <string name="accessibility_dialog_button_deny_samsung">បដិសេធ</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">លុប</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">ការចុច​គ្រាប់ចុច​ថាមពល​និង​បង្កើន​កម្រិត​សំឡេង​យ៉ាង​រហ័ស នឹង​បើក​ឬ​បិទ​មុខងារ​ទាំងនេះ៖</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">ការចុច​ប៊ូតុង​ខាង​និង​បង្កើន​កម្រិត​សំឡេង​យ៉ាង​រហ័ស នឹង​បើក​ឬ​បិទ​មុខងារ​ទាំងនេះ៖</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">ការចុច​គ្រាប់ចុច​ថាមពល​និង​បង្កើន​កម្រិត​សំឡេង​យ៉ាង​រហ័ស នឹង​បើក​ឬ​បិទ %s។</string>
@@ -117,6 +120,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការថែម​គណនី​នេះ។</string>
     <string name="account_removal_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការលុប​គណនី​នេះ។</string>
+    <string name="action_bar_up_description">ទៅ​លើ</string>
     <string name="action_menu_overflow_description">ជម្រើស​ច្រើនទៀត</string>
     <string name="adb_active_notification_message">ជ្រើស​ដើម្បី​បិទ​ការបំបាត់​កំហុស​តាម USB។</string>
     <string name="adb_active_notification_title">បាន​ភ្ជាប់​ការបំបាត់​កំហុស USB។</string>
@@ -125,6 +129,9 @@
     <string name="advance_wifi_sharing_msg">ចាប់បាន​បណ្ដាញ Wi-Fi ដែល​អាច​ប្រើ​បាន។ ភ្ជាប់​ដើម្បី​ប្រើ​ការចែករំលែក Wi-Fi ជំនួស​ឲ្យ​ទិន្នន័យ​ចល័ត​សម្រាប់​ហត់ស្ប៉ត់​ចល័ត​របស់​អ្នក។</string>
     <string name="airplanemode_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការបើកប្រើ​ទម្រង់​យន្តហោះ។</string>
     <string name="allow_settings_changes">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្ដូរ​ការកំណត់។</string>
+    <string name="always_allow">អនុញ្ញាត​ជានិច្ច</string>
+    <string name="app_block_button_open">បើក</string>
+    <string name="app_block_content">%1$s ចង់​បើក​កម្មវិធី %2$s។</string>
     <string name="app_clone_storage">ឃ្លាំងផ្ទុក​ខាងក្នុង (Dual Messenger)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">ជ្រើស​កម្មវិធី</string>
     <string name="app_continuity_guide_cling_button_not_now">មិនមែន​ឥឡូវ</string>
@@ -139,32 +146,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">អ្នក​បាន​ប្រើ​ពេល​របស់​អ្នក​ទាំងអស់​សម្រាប់ %s នៅ​ថ្ងៃនេះ។ អ្នក​អាច​ប្ដូរ​វា​ក្នុង ការកំណត់។</string>
     <string name="app_restricted_message_concentration_mode">%s ត្រូវ​បាន​ខ្ទប់​ក្នុង​ទម្រង់​ផ្ដោត។ ទាក់ទង​អ្នកគ្រប់គ្រង IT របស់​អ្នក ដើម្បី​ស្វែងយល់​បន្ថែម។</string>
     <string name="app_updating_message">កំពុង​អាប់ដេត %s។ សាកល្បង​ម្ដងទៀត​ពេលក្រោយ។</string>
-    <string name="appblock_block_subtitle1_phone">ដើម្បី​ការពារ​ទូរសព្ទ​អ្នក​និង​ទិន្នន័យ​ផ្ទាល់ខ្លួន កម្មវិធី​នេះ​មិន​អាច​ដំឡើង​បាន​ទេ ពីព្រោះ​សង្ស័យ​ថា​វា​ព្យាបាទ។</string>
-    <string name="appblock_block_subtitle1_tablet">ដើម្បី​ការពារ​ថេប្លិត​អ្នក​និង​ទិន្នន័យ​ផ្ទាល់ខ្លួន កម្មវិធី​នេះ​មិន​អាច​ដំឡើង​បាន​ទេ ពីព្រោះ​សង្ស័យ​ថា​វា​ព្យាបាទ។</string>
-    <string name="appblock_block_subtitle2">មិន​អាច​ដំឡើង​កម្មវិធី​នេះ​ទេ ពីព្រោះ​វា​ត្រូវ​បាន​រាយការណ៍​ថា​ព្យាបាទ។</string>
-    <string name="appblock_block_text1">កម្មវិធី​នេះ​មិន​មក​ពី​ប្រភព​ដែល​បាន​ផ្ទៀងផ្ទាត់ និង​ត្រូវការ​នូវ​ការអនុញ្ញាត​ដ៏​រសើប​ដែល​អាច​ប្រើ​ដើម្បី​លួច​ឬ​ធ្វើ​ឲ្យ​លេចធ្លាយ​ទិន្នន័យ​ផ្ទាល់ខ្លួន​របស់​អ្នក។</string>
-    <string name="appblock_block_text2">"កម្មវិធី​ព្យាបាទ​អាច​ប្រើ​ការអនុញ្ញាត​ដ៏​រសើប​ដើម្បី​លួច​ទិន្នន័យ​ផ្ទាល់ខ្លួន​របស់​អ្នក ក្លែង​អត្តសញ្ញាណ​អ្នក ឬ​ចូលប្រើ​គណនី​ហិរញ្ញវត្ថុ​របស់​អ្នក។
-
-ស្ថាប័ន​ហិរញ្ញវត្ថុ​ស្របច្បាប់​មិន​តម្រូវ​ឲ្យ​ដំឡើង​ឯកសារ ZIP, ឯកសារ APK ឬ​កម្មវិធី​អភិបាល​ឯកសារ​ទេ។
-
-ជានិច្ចកាល ត្រូវ​ប្រាកដ​ថា កម្មវិធី​ដែល​អ្នក​ដំឡើង​បាន​មក​ពី​ប្រភព​ដែល​ទុកចិត្ត។"</string>
-    <string name="appblock_warn_subtitle">កម្មវិធី​នេះ​អាច​លួច​ឬ​ធ្វើ​ឲ្យ​លេចធ្លាយ​ព័ត៌មាន​ផ្ទាល់ខ្លួន​របស់​អ្នក។</string>
+    <string name="appblock_block_text_phone">មិន​អាច​ដំឡើង​កម្មវិធី​នេះ​ទេ ពីព្រោះ​វា​ត្រូវ​បាន​រាយការណ៍​ថា​ព្យាបាទ ឬ​ស្រដៀង​គ្នា​នឹង​កម្មវិធី​ដែល​បាន​រាយការណ៍​ថា​ព្យាបាទ។ កម្មវិធី​នេះ​ទំនង​ជា​ប្រើ​ក្នុង​ឧក្រិដ្ឋកម្ម ដូចជា​ការលួច​ព័ត៌មាន។ ដើម្បី​រក្សា​សុវត្ថិភាព​ទូរសព្ទ​និង​ទិន្នន័យ កំហិត​នេះ​មិន​អាច​រំលង​បាន​ទេ។</string>
+    <string name="appblock_block_text_tablet">មិន​អាច​ដំឡើង​កម្មវិធី​នេះ​ទេ ពីព្រោះ​វា​ត្រូវ​បាន​រាយការណ៍​ថា​ព្យាបាទ ឬ​ស្រដៀង​គ្នា​នឹង​កម្មវិធី​ដែល​បាន​រាយការណ៍​ថា​ព្យាបាទ។ កម្មវិធី​នេះ​ទំនង​ជា​ប្រើ​ក្នុង​ឧក្រិដ្ឋកម្ម ដូចជា​ការលួច​ព័ត៌មាន។ ដើម្បី​រក្សា​សុវត្ថិភាព​ថេប្លិត​និង​ទិន្នន័យ កំហិត​នេះ​មិន​អាច​រំលង​បាន​ទេ។</string>
+    <string name="appblock_link_text">ស្វែងយល់​បន្ថែម</string>
     <string name="appblock_warn_text1">"ការដំឡើង​កម្មវិធី​ពី​ប្រភព​ដែល​មិន​បាន​ផ្ទៀងផ្ទាត់​អាច​អនុញ្ញាត​ឲ្យ​កម្មវិធី​ទាំងនេះ​ប្រមូល​ព័ត៌មាន​ផ្ទាល់ខ្លួន​របស់​អ្នក ឬ​តាមដាន​សកម្មភាព​របស់​អ្នក។
 
 មិន​ឲ្យ​យោបល់​ដំឡើង​កម្មវិធី​នេះ​ទេ។
 
 បើ​អ្នក​នៅតែ​ជ្រើសរើស​ដំឡើង​វា​ទៀត សូម​ត្រួតពិនិត្យ​ដោយ​យកចិត្តទុកដាក់​នូវ​សេចក្ដីជូនដំណឹង​ពី​ភាពឯកជន​របស់​កម្មវិធី​នោះ ហើយ​ត្រូវ​ប្រាកដ​ថា អ្នក​ផ្ដល់​នូវ​ការអនុញ្ញាត​ដែល​ចាំបាច់​ប៉ុណ្ណោះ។"</string>
-    <string name="appblock_warn_text2">"ជា​ញឹកញយ កម្មវិធី​ព្យាបាទ​ព្យាយាម​ទទួល​ព័ត៌មាន​ផ្ទាល់ខ្លួន​របស់​អ្នក​ដោយ​ប្រើ​ការអនុញ្ញាត​ឲ្យ​ចូលប្រើ​ទំនាក់ទំនង រូបថត និង SMS។
-
-មិន​ឲ្យ​យោបល់​ដំឡើង​កម្មវិធី​នេះ​ទេ។
-
-បើ​អ្នក​នៅតែ​ជ្រើសរើស​ដំឡើង​កម្មវិធី​នេះ​ទៀត ត្រូវ​ប្រាកដ​ថា​វា​បាន​មក​ពី​ប្រភព​ដែល​អ្នក​ទុកចិត្ត ហើយ​ត្រូវ​ប្រយត្ន​អំពី​ការផ្ដល់​នូវ​ការអនុញ្ញាត ឬ​សិទ្ធិចូលប្រើ​ផ្សេងទៀត​ទៅ​កាន់​ទិន្នន័យ​អ្នក។"</string>
     <string name="application_default_restrict">កម្មវិធី​ផ្សេងទៀត​ត្រូវ​បាន​កំណត់​ជា​លំនាំដើម ដោយ​អ្នកគ្រប់គ្រង​ឧបករណ៍។</string>
     <string name="auto_click_paused">បាន​ផ្អាក​ស្វ័យ​ចុច។</string>
     <string name="auto_click_resumed">បាន​ចាប់ផ្ដើម​បន្ត​ស្វ័យ​ចុច។</string>
     <string name="autofill_never_use_for_this_app">មិន​ត្រូវ​ប្រើ %s សម្រាប់​កម្មវិធី​នេះ​ឡើយ</string>
     <string name="autofill_save_cancel">បោះបង់</string>
     <string name="autofill_save_never_OK">ព្រម</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​ការចម្លងទុក។</string>
     <string name="badPin2">PIN2 មិន​ត្រឹមត្រូវ។ សាកល្បង​ម្តងទៀត។</string>
     <string name="badPuk2">PUK2 ដែល​អ្នក​បាន​វាយបញ្ចូល​មិន​ត្រឹមត្រូវ</string>
@@ -175,8 +171,6 @@
     <string name="bluetooth_a2dp_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​អូឌីយ៉ូ​មេឌៀ Bluetooth។</string>
     <string name="bluetooth_avrcp_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​ការបញ្ជា​អូឌីយ៉ូ/​វីដេអូ Bluetooth។</string>
     <string name="bluetooth_bpp_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការបោះពុម្ព​តាម Bluetooth។</string>
-    <string name="bluetooth_china_popup_message">%1$s កំពុង​ស្នើសុំ​ការអនុញ្ញាត​ដើម្បី​ប្រើ %2$s។ អនុញ្ញាត?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការផ្ទេរ​ទិន្នន័យ​តាម Bluetooth។</string>
     <string name="bluetooth_desktop_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការភ្ជាប់​ទៅ​កុំព្យូទ័រ​លើ​តុ​របស់​អ្នក​តាម Bluetooth។</string>
     <string name="bluetooth_device_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការផ្គូ​ជាមួយ​ឧបករណ៍ Bluetooth នេះ។</string>
@@ -187,7 +181,6 @@
     <string name="bluetooth_outgoing_call_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការធ្វើ​ការហៅ​ចេញ​តាម Bluetooth។</string>
     <string name="bluetooth_pairing_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការផ្គូ Bluetooth។</string>
     <string name="bluetooth_pbap_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​សៀវភៅ​អាសយដ្ឋាន Bluetooth។</string>
-    <string name="bluetooth_permission_request">សំណើ​ការអនុញ្ញាត Bluetooth</string>
     <string name="bluetooth_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ Bluetooth។</string>
     <string name="bluetooth_sap_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​កាត SIM របស់​អ្នក​ពី​ការចូលប្រើ​តាម Bluetooth។</string>
     <string name="bluetooth_security_mode_disable">គោលការណ៍​សន្តិសុខ​រារាំង​ការប្រើ Bluetooth។</string>
@@ -250,11 +243,8 @@
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">ឧបករណ៍​អនុញ្ញាត</string>
     <string name="data_call_restriction">គោលការណ៍​សន្តិសុខ​កំហិត​ការប្រើប្រាស់​ទិន្នន័យ​ចល័ត។</string>
-    <string name="data_usage_disable_mobile">បិទ​ការភ្ជាប់​ទិន្នន័យ​ចល័ត?</string>
-    <string name="data_usage_enable_mobile_warning">ការភ្ជាប់​តាម​ទិន្នន័យ​កញ្ចប់​អាច​គិត​ថ្លៃ​បន្ថែម។ បន្ត?</string>
     <string name="data_usage_limit_body">ទិន្នន័យ​ចល័ត​ត្រូវ​បាន​ផ្អាក រហូត​ដល់​ចុង​នៃ​វដ្ដ​គិត​វិក្កយបត្រ​របស់​អ្នក។</string>
     <string name="data_usage_mobile_limit_snoozed_title">លើស​ដែនកំណត់​ទិន្នន័យ​ចល័ត​របស់​អ្នក</string>
-    <string name="data_usage_mobile_limit_title">បាន​ដល់​ដែនកំណត់​ទិន្នន័យ​ចល័ត</string>
     <string name="data_usage_rapid_app_body">%s បាន​ប្រើ​ទិន្នន័យ​ច្រើន​ជាង​ធម្មតា។</string>
     <string name="data_usage_rapid_body">កម្មវិធី​របស់​អ្នក​បាន​ប្រើ​ទិន្នន័យ​ច្រើន​ជាង​ធម្មតា។</string>
     <string name="data_usage_rapid_title">ការប្រើ​ទិន្នន័យ​ចល័ត​ខ្ពស់</string>
@@ -265,6 +255,7 @@
     <string name="data_usage_warning_title_offpeak_chn">បាន​ប្រើ %s នៃ​ទិន្នន័យ​ពេល​មិន​មមាញឹក</string>
     <string name="data_usage_warning_title_unlimited_chn">បាន​ដល់​ដែនកំណត់​ល្បឿន​ទិន្នន័យ​ចល័ត</string>
     <string name="device_disabled">បាន​បិទ​ឧបករណ៍។ ទាក់ទង​អ្នកគ្រប់គ្រង IT។</string>
+    <string name="device_info_not_available">មិន​មាន។</string>
     <string name="dex_cant_change_user_profile">មិន​អាច​ប្ដូរ​ទម្រង់​អ្នកប្រើប្រាស់​ទេ ខណៈពេល​ស្ថិត​ក្នុង​ទម្រង់ Samsung DeX។</string>
     <string name="dex_dialog_launch_toast">កម្មវិធី​ដែល​បាន​បើក​អាច​បិទ។ សំចៃ​ទិន្នន័យ​របស់​អ្នក មុនពេល​ចាប់ផ្ដើម​ឬ​ចាកចេញ​ពី Samsung DeX។</string>
     <string name="dex_disconnected_from_device">DeX បាន​ដាច់​ពី %s។ ពិនិត្យ​ការភ្ជាប់​បណ្ដាញ​លើ TV របស់​អ្នក។</string>
@@ -273,9 +264,6 @@
     <string name="dex_launcher_mode_change">បាន​បិទ %s ដើម្បី​ប្ដូរ​ទៅ Samsung DeX។</string>
     <string name="dex_mirroring_jit_msg">នៅពេល​អ្នក​ដំណើរការ Samsung DeX លើ​ថេប្លិត​អ្នក អ្នក​អាច​ឆ្លុះ​អេក្រង់​របស់​វា​នៅលើ​អេក្រង់​ណា​មួយ​ដែល​បាន​ភ្ជាប់ HDMI ដើម្បី​មើល​កាន់តែ​ធំ។</string>
     <string name="dex_mirroring_jit_title">ឆ្លុះ DeX លើ​អេក្រង់​កាន់តែ​ធំ</string>
-    <string name="dex_restart_app_dialog_button_positive">ចាប់ផ្ដើម​ឡើងវិញ</string>
-    <string name="dex_restart_app_dialog_message">កម្មវិធី​នេះ​កំពុង​ដំណើរការ​ហើយ​លើ​អេក្រង់​មួយ​ទៀត។ ដើម្បី​បើក​វា​ទីនេះ កម្មវិធី​នោះ​ត្រូវការ​ចាប់ផ្ដើម​ឡើងវិញ។ រក្សាទុក​អ្វីៗ​ដែល​សំខាន់ មុន​ពេល​អ្នក​ចាប់ផ្ដើម​វា​ឡើងវិញ។</string>
-    <string name="dex_restart_app_dialog_title">ចាប់ផ្ដើម %s ឡើងវិញ?</string>
     <string name="dex_restriction_blockerMessage">គោលការណ៍​សន្តិសុខ​រារាំង​ការប្រើ Samsung DeX។</string>
     <string name="dex_restriction_ethernetOnly">គោលការណ៍​សន្តិសុខ​រារាំង​ការប្រើ​ទិន្នន័យ Wi-Fi, ទិន្នន័យ​ចល័ត និង ចំណង​ក្នុង DeX។ ការភ្ជាប់​មាន​ខ្សែ​គឺ​ចាំបាច់​សម្រាប់​មុខងារ​បណ្ដាញ។</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">ដោយសារ​គោលការណ៍​សន្តិសុខ សូម​ផ្ដាច់​អេក្រង់​ខាងក្រៅ ដើម្បី​ចាកចេញ​ពី Samsung DeX។</string>
@@ -300,7 +288,6 @@
     <string name="digital_signature_failure_user_notification">ហត្ថលេខា​ឌីជីថល​អសុពលភាព​សម្រាប់​អ្នកប្រើប្រាស់ %d</string>
     <string name="disableupdate_application_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការធ្វើ​អាប់ដេត​កម្មវិធី​នេះ។</string>
     <string name="display_chooser_button_positive">ចាប់ផ្ដើម​ឡើងវិញ</string>
-    <string name="display_chooser_dont_show_again">កុំ​បង្ហាញ​ម្ដងទៀត</string>
     <string name="dlg_confirm_kill_storage_users_text">ការភ្ជាប់​ឃ្លាំងផ្ទុក USB នឹង​បញ្ឈប់​កម្មវិធី​ខ្លះ​ដែល​កំពុង​ប្រើ។ ពួកវា​ប្រហែល​ជា​មិន​អាច​ប្រើ​បាន​ឡើយ រហូត​ទាល់​តែ​អ្នក​ផ្តាច់​ឃ្លាំងផ្ទុក USB។</string>
     <string name="dlg_confirm_kill_storage_users_title">ភ្ជាប់​ឃ្លាំង​ផ្ទុក​ទៅ PC</string>
     <string name="dlg_error_title">ប្រតិបត្តិការ​យូអេសប៊ី​​បរាជ័យ</string>
@@ -315,7 +302,7 @@
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">មិន​អាច​ប្រើ​កម្មវិធី​នេះ​ទេ ក្នុង​ទិដ្ឋភាព​ពហុវីនដូវ។</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">មិន​អាច​ប្រើ​មុខងារ​នេះ​ទេ ក្នុង​ទិដ្ឋភាព​ពហុវីនដូវ។</string>
     <string name="edit_contact_at_sim_restriction">គោលការណ៍​សន្តិសុខ​បង្ការ​ការកែ​ទំនាក់ទំនង​ទៅ​កាត SIM។</string>
-    <string name="edm_policy_not_allow_open_wifiap">ឧបករណ៍​អនុញ្ញាត</string>
+    <string name="edm_policy_not_allow_open_wifiap">គោលការណ៍​សន្តិសុខ​កំហិត​ការប្រើ​ចំណង​ដែល​អសន្តិសុខ​សម្រាប់​ហត់ស្ប៉ត់។</string>
     <string name="emergency_calls_only">ការហៅ​អាសន្ន​ប៉ុណ្ណោះ</string>
     <string name="ethernet_cable_connected_notification_message">ប៉ះ​ដើម្បី​រៀបចំ។</string>
     <string name="ethernet_cable_connected_notification_title">បាន​ភ្ជាប់​ខ្សែ​អ៊ីសឺរណិត</string>
@@ -335,7 +322,7 @@
     <string name="ext_media_unsupported_notification_message">ឧបករណ៍​នេះ​មិន​គាំទ្រ %s នេះ។ ប៉ះ ដើម្បី​រៀបចំ​ជា​ទ្រង់ទ្រាយ​ដែល​ទទួល​ការគាំទ្រ។</string>
     <string name="ext_media_unsupported_notification_title">%s មិន​ទទួល​ការគាំទ្រ</string>
     <string name="ext_storage_bad_removal_button">ចាប់ផ្ដើម​ឡើងវិញ</string>
-    <string name="ext_storage_bad_removal_title">ចាប់ផ្ដើម​ថេប្លិត​របស់​អ្នក​ឡើងវិញ</string>
+    <string name="ext_storage_bad_removal_title">ចាប់ផ្តើម​ទូរសព្ទ​របស់​អ្នក​ឡើងវិញ</string>
     <string name="extmedia_format_button_format">ប្រភេទ</string>
     <string name="extmedia_format_message_usbhost">ឯកសារ​ទាំងអស់​ដែល​បាន​រក្សាទុក​ក្នុង​ឧបករណ៍​ផ្ទុក​យូអេសប៊ី​នឹង​ត្រូវ​បាន​លុប។ សកម្មភាព​នេះ​មិន​អាច​ត្រឡប់​វិញ​បាន​ទេ!</string>
     <string name="extmedia_format_title_usbhost">ធ្វើ​ទ្រង់ទ្រាយ​ឧបករណ៍​ផ្ទុក​យូអេសប៊ី?</string>
@@ -406,6 +393,7 @@
     <string name="globalactions_unable_restart_msg_fmm">មិន​អាច​ចាប់ផ្ដើម​ឡើងវិញ ដោយសារ​ទូរសព្ទ​ត្រូវ​បាន​ចាក់សោ​ពីចម្ងាយ​ដោយ រក​ឧបករណ៍​ចល័ត​ខ្ញុំ។</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">មិន​អាច​ចាប់ផ្ដើម​ឡើងវិញ ដោយសារ​ថេប្លិត​ត្រូវ​បាន​ចាក់សោ​ពីចម្ងាយ​ដោយ រក​ឧបករណ៍​ចល័ត​ខ្ញុំ។</string>
     <string name="globalactions_unable_restart_msg_securelock">មិន​អាច​ចាប់ផ្ដើម​ទូរសព្ទ​ឡើងវិញ ខណៈពេល​បាន​ជាប់សោ។ បើក​គម្រប និង ដោះសោ ដើម្បី​ចាប់ផ្ដើម​ទូរសព្ទ​ឡើងវិញ។</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">មិន​អាច​ចាប់ផ្ដើម​ទូរសព្ទ​ឡើងវិញ ខណៈពេល​កាត SIM ជាប់សោ។</string>
     <string name="hardware_key_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​សោ​ហាដវែរ​នេះ។</string>
     <string name="hardware_sec">ក្ដារចុច​លើ​អេក្រង់</string>
     <string name="hbd_translate">បកប្រែ​អត្ថបទ​វាយ</string>
@@ -475,16 +463,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">អ្នក​នឹង​ត្រូវការ​ដោះសោ​ថេប្លិត​អ្នក ដើម្បី​បិទ​ទម្រង់​ថែទាំ។</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">គ្មាន​អ្វី​នឹង​ត្រូវ​បាន​រក្សាទុក​ឡើយ ខណៈពេល​បាន​បើក​ទម្រង់​ថែទាំ ដូចជា​ទិន្នន័យ​ដែល​បាន​ទាញយក, ការដំឡើង​កម្មវិធី ឬ​ការប្ដូរ​ការកំណត់។</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">កំណត់​សោ​អេក្រង់</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">ចាប់ផ្ដើម​ឡើងវិញ ដោយ​មិន​បង្កើត​កំណត់ហេតុ</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">បង្កើត​កំណត់ហេតុ និង​ចាប់ផ្ដើម​ឡើងវិញ</string>
     <string name="maintenance_mode_intro_dialog_message_phone">ទូរសព្ទ​អ្នក​ត្រូវការ​ចាប់ផ្ដើម​ឡើងវិញ ដើម្បី​បើក​ទម្រង់​ថែទាំ។</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">កំណត់​សោ​អេក្រង់​មួយ​សិន។</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">ថេប្លិត​អ្នក​ត្រូវការ​ចាប់ផ្ដើម​ឡើងវិញ ដើម្បី​បើក​ទម្រង់​ថែទាំ។</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"ដើម្បី​ជួយ​ឲ្យ​បុគ្គលិក​គាំទ្រ​របស់​យើង​វិភាគ​បញ្ហា​នានា​របស់​ទូរសព្ទ​អ្នក យើង​ឲ្យយោបល់​បង្កើត​កំណត់ហេតុ​ប្រព័ន្ធ​មួយ មុនពេល​ចាប់ផ្ដើម​ទម្រង់​ថែទាំ។
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"ដើម្បី​ជួយ​ឲ្យ​បុគ្គលិក​គាំទ្រ​របស់​យើង​ធ្វើ​កំហុស​វិនិច្ឆយ​និង​វិភាគ​បញ្ហា​នានា​របស់​ទូរសព្ទ​អ្នក យើង​ឲ្យយោបល់​បង្កើត​កំណត់ហេតុ​ប្រព័ន្ធ​មួយ មុនពេល​ចាប់ផ្ដើម​ទម្រង់​ថែទាំ។
 
-កំណត់ហេតុ​នេះ​បង្ហាញ​ថា​កម្មវិធី​ណា​ត្រូវ​បាន​ប្រើ និង​កំហុស​ណា​មួយ​ដែល​ប្រហែល​ជា​បាន​កើតឡើង​ក្នុង​ពេល​ថ្មីៗ ប៉ុន្តែ​មិន​រួមបញ្ចូល​ព័ត៌មាន​ផ្ទាល់ខ្លួន​ដទៃ​ទៀត​ឡើយ។ កំណត់ហេតុ​នឹង​ត្រូវ​បាន​ប្រើ​តែ​ដើម្បី​វិភាគ​បញ្ហា​ប៉ុណ្ណោះ និង​មិនមាន​គោលបំណង​ដទៃ​ទៀត​ឡើយ។ ជា​ធម្មតា វា​ត្រូវការ​ប្រហែល 2នាទី ដើម្បី​បង្កើត​កំណត់ហេតុ។"</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"ដើម្បី​ជួយ​ឲ្យ​បុគ្គលិក​គាំទ្រ​របស់​យើង​វិភាគ​បញ្ហា​នានា​របស់​ថេប្លិត​អ្នក យើង​ឲ្យយោបល់​បង្កើត​កំណត់ហេតុ​ប្រព័ន្ធ​មួយ មុនពេល​ចាប់ផ្ដើម​ទម្រង់​ថែទាំ។
+កំណត់ហេតុ​នេះ​រួមបញ្ចូល​ព័ត៌មាន​ចាំបាច់​សម្រាប់​ការជួសជុល​ទូរសព្ទ​អ្នក​ប៉ុណ្ណោះ ដូចជា​កម្មវិធី​ណា​ខ្លះ​ត្រូវ​បាន​ប្រើ, កំហុស​ដែល​បាន​កើតឡើង​ថ្មីៗ, លេខ​ទូរសព្ទ​ដែល​បាន​ខ្ទប់ និង​ចំណុះ​ឃ្លាំងផ្ទុក​ឯកសារ។ កំណត់ហេតុ​នឹង​ត្រូវ​បាន​ប្រើ​តែ​ដើម្បី​ធ្វើ​កំហុស​វិនិច្ឆយ​វិភាគ​បញ្ហា​ប៉ុណ្ណោះ និង​មិនមាន​គោលបំណង​ដទៃ​ទៀត​ឡើយ។ ជា​ធម្មតា វា​ត្រូវការ​ប្រហែល 2នាទី ដើម្បី​បង្កើត​កំណត់ហេតុ។"</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"ដើម្បី​ជួយ​ឲ្យ​បុគ្គលិក​គាំទ្រ​របស់​យើង​ធ្វើ​កំហុស​វិនិច្ឆយ​និង​វិភាគ​បញ្ហា​នានា​របស់​ថេប្លិត​អ្នក យើង​ឲ្យយោបល់​បង្កើត​កំណត់ហេតុ​ប្រព័ន្ធ​មួយ មុនពេល​ចាប់ផ្ដើម​ទម្រង់​ថែទាំ។
 
-កំណត់ហេតុ​នេះ​បង្ហាញ​ថា​កម្មវិធី​ណា​ត្រូវ​បាន​ប្រើ និង​កំហុស​ណា​មួយ​ដែល​ប្រហែល​ជា​បាន​កើតឡើង​ក្នុង​ពេល​ថ្មីៗ ប៉ុន្តែ​មិន​រួមបញ្ចូល​ព័ត៌មាន​ផ្ទាល់ខ្លួន​ដទៃ​ទៀត​ឡើយ។ កំណត់ហេតុ​នឹង​ត្រូវ​បាន​ប្រើ​តែ​ដើម្បី​វិភាគ​បញ្ហា​ប៉ុណ្ណោះ និង​មិនមាន​គោលបំណង​ដទៃ​ទៀត​ឡើយ។ ជា​ធម្មតា វា​ត្រូវការ​ប្រហែល 2នាទី ដើម្បី​បង្កើត​កំណត់ហេតុ។"</string>
+កំណត់ហេតុ​នេះ​រួមបញ្ចូល​ព័ត៌មាន​ចាំបាច់​សម្រាប់​ការជួសជុល​ថេប្លិត​អ្នក​ប៉ុណ្ណោះ ដូចជា​កម្មវិធី​ណា​ខ្លះ​ត្រូវ​បាន​ប្រើ, កំហុស​ដែល​បាន​កើតឡើង​ថ្មីៗ, លេខ​ទូរសព្ទ​ដែល​បាន​ខ្ទប់ និង​ចំណុះ​ឃ្លាំងផ្ទុក​ឯកសារ។ កំណត់ហេតុ​នឹង​ត្រូវ​បាន​ប្រើ​តែ​ដើម្បី​ធ្វើ​កំហុស​វិនិច្ឆយ​វិភាគ​បញ្ហា​ប៉ុណ្ណោះ និង​មិនមាន​គោលបំណង​ដទៃ​ទៀត​ឡើយ។ ជា​ធម្មតា វា​ត្រូវការ​ប្រហែល 2នាទី ដើម្បី​បង្កើត​កំណត់ហេតុ។"</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">វិភាគ​ឃ្លាំងផ្ទុក</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">ឃ្លាំងផ្ទុក​ខាងក្នុង​នៃ​ទូរសព្ទ​អ្នក​ជិត​ពេញ​ហើយ។ បើ​អ្នក​អស់​លំហ​ឃ្លាំងផ្ទុក កម្មវិធី​និង​មុខងារ​ខ្លះ​អាច​ឈប់​ដំណើរការ​ប្រក្រតី។ សាកល្បង​លុប​ឯកសារ ឬ​កម្មវិធី​ខ្លះ ដែល​អ្នក​មិន​ត្រូវការ​ទៀត។ បន្ទាប់​ពី​លុប សូម​កុំ​ភ្លេច​សម្អាត​ធុង​សំរាម។</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">ឃ្លាំងផ្ទុក​ខាងក្នុង​នៃ​ថេប្លិត​អ្នក​ជិត​ពេញ​ហើយ។ បើ​អ្នក​អស់​លំហ​ឃ្លាំងផ្ទុក កម្មវិធី​និង​មុខងារ​ខ្លះ​អាច​ឈប់​ដំណើរការ​ប្រក្រតី។ សាកល្បង​លុប​ឯកសារ ឬ​កម្មវិធី​ខ្លះ ដែល​អ្នក​មិន​ត្រូវការ​ទៀត។ បន្ទាប់​ពី​លុប សូម​កុំ​ភ្លេច​សម្អាត​ធុង​សំរាម។</string>
@@ -506,10 +494,17 @@
     <string name="maintenance_mode_outro_label">ចាកចេញ​ពី​ទម្រង់​ថែទាំ</string>
     <string name="maintenance_mode_outro_textview_message_phone">អ្នក​នឹង​ត្រូវការ​ដោះសោ​ទូរសព្ទ​អ្នក ដើម្បី​បិទ​ទម្រង់​ថែទាំ។ នៅពេល​អ្នក​ធ្វើ អ្វីៗ​នឹង​ត្រឡប់​ទៅ​ដូច​ពេល​ដែល​ទម្រង់​ថែទាំ​ត្រូវ​បាន​បើក​ដំបូង។ ការផ្លាស់ប្ដូរ​ដែល​បាន​ធ្វើ ក្នុង​ពេល​បាន​បើក​ទម្រង់​ថែទាំ ដូចជា​ទិន្នន័យ​ដែល​បាន​ទាញយក កម្មវិធី​ដែល​បាន​ដំឡើង ឬ​ការផ្លាស់ប្ដូរ​ការកំណត់ មិន​ត្រូវ​បាន​រក្សាទុក​ឡើយ។</string>
     <string name="maintenance_mode_outro_textview_message_tablet">អ្នក​នឹង​ត្រូវការ​ដោះសោ​ថេប្លិត​អ្នក ដើម្បី​បិទ​ទម្រង់​ថែទាំ។ នៅពេល​អ្នក​ធ្វើ អ្វីៗ​នឹង​ត្រឡប់​ទៅ​ដូច​ពេល​ដែល​ទម្រង់​ថែទាំ​ត្រូវ​បាន​បើក​ដំបូង។ ការផ្លាស់ប្ដូរ​ដែល​បាន​ធ្វើ ក្នុង​ពេល​បាន​បើក​ទម្រង់​ថែទាំ ដូចជា​ទិន្នន័យ​ដែល​បាន​ទាញយក កម្មវិធី​ដែល​បាន​ដំឡើង ឬ​ការផ្លាស់ប្ដូរ​ការកំណត់ មិន​ត្រូវ​បាន​រក្សាទុក​ឡើយ។</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">ទម្រង់​ថែទាំ​មិន​អាច​ប្រើ​ទេ ខណៈពេល %s សកម្ម។</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">មិន​អាច​ប្រើ​ទម្រង់​ថែទាំ ខណៈពេល​បាន​បើក​ការសំចៃ​ថាមពល​ជាមួយ​កម្មវិធី​និង​គេហអេក្រង់​មាន​កម្រិត។</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">ទម្រង់​ថែទាំ​មិន​ទទួល​ការគាំទ្រ​លើ​ទូរសព្ទ​នេះ​ទេ។</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">ទម្រង់​ថែទាំ​មិន​ទទួល​ការគាំទ្រ​លើ​ថេប្លិត​នេះ​ទេ។</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">មាន​តែ​ម្ចាស់​នៃ​ឧបករណ៍​ប៉ុណ្ណោះ​ដែល​អាច​ប្រើ %s បាន។</string>
     <string name="maintenance_mode_stop_backup_dialog_message">បញ្ឈប់​ការចម្លងទុក​ទិន្នន័យ​អ្នក និង​បើក​ទម្រង់​ថែទាំ?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">ដើម្បី​បើក​ទម្រង់​ថែទាំ អ្នក​ត្រូវ​បញ្ចប់​ឬ​លុប​ការចម្លងទុក​មិន​ទាន់​បញ្ចប់​របស់​អ្នក។</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">ដើម្បី​បើក​ទម្រង់​ថែទាំ អ្នក​ត្រូវ​បញ្ឈប់​ការចម្លងទុក​កំពុង​បន្ត​របស់​អ្នក។</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">ដើម្បី​បើក​ទម្រង់​ថែទាំ អ្នក​ត្រូវ​បញ្ឈប់​ឬ​ស្ដារ​ទិន្នន័យ​ចម្លងទុក​របស់​អ្នក។</string>
+    <string name="maintenance_mode_toast_text_device_admin">កម្មវិធី​គ្រប់គ្រង​ឧបករណ៍</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">កំពុង​បង្កើត​កំណត់ហេតុ…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">ជា​ធម្មតា វា​ត្រូវការ​ប្រហែល 2នាទី។ បន្ទាប់​ពី​បាន​បង្កើត​កំណត់ហេតុ ទូរសព្ទ​អ្នក​នឹង​ចាប់ផ្ដើម​ឡើងវិញ​ក្នុង​ទម្រង់​ថែទាំ ហើយ​អ្នក​អាច​ប្រគល់​ទូរសព្ទ​អ្នក​យ៉ាង​មាន​សុវត្ថិភាព​សម្រាប់​ការថែទាំ។</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">ជា​ធម្មតា វា​ត្រូវការ​ប្រហែល 2នាទី។ បន្ទាប់​ពី​បាន​បង្កើត​កំណត់ហេតុ ថេប្លិត​អ្នក​នឹង​ចាប់ផ្ដើម​ឡើងវិញ​ក្នុង​ទម្រង់​ថែទាំ ហើយ​អ្នក​អាច​ប្រគល់​ថេប្លិត​អ្នក​យ៉ាង​មាន​សុវត្ថិភាព​សម្រាប់​ការថែទាំ។</string>
@@ -532,13 +527,8 @@
     <string name="media_checking_usbhost">បច្ចុប្បន្ន​កំពុង​ពិនិត្យ​ឧបករណ៍​ផ្ទុក​យូអេសប៊ី។</string>
     <string name="media_unknown_state">មេឌៀ​ខាងក្រៅ​ស្ថិត​ក្នុង​លក្ខណៈ​មិន​ស្គាល់។</string>
     <string name="mediaplayer_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​កម្មវិធី​ចាក់​មេឌៀ MTP។</string>
+    <string name="message_on_crash">Auto Blocker បាន​ខ្ទប់</string>
     <string name="microphone_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​មីក្រូហ្វូន។</string>
-    <string name="miniresolver_call">ហៅ</string>
-    <string name="miniresolver_call_in_work">ហៅ​ពី​កម្មវិធី​ការងារ?</string>
-    <string name="miniresolver_call_information">ស្ថាប័ន​អ្នក​អនុញ្ញាត​ឲ្យ​អ្នក​ធ្វើ​ការហៅ​ពី​កម្មវិធី​ការងារ​ប៉ុណ្ណោះ។</string>
-    <string name="miniresolver_sms_information">ស្ថាប័ន​អ្នក​អនុញ្ញាត​ឲ្យ​អ្នក​ផ្ញើ​សារ​ពី​កម្មវិធី​ការងារ​ប៉ុណ្ណោះ។</string>
-    <string name="miniresolver_switch">ប្ដូរ</string>
-    <string name="miniresolver_switch_to_work">ប្ដូរ​ទៅ​កម្មវិធី​ការងារ?</string>
     <string name="mmcc_authentication_reject_name_template">មិន​បាន​អនុញ្ញាត %s</string>
     <string name="mmcc_illegal_me_name_template">មិន​បាន​អនុញ្ញាត %s</string>
     <string name="mmcc_illegal_ms_name_template">មិន​បាន​អនុញ្ញាត %s</string>
@@ -550,30 +540,6 @@
     <string name="mock_location_reminder_disable">បិទ</string>
     <string name="mock_location_reminder_title">បាន​បើក​ទីកន្លែង​ក្លែងក្លាយ</string>
     <string name="more_apps">កម្មវិធី​ច្រើនទៀត</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">សេវា %s មិន​ទទួល​ការគាំទ្រ។ ទាក់ទង​សេវា​អតិថិជន។</string>
-    <string name="mptcp_message_address_type_not_supported">ការភ្ជាប់ %s អន់។ កំពុង​ភ្ជាប់​ឡើងវិញ​តាម​បណ្ដាញ​ដែល​អាច​ប្រើ​បាន…</string>
-    <string name="mptcp_message_busy_ntime_wait">ការភ្ជាប់ %s អន់។ កំពុង​ភ្ជាប់​ឡើងវិញ​តាម​បណ្ដាញ​ដែល​អាច​ប្រើ​បាន…</string>
-    <string name="mptcp_message_cmd_not_supported">បណ្ដាញ %s មិន​អាច​ប្រើ​បាន​ជា​បណ្ដោះអាសន្ន។ កំពុង​ភ្ជាប់​ឡើងវិញ​តាម​បណ្ដាញ​ដែល​អាច​ប្រើ​បាន…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">ការភ្ជាប់ %s អន់។ កំពុង​ភ្ជាប់​ឡើងវិញ​តាម​បណ្ដាញ​ដែល​អាច​ប្រើ​បាន…</string>
-    <string name="mptcp_message_connection_refused">ការភ្ជាប់ %s អន់។ កំពុង​ភ្ជាប់​ឡើងវិញ​តាម​បណ្ដាញ​ដែល​អាច​ប្រើ​បាន…</string>
-    <string name="mptcp_message_data_usage_limit">បាន​ដល់​ដែនកំណត់​ប្រើប្រាស់​ទិន្នន័យ។ ដើម្បី​ប្ដូរ​ដែនកំណត់​នៃ​ការប្រើប្រាស់​ទិន្នន័យ សូម​ចូលទៅ ការកំណត់។</string>
-    <string name="mptcp_message_host_unreachable">ការភ្ជាប់ %s អន់។ កំពុង​ភ្ជាប់​ឡើងវិញ​តាម​បណ្ដាញ​ដែល​អាច​ប្រើ​បាន…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">មិន​អាច​បើកប្រើ %s។ ឧបករណ៍​មិន​បាន​ភ្ជាប់​ជាមួយ​បណ្ដាញ LTE។</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">មិន​អាច​បើកប្រើ %s ខណៈពេល​រ៉ូមីង​អន្តរជាតិ។</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">មិន​អាច​បើកប្រើ %s ខណៈពេល​បាន​បើកប្រើ​ហត់ស្ប៉ត់​ចល័ត ឬ ចំណង USB។</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">មិន​អាច​បើកប្រើ %s ខណៈពេល​បាន​បើកប្រើ Wi-Fi Direct។</string>
-    <string name="mptcp_message_mptcp_capability_airplane">មិន​អាច​បើកប្រើ %s ខណៈពេល​បាន​បើកប្រើ​ទម្រង់​យន្តហោះ។</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">មិន​អាច​បើកប្រើ %s ខណៈពេល​បាន​បិទ​ទិន្នន័យ​ចល័ត។</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">គ្មាន​ការឆ្លើយតប​ពី​អ្នកផ្ដល់​សេវា។</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">មិន​អាច​បើកប្រើ %1$s។ %2$s មិន​អាច​ប្រើ​បាន​ឡើយ​ជាមួយ​កញ្ចប់​អ៊ីនធើណិត​របស់​អ្នក ឬ​ក៏​មិន​បាន​ទទួល​ការឆ្លើយតប​ពី​សឺវើ %3$s។</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">បាន​បរាជ័យ​ក្នុង​ការ​ផ្ញើ​សំណើ​បើកដំណើរការ %s។ កំពុង​ភ្ជាប់​ឡើងវិញ​តាម​បណ្ដាញ​ដែល​អាច​ប្រើ​បាន…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">មិន​អាច​បើកប្រើ %s។ បាន​បញ្ចូល​កាត SIM មិន​ត្រឹមត្រូវ។</string>
-    <string name="mptcp_message_network_unreachable">ការភ្ជាប់ %s អន់។ កំពុង​ភ្ជាប់​ឡើងវិញ​តាម​បណ្ដាញ​ដែល​អាច​ប្រើ​បាន…</string>
-    <string name="mptcp_message_non_mptcp_plan">មិន​អាច​បើកប្រើ​ពហុផ្លូវ Giga។ គម្រោង​ទិន្នន័យ​មិន​គាំទ្រ​មុខងារ​នេះ។</string>
-    <string name="mptcp_message_operation_disabled_overheating">បាន​បិទ %s ដើម្បី​បង្ការ​ការឡើង​កម្ដៅ​ឧបករណ៍​ជ្រុល។ កំពុង​ទាញយក​តាម​បណ្ដាញ​ចល័ត​ជំនួស…</string>
-    <string name="mptcp_message_server_error">ការភ្ជាប់ %s អន់។ កំពុង​ភ្ជាប់​ឡើងវិញ​តាម​បណ្ដាញ​ដែល​អាច​ប្រើ​បាន…</string>
-    <string name="mptcp_message_setting_disabled_overheating">មិន​អាច​បើកប្រើ %s។ ឧបករណ៍​កំពុង​ឡើង​កម្ដៅ​ជ្រុល។ រង់ចាំ​រហូត​ដល់​ឧបករណ៍​ចុះត្រជាក់ ហើយ​សាកល្បង​ម្ដងទៀត។</string>
-    <string name="mptcp_message_ttl_expired">បណ្ដាញ %s មិន​អាច​ប្រើ​បាន​ជា​បណ្ដោះអាសន្ន។ កំពុង​ភ្ជាប់​ឡើងវិញ​តាម​បណ្ដាញ​ដែល​អាច​ប្រើ​បាន…</string>
     <string name="multi_user_capability_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​សមត្ថភាព​នៃ​អ្នកប្រើប្រាស់​ច្រើន​នាក់​លើ​ឧបករណ៍​របស់​អ្នក។</string>
     <string name="multi_user_creation_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការបង្កើត​គណនី​អ្នកប្រើប្រាស់​ថ្មី​លើ​ឧបករណ៍​របស់​អ្នក។</string>
     <string name="multi_user_removal_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការលុប​គណនី​អ្នកប្រើប្រាស់​ពី​ឧបករណ៍​របស់​អ្នក។</string>
@@ -592,24 +558,22 @@
     <string name="multisound_sound_via_bluetooth_multiselection">សំឡេង​កំពុង​ចាក់​លើ​ឧបករណ៍​អូឌីយ៉ូ Bluetooth របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា</string>
     <string name="multisound_sound_via_headphone">សំឡេង %s កំពុង​ចាក់​តាម​កាស​របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
     <string name="multisound_sound_via_headphone_multiselection">សំឡេង​កំពុង​ចាក់​តាម​កាស​របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
-    <string name="multisound_sound_via_phone_speaker">សំឡេង %s កំពុង​ចាក់​តាម​ឧបល័រ​ថេប្លិត​របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">សំឡេង​កំពុង​ចាក់​តាម​ឧបល័រ​ថេប្លិត​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
+    <string name="multisound_sound_via_phone_speaker">កំពុង​ចាក់​សំឡេង %s តាម​ឧបល័រ​ទូរសព្ទ​របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">សំឡេង​កំពុង​ចាក់​តាម​ឧបល័រ​ទូរសព្ទ​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
     <string name="multisound_sound_via_usb_audio">សំឡេង %s កំពុង​ចាក់​តាម​ឧបករណ៍​អូឌីយ៉ូ USB របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
     <string name="multisound_sound_via_usb_audio_multiselection">សំឡេង​កំពុង​ចាក់​តាម​ឧបករណ៍​អូឌីយ៉ូ USB របស់​អ្នក។ ប៉ះ​ទីនេះ ដើម្បី​បិទ​វា។</string>
     <string name="multisound_title">សំឡេង​កម្មវិធី​ដាច់ដោយឡែក</string>
     <string name="multisound_turn_off_multisound">បិទ</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s មិន​អាច​ដំណើរការ​ក្នុង Samsung DeX ទេ។ សាកល្បង​ដំណើរការ​ក្នុង​ទម្រង់​ថេប្លិត។</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s មិន​អាច​ដំណើរការ​ក្នុង Samsung DeX ទេ។ វា​ត្រូវ​បាន​រចនា​សម្រាប់​គេហអេក្រង់​ថេប្លិត។</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ហ្គេម​ខ្លះ​ដំណើរការ​តែ​លើ​អេក្រង់​ប៉ះ​ប៉ុណ្ណោះ។ បើ​ការបញ្ជា​ម៉ៅស៍​មិន​ដំណើរការ​ក្នុង Samsung DeX ទេ សូម​សាកល្បង​លេង​ក្នុង​ទម្រង់​ថេប្លិត​ជំនួស​នេះ។</string>
-    <string name="my_device">ថេប្លិត​នេះ</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s មិន​អាច​ដំណើរការ​ក្នុង Samsung DeX ទេ។ សាកល្បង​ដំណើរការ​ក្នុង​ទម្រង់​ទូរសព្ទ។</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s មិន​អាច​ដំណើរការ​ក្នុង Samsung DeX ទេ។ វា​ត្រូវ​បាន​រចនា​សម្រាប់​គេហអេក្រង់​ទូរសព្ទ។</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ហ្គេម​ខ្លះ​ដំណើរការ​តែ​លើ​អេក្រង់​ប៉ះ​ប៉ុណ្ណោះ។ បើ​ការបញ្ជា​ម៉ៅស៍​មិន​ដំណើរការ​ក្នុង Samsung DeX ទេ សូម​សាកល្បង​លេង​ក្នុង​ទម្រង់​ទូរសព្ទ​ជំនួស​នេះ។</string>
+    <string name="my_device">ទូរសព្ទ​នេះ</string>
     <string name="network_locked_sim_dialog_message_ais">កាត SIM របស់​អ្នក​មិន​អាច​ធ្វើ​ប្រតិបត្តិការ​ពេញលេញ​នៅ​ក្នុង​ទូរសព្ទ​នេះ​ទេ ដោយសារ​វា​មិន​អនុលោម​ជាមួយ​ពេលវេលា​និង​លក្ខខណ្ឌ​នៃ​ការចុះឈ្មោះ​របស់​អ្នក។ បើ​អ្នក​មាន​សំណួរ​ផ្សេងៗ ឬ​ក៏​ត្រូវការ​ព័ត៌មាន​បន្ថែម​អំពី​រឿង​នេះ សូម​ទាក់ទង​ទីកន្លែង​សេវា​អតិថិជន Samsung ឬ​ក៏​ហាង​ដែល​បាន​លក់​ផលិតផល​ទាំងនេះ​ជូន​អ្នក។</string>
     <string name="network_locked_sim_notification_text">បណ្ដាញ​បាន​ចាក់​សោ​កាត SIM ដែល​បាន​បញ្ចូល។</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">ប្ដូរ​កម្មវិធី​គេហ​លំនាំដើម​របស់​អ្នក​ទៅ One UI Home។</string>
     <string name="nfc_restrict">គោលការណ៍​សន្តិសុខ​រារាំង​ការប្រើ NFC។</string>
     <string name="nosim_limited_service">សេវា​មាន​ដែនកំណត់</string>
-    <string name="not_support_ai_key">សោ AI មិន​ដំណើរការ​ជាមួយ​ថេប្លិត​អ្នក​នៅឡើយ។ នឹង​មាន​អាប់ដេត​ក្នុង​ពេល​ឆាប់ៗ។</string>
-    <string name="notification_app_name_settings">ការកំណត់</string>
     <string name="notification_channel_dex_policy">គោលការណ៍ Samsung DeX</string>
     <string name="ntfs_usb_storage_readonly_mount_message">ឃ្លាំងផ្ទុក​នេះ​បាន​តែ​អាន​ប៉ុណ្ណោះ ពីព្រោះ​វា​ប្រើ​ទ្រង់ទ្រាយ NTFS។</string>
     <string name="ntfs_usb_storage_readonly_mount_title">បាន​ថែម​ឃ្លាំងផ្ទុក USB អាន​ប៉ុណ្ណោះ</string>
@@ -784,7 +748,6 @@
     <string name="permlab_scheduleExactAlarm">កំណត់​ម៉ោងរោទ៍​និង​ការរំឭក</string>
     <string name="permlab_spdControl">គ្រប់គ្រង​អាប់ដេត​នៃ​គោលការណ៍​សន្តិសុខ</string>
     <string name="permlab_ucsPlugin">កម្មវិធី​បន្ថែម​នៃ​ការគ្រប់គ្រង​ព័ត៌មាន​អត្តសញ្ញាណ​សាកល</string>
-    <string name="personal_apps_suspended_turn_profile_on">បើក</string>
     <string name="phoneTypeConference">ប្រជុំ</string>
     <string name="policydesc_allow_bluetoothmode">រារាំង​ការប្រើ Bluetooth។</string>
     <string name="policydesc_allow_browser">រារាំង​ការប្រើ​អ៊ីនធើណិត។</string>
@@ -792,7 +755,7 @@
     <string name="policydesc_allow_desktopsync">រារាំង​ការប្រើ​សមកាល​កុំព្យូទ័រ។</string>
     <string name="policydesc_allow_internetsharing">រារាំង​ការប្រើ​ហត់ស្ប៉ត់​ចល័ត។</string>
     <string name="policydesc_allow_irda">រារាំង​ការប្រើ IrDA។</string>
-    <string name="policydesc_allow_popimapemail">រារាំង​ការប្រើ​អ៊ីមែល POP និង IMAP លើ​ថេប្លិត។</string>
+    <string name="policydesc_allow_popimapemail">រារាំង​ការប្រើ​អ៊ីមែល POP និង IMAP លើ​ទូរសព្ទ។</string>
     <string name="policydesc_allow_storagecard">រារាំង​ការប្រើ​កាត SD។</string>
     <string name="policydesc_allow_textmessaging">រារាំង​ការប្រើ​សេវា​សារ​អត្ថបទ​និង​ពហុព័ត៌មាន។</string>
     <string name="policydesc_allow_thirdParty">កម្មវិធី​នេះ​អាច​រារាំង​មិន​ឲ្យ​កម្មវិធី​តតិយភាគី​ដំណើរការ។</string>
@@ -838,7 +801,7 @@
     <string name="pwd_change_enforced">គោលការណ៍​សន្តិសុខ​តម្រូវ​ឲ្យ​អ្នក​ប្ដូរ​ពាក្យសម្ងាត់​របស់​អ្នក។</string>
     <string name="recording_fail">មិន​អាច​ប្រើ​មីក្រូហ្វូន​ក្នុង %1$s ខណៈពេល​កំពុង​ប្រើ​វា​ក្នុង %2$s។</string>
     <string name="recording_popup">%s កំពុង​ប្រើ​មីក្រូហ្វូន។</string>
-    <string name="recording_popup_device">ថេប្លិត</string>
+    <string name="recording_popup_device">ទូរសព្ទ</string>
     <string name="recording_popup_with_bluetooth">%s កំពុង​ប្រើ​មីក្រូហ្វូន Bluetooth។</string>
     <string name="recording_popup_with_device">%1$s កំពុង​ប្រើ​មីក្រូហ្វូន​របស់ %2$s។</string>
     <string name="redo">ធ្វើវិញ</string>
@@ -903,12 +866,12 @@
     <string name="screencapture_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​ការថត​រូប​អេក្រង់។</string>
     <string name="sd_card_unavailable_message">អ្នក​មិន​អាច​ប្រើ​កាត SD ទេ ពីព្រោះ​វា​ត្រូវ​បាន​បញ្ចូល ខណៈពេល​កំពុង​ប្រើ​ទម្រង់​អ្នកប្រើប្រាស់​ផ្សេង។</string>
     <string name="sd_card_unavailable_title">កាត SD មិន​អាច​ប្រើ​បាន</string>
-    <string name="sdcard_bad_removal_message">កាត SD ត្រូវ​បាន​ដោះ​ដោយ​អសុវត្ថិភាព។ ដើម្បី​រារាំង​កុំ​ឲ្យ​ថេប្លិត​របស់​អ្នក​ចាប់ផ្ដើម​ឡើងវិញ​ដោយ​មិន​នឹក​ស្មាន សូម​រក្សាទុក​ទិន្នន័យ​ដែល​មិន​បាន​រក្សាទុក និង​ចាប់ផ្ដើម​ឡើងវិញ​ឥឡូវ។</string>
+    <string name="sdcard_bad_removal_message">កាត SD ត្រូវ​បាន​ដោះ​ដោយ​អសុវត្ថិភាព។ ដើម្បី​រារាំង​កុំ​ឲ្យ​ទូរសព្ទ​របស់​អ្នក​ចាប់ផ្ដើម​ឡើងវិញ​ដោយ​មិន​នឹក​ស្មាន សូម​រក្សាទុក​ទិន្នន័យ​ដែល​មិន​បាន​រក្សាទុក និង​ចាប់ផ្ដើម​ឡើងវិញ​ឥឡូវ។</string>
     <string name="sdcard_batch_decrypt_noti_content">ឌីគ្រីប​កាត SD</string>
     <string name="sdcard_batch_decrypt_noti_title">ឌីគ្រីបសុន​កាត SD</string>
     <string name="sdcard_batch_decrypt_popup_content">ត្រូវតែ​ឌីគ្រីប​កាត SD ដែល​បាន​អ៊ិនគ្រីប មុន​ពេល​អាច​ប្រើ​បាន។ ឌីគ្រីបសុន​អាច​ត្រូវការ​ពេល​មួយ​ម៉ោង ឬ ច្រើន​ជាង​នេះ។ ចាប់ផ្ដើម​ជាមួយ​ថ្ម​ដែល​បាន​សាក និង រក្សា​ឲ្យ​ឧបករណ៍​ដោត​ទៅ​ឆ្នាំងសាក រហូត​ទាល់​តែ​ឌីគ្រីបសុន​បាន​បញ្ចប់។ ការបង្អាក់​រំខាន​ដំណើរការ​ឌីគ្រីបសុន អាច​នាំ​ឲ្យ​បាត់បង់​ទិន្នន័យ​ខ្លះ ឬ ទាំងអស់។</string>
     <string name="sdcard_decrypt_err_notification">កំហុស​ឌីគ្រីបសុន​កាត SD បាន​កើតឡើង។</string>
-    <string name="sdcard_decrypt_error_otherdevice">ឯកសារ​ខ្លះ​លើ​កាត SD របស់​អ្នក​ត្រូវ​បាន​អ៊ិនគ្រីប​លើ​ឧបករណ៍​មួយ​ទៀត ហើយ​មិន​អាច​ប្រើ​លើ​ថេប្លិត​នេះ​ទេ។</string>
+    <string name="sdcard_decrypt_error_otherdevice">ឯកសារ​ខ្លះ​លើ​កាត SD របស់​អ្នក​ត្រូវ​បាន​អ៊ិនគ្រីប​លើ​ឧបករណ៍​មួយ​ទៀត ហើយ​មិន​អាច​ប្រើ​លើ​ទូរសព្ទ​នេះ​ទេ។</string>
     <string name="sdcard_decrypt_notification">បាន​ឌីគ្រីបសុន​កាត SD។</string>
     <string name="sdcard_decrypt_title_notification">ឌីគ្រីបសុន​កាត SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">កំពុង​ឌីគ្រីប​កាត SD…</string>
@@ -925,14 +888,6 @@
     <string name="sdcard_unmount_policy_noti_title">បាន​ដកផ្ដាច់​កាត SD ដោយសារ​គោលការណ៍ IT។</string>
     <string name="sdhms_nr_control_low_battery">បិទ 5G ដើម្បី​សំចៃ​ថ្ម នៅពេល​ទូរសព្ទ​របស់​អ្នក​នៅសល់​ថ្ម​តិចជាង 15%។</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth នឹង​បន្ត​បើក​ក្នុង​ទម្រង់​យន្តហោះ។</string>
-    <string name="sec_immersive_cling_button_ok">ព្រម</string>
-    <string name="sec_immersive_cling_guide_text_gesture">កម្មវិធី​នេះ​កំពុង​ប្រើ​អេក្រង់​ពេញ។ កាយវិការ​អូស​សម្រាប់​ការរុករក​នឹង​បង្ហាញ​របារ​ស្ថានភាព។ ដើម្បី​រុករក សូម​អូស​ម្ដងទៀត ខណៈពេល​ឃើញ​របារ​ស្ថានភាព។</string>
-    <string name="sec_immersive_cling_guide_text_phone">"កម្មវិធី​នេះ​កំពុង​ប្រើ​អេក្រង់​ពេញ។ គេហប៊ូតុង, ប៊ូតុង​ថយ និង​ប៊ូតុងថ្មីៗ ត្រូវ​បាន​លាក់ ដើម្បី​កាត់បន្ថយ​ការរំខាន​ឲ្យ​នៅ​តិច​បំផុត ព្រមទាំង​ដើម្បី​រារាំង​អ្នក​កុំ​ឲ្យ​ចាកចេញ​ពី​កម្មវិធី​ដោយ​ចៃដន្យ។
-
-សូម្បី​អ្នក​បង្វិល​ទូរសព្ទ​របស់​អ្នក​ក៏​ដោយ ប៊ូតុង​ទាំងនោះ​នឹង​តែង​ស្ថិត​នៅ​ជិត​នឹង​ច្រក​សាក​ជានិច្ច។ អ្នក​អាច​ធ្វើ​ឲ្យ​ប៊ូតុង​ទាំងនោះ​លេច​ឡើងវិញ ដោយ​អូស​ចូល​ពី​គែម​នៃ​អេក្រង់ ដូច​ដែល​បាន​បង្ហាញ​ដោយ​សញ្ញា​ព្រួញ។"</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"កម្មវិធី​នេះ​កំពុង​ប្រើ​អេក្រង់​ពេញ។ គេហប៊ូតុង, ប៊ូតុង​ថយ និង​ប៊ូតុងថ្មីៗ ត្រូវ​បាន​លាក់ ដើម្បី​កាត់បន្ថយ​ការរំខាន​ឲ្យ​នៅ​តិច​បំផុត ព្រមទាំង​ដើម្បី​រារាំង​អ្នក​កុំ​ឲ្យ​ចាកចេញ​ពី​កម្មវិធី​ដោយ​ចៃដន្យ។
-
-ដើម្បី​ធ្វើ​ឲ្យ​ប៊ូតុង​ទាំងនោះ​លេច​ឡើងវិញ សូម​អូស​ឡើងលើ​ពី​ផ្នែក​ខាងក្រោម​នៃ​អេក្រង់ ដូច​ដែល​បាន​បង្ហាញ​ដោយ​សញ្ញា​ព្រួញ។"</string>
     <string name="sec_monotype_default">លំនាំ​ដើម</string>
     <string name="sec_ringtone_category_brand_sound">សំឡេង​ម៉ាក Samsung</string>
     <string name="sec_ringtone_category_calm">ស្ងប់ស្ងៀម</string>
@@ -942,6 +897,10 @@
     <string name="sec_ringtone_category_open_theme">លំនាំដើម​នៃ​រូបរាង​បច្ចុប្បន្ន</string>
     <string name="sec_ringtone_category_retro">សម័យ​មុន</string>
     <string name="sec_ringtone_silent">ស្ងាត់</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">បោះបង់</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">ដើម្បី​ភ្ជាប់​ជាមួយ​ផ្កាយរណប អ្នក​ត្រូវ​កំណត់​ប្រតិបត្តិករ​បណ្ដាញ​របស់​អ្នក​ទៅ ជ្រើស​ដោយ​ស្វ័យប្រវត្តិ។</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">បើក</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">បើក​ការជ្រើស​បណ្ដាញ​ស្វ័យប្រវត្តិ?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">បើក​ការចូលប្រើ​មីក្រូហ្វូន ដើម្បី​និយាយ។</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">បើក​ការចូលប្រើ​កាមេរ៉ា ដើម្បី​ប្រើ %s។</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">បើក​ការចូលប្រើ​មីក្រូហ្វូន ដើម្បី​ប្រើ %s។</string>
@@ -1037,6 +996,8 @@
     <string name="sem_face_error_already_in_use_by_VT">មិន​អាច​ប្រើ​ការស្គាល់​ផ្ទៃមុខ ក្នុង​អំឡុងពេល​ហៅ​វីដេអូ។</string>
     <string name="sem_face_error_camera_access_off">មិន​អាច​ប្រើ​ការស្គាល់​ផ្ទៃមុខ ពីព្រោះ​ការចូលប្រើ​កាមេរ៉ា​បាន​បិទ</string>
     <string name="sem_face_error_camera_fail">មិន​អាច​បើក​កាមេរ៉ា។ សាកល្បង​ម្តងទៀត។</string>
+    <string name="sem_face_error_lockout">ការផ្ទៀងផ្ទាត់​ជីវមាត្រ​មិន​អាច​ប្រើ​បាន​ទេ ដោយសារ​ការប៉ុនប៉ង​មិន​ត្រឹមត្រូវ​ច្រើន​ដង​ពេក។</string>
+    <string name="sem_face_error_lockout_permanent">ការផ្ទៀងផ្ទាត់​ជីវមាត្រ​មិន​អាច​ប្រើ​បាន​ទេ ដោយសារ​ការប៉ុនប៉ង​មិន​ត្រឹមត្រូវ​ច្រើន​ដង​ពេក។</string>
     <string name="sem_face_error_ppp_timeout">អស់​មួយ​រយៈពេល​ហើយ​ដែល​អ្នក​បាន​ផ្ទៀងផ្ទាត់​អត្តសញ្ញាណ​របស់​អ្នក។ អ្នក​នឹង​ត្រូវ​ចាប់ផ្ដើម​ម្ដងទៀត ដើម្បី​ចុះបញ្ជី​ផ្ទៃមុខ​របស់​អ្នក។</string>
     <string name="sem_face_error_too_dark">ងងឹត​ពេក ដើម្បី​ស្គាល់​ផ្ទៃមុខ</string>
     <string name="sem_face_error_too_dark_to_enroll">ងងឹត​ពេក។ សាកល្បង​បើក​ពន្លឺ ឬ​ក៏​ទៅ​កន្លែង​ណា​ដែល​ភ្លឺ​ជាងនេះ។</string>
@@ -1052,13 +1013,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">ផ្លាស់ទី​ចុង S Pen របស់​អ្នក​ចេញ​ពី​អេក្រង់ ដើម្បី​ស្កេន​ខ្ចៅដៃ​របស់​អ្នក។</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">ដើម្បី​ប្រើ​ខ្ចៅដៃ ដំបូង​សូម​កំណត់​ប្រភេទ​សោ​អេក្រង់​សន្តិសុខ (លំនាំ, PIN ឬ ពាក្យសម្ងាត់)។</string>
+    <string name="sem_fingerprint_error_lockout">ការផ្ទៀងផ្ទាត់​ជីវមាត្រ​មិន​អាច​ប្រើ​បាន​ទេ ដោយសារ​ការប៉ុនប៉ង​មិន​ត្រឹមត្រូវ​ច្រើន​ដង​ពេក។</string>
+    <string name="sem_fingerprint_error_lockout_permanent">ការផ្ទៀងផ្ទាត់​ជីវមាត្រ​មិន​អាច​ប្រើ​បាន​ទេ ដោយសារ​ការប៉ុនប៉ង​មិន​ត្រឹមត្រូវ​ច្រើន​ដង​ពេក។</string>
     <string name="sem_fingerprint_error_onehand_mode">មិន​អាច​ប្រើ​ប្រដាប់ស្កេន​ខ្ចៅដៃ​ក្នុង​ទម្រង់​ប្រើ​ដៃ​ម្ខាង។</string>
     <string name="sem_fingerprint_error_smart_view">មិន​អាច​ស្កេន​ខ្ចៅដៃ ខណៈពេល​កំពុង​ប្រើ %s។</string>
+    <string name="sem_fingerprint_error_system_failure">សិនសឺ​ខ្ចៅដៃ​មិន​ឆ្លើយតប។ សាកល្បង​ម្ដងទៀត​ពេលក្រោយ។ បើ​វា​បន្ត​កើតមាន សូម​សាកល្បង​ចាប់ផ្ដើម​ទូរសព្ទ​អ្នក​ឡើងវិញ។</string>
+    <string name="sem_fingerprint_error_template_corrupt">ទិន្នន័យ​ខ្ចៅដៃ​បាន​ខូច។ ថែម​ខ្ចៅដៃ​របស់​អ្នក​ម្ដងទៀត។</string>
     <string name="sem_fingerprint_error_wireless_charger">ផ្ដាច់​ពី​គ្រឿងសាក​ឥតខ្សែ ដើម្បី​ប្រើ​ខ្ចៅដៃ​របស់​អ្នក</string>
     <string name="sem_fingerprint_name_template">ខ្ចៅដៃ %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">ពេលក្រោយ</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">មិនមែន​ឥឡូវ</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">លុប​និង​ចុះបញ្ជី</string>
+    <string name="sem_fingerprint_register_dialog_message">ការស្គាល់​ខ្ចៅដៃ​ត្រូវ​បាន​កែលម្អ​ក្នុង​អាប់ដេត​នៃ​សុហ្វវែរ​ថ្មីបំផុត។ អ្នក​នឹង​មិន​អាច​ប្រើ​ការស្គាល់​ខ្ចៅដៃ​ឡើយ រហូត​ទាល់​តែ​អ្នក​លុប​ខ្ចៅដៃ​របស់​អ្នក​និង​ចុះបញ្ជី​ពួកវា​ម្ដងទៀត។</string>
     <string name="sem_fingerprint_register_dialog_title">ចុះបញ្ជី​ខ្ចៅដៃ​ម្ដងទៀត</string>
     <string name="sem_fingerprint_result_failed">មិន​ផ្គូគ្នា។</string>
     <string name="sem_fingerprint_result_retry">សាកល្បង​ម្តងទៀត។</string>
@@ -1078,7 +1044,7 @@
     <string name="sem_resolver_button_always_accessibility">ប្រើ​កម្មវិធី​ដែល​បាន​ជ្រើស​ជានិច្ច</string>
     <string name="sem_resolver_button_just_once_accessibility">ប្រើ​កម្មវិធី​ដែល​បាន​ជ្រើស​ម្ដង​ប៉ុណ្ណោះ</string>
     <string name="sem_resolver_choose_what_to_do">ជ្រើស​អ្វី​ត្រូវ​ធ្វើ</string>
-    <string name="sem_resolver_go_to_settings_tips_description">ដើម្បី​ប្ដូរ​ការកំណត់​កម្មវិធី​លំនាំដើម សូម​ចូលទៅ ការកំណត់ > កម្មវិធី > ជ្រើស​កម្មវិធី​លំនាំដើម។</string>
+    <string name="sem_resolver_go_to_settings_tips_description">ដើម្បី​ប្ដូរ​កម្មវិធី​លំនាំដើម​ដែល​បាន​ប្រើ​ក្នុង​ការ​បើក​ឯកសារ​ប្រភេទ​នេះ សូម​ចូលទៅ ការកំណត់ > កម្មវិធី, ជ្រើស​កម្មវិធី​លំនាំដើម​បច្ចុប្បន្ន រួច​ប៉ះ កំណត់​ជា​លំនាំដើម > ជម្រះ​លំនាំដើម។</string>
     <string name="sem_resolver_icon_content_description">ព័ត៌មាន</string>
     <string name="sem_resolver_personal_tab_accessibility">ផ្ទាល់ខ្លួន</string>
     <string name="sem_resolver_share_live_default_text">ចែករំលែក​ភ្លាមៗ​ជាមួយ​មនុស្ស​នៅក្បែរ។ មនុស្ស​ដែល​ធ្វើ​ឲ្យ​ឃើញ​ឧបករណ៍​របស់​ពួកគេ នឹង​បង្ហាញ​ឡើង​ទីនេះ។</string>
@@ -1090,9 +1056,6 @@
     <string name="sem_resolver_work_tab_accessibility">ការងារ</string>
     <string name="sem_switch_off">បិទ</string>
     <string name="sem_switch_on">បើក</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">បាន​បិទ​ការចូលប្រើ​កាមេរ៉ា​សម្រាប់​កម្មវិធី​ទាំងអស់</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">បើក</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">បាន​បិទ​ការចូលប្រើ​មីក្រូហ្វូន​សម្រាប់​កម្មវិធី​ទាំងអស់</string>
     <string name="serviceErased">ការលុប​ជោគជ័យ។</string>
     <string name="serviceModeAll">ទាំង​អស់</string>
     <string name="serviceModeAllConditional">មាន​លក្ខខណ្ឌ។</string>
@@ -1102,6 +1065,7 @@
     <string name="serviceModeUnconditional">ដោយ​គ្មាន​លក្ខខណ្ឌ។</string>
     <string name="serviceisDisabled">បាន​បិទ​សេវា។</string>
     <string name="serviceisEnabled">បាន​បើកប្រើ​សេវា។</string>
+    <string name="settings">ការកំណត់</string>
     <string name="sf_quick_switch_not_supported">ប្ដូរ​រហ័ស​មិន​ទទួល​ការគាំទ្រ​ក្នុង​ស្ថានភាព​នេះ​ទេ។</string>
     <string name="sf_quick_switch_securefolder_view">បាន​ប្ដូរ​ទៅ %s។</string>
     <string name="share">ចែករំលែក</string>
@@ -1110,26 +1074,30 @@
     <string name="sharelist_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការចែករំលែក​ទិន្នន័យ។</string>
     <string name="show_keyboard_button">បង្ហាញ​ប៊ូតុង​ក្ដារចុច</string>
     <string name="show_keyboard_button_description">បង្ហាញ %s លើ​របារ​រុករក។</string>
+    <string name="showing_esc_dialog">អ្នក​អាច​កំណត់​ឲ្យ​គ្រាប់ចុច Esc ដំណើរការ​ជា​ប៊ូតុង​ថយ។</string>
     <string name="showing_touch_sensitivity_noti_action">បើក</string>
     <string name="showing_touch_sensitivity_noti_text">បើក​ភាពងាយចាប់​ការប៉ះ ខណៈពេល​ប្រើ Privacy Screen ឬ Notepaper Screen សម្រាប់​ភាពឆ្លើយតប​នៃ​ការប៉ះ​កាន់តែ​សុក្រឹត។</string>
     <string name="showing_touch_sensitivity_noti_title">បង្កើន​ភាពងាយចាប់​នៃ​ការប៉ះ</string>
+    <string name="side_key_double_press_archived_app">បាន​ទុក​កម្មវិធី​ក្នុង​បណ្ណសារ។ ជ្រើស​អ្វី​ផ្សេង។</string>
     <string name="side_key_double_press_deleted_app">បាន​លុប​កម្មវិធី។ ជ្រើស​អ្វី​ផ្សេង។</string>
     <string name="side_key_double_press_disabled_app">បាន​បិទ %s។ ជ្រើស​អ្វី​ផ្សេង។</string>
     <string name="signature_identity_toast">%s បាន​ចុះហត្ថលេខា​ដោយ</string>
     <string name="simRefresh">កំពុង​ធ្វើ​ឲ្យ​ទិន្នន័យ SIM ស្រស់</string>
     <string name="simReset">កំពុង​អាប់ដេត​ទិន្នន័យ SIM…</string>
     <string name="sim_check_old_sim_message">កាត SIM ចាស់​ឬ​ខូច អាច​បង្ក​បញ្ហា​ភ្ជាប់​បណ្ដាញ។ ទាក់ទង​អ្នកផ្ដល់​សេវា​ឲ្យ​អ្នក ឬ​ចូលទៅ​ហាង​មួយ​របស់​ពួកគេ ដើម្បី​ពិនិត្យ​ថា​តើ​វា​ត្រូវការ​ផ្លាស់ថ្មី​ដែរឬទេ។</string>
+    <string name="sim_check_old_sim_message_skt">កាត SIM ចាស់​ឬ​ខូច អាច​បង្ក​បញ្ហា​ភ្ជាប់​បណ្ដាញ។ ទាក់ទង​អ្នកផ្ដល់​សេវា​ឲ្យ​អ្នក ឬ​ទៅ​ហាង​មួយ​របស់​ពួកគេ ដើម្បី​ពិនិត្យ​ថា​តើ​វា​ត្រូវការ​ផ្លាស់ថ្មី​ដែរឬទេ។</string>
     <string name="sim_check_old_sim_title">SIM របស់​អ្នក​ប្រហែល​ជា​ត្រូវការ​ផ្លាស់ថ្មី</string>
+    <string name="sim_check_old_sim_title_skt">SIM របស់​អ្នក​ប្រហែល​ជា​ត្រូវការ​ផ្លាស់ថ្មី</string>
     <string name="sim_count_mismatched_ds_to_ss">ទម្រង់​កាត SIM បាន​ប្ដូរ​ពី SIM ពីរ ទៅ SIM មួយ។ ដើម្បី​ប្រើ​ការកំណត់​នេះ ឧបករណ៍​នឹង​ត្រូវ​បាន​កំណត់​ឡើងវិញ​ទៅ​ការកំណត់​លំនាំដើម​ពី​រោងចក្រ​របស់​វា ហើយ​នឹង​ចាប់ផ្ដើម​ឡើងវិញ។</string>
     <string name="sim_count_mismatched_ss_to_ds">ទម្រង់​កាត SIM បាន​ប្ដូរ​ពី SIM មួយ ទៅ SIM ពីរ។ ដើម្បី​ប្រើ​ការកំណត់​នេះ ឧបករណ៍​នឹង​ត្រូវ​បាន​កំណត់​ឡើងវិញ​ទៅ​ការកំណត់​លំនាំដើម​ពី​រោងចក្រ​របស់​វា ហើយ​នឹង​ចាប់ផ្ដើម​ឡើងវិញ។</string>
     <string name="sim_count_mismatched_title">បាន​ប្ដូរ​ទម្រង់​កាត SIM</string>
-    <string name="sim_imsreg_error_message_lgt">ទូរសព្ទ​អ្នក​នឹង​មិន​អាច​ធ្វើ​ការហៅ​សំឡេង​ឡើយ ពីព្រោះ​វា​មិន​អាច​ស្គាល់​កាត SIM ទេ។ សាកល្បង​ដោះ​កាត SIM និង​បញ្ចូល​វា​ម្ដងទៀត។ បើ​បញ្ហា​នេះ​នៅតែ​បន្ត អ្នក​ប្រហែល​ជា​ត្រូវ​ផ្លាស់​កាត SIM របស់​អ្នក។ សម្រាប់​ជំនួយ សូម​ទៅ​ហាង LG U+ ឬ​ទាក់ទង​សេវា​អតិថិជន LG U+ តាម 1544-0010។</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">ថេប្លិត​អ្នក​នឹង​មិន​អាច​ធ្វើ​ការហៅ​សំឡេង​ឡើយ ពីព្រោះ​វា​មិន​អាច​ស្គាល់​កាត SIM ទេ។ សាកល្បង​ដោះ​កាត SIM និង​បញ្ចូល​វា​ម្ដងទៀត។ បើ​បញ្ហា​នេះ​នៅតែ​បន្ត អ្នក​ប្រហែល​ជា​ត្រូវ​ផ្លាស់​កាត SIM របស់​អ្នក។ សម្រាប់​ជំនួយ សូម​ទៅ​ហាង LG U+ ឬ​ទាក់ទង​សេវា​អតិថិជន LG U+ តាម 1544-0010។</string>
+    <string name="sim_imsreg_error_message_lgt">ទូរសព្ទ​អ្នក​នឹង​មិន​អាច​ធ្វើ​ការហៅ​សំឡេង​ទេ ពីព្រោះ​វា​មិន​អាច​ស្គាល់​កាត SIM។ សាកល្បង​ដោះ​កាត SIM និង​បញ្ចូល​វា​ម្ដងទៀត។ បើ​បញ្ហា​នេះ​នៅតែ​បន្ត អ្នក​ប្រហែល​ជា​ត្រូវ​ផ្លាស់​កាត SIM របស់​អ្នក​នៅ​ហាង LG U+។</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">ថេប្លិត​អ្នក​នឹង​មិន​អាច​ធ្វើ​ការហៅ​សំឡេង​ទេ ពីព្រោះ​វា​មិន​អាច​ស្គាល់​កាត SIM។ សាកល្បង​ដោះ​កាត SIM និង​បញ្ចូល​វា​ម្ដងទៀត។ បើ​បញ្ហា​នេះ​នៅតែ​បន្ត អ្នក​ប្រហែល​ជា​ត្រូវ​ផ្លាស់​កាត SIM របស់​អ្នក​នៅ​ហាង LG U+។</string>
     <string name="sim_off_noti_message">អ្នក​មិន​អាច​ធ្វើ​ការហៅ ផ្ញើ​សារ ឬ​ប្រើ​ទិន្នន័យ នៅពេល SIMs ទាំងអស់​ត្រូវ​បាន​បិទ។ ប៉ះ​ទីនេះ ដើម្បី​បើក SIMs។</string>
     <string name="sim_off_noti_title">SIMs ទាំងអស់​ត្រូវ​បាន​បិទ</string>
     <string name="sim_off_toast_message">កាត SIM ដែល​អ្នក​បាន​បញ្ចូល​ត្រូវ​បាន​បិទ។ ដើម្បី​ប្រើ​វា សូម​ចូលទៅ ការកំណត់ > ការភ្ជាប់ > អភិបាល SIM រួច​បើក​វា។</string>
     <string name="sim_recognize_error_message_kt">កាត SIM របស់​អ្នក​មិន​ត្រូវ​បាន​ស្គាល់​ទេ។ សាកល្បង​ដោះ​កាត SIM និង​បញ្ចូល​វា​ម្ដងទៀត។ បើ​បញ្ហា​នេះ​នៅតែ​បន្ត អ្នក​ប្រហែល​ជា​ត្រូវ​ផ្លាស់​កាត SIM របស់​អ្នក។ សម្រាប់​ជំនួយ សូម​ទៅ​ហាង KT ឬ​ទាក់ទង​សេវា​អតិថិជន KT តាម 1588-0010។</string>
-    <string name="sim_recognize_error_message_lgt">កាត SIM របស់​អ្នក​មិន​ត្រូវ​បាន​ស្គាល់​ទេ។ សាកល្បង​ដោះ​កាត SIM និង​បញ្ចូល​វា​ម្ដងទៀត។ បើ​បញ្ហា​នេះ​នៅតែ​បន្ត អ្នក​ប្រហែល​ជា​ត្រូវ​ផ្លាស់​កាត SIM របស់​អ្នក។ សម្រាប់​ជំនួយ សូម​ទៅ​ហាង LG U+ ឬ​ទាក់ទង​សេវា​អតិថិជន LG U+ តាម 1544-0010។</string>
+    <string name="sim_recognize_error_message_lgt">កាត SIM របស់​អ្នក​មិន​ត្រូវ​បាន​ស្គាល់​ទេ។ សាកល្បង​ដោះ​កាត SIM និង​បញ្ចូល​វា​ម្ដងទៀត។ បើ​បញ្ហា​នេះ​នៅតែ​បន្ត អ្នក​ប្រហែល​ជា​ត្រូវ​ផ្លាស់​កាត SIM របស់​អ្នក​នៅ​ហាង LG U+។</string>
     <string name="sim_recognize_error_message_skt">មិន​អាច​អាន​កាត SIM។ កម្មវិធី​និង​មុខងារ​ខ្លះ​អាច​មិន​ដំណើរការ។ ដោះ និង​បញ្ចូល​កាត SIM របស់​អ្នក​ឡើងវិញ រួច​ចាប់ផ្ដើម​ទូរសព្ទ​អ្នក​ឡើងវិញ។ បើ​វា​មិន​កែ​បញ្ហា​ទេ សូម​យក​ទូរសព្ទ​អ្នក និង​កាត SIM ទៅ​ទីកន្លែង​សេវា​អតិថិជន។</string>
     <string name="sim_recognize_error_message_skt_tablet">មិន​អាច​អាន​កាត SIM។ កម្មវិធី​និង​មុខងារ​ខ្លះ​អាច​មិន​ដំណើរការ។ ដោះ និង​បញ្ចូល​កាត SIM របស់​អ្នក​ឡើងវិញ រួច​ចាប់ផ្ដើម​ថេប្លិត​អ្នក​ឡើងវិញ។ បើ​វា​មិន​កែ​បញ្ហា​ទេ សូម​យក​ថេប្លិត​អ្នក និង​កាត SIM ទៅ​ទីកន្លែង​សេវា​អតិថិជន។</string>
     <string name="sim_recognize_error_title_lgt">មិន​អាច​ស្គាល់​កាត USIM</string>
@@ -1139,10 +1107,8 @@
     <string name="sim_removed_message_hotswap_us_tablet">ភ្ជាប់​ទៅ​បណ្ដាញ Wi-Fi ឬ​ក៏​បញ្ចូល​កាត SIM ដើម្បី​ប្រើ​ទិន្នន័យ​ចល័ត។</string>
     <string name="sim_removed_title_hotswap">មិន​បាន​បញ្ចូល​កាត SIM</string>
     <string name="sim_removed_title_hotswap_us_tablet">បញ្ចូល​កាត SIM</string>
+    <string name="smart_tip_action_click_hint_text">បិទ</string>
     <string name="smartclip_restrict">គោលការណ៍​សន្តិសុខ​រារាំង​ការប្រើ​រូប​ងាយ​ច្រឹប​ខ្ទាស់។</string>
-    <string name="sms_short_code_remember_undo_instruction">អ្នក​អាច​ប្ដូរ​វា​នៅ​ពេលក្រោយ ដោយ​ការចូលទៅ ការកំណត់ > កម្មវិធី</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">អ្នក​អាច​ប្ដូរ​វា​ពេលក្រោយ​ដោយ​ចូលទៅ ការកំណត់ > កម្មវិធី > ប៊ូតុង​ជម្រើស​ច្រើនទៀត > ការចូលប្រើ​ពិសេស > ប្រើ​សេវា​សារ​អត្ថបទ​ព្រីមៀម</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">បើ​អ្នក​ប៉ះ កុំ​អនុញ្ញាត​ឲ្យ​សោះ កម្មវិធី​នេះ​នឹង​មិន​អាច​ផ្ញើ​សារ​នៅ​ផ្ទៃខាងក្រោយ​ឡើយ សូម្បី​ការអនុញ្ញាត ផ្ញើ​សារ​អត្ថបទ ត្រូវ​បាន​អនុញ្ញាត​សម្រាប់​វា​ក៏​ដោយ។</string>
     <string name="ss_do_not_show_again_us">កុំ​បង្ហាញ​ម្ដងទៀត</string>
     <string name="sss_translate">បកប្រែ</string>
     <string name="ssu_lock_body_vzw">សុំ​អធ្យាស្រ័យ ឧបករណ៍​របស់​អ្នក​មិន​អាច​បើកដំណើរការ​លើ​បណ្ដាញ​របស់​អ្នកផ្ដល់សេវា​មួយ​ទៀត​ឡើយ​ក្នុង​ពេល​ឥឡូវ។ ដើម្បី​ទទួល​ជំនួយ សូម​ទាក់ទង Verizon តាម​លេខ %1$s ឬ %2$s (គម្រោង​បង់ប្រាក់​ជាមុន)</string>
@@ -1173,7 +1139,6 @@
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">ហត់ស្ប៉ត់​ចល័ត</string>
     <string name="title_dialog_check_rotate_or_not">បិទ​ស្វ័យ​បង្វិល​អេក្រង់?</string>
-    <string name="title_uds">ទម្រង់​សំចៃ​ទិន្នន័យ​បំផុត</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">មិន​អាច​ប្រើ Bixby ខណៈពេល​កំពុង​រៀបចំ​ទូរសព្ទ​របស់​អ្នក។</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">មិន​អាច​ប្រើ Bixby ខណៈពេល​កំពុង​រៀបចំ​ថេប្លិត​របស់​អ្នក។</string>
     <string name="toast_warning_pattern_lock">សោ​លំនាំ​មិន​អាច​ប្រើ​ជាមួយ​កុងតាក់​សាកល​ឡើយ។ ប្ដូរ​ទៅ​ប្រភេទ​សោ​ផ្សេង​ជាមុន​សិន។</string>
@@ -1213,9 +1178,13 @@
     <string name="unknown_install_blocked_esm_title">បាន​ខ្ទប់​កម្មវិធី​មិនស្គាល់</string>
     <string name="unknown_install_dlg_desc">កម្មវិធី​នេះ​មិន​ត្រូវ​បាន​ទាញយក​ពី​ហាង​ដែល​បាន​យល់ព្រម​ទេ។ ការដំឡើង​កម្មវិធី​នេះ​អាច​ធ្វើ​ឲ្យ​សន្តិសុខ​និង​ភាពឯកជន​របស់​អ្នក​មាន​ហានិភ័យ។ កម្មវិធី​នេះ​អាច​ប្រមូល​ព័ត៌មាន​ផ្ទាល់ខ្លួន ឬ​ក៏​ធ្វើ​ឲ្យ​ទិន្នន័យ​អ្នក​បាត់បង់។</string>
     <string name="unknown_install_dlg_desc2">កម្មវិធី​នេះ​មិន​គាំទ្រ​មុខងារ​សន្តិសុខ​ថ្មីបំផុត​ទេ។ ការដំឡើង​កម្មវិធី​នេះ​អាច​នាំ​ឲ្យ​មាន​ហានិភ័យ​សន្តិសុខ​ខាងក្រោម៖</string>
+    <string name="unknown_install_dlg_desc_global_phone">ឯកសារ​ការដំឡើង​កម្មវិធី​នេះ​ប្រហែល​ជា​អសុវត្ថិភាព។ វា​ប្រហែល​ជា​មិនមែន​កម្មវិធី​ដែល​វា​បាន​អះអាង​ទេ។ ដើម្បី​ការពារ​ទូរសព្ទ​និង​ទិន្នន័យ​ផ្ទាល់ខ្លួន​របស់​អ្នក សូម​ដំឡើង​កម្មវិធី​ពី​ហាង​កម្មវិធី​ដែល​អ្នក​ទុកចិត្ត ជំនួស​នេះ។</string>
+    <string name="unknown_install_dlg_desc_global_tablet">ឯកសារ​ការដំឡើង​កម្មវិធី​នេះ​ប្រហែល​ជា​អសុវត្ថិភាព។ វា​ប្រហែល​ជា​មិនមែន​កម្មវិធី​ដែល​វា​បាន​អះអាង​ទេ។ ដើម្បី​ការពារ​ថេប្លិត​និង​ទិន្នន័យ​ផ្ទាល់ខ្លួន​របស់​អ្នក សូម​ដំឡើង​កម្មវិធី​ពី​ហាង​កម្មវិធី​ដែល​អ្នក​ទុកចិត្ត ជំនួស​នេះ។</string>
     <string name="unknown_install_dlg_desc_phishing_phone">កម្មវិធី​នេះ​ត្រូវ​បាន​សង្ស័យ​ថា​កំពុង​ព្យាបាទ ហើយ​អាច​ធ្វើ​ឲ្យ​ទូរសព្ទ​និង​ទិន្នន័យ​អ្នក​មាន​ហានិភ័យ។ មិន​ឲ្យ​យោបល់​ដំឡើង​កម្មវិធី​នេះ​ទេ។</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">កម្មវិធី​នេះ​ត្រូវ​បាន​សង្ស័យ​ថា​កំពុង​ព្យាបាទ ហើយ​អាច​ធ្វើ​ឲ្យ​ថេប្លិត​និង​ទិន្នន័យ​អ្នក​មាន​ហានិភ័យ។ មិន​ឲ្យ​យោបល់​ដំឡើង​កម្មវិធី​នេះ​ទេ។</string>
-    <string name="unknown_install_dlg_general_title">កម្មវិធី​នេះ​មក​ពី​ប្រភព​មិនស្គាល់</string>
+    <string name="unknown_install_dlg_desc_phone">កម្មវិធី​នេះ​មិន​មក​ពី​ហាង​កម្មវិធី​ដែល​បាន​ទទួល​សិទ្ធិ​ទេ។ ដើម្បី​ការពារ​ទូរសព្ទ​និង​ព័ត៌មាន​ផ្ទាល់ខ្លួន​របស់​អ្នក សូម​ដំឡើង​កម្មវិធី​ពី​ហាង​ដែល​បាន​ទទួល​សិទ្ធិ ដូចជា Play Store និង Galaxy Store។</string>
+    <string name="unknown_install_dlg_desc_tablet">កម្មវិធី​នេះ​មិន​មក​ពី​ហាង​កម្មវិធី​ដែល​បាន​ទទួល​សិទ្ធិ​ទេ។ ដើម្បី​ការពារ​ថេប្លិត​និង​ព័ត៌មាន​ផ្ទាល់ខ្លួន​របស់​អ្នក សូម​ដំឡើង​កម្មវិធី​ពី​ហាង​ដែល​បាន​ទទួល​សិទ្ធិ ដូចជា Play Store និង Galaxy Store។</string>
+    <string name="unknown_install_dlg_general_title">មិន​ឲ្យ​យោបល់​ដំឡើង​កម្មវិធី​នេះ​ទេ</string>
     <string name="unknown_install_dlg_negative_button">កុំ​ដំឡើង</string>
     <string name="unknown_install_dlg_perm_desc1">កម្មវិធី​នេះ​អាច​ស្កាត់​កូដ​ផ្ទៀងផ្ទាត់​ពី​សារ​អត្ថបទ​ដែល​អ្នក​បាន​ទទួល។</string>
     <string name="unknown_install_dlg_perm_desc2">ការហៅ​ចេញ​អាច​ត្រូវ​បាន​បញ្ជូន​ទៅ​លេខ​ទូរសព្ទ​ផ្សេង ដោយ​អ្នក​មិន​ដឹង។</string>
@@ -1234,7 +1203,7 @@
     <string name="usb_abnormal_reset_title">ការភ្ជាប់ USB អស្ថិរភាព</string>
     <string name="usb_abnormal_reset_toast">ការភ្ជាប់ USB អស្ថិរភាព។ ដកឆ្នុក​ខ្សែ​និង​ដោត​វា​ចូល​ម្ដងទៀត ឬ​ក៏​សាកល្បង​ខ្សែ​ផ្សេង។</string>
     <string name="usb_accessory_notification_title">បាន​ភ្ជាប់​ទៅ​គ្រឿង​បន្សំ USB</string>
-    <string name="usb_bad_removal_message">ឧបករណ៍​ឃ្លាំងផ្ទុក USB ត្រូវ​បាន​ដោះ​ដោយ​អសុវត្ថិភាព។ ដើម្បី​រារាំង​កុំ​ឲ្យ​ថេប្លិត​របស់​អ្នក​ចាប់ផ្ដើម​ឡើងវិញ​ដោយ​មិន​នឹក​ស្មាន សូម​រក្សាទុក​ទិន្នន័យ​ដែល​មិន​បាន​រក្សាទុក និង​ចាប់ផ្ដើម​ឡើងវិញ​ឥឡូវ។</string>
+    <string name="usb_bad_removal_message">ឧបករណ៍​ឃ្លាំងផ្ទុក USB ត្រូវ​បាន​ដោះ​ដោយ​អសុវត្ថិភាព។ ដើម្បី​រារាំង​កុំ​ឲ្យ​ទូរសព្ទ​អ្នក​ចាប់ផ្ដើម​ឡើងវិញ​ដោយ​មិន​នឹក​ស្មាន សូម​រក្សាទុក​ទិន្នន័យ​ដែល​មិន​បាន​រក្សាទុក និង​ចាប់ផ្ដើម​ឡើងវិញ​ឥឡូវ។</string>
     <string name="usb_blocked_by_emergency_mode">មុខងារ USB ខ្លះ​មិន​អាច​ប្រើ​បាន​ឡើយ​ក្នុង​ទម្រង់​អាសន្ន។</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">មិន​អាច​ប្រើ​មុខងារ​ពាក់ព័ន្ធ​នឹង​ឧបករណ៍ USB ដែល​បាន​ភ្ជាប់ ខណៈពេល​បើកប្រើ​ទម្រង់​សំចៃ​ថាមពល​អតិបរមា។</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">មុខងារ USB នឹង​មាន​កម្រិត ខណៈពេល​បាន​បើក​ទម្រង់​សំចៃ​ថាមពល​អតិបរមា។</string>
@@ -1243,13 +1212,15 @@
     <string name="usb_camera_connected_notification_title">បាន​ភ្ជាប់​ឧបករណ៍​មេឌៀ</string>
     <string name="usb_camera_disconnected_notification_title">បាន​ផ្ដាច់​ឧបករណ៍​មេឌៀ</string>
     <string name="usb_cd_installer_notification_title">អាប់ដេត​នៃ​សុហ្វវែរ</string>
-    <string name="usb_charing_only_notification_title">បាន​ភ្ជាប់</string>
+    <string name="usb_charing_only_notification_title">កំពុង​សាក​តាម USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">បាន​បើក Auto Blocker ជាមួយ​កំហិត​អតិបរមា។</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">បាន​ខ្ទប់​ការភ្ជាប់ USB</string>
     <string name="usb_debugging_only_notification_title">ការបំបាត់​កំហុស​ប៉ុណ្ណោះ</string>
-    <string name="usb_host_resource_exceed_message">ប្រដាប់បញ្ជា USB នៃ​ថេប្លិត​របស់​អ្នក​មិនមាន​ធនធាន​គ្រប់គ្រាន់ ដើម្បី​ភ្ជាប់​ឧបករណ៍​នេះ​ទេ។ សាកល្បង​ផ្ដាច់​ឧបករណ៍ រួច​ភ្ជាប់​វា​ម្ដងទៀត។</string>
+    <string name="usb_host_resource_exceed_message">ប្រដាប់បញ្ជា USB នៃ​ទូរសព្ទ​របស់​អ្នក​មិនមាន​ធនធាន​គ្រប់គ្រាន់ ដើម្បី​ភ្ជាប់​ឧបករណ៍​នេះ​ទេ។ សាកល្បង​ផ្ដាច់​ឧបករណ៍ រួច​ភ្ជាប់​វា​ម្ដងទៀត។</string>
     <string name="usb_host_resource_exceed_title">ធនធាន​ប្រដាប់បញ្ជា USB មិន​គ្រប់គ្រាន់</string>
-    <string name="usb_hub_depth_exceed_message">ថេប្លិត​របស់​អ្នក​អាច​គាំទ្រ​ការភ្ជាប់ USB Hub ដល់ទៅ 5 ប៉ុណ្ណោះ ក្នុង​ពេល​តែ​មួយ។</string>
+    <string name="usb_hub_depth_exceed_message">ទូរសព្ទ​របស់​អ្នក​អាច​គាំទ្រ​ការភ្ជាប់ USB Hub ដល់ទៅ 5 ប៉ុណ្ណោះ ក្នុង​ពេល​តែ​មួយ។</string>
     <string name="usb_hub_depth_exceed_title">ការភ្ជាប់ USB Hub អតិបរមា</string>
-    <string name="usb_hub_power_exceed_message">ថេប្លិត​របស់​អ្នក​មិន​អាច​ផ្ដល់​ថាមពល​គ្រប់គ្រាន់​សម្រាប់​ឧបករណ៍ USB នេះ​ទេ។ ភ្ជាប់​ឧបករណ៍​នេះ​ទៅ USB Hub ដែល​ផ្ដល់​ថាមពល​ដោយ​ខ្លួនឯង មុនពេល​ភ្ជាប់​វា​ទៅ​ថេប្លិត​របស់​អ្នក។</string>
+    <string name="usb_hub_power_exceed_message">ទូរសព្ទ​របស់​អ្នក​មិន​អាច​ផ្ដល់​ថាមពល​គ្រប់គ្រាន់​សម្រាប់​ឧបករណ៍ USB នេះ​ទេ។ ភ្ជាប់​ឧបករណ៍​នេះ​ទៅ USB Hub ដែល​ផ្ដល់​ថាមពល​ដោយ​ខ្លួនឯង មុនពេល​ភ្ជាប់​វា​ទៅ​ទូរសព្ទ​របស់​អ្នក។</string>
     <string name="usb_increase_battery_usage">ការភ្ជាប់ USB អាច​បង្កើន​ការប្រើប្រាស់​ថ្ម។</string>
     <string name="usb_mass_storage_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​ឃ្លាំងផ្ទុក​ដុល USB។</string>
     <string name="usb_midi_notification_title">USB សម្រាប់ MIDI</string>
@@ -1275,8 +1246,9 @@
     <string name="usb_storage_stop_title">ឃ្លាំងផ្ទុក USB កំពុង​ប្រើ។</string>
     <string name="usb_storage_title">បាន​ភ្ជាប់ USB។</string>
     <string name="usb_type_c_supply_power_notification_title">កំពុង​សាក​តាម USB ចំពោះ​ឧបករណ៍​ដែល​បាន​ភ្ជាប់</string>
-    <string name="usb_unblock_by_screen_unlock">ដោះសោ​ថេប្លិត​អ្នក ដើម្បី​ប្រើ​ឧបករណ៍ USB ដែល​បាន​ភ្ជាប់។</string>
-    <string name="usb_unsupport_accessory_message">ឧបករណ៍ USB នេះ​មិន​ទទួល​ការគាំទ្រ​ពី​ថេប្លិត​របស់​អ្នក​ទេ។</string>
+    <string name="usb_unblock_by_screen_unlock">ដោះសោ​ទូរសព្ទ​អ្នក ដើម្បី​ប្រើ​ឧបករណ៍ USB ដែល​បាន​ភ្ជាប់។</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">ដើម្បី​ប្រើ​ឧបករណ៍ USB សូម​ដោះសោ​ទូរសព្ទ​អ្នក និង​ភ្ជាប់​ឧបករណ៍ USB ឡើងវិញ។</string>
+    <string name="usb_unsupport_accessory_message">ឧបករណ៍ USB នេះ​មិន​ទទួល​ការគាំទ្រ​ពី​ទូរសព្ទ​របស់​អ្នក​ទេ។</string>
     <string name="usb_unsupport_accessory_title">ឧបករណ៍ USB មិន​ទទួល​ការគាំទ្រ</string>
     <string name="usb_unsupported_device">ឧបករណ៍ USB ដែល​បាន​ភ្ជាប់ មិន​ទទួល​ការគាំទ្រ។</string>
     <string name="usb_unsupported_device_title">ឧបករណ៍​មិន​ទទួល​ការគាំទ្រ</string>
@@ -1294,24 +1266,24 @@
     <string name="usb_water_dialg_method_2_desc_2">អ្នក​អាច​បង្កើន​ល្បឿន​សម្ងួត ដោយ​តម្រង់​កង្ហារ​ឬ​ឧបករណ៍​សម្ងួត (ខ្យល់​ត្រជាក់​ប៉ុណ្ណោះ) ទៅ​រក​ច្រក។</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"យើង​ចាប់​បាន​សំណើម​ឬ​វត្ថុ​ខាងក្រៅ​ក្នុង​ច្រក​សាក/USB របស់​អ្នក។
 
-ពិនិត្យ​ច្រក​សាក/USB របស់​អ្នក រក​មើល​វត្ថុ​ខាងក្រៅ ដូចជា​ធូលី​ឬ​កម្ទេចកម្ទី។ ដើម្បី​បង្ការ​កុំ​ឲ្យ​ខូច​ថេប្លិត​អ្នក សូម​កុំ​ដោត​អ្វី​មួយ​ចូល ទាល់តែ​ច្រក​សាក​ស្អាត និង​អស់​សំណើម។
+ពិនិត្យ​ច្រក​សាក/USB របស់​អ្នក រក​មើល​វត្ថុ​ខាងក្រៅ ដូចជា​ធូលី​ឬ​កម្ទេចកម្ទី។ ដើម្បី​បង្ការ​កុំ​ឲ្យ​ខូច​ទូរសព្ទ​អ្នក សូម​កុំ​ដោត​អ្វី​មួយ​ចូល ទាល់តែ​ច្រក​សាក​ស្អាត និង​អស់​សំណើម។
 
 ដើម្បី​សម្ងួត​ច្រក សូម​អង្រួន​សំណើម​ទាំងអស់​ចេញ រួច​រង់ចាំ​ឲ្យ​វា​ស្ងួត​សិន ដែល​អាច​ត្រូវការ​ជាច្រើន​ម៉ោង។ អ្នក​អាច​បង្កើន​ល្បឿន​សម្ងួត ដោយ​តម្រង់​កង្ហារ​ឬ​ឧបករណ៍​សម្ងួត (ខ្យល់​ត្រជាក់​ប៉ុណ្ណោះ) ទៅ​រក​ច្រក។"</string>
     <string name="usb_water_dialg_positive_button">ព្រម</string>
     <string name="usb_water_dialg_support_wireless_charging">"យើង​ចាប់​បាន​សំណើម​ឬ​វត្ថុ​ខាងក្រៅ​ក្នុង​ច្រក​សាក/USB របស់​អ្នក។
 
-ពិនិត្យ​ច្រក​សាក/USB របស់​អ្នក រក​មើល​វត្ថុ​ខាងក្រៅ ដូចជា​ធូលី​ឬ​កម្ទេចកម្ទី។ ដើម្បី​បង្ការ​កុំ​ឲ្យ​ខូច​ថេប្លិត​អ្នក សូម​កុំ​ដោត​អ្វី​មួយ​ចូល ទាល់តែ​ច្រក​សាក​ស្អាត និង​អស់​សំណើម។
+ពិនិត្យ​ច្រក​សាក/USB របស់​អ្នក រក​មើល​វត្ថុ​ខាងក្រៅ ដូចជា​ធូលី​ឬ​កម្ទេចកម្ទី។ ដើម្បី​បង្ការ​កុំ​ឲ្យ​ខូច​ទូរសព្ទ​អ្នក សូម​កុំ​ដោត​អ្វី​មួយ​ចូល ទាល់តែ​ច្រក​សាក​ស្អាត និង​អស់​សំណើម។
 
 ដើម្បី​សម្ងួត​ច្រក សូម​អង្រួន​សំណើម​ទាំងអស់​ចេញ រួច​រង់ចាំ​ឲ្យ​វា​ស្ងួត​សិន ដែល​អាច​ត្រូវការ​ជាច្រើន​ម៉ោង។ អ្នក​អាច​បង្កើន​ល្បឿន​សម្ងួត ដោយ​តម្រង់​កង្ហារ​ឬ​ឧបករណ៍​សម្ងួត (ខ្យល់​ត្រជាក់​ប៉ុណ្ណោះ) ទៅ​រក​ច្រក។
 
-ក្នុង​ពេល​ជាមួយគ្នា អ្នក​អាច​សាក​ថេប្លិត​អ្នក​ដោយ​ឥត​ប្រើ​ខ្សែ។"</string>
+ក្នុង​ពេល​ជាមួយគ្នា អ្នក​អាច​សាក​ទូរសព្ទ​អ្នក​ដោយ​ឥត​ប្រើ​ខ្សែ។"</string>
     <string name="usb_water_notification_content">មាន​សំណើម​ឬ​វត្ថុ​ខាងក្រៅ​ក្នុង​ច្រក​សាក/USB របស់​អ្នក។ ពិនិត្យ​មុន​ពេល​សាក។</string>
-    <string name="usb_water_notification_message">មាន​សំណើម​ក្នុង​គ្រឿងសាក/ច្រក USB របស់​អ្នក។ ត្រូវ​ប្រាកដ​ថា វា​ស្ងួត​មុនពេល​សាក​ថេប្លិត​របស់​អ្នក។ វា​អាច​ត្រូវការ​ពេល​ខ្លះ​ដើម្បី​ឲ្យ​ស្ងួត​ទាំងស្រុង។</string>
+    <string name="usb_water_notification_message">មាន​សំណើម​ក្នុង​គ្រឿងសាក/ច្រក USB របស់​អ្នក។ ត្រូវ​ប្រាកដ​ថា វា​ស្ងួត​មុនពេល​សាក​ទូរសព្ទ​របស់​អ្នក។ វា​អាច​ត្រូវការ​ពេល​ខ្លះ​ដើម្បី​ឲ្យ​ស្ងួត​ទាំងស្រុង។</string>
     <string name="usb_water_notification_message_button">ព័ត៌មាន​លម្អិត</string>
     <string name="usb_water_notification_title">ពិនិត្យ​ច្រក​សាក/USB</string>
     <string name="usbhostStorage_restrict">គោលការណ៍​សន្តិសុខ​បង្ការ​ការប្រើ​ឃ្លាំងផ្ទុក​អ្នកទទួល USB។</string>
     <string name="usbmemory_added_notification_title">បាន​ថែម​ឃ្លាំងផ្ទុក USB</string>
-    <string name="usbmemory_readonly_mount_notification_message">ឧបករណ៍​ឃ្លាំងផ្ទុក USB របស់​អ្នក​មិន​ដំណើរការ​ត្រឹមត្រូវ ហើយ​ត្រូវ​បាន​កំណត់​ឲ្យ​អាន​ដើម្បី​បង្ការ​ការបាត់​ទិន្នន័យ។ យើង​ឲ្យ​យោបល់​ចម្លងទុក​ទិន្នន័យ​លើ​ឧបករណ៍​ឃ្លាំងផ្ទុក USB របស់​អ្នក។</string>
+    <string name="usbmemory_readonly_mount_notification_message">ឧបករណ៍​ឃ្លាំងផ្ទុក USB របស់​អ្នក​ដំណើរការ​មិន​ត្រឹមត្រូវ ហើយ​ត្រូវ​បាន​កំណត់​ឲ្យ​អាន​ប៉ុណ្ណោះ ដើម្បី​បង្ការ​ការបាត់​ទិន្នន័យ។ យើង​ឲ្យ​យោបល់​ចម្លងទុក​ទិន្នន័យ​លើ​ឧបករណ៍​ឃ្លាំងផ្ទុក USB របស់​អ្នក។</string>
     <string name="usbmemory_readonly_mount_notification_title">មិន​អាច​សរសេរ​ដាក់​ឃ្លាំងផ្ទុក USB</string>
     <string name="user_encrypted_title_phone">ទូរសព្ទ​បាន​ចាប់ផ្ដើម​ឡើងវិញ</string>
     <string name="user_encrypted_title_tablet">ថេប្លិត​បាន​ចាប់ផ្ដើម​ឡើងវិញ</string>
@@ -1319,6 +1291,8 @@
     <string name="vpn_allowOnlySecureConnection">ទម្រង់ VPN អសន្តិសុខ</string>
     <string name="vpn_error_text">ប៉ះ​ដើម្បី​សាកល្បង​ភ្ជាប់​ឡើងវិញ​ទៅ VPN។</string>
     <string name="vpn_error_title">កំហុស​ការភ្ជាប់ VPN</string>
+    <string name="vpn_fail_text_long">មិន​អាច​ភ្ជាប់​ជាមួយ %s។ ប៉ះ ដើម្បី​គ្រប់គ្រង VPN នេះ។</string>
+    <string name="vpn_fail_title">មិន​បាន​ភ្ជាប់ VPN</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">កំពុង​បិទ​កម្មវិធី​ដើម្បី​ធ្វើ​ឲ្យ​ថេប្លិត​ចុះត្រជាក់</string>
     <string name="vzw_cooldown_mode_ok">ព្រម</string>
@@ -1381,6 +1355,7 @@
     <string name="wifi_network_available_detailed">មាន​បណ្ដាញ Wi-Fi បើកចំហ​មួយ។</string>
     <string name="wifi_networks_available">មាន​បណ្ដាញ Wi-Fi</string>
     <string name="wifi_networks_available_detailed">មាន​បណ្ដាញ Wi-Fi បើកចំហ។</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s កំពុង​ប្រើ​ទិន្នន័យ​ចល័ត ពីព្រោះ​ការភ្ជាប់ WLAN របស់​អ្នក​យឺត​ឬ​អស្ថិរភាព។</string>
     <string name="wifi_notification_switch_wifi_detail">ទូរសព្ទ​របស់​អ្នក​បាន​ប្ដូរ​ទៅ​ទិន្នន័យ​ចល័ត ដោយសារ​បណ្ដាញ Wi-Fi អស្ថិរភាព។</string>
     <string name="wifi_notification_switch_wifi_title">បាន​ប្ដូរ​ទៅ​ទិន្នន័យ​ចល័ត</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">ការជូនដំណឹង​អាសន្ន</string>
@@ -1412,9 +1387,5 @@
     <string name="work_profile_on_message">នេះ​នឹង​អនុញ្ញាត​ឲ្យ​អ្នក​ចូលប្រើ​កម្មវិធី​ការងារ ការជូនដំណឹង ទិន្នន័យ និង​ទម្រង់​ការងារ​ផ្សេងទៀត។</string>
     <string name="work_profile_on_title">បើក​ទម្រង់​ការងារ?</string>
     <string name="work_profile_restricted">បាន​បើក Auto Blocker ជាមួយ​កំហិត​អតិបរមា។ ដើម្បី​ការពារ​សន្តិសុខ​របស់​អ្នក ទម្រង់​ការងារ​មិន​អាច​បង្កើត​បាន​ទេ។</string>
-    <string name="work_profile_telephony_paused_text">អ្នក​បាន​ផ្អាក​កម្មវិធី​ការងារ​របស់​អ្នក។ អ្នក​នឹង​មិន​ទទួល​ការហៅ​ទូរសព្ទ​ឬ​សារ​អត្ថបទ​ពី​ពួកគេ​ឡើយ។</string>
-    <string name="work_profile_telephony_paused_title">បាន​បិទ​ការហៅ​និង​សារ</string>
-    <string name="work_profile_telephony_paused_turn_on_button">បើក​ទម្រង់​ការងារ?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">ទាល់តែ​ខ្ញុំ​បិទ​វា</string>
 </resources>

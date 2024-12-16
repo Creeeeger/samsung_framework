@@ -23,6 +23,7 @@
     <protected-broadcast android:name="android.intent.action.CANCEL_ENABLE_ROLLBACK"/>
     <protected-broadcast android:name="android.intent.action.ROLLBACK_COMMITTED"/>
     <protected-broadcast android:name="android.intent.action.PACKAGE_RESTARTED"/>
+    <protected-broadcast android:name="android.intent.action.PACKAGE_UNSTOPPED"/>
     <protected-broadcast android:name="android.intent.action.PACKAGE_DATA_CLEARED"/>
     <protected-broadcast android:name="android.intent.action.PACKAGE_FIRST_LAUNCH"/>
     <protected-broadcast android:name="android.intent.action.PACKAGE_NEEDS_INTEGRITY_VERIFICATION"/>
@@ -76,6 +77,7 @@
     <protected-broadcast android:name="android.intent.action.OVERLAY_PRIORITY_CHANGED"/>
     <protected-broadcast android:name="android.intent.action.MY_PACKAGE_SUSPENDED"/>
     <protected-broadcast android:name="android.intent.action.MY_PACKAGE_UNSUSPENDED"/>
+    <protected-broadcast android:name="android.intent.action.UNARCHIVE_PACKAGE"/>
     <protected-broadcast android:name="android.os.action.POWER_SAVE_MODE_CHANGED"/>
     <protected-broadcast android:name="android.os.action.DEVICE_IDLE_MODE_CHANGED"/>
     <protected-broadcast android:name="android.os.action.POWER_SAVE_WHITELIST_CHANGED"/>
@@ -85,6 +87,11 @@
     <protected-broadcast android:name="android.os.action.LOW_POWER_STANDBY_POLICY_CHANGED"/>
     <protected-broadcast android:name="android.os.action.LOW_POWER_STANDBY_PORTS_CHANGED"/>
     <protected-broadcast android:name="android.os.action.ENHANCED_DISCHARGE_PREDICTION_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.activation.COMPLETED"/>
+    <protected-broadcast android:name="com.samsung.activation.ACTIVATION_DEVICE"/>
+    <protected-broadcast android:name="com.samsung.android.location.mock.delete"/>
+    <protected-broadcast android:name="com.samsung.intent.action.PREINSTALLER_FINISH"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.SET_APPCATEGORY"/>
     <protected-broadcast android:name="android.os.action.SCREEN_BRIGHTNESS_BOOST_CHANGED"/>
     <protected-broadcast android:name="android.app.action.CLOSE_NOTIFICATION_HANDLER_PANEL"/>
     <protected-broadcast android:name="android.app.action.ENTER_CAR_MODE"/>
@@ -94,19 +101,7 @@
     <protected-broadcast android:name="android.app.action.ENTER_DESK_MODE"/>
     <protected-broadcast android:name="android.app.action.EXIT_DESK_MODE"/>
     <protected-broadcast android:name="android.app.action.NEXT_ALARM_CLOCK_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.activation.COMPLETED"/>
-    <protected-broadcast android:name="com.samsung.activation.ACTIVATION_DEVICE"/>
-    <protected-broadcast android:name="com.samsung.android.location.mock.delete"/>
-    <protected-broadcast android:name="com.samsung.intent.action.PREINSTALLER_FINISH"/>
-    <permission android:name="com.samsung.android.desktopmode.permission.BIND_DESKTOP_MODE_UI_SERVICE" android:protectionLevel="privileged|signature"/>
-    <permission android:name="com.samsung.android.desktopmode.permission.KEYGUARD_STATE_UPDATE" android:protectionLevel="privileged|signature"/>
-    <protected-broadcast android:name="android.app.action.ENTER_KNOX_DESKTOP_MODE"/>
-    <protected-broadcast android:name="android.app.action.EXIT_KNOX_DESKTOP_MODE"/>
-    <protected-broadcast android:name="com.samsung.android.desktopmode.action.ENTER_DESKTOP_MODE"/>
-    <protected-broadcast android:name="com.samsung.android.desktopmode.action.EXIT_DESKTOP_MODE"/>
-    <protected-broadcast android:name="com.samsung.android.desktopmode.action.UPDATE_DATABASE"/>
-    <protected-broadcast android:name="com.sec.android.app.desktoplauncher.SYSTEM_READY"/>
-    <protected-broadcast android:name="com.sec.android.app.desktoplauncher.intent.action.WALLPAPER_SHOWN"/>
+    <protected-broadcast android:name="com.samsung.intent.action.APP_JUMP_BLOCK_DIALOG_RESULT"/>
     <permission android:name="com.sec.android.permission.USE_LINK_TO_WINDOWS_REMOTE_APP_MODE" android:protectionLevel="signatureOrSystem"/>
     <protected-broadcast android:name="com.samsung.android.mdx.instanthotspot.action.RFCOMM_SERVICE_DISCONNECTED"/>
     <protected-broadcast android:name="com.samsung.intent.action.EMERGENCY_START_SERVICE_BY_ORDER"/>
@@ -117,8 +112,6 @@
     <protected-broadcast android:name="android.app.action.USER_STARTED"/>
     <protected-broadcast android:name="android.app.action.USER_STOPPED"/>
     <protected-broadcast android:name="android.app.action.USER_SWITCHED"/>
-    <protected-broadcast android:name="com.samsung.android.sm.ACTION_USER_MEM_LOW"/>
-    <protected-broadcast android:name="com.samsung.android.sm.ACTION_CANCEL_USER_MEM_LOW"/>
     <protected-broadcast android:name="android.app.action.BUGREPORT_SHARING_DECLINED"/>
     <protected-broadcast android:name="android.app.action.BUGREPORT_FAILED"/>
     <protected-broadcast android:name="android.app.action.BUGREPORT_SHARE"/>
@@ -136,6 +129,7 @@
     <protected-broadcast android:name="android.app.backup.intent.CLEAR"/>
     <protected-broadcast android:name="android.app.backup.intent.INIT"/>
     <protected-broadcast android:name="android.bluetooth.intent.DISCOVERABLE_TIMEOUT"/>
+    <protected-broadcast android:name="android.bluetooth.action.AUTO_ON_STATE_CHANGED"/>
     <protected-broadcast android:name="android.bluetooth.adapter.action.STATE_CHANGED"/>
     <protected-broadcast android:name="android.bluetooth.adapter.action.SCAN_MODE_CHANGED"/>
     <protected-broadcast android:name="android.bluetooth.adapter.action.DISCOVERY_STARTED"/>
@@ -159,6 +153,7 @@
     <protected-broadcast android:name="android.bluetooth.device.action.CONNECTION_ACCESS_REPLY"/>
     <protected-broadcast android:name="android.bluetooth.device.action.CONNECTION_ACCESS_CANCEL"/>
     <protected-broadcast android:name="android.bluetooth.device.action.CONNECTION_ACCESS_REQUEST"/>
+    <protected-broadcast android:name="android.bluetooth.device.action.KEY_MISSING"/>
     <protected-broadcast android:name="android.bluetooth.device.action.SDP_RECORD"/>
     <protected-broadcast android:name="android.bluetooth.device.action.BATTERY_LEVEL_CHANGED"/>
     <protected-broadcast android:name="android.bluetooth.device.action.REMOTE_ISSUE_OCCURRED"/>
@@ -178,6 +173,14 @@
     <protected-broadcast android:name="android.bluetooth.headsetclient.profile.action.NETWORK_SERVICE_STATE_CHANGED"/>
     <protected-broadcast android:name="android.bluetooth.hearingaid.profile.action.CONNECTION_STATE_CHANGED"/>
     <protected-broadcast android:name="android.bluetooth.hearingaid.profile.action.PLAYING_STATE_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DLNA_STATUS_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.intent.action.SEC_PRESENTATION_START_SMARTVIEW"/>
+    <protected-broadcast android:name="com.samsung.intent.action.SEC_PRESENTATION_STOP_SMARTVIEW"/>
+    <protected-broadcast android:name="com.samsung.intent.action.SET_SCREEN_RATIO_VALUE"/>
+    <protected-broadcast android:name="com.samsung.intent.action.WIFI_DISPLAY_SOURCE_STATE"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DISCONNECT_LELINK_CAST"/>
+    <protected-broadcast android:name="com.sec.android.smartview.WFD_ENGINE_PAUSE"/>
+    <protected-broadcast android:name="com.sec.android.smartview.WFD_ENGINE_RESUME"/>
     <protected-broadcast android:name="android.bluetooth.hearingaid.profile.action.ACTIVE_DEVICE_CHANGED"/>
     <protected-broadcast android:name="android.bluetooth.action.CSIS_CONNECTION_STATE_CHANGED"/>
     <protected-broadcast android:name="android.bluetooth.action.CSIS_DEVICE_AVAILABLE"/>
@@ -244,26 +247,10 @@
     <protected-broadcast android:name="com.android.bluetooth.pbap.authcancelled"/>
     <protected-broadcast android:name="com.android.bluetooth.sap.USER_CONFIRM_TIMEOUT"/>
     <protected-broadcast android:name="com.android.bluetooth.sap.action.DISCONNECT_ACTION"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_NOT_EXHAUSTION"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_EXHAUSTION"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_FILENODE_FULL"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_FILENODE_NOT_FULL"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_FULL"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_NOT_FULL"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_WARNING_ON"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_WARNING_OFF"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_CAUTION_ON"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_CAUTION_OFF"/>
-    <protected-broadcast android:name="com.samsung.intent.action.SHOWMSG_OF_SDCARDBADREMOVED_HASAPK"/>
-    <protected-broadcast android:name="com.samsung.intent.action.RESTART_OF_SDCARDBADREMOVED_HASAPK"/>
-    <protected-broadcast android:name="com.samsung.intent.action.RUN_DISK_DEFRAGMENTATION"/>
-    <protected-broadcast android:name="com.samsung.intent.action.EXTERNAL_STORAGE_WARNING_SEC"/>
-    <protected-broadcast android:name="android.intent.action.USBHID_KEYBOARD_EVENT"/>
-    <protected-broadcast android:name="android.intent.action.USBHID_MOUSE_EVENT"/>
-    <protected-broadcast android:name="com.samsung.UsbOtgCableConnection"/>
-    <protected-broadcast android:name="com.samsung.intent.action.USB_WET_STATE"/>
-    <protected-broadcast android:name="com.samsung.android.location.SERVICE_READY"/>
-    <protected-broadcast android:name="com.samsung.bluetooth.device.action.AUDIO_TYPE_CHANGED"/>
+    <protected-broadcast android:name="com.android.bluetooth.le_audio.action.STOP_BROADCAST"/>
+    <protected-broadcast android:name="com.android.bluetooth.le_audio.action.STOP_REMOTE_BROADCAST_SYNC"/>
+    <protected-broadcast android:name="com.android.bluetooth.le_audio.action.PAUSE_REMOTE_BROADCAST"/>
+    <protected-broadcast android:name="com.android.bluetooth.le_audio.action.RESUME_REMOTE_BROADCAST"/>
     <protected-broadcast android:name="com.samsung.android.security.SemSdCardEncryption.UNMOUNT_POLICY"/>
     <protected-broadcast android:name="com.samsung.bt.hfp.intent.action.HF_INDICATORS_VALUE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.bt.hfp.intent.action.MESSAGE_DELIVERY_FOR_ATMSG"/>
@@ -272,7 +259,9 @@
     <protected-broadcast android:name="com.verizon.bluetooth.headset.action.BLUETOOTH_CALL_COMMAND"/>
     <protected-broadcast android:name="com.samsung.bt.hfp.intent.action.INBAND_RINGTONE_STATE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.bt.hfp.intent.action.SWB_ENABLED_STATE_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.bluetooth.device.action.AUDIO_TYPE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.bluetooth.a2dp.intent.action.DUAL_PLAY_MODE_ENABLED"/>
+    <protected-broadcast android:name="com.samsung.bluetooth.a2dp.intent.action.SSC_UHQ_ENABLED_STATE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.bluetooth.btservice.action.ACTION_NOTIFY_SCMST_UPDATE"/>
     <protected-broadcast android:name="com.samsung.bluetooth.a2dpsink.action.PLAYING_STATE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.bluetooth.btservice.action.ACTION_NOTIFY_A2DP_SINK_SERVICE"/>
@@ -292,10 +281,13 @@
     <protected-broadcast android:name="com.samsung.android.wmanger.action.CONNECT_WEARABLE"/>
     <protected-broadcast android:name="com.samsung.android.action.BLUETOOTH_DEVICE"/>
     <protected-broadcast android:name="com.android.settings.DEVICE_NAME_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.bluetooth.action.GATT_CONNECTION_STATE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.bluetooth.action.LE_AUDIO_GROUP_STATE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.bluetooth.action.LE_AUDIO_CIS_STATE_CHANGED"/>
     <protected-broadcast android:name="android.bluetooth.action.CONNECTION_STATE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.bt.bass_client.action.CHANGE_BROADCAST_STATE"/>
+    <protected-broadcast android:name="com.samsung.bt.bass_client.action.RESYNC_SOURCE"/>
+    <protected-broadcast android:name="com.samsung.bt.bass_client.action.CANCEL_RESYNC_SOURCE"/>
     <protected-broadcast android:name="com.samsung.android.bluetooth.cast.action.DISCOVERY_STARTED"/>
     <protected-broadcast android:name="com.samsung.android.bluetooth.cast.action.DISCOVERY_FINISHED"/>
     <protected-broadcast android:name="com.samsung.android.bluetooth.audiocast.action.device.CONNECTION_STATE_CHANGED"/>
@@ -351,17 +343,39 @@
     <protected-broadcast android:name="com.samsung.bluetooth.pan.inactivenap.ASK_CONFIRM"/>
     <protected-broadcast android:name="android.net.BT_TETHER_STATE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.bluetooth.pan.panu_auth.auth_confirm"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DLNA_STATUS_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.intent.action.SEC_PRESENTATION_START_SMARTVIEW"/>
-    <protected-broadcast android:name="com.samsung.intent.action.SEC_PRESENTATION_STOP_SMARTVIEW"/>
-    <protected-broadcast android:name="com.samsung.intent.action.SET_SCREEN_RATIO_VALUE"/>
-    <protected-broadcast android:name="com.samsung.intent.action.WIFI_DISPLAY_SOURCE_STATE"/>
-    <protected-broadcast android:name="com.samsung.intent.action.DISCONNECT_LELINK_CAST"/>
-    <protected-broadcast android:name="com.sec.android.smartview.WFD_ENGINE_PAUSE"/>
-    <protected-broadcast android:name="com.sec.android.smartview.WFD_ENGINE_RESUME"/>
-    <protected-broadcast android:name="com.samsung.intent.action.NETWORK_CONNECTED_STATE"/>
-    <protected-broadcast android:name="com.samsung.intent.action.NETWORK_DISCONNECTED_STATE"/>
+    <protected-broadcast android:name="com.samsung.bluetooth.device.action.RESOURCE_UPDATE"/>
+    <protected-broadcast android:name="com.samsung.bluetooth.adapter.action.RESOURCE_UPDATE_ALL"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_NOT_EXHAUSTION"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_EXHAUSTION"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_FILENODE_FULL"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_FILENODE_NOT_FULL"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_FULL"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_NOT_FULL"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_WARNING_ON"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_WARNING_OFF"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_CAUTION_ON"/>
+    <protected-broadcast android:name="com.samsung.intent.action.DEVICE_STORAGE_CAUTION_OFF"/>
+    <protected-broadcast android:name="com.samsung.intent.action.SHOWMSG_OF_SDCARDBADREMOVED_HASAPK"/>
+    <protected-broadcast android:name="com.samsung.intent.action.RUN_DISK_DEFRAGMENTATION"/>
+    <protected-broadcast android:name="com.samsung.intent.action.EXTERNAL_STORAGE_WARNING_SEC"/>
+    <protected-broadcast android:name="android.intent.action.USBHID_KEYBOARD_EVENT"/>
+    <protected-broadcast android:name="android.intent.action.USBHID_MOUSE_EVENT"/>
+    <protected-broadcast android:name="com.samsung.UsbOtgCableConnection"/>
+    <protected-broadcast android:name="com.samsung.intent.action.USB_WET_STATE"/>
+    <protected-broadcast android:name="com.samsung.intent.action.USB_RESTRICTION_STATE"/>
+    <protected-broadcast android:name="com.samsung.android.location.SERVICE_READY"/>
+    <protected-broadcast android:name="com.samsung.intent.action.KSO_CLICK_OK"/>
+    <protected-broadcast android:name="com.samsung.intent.action.KSO_SHOW_POPUP"/>
+    <protected-broadcast android:name="com.samsung.intent.action.KSO_CLOSE_POPUP"/>
+    <protected-broadcast android:name="com.samsung.intent.action.KSO_SHOW_POPUP_SUB"/>
+    <protected-broadcast android:name="com.samsung.intent.action.KSO_CLOSE_POPUP_SUB"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.IRIS_LED_ON"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.IRIS_LED_OFF"/>
+    <protected-broadcast android:name="com.samsung.intent.action.RECOG_POCKET_MODE"/>
+    <protected-broadcast android:name="com.samsung.intent.action.RELEASE_POCKET_MODE"/>
     <protected-broadcast android:name="android.hardware.display.action.WIFI_DISPLAY_STATUS_CHANGED"/>
+    <protected-broadcast android:name="android.hardware.hdmi.action.OSD_MESSAGE"/>
+    <protected-broadcast android:name="android.hardware.hdmi.action.ON_ACTIVE_SOURCE_RECOVERED_DISMISS_UI"/>
     <protected-broadcast android:name="android.hardware.usb.action.USB_STATE"/>
     <protected-broadcast android:name="android.hardware.usb.action.USB_PORT_CHANGED"/>
     <protected-broadcast android:name="android.hardware.usb.action.USB_PORT_COMPLIANCE_CHANGED"/>
@@ -403,8 +417,6 @@
     <protected-broadcast android:name="android.net.conn.BACKGROUND_DATA_SETTING_CHANGED"/>
     <protected-broadcast android:name="android.net.conn.CAPTIVE_PORTAL_TEST_COMPLETED"/>
     <protected-broadcast android:name="android.net.nsd.STATE_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.ACCESSORY_COVER_ATTACH"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.ACCESSORY_COVER_DETACH"/>
     <protected-broadcast android:name="android.se.omapi.action.SECURE_ELEMENT_STATE_CHANGED"/>
     <protected-broadcast android:name="android.nfc.action.ADAPTER_STATE_CHANGED"/>
     <protected-broadcast android:name="android.nfc.action.PREFERRED_PAYMENT_CHANGED"/>
@@ -500,47 +512,6 @@
     <protected-broadcast android:name="com.android.server.adb.WIRELESS_DEBUG_PAIRED_DEVICES"/>
     <protected-broadcast android:name="com.android.server.adb.WIRELESS_DEBUG_PAIRING_RESULT"/>
     <protected-broadcast android:name="com.android.server.adb.WIRELESS_DEBUG_STATUS"/>
-    <protected-broadcast android:name="com.sec.android.WIFI_CONNECTIVITY_ACTION"/>
-    <protected-broadcast android:name="com.sec.android.WIFI_ICON_HIDE_ACTION"/>
-    <protected-broadcast android:name="com.sec.android.server.wifi.WCM_SCAN_STARTED"/>
-    <protected-broadcast android:name="com.sec.android.server.wifi.SCNT"/>
-    <protected-broadcast android:name="com.sec.android.WIFI_WCM_STATE_CHANGED_ACTION"/>
-    <protected-broadcast android:name="com.sec.android.WIFI_WCM_CONFIGURATION_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.android.net.wifi.TCP_MONITOR_ACTION_USE_MOBILE_DATA"/>
-    <protected-broadcast android:name="com.samsung.android.net.wifi.WIFI_TCP_MONITOR_ACTION_SETTINGS"/>
-    <protected-broadcast android:name="com.samsung.android.net.wifi.WIFI_TCP_MONITOR_DELETE_NOTIFICATION"/>
-    <protected-broadcast android:name="com.samsung.android.net.wifi.WIFI_TCP_MONITOR_SWITCHABLE_APP_LIST_CHANGED"/>
-    <protected-broadcast android:name="com.sec.android.IWC_REWARD_EVENT_DEBUG"/>
-    <protected-broadcast android:name="com.samsung.android.wifi.ACTION_AUTO_WIFI_BUBBLE_TIP"/>
-    <protected-broadcast android:name="com.samsung.android.wifi.LATENCYMODE"/>
-    <protected-broadcast android:name="com.samsung.android.SwitchBoard.STATE"/>
-    <protected-broadcast android:name="com.samsung.android.SwitchBoard.WIFI_PREFERENCE_VALUE"/>
-    <protected-broadcast android:name="com.samsung.android.wifi.ENABLE_APE"/>
-    <protected-broadcast android:name="com.samsung.android.wifi.SET_APE_POLICY"/>
-    <protected-broadcast android:name="com.samsung.android.wifi.SET_APE_STATIC"/>
-    <protected-broadcast android:name="com.samsung.android.wifi.APE_INFO"/>
-    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.changed"/>
-    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.familyid"/>
-    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.ssid_changed"/>
-    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.d2dfamilyid"/>
-    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.d2dClientUpdate"/>
-    <protected-broadcast android:name="com.samsung.android.net.wifi.WIFI_AP_STA_DHCPACK_EVENT"/>
-    <protected-broadcast android:name="com.samsung.android.net.wifi.WIFI_AP_STA_STATE_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.internet.changed"/>
-    <protected-broadcast android:name="com.samsung.android.server.wifi.stopcapture"/>
-    <protected-broadcast android:name="com.android.settings.wifi.p2p.SETTINGS_STRATED"/>
-    <protected-broadcast android:name="com.samsung.android.settings.wifi.enableNan"/>
-    <protected-broadcast android:name="com.samsung.android.settings.wifi.notifySelected"/>
-    <protected-broadcast android:name="com.samsung.android.wifi.p2p.PEER_FOUND"/>
-    <protected-broadcast android:name="com.samsung.android.net.wifi.ISSUE_DETECTED"/>
-    <protected-broadcast android:name="com.samsung.android.net.wifi.NETWORK_CONNECT_FAILED"/>
-    <protected-broadcast android:name="com.samsung.android.wifi.AUTO_WIFI_SCAN_STATE_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.android.wifi.GEOFENCE"/>
-    <protected-broadcast android:name="com.samsung.intent.action.SETTINGS_RESET_WIFI"/>
-    <protected-broadcast android:name="com.sec.android.HEAT_WIFI_UNWANTED"/>
-    <protected-broadcast android:name="com.samsung.android.server.wifi.ui.PICK_WIFI_NETWORK"/>
-    <protected-broadcast android:name="com.samsung.android.server.wifi.ui.USER_DISMISSED_NOTIFICATION"/>
-    <protected-broadcast android:name="com.samsung.android.net.wifi.NETWORK_REJECTED_KT_HOME_AP"/>
     <protected-broadcast android:name="android.intent.action.ACTION_IDLE_MAINTENANCE_START"/>
     <protected-broadcast android:name="android.intent.action.ACTION_IDLE_MAINTENANCE_END"/>
     <protected-broadcast android:name="com.android.server.ACTION_TRIGGER_IDLE"/>
@@ -559,9 +530,6 @@
     <protected-broadcast android:name="android.provider.Telephony.MMS_DOWNLOADED"/>
     <protected-broadcast android:name="com.android.server.connectivityservice.CONNECTED_TO_PROVISIONING_NETWORK_ACTION"/>
     <protected-broadcast android:name="android.content.action.PERMISSION_RESPONSE_RECEIVED"/>
-    <protected-broadcast android:name="diagandroid.app.ApplicationState"/>
-    <protected-broadcast android:name="diagandroid.phone.detailedCallState"/>
-    <protected-broadcast android:name="diagandroid.data.PDPContextState"/>
     <protected-broadcast android:name="android.content.action.REQUEST_PERMISSION"/>
     <protected-broadcast android:name="android.nfc.handover.intent.action.HANDOVER_STARTED"/>
     <protected-broadcast android:name="android.nfc.handover.intent.action.TRANSFER_DONE"/>
@@ -576,6 +544,10 @@
     <protected-broadcast android:name="android.app.action.RESET_PROTECTION_POLICY_CHANGED"/>
     <protected-broadcast android:name="android.app.action.DEVICE_OWNER_CHANGED"/>
     <protected-broadcast android:name="android.app.action.MANAGED_USER_CREATED"/>
+    <protected-broadcast android:name="diagandroid.app.ApplicationState"/>
+    <protected-broadcast android:name="diagandroid.phone.detailedCallState"/>
+    <protected-broadcast android:name="diagandroid.data.PDPContextState"/>
+    <protected-broadcast android:name="diagandroid.phone.BinaryPushData"/>
     <protected-broadcast android:name="android.intent.action.ANR"/>
     <protected-broadcast android:name="android.intent.action.CALL"/>
     <protected-broadcast android:name="android.intent.action.CALL_PRIVILEGED"/>
@@ -647,7 +619,10 @@
     <protected-broadcast android:name="com.android.settings.network.DELETE_SUBSCRIPTION"/>
     <protected-broadcast android:name="com.android.settings.network.SWITCH_TO_SUBSCRIPTION"/>
     <protected-broadcast android:name="com.android.settings.wifi.action.NETWORK_REQUEST"/>
+    <protected-broadcast android:name="com.samsung.intent.action.LAZY_BOOT_COMPLETE"/>
+    <protected-broadcast android:name="android.app.action.KEYGUARD_PRIVATE_NOTIFICATIONS_CHANGED"/>
     <protected-broadcast android:name="NotificationManagerService.TIMEOUT"/>
+    <protected-broadcast android:name="com.android.server.notification.TimeToLiveHelper"/>
     <protected-broadcast android:name="NotificationHistoryDatabase.CLEANUP"/>
     <protected-broadcast android:name="ScheduleConditionProvider.EVALUATE"/>
     <protected-broadcast android:name="EventConditionProvider.EVALUATE"/>
@@ -757,7 +732,6 @@
     <protected-broadcast android:name="com.samsung.intent.action.SDHMS_SIOP_DISABLE"/>
     <protected-broadcast android:name="com.samsung.intent.action.PERFORMANCE_LOGGING"/>
     <protected-broadcast android:name="com.samsung.android.ssrm.inputevent"/>
-    <protected-broadcast android:name="com.sec.android.sdhms.action.CRASH_ANR"/>
     <protected-broadcast android:name="android.app.action.RESET_PROTECTION_POLICY_CHANGED"/>
     <protected-broadcast android:name="com.android.server.connectivity.tethering.PROVISIONING_RECHECK_ALARM"/>
     <protected-broadcast android:name="com.kt.show.manger.action.SHOW_DATA_SMS_RECEIVED"/>
@@ -782,6 +756,9 @@
     <protected-broadcast android:name="android.provider.action.DEFAULT_MSG_APP_INFO_LOGGING"/>
     <protected-broadcast android:name="com.samsung.provider.Telephony.CB_SETTINGS_AVAILABLE"/>
     <protected-broadcast android:name="android.provider.Telephony.CB_SETTINGS_AVAILABLE"/>
+    <protected-broadcast android:name="com.samsung.intent.action.SMS_CALLBACK_MODE_CHANGED_INTERNAL"/>
+    <protected-broadcast android:name="com.samsung.intent.action.EMERGENCY_SMS_CALLBACK_MODE_ENTER"/>
+    <protected-broadcast android:name="com.samsung.intent.action.EMERGENCY_SMS_CALLBACK_MODE_EXIT"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.NPA_STATUS"/>
     <protected-broadcast android:name="com.android.internal.intent.action.BUGREPORT_REQUESTED"/>
     <protected-broadcast android:name="com.samsung.android.intent.action.RESPONSE_RESTORE_DISPLAYMANAGER"/>
@@ -819,6 +796,7 @@
     <protected-broadcast android:name="android.provider.Telephony.SMS_SERVICE_CATEGORY_PROGRAM_DATA_RECEIVED"/>
     <protected-broadcast android:name="android.provider.Telephony.SECRET_CODE"/>
     <protected-broadcast android:name="com.android.internal.stk.command"/>
+    <protected-broadcast android:name="com.samsung.intent.internal.stk2.command"/>
     <protected-broadcast android:name="com.android.internal.stk.session_end"/>
     <protected-broadcast android:name="com.android.internal.stk.icc_status_change"/>
     <protected-broadcast android:name="com.android.internal.stk.alpha_notify"/>
@@ -892,6 +870,34 @@
     <protected-broadcast android:name="android.app.admin.action.DEVICE_FINANCING_STATE_CHANGED"/>
     <protected-broadcast android:name="android.app.admin.action.DEVICE_POLICY_SET_RESULT"/>
     <protected-broadcast android:name="android.app.admin.action.DEVICE_POLICY_CHANGED"/>
+    <protected-broadcast android:name="android.intent.action.PROFILE_AVAILABLE"/>
+    <protected-broadcast android:name="android.intent.action.PROFILE_UNAVAILABLE"/>
+    <protected-broadcast android:name="android.app.action.CONSOLIDATED_NOTIFICATION_POLICY_CHANGED"/>
+    <protected-broadcast android:name="android.intent.action.MAIN_USER_LOCKSCREEN_KNOWLEDGE_FACTOR_CHANGED"/>
+    <protected-broadcast android:name="android.telephony.action.ACTION_SATELLITE_SUBSCRIBER_ID_LIST_CHANGED"/>
+    <protected-broadcast android:name="android.telephony.action.ACTION_SATELLITE_START_NON_EMERGENCY_SESSION"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.PACKAGE_INSTALL_STARTED"/>
+    <protected-broadcast android:name="com.sec.android.sdhms.PKG_CONFIG_CHANGED"/>
+    <protected-broadcast android:name="com.sec.minidump.action.ACTION_VALIDITY_TIMEOUT0"/>
+    <protected-broadcast android:name="com.sec.minidump.action.ACTION_VALIDITY_TIMEOUT1"/>
+    <protected-broadcast android:name="android.media.AUDIO_BECOMING_NOISY_SEC"/>
+    <protected-broadcast android:name="android.samsung.media.action.AUDIO_MODE"/>
+    <protected-broadcast android:name="android.samsung.media.action.ACTION_AUDIO_REMOTEMIC_SCO_RESUME"/>
+    <protected-broadcast android:name="com.samsung.android.splitsound.action.STATE_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.intent.action.ACTION_DOLBY_CONTENT_PLAYBACK_STATE_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.android.app.audio.epinforesponse"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.SOUND_EVENT"/>
+    <protected-broadcast android:name="com.samsung.android.intent.karaoke"/>
+    <protected-broadcast android:name="com.samsung.intent.action.MEDIA_SERVER_REBOOTED"/>
+    <protected-broadcast android:name="com.samsung.intent.action.MULTISOUND_STATE_CHANGED"/>
+    <protected-broadcast android:name="com.sec.android.contextaware.HEADSET_PLUG"/>
+    <protected-broadcast android:name="com.sec.media.action.mute_interval"/>
+    <protected-broadcast android:name="android.settings.ALL_SOUND_MUTE"/>
+    <protected-broadcast android:name="android.intent.action.MULTISOUND_STATE_CHANGE"/>
+    <protected-broadcast android:name="android.intent.action.TurnOff_MultiSound"/>
+    <permission android:name="com.samsung.android.permission.CHIMERA_PREFERENCE" android:protectionLevel="signatureOrSystem"/>
+    <uses-permission android:name="com.samsung.android.permission.CHIMERA_PREFERENCE"/>
+    <protected-broadcast android:name="com.samsung.sdhms.MEMORY_ABNORMAL_HEIMDALL"/>
     <protected-broadcast android:name="com.samsung.android.intent.action.FINGERPRINT_LOCK_SET"/>
     <protected-broadcast android:name="com.samsung.android.intent.action.FINGERPRINT_RESET"/>
     <protected-broadcast android:name="com.samsung.android.intent.action.FINGERPRINT_REMOVED"/>
@@ -906,14 +912,28 @@
     <protected-broadcast android:name="com.samsung.android.server.biometrics.BIOMETRICS_NOTIFICATION"/>
     <protected-broadcast android:name="com.samsung.android.intent.action.BIOMETRIC_EXTRA_INFO"/>
     <protected-broadcast android:name="com.samsung.server.BatteryStatsService.action.BATTERYSTATS_RESET"/>
-    <protected-broadcast android:name="com.samsung.android.knox.intent.action.SDP_STATE_CHANGED"/>
-    <protected-broadcast android:name="com.sec.sdp.SDP_STATE_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.android.sm.devicesecurity.PACKAGE_ADDED"/>
+    <protected-broadcast android:name="com.samsung.android.sm.devicesecurity.PACKAGE_REMOVED"/>
     <protected-broadcast android:name="com.samsung.android.action.ACTION_TOAST_DUMP_LOG"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.SET_DEVICE_SPEAKER_ENABLED"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.SCREEN_OFF_HOME_LONG_PRESS"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.RECENT_LONG_PRESS"/>
     <protected-broadcast android:name="com.samsung.android.intent.action.PACKAGE_INSTALL_STARTED"/>
     <protected-broadcast android:name="com.sec.android.sdhms.PKG_CONFIG_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.server.BatteryService.action.SEC_BATTERY_EVENT"/>
+    <protected-broadcast android:name="com.samsung.server.BatteryService.action.SEC_BATTERY_WATER_IN_CONNECTOR"/>
+    <protected-broadcast android:name="android.intent.action.RESPONSE_OTG_CHARGE_BLOCK"/>
+    <protected-broadcast android:name="com.samsung.server.BatteryService.action.WIRELESS_POWER_SHARING_CONNECTED"/>
+    <protected-broadcast android:name="com.samsung.server.BatteryService.action.WIRELESS_POWER_SHARING_ENABLED"/>
+    <protected-broadcast android:name="com.samsung.server.BatteryService.action.WIRELESS_POWER_SHARING_TX_EVENT"/>
+    <protected-broadcast android:name="com.samsung.server.BatteryService.action.ACTION_POPUP_BATTERY_DETERIORATION"/>
+    <protected-broadcast android:name="com.samsung.server.BatteryService.action.BATTERY_CONNECTION_STATE_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.server.BatteryService.action.ACTION_SLEEP_CHARGING"/>
+    <protected-broadcast android:name="com.samsung.server.BatteryService.action.SEC_BATTERY_CURRENT_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.server.BatteryService.action.SEC_BATTERY_REMAINING_CHARGING_TIME_CHANGED"/>
+    <uses-permission android:name="com.samsung.android.rubin.context.permission.READ_CONTEXT_MANAGER"/>
+    <uses-permission android:name="com.samsung.android.rubin.persona.permission.READ_PERSONA_MANAGER"/>
+    <uses-permission android:name="com.samsung.android.rubin.app.ui.permission.LAUNCH_RUBIN_SETTING"/>
     <protected-broadcast android:name="android.intent.action.enterprise.TERMINATE_KIOSK"/>
     <protected-broadcast android:name="android.intent.action.sec.CBA_INSTALL_STATUS"/>
     <protected-broadcast android:name="android.intent.action.sec.SIM_CARD_CHANGED"/>
@@ -1070,6 +1090,8 @@
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.PREVENT_APPLICATION_START"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.PREVENT_APPLICATION_STOP"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.PROXY_REFRESH_CREDENTIALS_DIALOG_INTERNAL"/>
+    <protected-broadcast android:name="com.samsung.android.knox.intent.action.ACTIVATE_KNOX_ANALYTICS_DEVICE_STATUS"/>
+    <protected-broadcast android:name="com.samsung.android.knox.intent.action.DEACTIVATE_KNOX_ANALYTICS_DEVICE_STATUS"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.QUICKSETTING_REFRESH_INTERNAL"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.REFRESH_CREDENTIALS_UI_INTERNAL"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.REFRESH_HWKEY_CACHE_INTERNAL"/>
@@ -1126,41 +1148,70 @@
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.NETWORK_VALIDATED_INTERNAL"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.NOTIFY_KPU_INTERNAL"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.NOTIFY_APPSEPARATION_INTERNAL"/>
+    <protected-broadcast android:name="com.samsung.android.knox.intent.action.APPSEPARATION_LICENSE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.KNOX_RESTRICTIONS_CHANGED_INTERNAL"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.MAM_KNOX_PRIVACY_POLICY_CHANGED_BY_USER"/>
     <protected-broadcast android:name="com.samsung.android.knox.intent.action.MTDL_PACKAGE_RULES_REMOVED"/>
     <protected-broadcast android:name="com.samsung.android.knox.profilepolicy.intent.action.update"/>
+    <protected-broadcast android:name="com.sec.android.WIFI_CONNECTIVITY_ACTION"/>
+    <protected-broadcast android:name="com.sec.android.WIFI_ICON_HIDE_ACTION"/>
+    <protected-broadcast android:name="com.sec.android.server.wifi.WCM_SCAN_STARTED"/>
+    <protected-broadcast android:name="com.sec.android.server.wifi.SCNT"/>
+    <protected-broadcast android:name="com.sec.android.WIFI_WCM_STATE_CHANGED_ACTION"/>
+    <protected-broadcast android:name="com.sec.android.WIFI_WCM_CONFIGURATION_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.android.net.wifi.TCP_MONITOR_ACTION_USE_MOBILE_DATA"/>
+    <protected-broadcast android:name="com.samsung.android.net.wifi.WIFI_TCP_MONITOR_ACTION_SETTINGS"/>
+    <protected-broadcast android:name="com.samsung.android.net.wifi.WIFI_TCP_MONITOR_DELETE_NOTIFICATION"/>
+    <protected-broadcast android:name="com.samsung.android.net.wifi.WIFI_TCP_MONITOR_SWITCHABLE_APP_LIST_CHANGED"/>
+    <protected-broadcast android:name="com.sec.android.IWC_REWARD_EVENT_DEBUG"/>
+    <protected-broadcast android:name="com.samsung.android.wifi.ACTION_AUTO_WIFI_BUBBLE_TIP"/>
+    <protected-broadcast android:name="com.samsung.android.wifi.LATENCYMODE"/>
+    <protected-broadcast android:name="com.samsung.android.SwitchBoard.STATE"/>
+    <protected-broadcast android:name="com.samsung.android.SwitchBoard.WIFI_PREFERENCE_VALUE"/>
+    <protected-broadcast android:name="com.samsung.android.ConnectionPersonalizer.CHANGE_OPTION"/>
+    <protected-broadcast android:name="com.samsung.android.ConnectionBigdata.CONNECTION_BIGDATA_MONITOR_MINUTES"/>
+    <protected-broadcast android:name="com.samsung.android.wifi.ENABLE_APE"/>
+    <protected-broadcast android:name="com.samsung.android.wifi.SET_APE_POLICY"/>
+    <protected-broadcast android:name="com.samsung.android.wifi.SET_APE_STATIC"/>
+    <protected-broadcast android:name="com.samsung.android.wifi.APE_INFO"/>
+    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.changed"/>
+    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.familyid"/>
+    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.ssid_changed"/>
+    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.d2dfamilyid"/>
+    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.d2dClientUpdate"/>
+    <protected-broadcast android:name="com.samsung.android.net.wifi.WIFI_AP_STA_DHCPACK_EVENT"/>
+    <protected-broadcast android:name="com.samsung.android.net.wifi.WIFI_AP_STA_STATE_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.android.server.wifi.softap.smarttethering.internet.changed"/>
     <protected-broadcast android:name="com.samsung.server.PowerManagerService.action.USER_ACTIVITY"/>
     <protected-broadcast android:name="android.intent.action.ACTION_SCREEN_ON_BY_PROXIMITY"/>
     <protected-broadcast android:name="android.intent.action.ACTION_SCREEN_OFF_BY_PROXIMITY"/>
-    <protected-broadcast android:name="com.samsung.server.BatteryService.action.SEC_BATTERY_EVENT"/>
-    <protected-broadcast android:name="com.samsung.server.BatteryService.action.SEC_BATTERY_WATER_IN_CONNECTOR"/>
-    <protected-broadcast android:name="android.intent.action.RESPONSE_OTG_CHARGE_BLOCK"/>
-    <protected-broadcast android:name="com.samsung.server.BatteryService.action.WIRELESS_POWER_SHARING_CONNECTED"/>
-    <protected-broadcast android:name="com.samsung.server.BatteryService.action.WIRELESS_POWER_SHARING_ENABLED"/>
-    <protected-broadcast android:name="com.samsung.server.BatteryService.action.WIRELESS_POWER_SHARING_TX_EVENT"/>
-    <protected-broadcast android:name="com.samsung.server.BatteryService.action.ACTION_POPUP_BATTERY_DETERIORATION"/>
-    <uses-permission android:name="com.samsung.android.rubin.context.permission.READ_CONTEXT_MANAGER"/>
-    <uses-permission android:name="com.samsung.android.rubin.persona.permission.READ_PERSONA_MANAGER"/>
-    <uses-permission android:name="com.samsung.android.rubin.app.ui.permission.LAUNCH_RUBIN_SETTING"/>
-    <protected-broadcast android:name="android.media.AUDIO_BECOMING_NOISY_SEC"/>
-    <protected-broadcast android:name="android.samsung.media.action.AUDIO_MODE"/>
-    <protected-broadcast android:name="android.samsung.media.action.ACTION_AUDIO_REMOTEMIC_SCO_RESUME"/>
-    <protected-broadcast android:name="com.samsung.android.splitsound.action.STATE_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.intent.action.ACTION_DOLBY_CONTENT_PLAYBACK_STATE_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.android.app.audio.epinforesponse"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.SOUND_EVENT"/>
-    <protected-broadcast android:name="com.samsung.android.intent.karaoke"/>
-    <protected-broadcast android:name="com.samsung.intent.action.MEDIA_SERVER_REBOOTED"/>
-    <protected-broadcast android:name="com.samsung.intent.action.MULTISOUND_STATE_CHANGED"/>
-    <protected-broadcast android:name="com.sec.android.contextaware.HEADSET_PLUG"/>
-    <protected-broadcast android:name="com.sec.media.action.mute_interval"/>
-    <protected-broadcast android:name="android.settings.ALL_SOUND_MUTE"/>
-    <protected-broadcast android:name="android.intent.action.MULTISOUND_STATE_CHANGE"/>
-    <protected-broadcast android:name="com.samsung.intent.action.PERFORMANCE_LOGGING"/>
-    <protected-broadcast android:name="android.intent.action.TurnOff_MultiSound"/>
-    <permission android:name="com.samsung.android.permission.CHIMERA_PREFERENCE" android:protectionLevel="signatureOrSystem"/>
-    <uses-permission android:name="com.samsung.android.permission.CHIMERA_PREFERENCE"/>
+    <protected-broadcast android:name="android.intent.action.SCREEN_ON_KEEPER_DISABLED"/>
+    <protected-broadcast android:name="android.intent.action.KEEP_SCREEN_ON_EXPIRED"/>
+    <protected-broadcast android:name="android.intent.action.ACTION_DISPLAY_ASSISTANT_READY"/>
+    <protected-broadcast android:name="com.android.server.LightsService.action.UPDATE_SVC_LED"/>
+    <protected-broadcast android:name="com.android.settings.wifi.p2p.SETTINGS_STRATED"/>
+    <protected-broadcast android:name="com.samsung.android.settings.wifi.enableNan"/>
+    <protected-broadcast android:name="com.samsung.android.settings.wifi.notifySelected"/>
+    <protected-broadcast android:name="com.samsung.android.wifi.p2p.PEER_FOUND"/>
+    <protected-broadcast android:name="com.samsung.android.wifi.p2p.CLIENT_IP_UPDATED"/>
+    <protected-broadcast android:name="com.samsung.android.net.wifi.ISSUE_DETECTED"/>
+    <protected-broadcast android:name="com.samsung.android.net.wifi.NETWORK_CONNECT_FAILED"/>
+    <protected-broadcast android:name="com.samsung.android.wifi.AUTO_WIFI_SCAN_STATE_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.android.wifi.GEOFENCE"/>
+    <protected-broadcast android:name="com.samsung.intent.action.SETTINGS_RESET_WIFI"/>
+    <protected-broadcast android:name="com.sec.android.HEAT_WIFI_UNWANTED"/>
+    <protected-broadcast android:name="com.samsung.android.server.wifi.ui.PICK_WIFI_NETWORK"/>
+    <protected-broadcast android:name="com.samsung.android.server.wifi.ui.USER_DISMISSED_NOTIFICATION"/>
+    <protected-broadcast android:name="com.samsung.android.net.wifi.NETWORK_REJECTED_KT_HOME_AP"/>
+    <permission android:name="com.samsung.android.desktopmode.permission.BIND_DESKTOP_MODE_UI_SERVICE" android:protectionLevel="privileged|signature"/>
+    <permission android:name="com.samsung.android.desktopmode.permission.KEYGUARD_STATE_UPDATE" android:protectionLevel="privileged|signature"/>
+    <protected-broadcast android:name="android.app.action.ENTER_KNOX_DESKTOP_MODE"/>
+    <protected-broadcast android:name="android.app.action.EXIT_KNOX_DESKTOP_MODE"/>
+    <protected-broadcast android:name="com.samsung.android.desktopmode.action.ENTER_DESKTOP_MODE"/>
+    <protected-broadcast android:name="com.samsung.android.desktopmode.action.EXIT_DESKTOP_MODE"/>
+    <protected-broadcast android:name="com.samsung.android.desktopmode.action.UPDATE_DATABASE"/>
+    <protected-broadcast android:name="com.sec.android.app.desktoplauncher.SYSTEM_READY"/>
+    <protected-broadcast android:name="com.sec.android.app.desktoplauncher.intent.action.WALLPAPER_SHOWN"/>
     <protected-broadcast android:name="com.samsung.MEMORY_ABNORMAL_APP_DETECTION"/>
     <protected-broadcast android:name="com.samsung.KPM_STATE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.KPM_CRITICAL_MEMORY_STATUS"/>
@@ -1170,9 +1221,9 @@
     <protected-broadcast android:name="com.android.server.am.BROADCAST_SET_KPM_STATE"/>
     <protected-broadcast android:name="com.android.server.am.BROADCAST_SET_KPM_ONOFF"/>
     <protected-broadcast android:name="com.android.server.am.BROADCAST_SET_PMM_AUTO_RESTART_PARAMETER_INTENT"/>
+    <protected-broadcast android:name="com.sec.server.am.BROADCAST_SET_PMM_DMABUF_LEAK_DETECTOR_SOURCE"/>
     <permission android:name="com.samsung.android.permission.BROADCAST_PMM_CRITICAL_TRIGGER" android:protectionLevel="signature"/>
     <uses-permission android:name="com.samsung.android.permission.BROADCAST_PMM_CRITICAL_TRIGGER"/>
-    <permission android:name="com.samsung.android.permission.BROADCAST_GEN_AI_RECLAIM_TRIGGER"/>
     <protected-broadcast android:name="com.android.server.am.BROADCAST_SET_LMKD_PARAMETER_INTENT"/>
     <protected-broadcast android:name="com.android.server.am.BROADCAST_SET_DHA_PARAMETER"/>
     <protected-broadcast android:name="com.android.server.am.BROADCAST_DHA_DEBUG_ON"/>
@@ -1181,6 +1232,42 @@
     <protected-broadcast android:name="com.samsung.intent.action.OMC_APP_DB_CHANGED"/>
     <protected-broadcast android:name="com.samsung.intent.action.OMC_APP_INSTALL_COMPLETED"/>
     <protected-broadcast android:name="com.samsung.intent.OPERATOR_APP_INSTALL_COMPLETED"/>
+    <permission android:name="com.samsung.android.sdm.config.permission.RECEIVE_CONFIG_CHANGED" android:protectionLevel="privileged|signature"/>
+    <permission android:name="com.samsung.android.sdm.config.provider.READ_OMC_CONFIG" android:protectionLevel="privileged|signature"/>
+    <protected-broadcast android:name="com.samsung.intent.action.CSC_COMPARE"/>
+    <protected-broadcast android:name="com.samsung.intent.action.CSC_CHAMELEON"/>
+    <protected-broadcast android:name="com.samsung.intent.action.OMCUPDATE_START"/>
+    <protected-broadcast android:name="com.samsung.intent.action.OMCUPDATE_FINISH"/>
+    <protected-broadcast android:name="com.samsung.carrier.action.SUBSCRIPTION_CARRIER_IDENTITY_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.carrier.action.CARRIER_FEATURE_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.carrier.action.CARRIER_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.intent.action.OMC_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.android.cidmanager.action.DELETE_SUBSCRIPTION"/>
+    <permission android:name="com.sec.permission.preconfig" android:protectionLevel="signatureOrSystem"/>
+    <permission android:name="com.samsung.android.permission.USE_F2FS_FLUSH" android:protectionLevel="privileged|signature"/>
+    <permission android:description="@string/sem_lock_to_app_status_intent_permission_description" android:label="@string/sem_lock_to_app_status_intent_permission_label" android:name="com.samsung.android.permission.LOCK_TASK_MODE" android:protectionLevel="normal"/>
+    <protected-broadcast android:name="com.samsung.android.action.LOCK_TASK_MODE"/>
+    <protected-broadcast android:name="com.kddi.agent.action.SCREEN_PINNING_CONDITION"/>
+    <permission android:name="com.samsung.android.permission.sdk.command.ACCESS_COMMANDS" android:protectionLevel="signatureOrSystem"/>
+    <protected-broadcast android:name="com.samsung.BOTTLENECK_HINT_FOR_CHIMERA"/>
+    <protected-broadcast android:name="android.util.PerfLog.ACTION_BOTTLENECK_HINT"/>
+    <protected-broadcast android:name="android.util.PerfLog.ACTION_RESOURCE_HINT"/>
+    <permission android:name="com.samsung.android.permission.ACCESS_SYSTEM_KEY_DISPATCHING" android:protectionLevel="privileged|signature"/>
+    <uses-permission android:name="com.samsung.android.permission.ACCESS_SYSTEM_KEY_DISPATCHING"/>
+    <permission android:name="com.samsung.android.permisson.DOUBLE_CLICK" android:protectionLevel="signature"/>
+    <protected-broadcast android:name="com.samsung.android.action.DOUBLE_CLICK"/>
+    <permission android:name="com.samsung.android.permisson.ACCESS_KEY_CUSTOMIZE_INFO" android:protectionLevel="signature"/>
+    <uses-permission android:name="com.samsung.android.permisson.ACCESS_KEY_CUSTOMIZE_INFO"/>
+    <permission android:name="com.samsung.android.app.aodservice.permission.BROADCAST_RECEIVER" android:protectionLevel="signatureOrSystem"/>
+    <protected-broadcast android:name="com.samsung.android.app.aodservice.intent.action.CHANGE_AOD_MODE"/>
+    <uses-permission android:name="com.sec.android.app.launcher.permission.EXTERNAL_APPS"/>
+    <uses-permission android:name="com.sec.android.app.launcher.permission.OVERLAY_APPS"/>
+    <uses-permission android:name="com.sec.android.app.launcher.permission.ALL_APPS"/>
+    <protected-broadcast android:name="com.samsung.pen.INSERT"/>
+    <permission android:name="com.samsung.android.permisson.START_DOCK_OR_HOME" android:protectionLevel="signature"/>
+    <protected-broadcast android:name="com.samsung.android.action.START_DOCK_OR_HOME"/>
+    <protected-broadcast android:name="com.samsung.android.action.SHOWING_TOUCH_SENSITIVITY_NOTI"/>
+    <protected-broadcast android:name="com.samsung.android.input.REMOTE_INPUT_READY_TO_CONNECT"/>
     <protected-broadcast android:name="com.samsung.intent.action.CSC_FOTA_UPDATE_DONE"/>
     <protected-broadcast android:name="com.samsung.omcagent.intent.USER_UPDATE"/>
     <protected-broadcast android:name="com.xdm.intent.SOFTWARE_UPDATE_VERSION"/>
@@ -1200,88 +1287,17 @@
     <protected-broadcast android:name="android.intent.action.ACTION_DATA_SELECTION_POPUP_PRESSED"/>
     <permission android:name="com.sec.android.fotaclient.permission.FOTA" android:protectionLevel="signatureOrSystem"/>
     <permission android:name="com.samsung.permission.LAUNCH_SOFTWARE_UPDATE" android:protectionLevel="signature"/>
-    <permission android:name="com.sec.android.fota.permission.PUSH" android:protectionLevel="signatureOrSystem"/>
     <permission android:name="com.samsung.android.fota.permission.READ_DATABASES" android:protectionLevel="signatureOrSystem"/>
     <permission android:name="com.samsung.android.fota.permission.WRITE_DATABASES" android:protectionLevel="signatureOrSystem"/>
-    <protected-broadcast android:name="com.sec.android.diagmonagent.intent.REPORT_ERROR_V2"/>
-    <protected-broadcast android:name="com.samsung.android.settings.intelligence.ACTION_BATTERY_INFO_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.android.settings.intelligence.ACTION_BATTERY_INFO_ADDED"/>
-    <protected-broadcast android:name="com.samsung.android.settings.intelligence.ACTION_BATTERY_INFO_REMOVED"/>
-    <permission android:name="com.samsung.android.sdm.config.permission.RECEIVE_CONFIG_CHANGED" android:protectionLevel="privileged|signature"/>
-    <permission android:name="com.samsung.android.sdm.config.provider.READ_OMC_CONFIG" android:protectionLevel="privileged|signature"/>
-    <protected-broadcast android:name="com.samsung.intent.action.CSC_COMPARE"/>
-    <protected-broadcast android:name="com.samsung.intent.action.CSC_CHAMELEON"/>
-    <protected-broadcast android:name="com.samsung.intent.action.OMCUPDATE_START"/>
-    <protected-broadcast android:name="com.samsung.intent.action.OMCUPDATE_FINISH"/>
-    <protected-broadcast android:name="com.samsung.intent.action.OMCUPDATE_MODEMSTART"/>
-    <protected-broadcast android:name="com.samsung.intent.action.OMCUPDATE_MODEMFINISH"/>
-    <protected-broadcast android:name="com.samsung.carrier.action.SUBSCRIPTION_CARRIER_IDENTITY_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.carrier.action.CARRIER_FEATURE_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.carrier.action.CARRIER_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.android.cidmanager.action.DELETE_SUBSCRIPTION"/>
-    <protected-broadcast android:name="com.samsung.intent.action.LAZY_BOOT_COMPLETE"/>
-    <permission android:name="com.sec.permission.preconfig" android:protectionLevel="signatureOrSystem"/>
-    <permission android:name="com.samsung.android.permission.sdk.command.ACCESS_COMMANDS" android:protectionLevel="signatureOrSystem"/>
-    <protected-broadcast android:name="com.samsung.BOTTLENECK_HINT_FOR_CHIMERA"/>
-    <protected-broadcast android:name="android.util.PerfLog.ACTION_BOTTLENECK_HINT"/>
-    <protected-broadcast android:name="android.util.PerfLog.ACTION_RESOURCE_HINT"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_POSITION_NOTI"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_CELL_DB_REQUEST"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_GEOFENCE_RES"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_GEOFENCE_PATH_HISTORY_RES"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_LOCAL_DB_RES"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_WIFI_INFO_RES"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_TAC_ENB_INFO_REQUEST"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_PATH_HISTORY_RES"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_POLICY_REQUEST"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_SW_VERSION_RES"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_SERVER_POS_REQ"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_CELL_INFO_RES"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_CELL_DB_REQUEST_REV01"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_TACENB_INFO_REQUEST_REV01"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_REGRESSION_RES"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.NOTIFY_PREPROCESSING_MAINTENANCE_MODE"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.NOTIFY_POSTPROCESSING_MAINTENANCE_MODE"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.HIDE_MAINTENANCE_MODE_MARK"/>
-    <protected-broadcast android:name="com.samsung.android.intent.action.SHOW_MAINTENANCE_MODE_MARK"/>
-    <permission android:name="com.samsung.android.permission.ACCESS_MAINTENANCE_MODE" android:protectionLevel="signature"/>
-    <permission android:name="com.samsung.android.permission.USE_F2FS_FLUSH" android:protectionLevel="privileged|signature"/>
-    <protected-broadcast android:name="com.android.server.sepunion.semgoodcatchservice.GOOD_CATCH_STATE_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.android.PEDOMETER_FAULT_DETECTION"/>
-    <permission android:description="@string/sem_lock_to_app_status_intent_permission_description" android:label="@string/sem_lock_to_app_status_intent_permission_label" android:name="com.samsung.android.permission.LOCK_TASK_MODE" android:protectionLevel="normal"/>
-    <protected-broadcast android:name="com.samsung.android.action.LOCK_TASK_MODE"/>
-    <protected-broadcast android:name="com.kddi.agent.action.SCREEN_PINNING_CONDITION"/>
-    <permission android:name="com.samsung.android.permission.ACCESS_SYSTEM_KEY_DISPATCHING" android:protectionLevel="privileged|signature"/>
-    <uses-permission android:name="com.samsung.android.permission.ACCESS_SYSTEM_KEY_DISPATCHING"/>
-    <permission android:name="com.samsung.android.permisson.DOUBLE_CLICK" android:protectionLevel="signature"/>
-    <protected-broadcast android:name="com.samsung.android.action.DOUBLE_CLICK"/>
-    <permission android:name="com.samsung.android.permisson.ACCESS_KEY_CUSTOMIZE_INFO" android:protectionLevel="signature"/>
-    <uses-permission android:name="com.samsung.android.permisson.ACCESS_KEY_CUSTOMIZE_INFO"/>
-    <protected-broadcast android:name="com.samsung.pen.INSERT"/>
-    <permission android:name="com.samsung.android.permisson.START_DOCK_OR_HOME" android:protectionLevel="signature"/>
-    <protected-broadcast android:name="com.samsung.android.action.START_DOCK_OR_HOME"/>
-    <protected-broadcast android:name="com.samsung.android.input.REMOTE_INPUT_READY_TO_CONNECT"/>
-    <protected-broadcast android:name="com.samsung.android.action.SHOWING_TOUCH_SENSITIVITY_NOTI"/>
+    <protected-broadcast android:name="com.samsung.android.motion.PALM_UP"/>
+    <protected-broadcast android:name="com.samsung.android.motion.PALM_DOWN"/>
     <permission android:name="com.samsung.android.permission.BROADCAST_QUICKACCESS" android:protectionLevel="signatureOrSystem"/>
     <protected-broadcast android:name="com.samsung.android.fingerprint.action.FINGER_ON_DISPLAY"/>
     <permission android:name="com.samsung.android.spay.permission.SIMPLE_PAY" android:protectionLevel="signature"/>
     <protected-broadcast android:name="com.samsung.android.spay.quickpay"/>
-    <permission android:name="com.samsung.android.app.aodservice.permission.BROADCAST_RECEIVER" android:protectionLevel="signatureOrSystem"/>
-    <protected-broadcast android:name="com.samsung.android.app.aodservice.intent.action.CHANGE_AOD_MODE"/>
-    <uses-permission android:name="com.sec.android.app.launcher.permission.EXTERNAL_APPS"/>
-    <uses-permission android:name="com.sec.android.app.launcher.permission.OVERLAY_APPS"/>
-    <uses-permission android:name="com.sec.android.app.launcher.permission.ALL_APPS"/>
-    <protected-broadcast android:name="com.samsung.MEMORY_ABNORMAL_APP_DETECTION"/>
+    <protected-broadcast android:name="com.android.server.sepunion.semgoodcatchservice.GOOD_CATCH_STATE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.isrb.SYSTEM_UPDATE"/>
     <uses-permission android:name="com.samsung.permission.LAUNCH_SOFTWARE_UPDATE"/>
-    <protected-broadcast android:name="com.sec.android.intent.action.SG_REPORT"/>
-    <protected-broadcast android:name="com.sec.android.intent.action.SG_ENTRY"/>
-    <protected-broadcast android:name="com.android.server.am.MARS_TRIGGER_UDS_POLICY"/>
-    <protected-broadcast android:name="com.android.server.am.MARS_CANCEL_UDS_POLICY"/>
-    <protected-broadcast android:name="com.sec.server.am.BROADCAST_SET_PMM_DMABUF_LEAK_DETECTOR_SOURCE"/>
-    <protected-broadcast android:name="com.samsung.android.motion.PALM_UP"/>
-    <protected-broadcast android:name="com.samsung.android.motion.PALM_DOWN"/>
     <eat-comment/>
     <permission-group android:name="android.permission-group.UNDEFINED" android:priority="100"/>
     <eat-comment/>
@@ -1289,6 +1305,7 @@
     <permission android:description="@string/permdesc_readContacts" android:label="@string/permlab_readContacts" android:name="android.permission.READ_CONTACTS" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="dangerous"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <permission android:description="@string/permdesc_writeContacts" android:label="@string/permlab_writeContacts" android:name="android.permission.WRITE_CONTACTS" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="dangerous"/>
+    <permission android:description="@string/permdesc_writeVerificationStateE2eeContactKeys" android:featureFlag="android.provider.user_keys" android:label="@string/permlab_writeVerificationStateE2eeContactKeys" android:name="android.permission.WRITE_VERIFICATION_STATE_E2EE_CONTACT_KEYS" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.SET_DEFAULT_ACCOUNT_FOR_CONTACTS" android:protectionLevel="internal|role"/>
     <eat-comment/>
     <permission-group android:description="@string/permgroupdesc_calendar" android:icon="@drawable/perm_group_calendar" android:label="@string/permgrouplab_calendar" android:name="android.permission-group.CALENDAR" android:priority="200"/>
@@ -1362,6 +1379,8 @@
     <permission android:description="@string/permdesc_backgroundCamera" android:label="@string/permlab_backgroundCamera" android:name="android.permission.BACKGROUND_CAMERA" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="internal|role"/>
     <permission android:description="@string/permdesc_systemCamera" android:label="@string/permlab_systemCamera" android:name="android.permission.SYSTEM_CAMERA" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="privileged|role|signature"/>
     <permission android:description="@string/permdesc_cameraOpenCloseListener" android:label="@string/permlab_cameraOpenCloseListener" android:name="android.permission.CAMERA_OPEN_CLOSE_LISTENER" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="signature"/>
+    <permission android:description="@string/permdesc_cameraHeadlessSystemUser" android:featureFlag="com.android.internal.camera.flags.camera_hsum_permission" android:label="@string/permlab_cameraHeadlessSystemUser" android:name="android.permission.CAMERA_HEADLESS_SYSTEM_USER" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.CAMERA_PRIVACY_ALLOWLIST" android:protectionLevel="privileged|signature"/>
     <eat-comment/>
     <permission-group android:description="@string/permgroupdesc_sensors" android:icon="@drawable/perm_group_sensors" android:label="@string/permgrouplab_sensors" android:name="android.permission-group.SENSORS" android:priority="800"/>
     <permission android:description="@string/permdesc_highSamplingRateSensors" android:label="@string/permlab_highSamplingRateSensors" android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS" android:permissionGroup="android.permission-group.SENSORS" android:protectionLevel="normal"/>
@@ -1422,6 +1441,8 @@
     <permission android:knownCerts="@array/wifi_known_signers" android:name="android.permission.MANAGE_WIFI_INTERFACES" android:protectionLevel="knownSigner|privileged|signature"/>
     <permission android:name="android.permission.MANAGE_IPSEC_TUNNELS" android:protectionLevel="appop|signature"/>
     <permission android:name="android.permission.MANAGE_TEST_NETWORKS" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.MANAGE_REMOTE_AUTH" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.USE_REMOTE_AUTH" android:protectionLevel="signature"/>
     <permission android:name="android.permission.READ_WIFI_CREDENTIAL" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.TETHER_PRIVILEGED" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.RECEIVE_WIFI_CREDENTIAL_CHANGE" android:protectionLevel="privileged|signature"/>
@@ -1443,6 +1464,8 @@
     <permission android:name="android.permission.CHANGE_LOWPAN_STATE" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.READ_LOWPAN_CREDENTIAL" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.MANAGE_LOWPAN_INTERFACES" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.THREAD_NETWORK_PRIVILEGED" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.THREAD_NETWORK_TESTING" android:protectionLevel="signature"/>
     <permission android:name="android.permission.NETWORK_BYPASS_PRIVATE_DNS" android:protectionLevel="signature"/>
     <permission android:name="android.permission.WIFI_SET_DEVICE_MOBILITY_STATE" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.WIFI_UPDATE_USABILITY_STATS_SCORE" android:protectionLevel="privileged|signature"/>
@@ -1451,6 +1474,7 @@
     <permission android:name="android.permission.MANAGE_WIFI_COUNTRY_CODE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.CONTROL_OEM_PAID_NETWORK_PREFERENCE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.MANAGE_ETHERNET_NETWORKS" android:protectionLevel="signature"/>
+    <permission android:featureFlag="android.net.platform.flags.register_nsd_offload_engine" android:name="android.permission.REGISTER_NSD_OFFLOAD_ENGINE" android:protectionLevel="signature"/>
     <eat-comment/>
     <permission android:description="@string/permdesc_bluetooth" android:label="@string/permlab_bluetooth" android:name="android.permission.BLUETOOTH" android:protectionLevel="normal"/>
     <permission android:description="@string/permdesc_bluetooth_scan" android:label="@string/permlab_bluetooth_scan" android:name="android.permission.BLUETOOTH_SCAN" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="dangerous"/>
@@ -1458,16 +1482,16 @@
     <permission android:description="@string/permdesc_bluetooth_advertise" android:label="@string/permlab_bluetooth_advertise" android:name="android.permission.BLUETOOTH_ADVERTISE" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="dangerous"/>
     <permission android:description="@string/permdesc_uwb_ranging" android:label="@string/permlab_uwb_ranging" android:name="android.permission.UWB_RANGING" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="dangerous"/>
     <permission android:description="@string/permdesc_nearby_wifi_devices" android:label="@string/permlab_nearby_wifi_devices" android:name="android.permission.NEARBY_WIFI_DEVICES" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="dangerous"/>
-    <permission android:name="android.permission.SUSPEND_APPS" android:protectionLevel="role|signature"/>
+    <permission android:name="android.permission.SUSPEND_APPS" android:protectionLevel="role|signature|verifier"/>
+    <permission android:featureFlag="android.content.pm.quarantined_enabled" android:name="android.permission.QUARANTINE_APPS" android:protectionLevel="signature|verifier"/>
     <permission android:description="@string/permdesc_bluetoothAdmin" android:label="@string/permlab_bluetoothAdmin" android:name="android.permission.BLUETOOTH_ADMIN" android:protectionLevel="normal"/>
-    <permission android:name="com.sec.permission.BLUETOOTH_DEBUG" android:protectionLevel="signature"/>
     <permission android:name="com.samsung.android.permission.BLE_PRIVILEGED" android:protectionLevel="signature"/>
     <permission android:name="android.permission.BLUETOOTH_PRIVILEGED" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.BLUETOOTH_MAP" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.BLUETOOTH_STACK" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.VIRTUAL_INPUT_DEVICE" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_nfc" android:label="@string/permlab_nfc" android:name="android.permission.NFC" android:protectionLevel="normal"/>
-    <permission android:name="android.permission.NFC_TRANSACTION_EVENT" android:protectionLevel="normal"/>
+    <permission android:description="@string/permdesc_nfcTransactionEvent" android:label="@string/permlab_nfcTransactionEvent" android:name="android.permission.NFC_TRANSACTION_EVENT" android:protectionLevel="normal"/>
     <permission android:description="@string/permdesc_preferredPaymentInfo" android:label="@string/permlab_preferredPaymentInfo" android:name="android.permission.NFC_PREFERRED_PAYMENT_INFO" android:protectionLevel="normal"/>
     <permission android:name="android.permission.NFC_SET_CONTROLLER_ALWAYS_ON" android:protectionLevel="privileged|signature"/>
     <permission android:name="com.samsung.permission.UWB_SYSTEM_PROTECTION" android:protectionLevel="signatureOrSystem"/>
@@ -1491,6 +1515,7 @@
     <permission android:description="@string/permdesc_changeWifiMulticastState" android:label="@string/permlab_changeWifiMulticastState" android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" android:protectionLevel="normal"/>
     <permission android:description="@string/permdesc_vibrate" android:label="@string/permlab_vibrate" android:name="android.permission.VIBRATE" android:protectionLevel="instant"/>
     <permission android:name="android.permission.VIBRATE_ALWAYS_ON" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.VIBRATE_SYSTEM_CONSTANTS" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_vibrator_state" android:label="@string/permdesc_vibrator_state" android:name="android.permission.ACCESS_VIBRATOR_STATE" android:protectionLevel="privileged|signature"/>
     <permission android:description="@string/permdesc_wakeLock" android:label="@string/permlab_wakeLock" android:name="android.permission.WAKE_LOCK" android:protectionLevel="instant"/>
     <permission android:description="@string/permdesc_transmitIr" android:label="@string/permlab_transmitIr" android:name="android.permission.TRANSMIT_IR" android:protectionLevel="normal"/>
@@ -1500,6 +1525,7 @@
     <eat-comment/>
     <permission android:name="android.permission.LAUNCH_CAPTURE_CONTENT_ACTIVITY_FOR_NOTE" android:protectionLevel="internal|role"/>
     <permission android:description="@string/permdesc_detectScreenCapture" android:label="@string/permlab_detectScreenCapture" android:name="android.permission.DETECT_SCREEN_CAPTURE" android:protectionLevel="normal"/>
+    <permission android:featureFlag="com.android.window.flags.screen_recording_callbacks" android:name="android.permission.DETECT_SCREEN_RECORDING" android:protectionLevel="normal"/>
     <eat-comment/>
     <permission android:name="android.permission.MANAGE_FACTORY_RESET_PROTECTION" android:protectionLevel="privileged|signature"/>
     <eat-comment/>
@@ -1522,6 +1548,7 @@
     <permission android:name="android.permission.MANAGE_USER_OEM_UNLOCK_STATE" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.READ_OEM_UNLOCK_STATE" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.OEM_UNLOCK_STATE" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.CONFIGURE_FACTORY_RESET_PROTECTION" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.ACCESS_PDB_STATE" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.TEST_BLACKLISTED_PASSWORD" android:protectionLevel="signature"/>
     <permission android:name="android.permission.NOTIFY_PENDING_SYSTEM_UPDATE" android:protectionLevel="privileged|signature"/>
@@ -1556,6 +1583,7 @@
     <permission android:name="android.permission.RECEIVE_STK_COMMANDS" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.SEND_EMBMS_INTENTS" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.MANAGE_SENSORS" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.BIND_DOMAIN_SELECTION_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.BIND_IMS_SERVICE" android:protectionLevel="privileged|signature|vendorPrivileged"/>
     <permission android:name="android.permission.BIND_SATELLITE_SERVICE" android:protectionLevel="privileged|signature|vendorPrivileged"/>
     <permission android:name="android.permission.BIND_SATELLITE_GATEWAY_SERVICE" android:protectionLevel="signature"/>
@@ -1566,6 +1594,7 @@
     <permission android:name="android.permission.READ_CARRIER_APP_INFO" android:protectionLevel="signature"/>
     <permission android:name="android.permission.BIND_GBA_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.ACCESS_RCS_USER_CAPABILITY_EXCHANGE" android:protectionLevel="internal|role"/>
+    <permission android:description="@string/permdesc_accessLastKnownCellId" android:label="@string/permlab_accessLastKnownCellId" android:name="android.permission.ACCESS_LAST_KNOWN_CELL_ID" android:protectionLevel="signature"/>
     <eat-comment/>
     <permission android:name="android.permission.WRITE_MEDIA_STORAGE" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.MANAGE_DOCUMENTS" android:protectionLevel="role|signature"/>
@@ -1584,9 +1613,11 @@
     <permission android:name="com.samsung.android.knox.permission.KNOX_SOLUTION_SDK" android:protectionLevel="signature"/>
     <uses-permission android:name="com.samsung.android.knox.permission.KNOX_ANALYTICS_INTERNAL"/>
     <permission android:name="android.permission.INTERACT_ACROSS_USERS" android:protectionLevel="development|privileged|role|signature"/>
-    <permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" android:protectionLevel="installer|role|signature"/>
+    <permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" android:protectionLevel="installer|module|role|signature"/>
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL"/>
     <permission android:name="android.permission.INTERACT_ACROSS_PROFILES" android:protectionLevel="appop|signature"/>
+    <permission android:description="@string/permdesc_accessHiddenProfile" android:label="@string/permlab_accessHiddenProfile" android:name="android.permission.ACCESS_HIDDEN_PROFILES" android:protectionLevel="normal"/>
+    <permission android:name="android.permission.ACCESS_HIDDEN_PROFILES_FULL" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.START_CROSS_PROFILE_ACTIVITIES" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.CONFIGURE_INTERACT_ACROSS_PROFILES" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.MANAGE_USERS" android:protectionLevel="privileged|signature"/>
@@ -1643,6 +1674,8 @@
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_RUN_IN_BACKGROUND" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_PRINTING" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_NEARBY_COMMUNICATION" android:protectionLevel="internal|role"/>
+    <permission android:name="android.permission.MANAGE_DEVICE_POLICY_THREAD_NETWORK" android:protectionLevel="internal|role"/>
+    <permission android:name="android.permission.MANAGE_DEVICE_POLICY_ASSIST_CONTENT" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_WINDOWS" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_LOCALE" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_AUTOFILL" android:protectionLevel="internal|role"/>
@@ -1650,6 +1683,7 @@
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_CERTIFICATES" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_OVERRIDE_APN" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_SECURITY_LOGGING" android:protectionLevel="internal|role"/>
+    <permission android:name="android.permission.MANAGE_DEVICE_POLICY_AUDIT_LOGGING" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_SYSTEM_UPDATES" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_QUERY_SYSTEM_UPDATES" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_PRIVATE_DNS" android:protectionLevel="internal|role"/>
@@ -1665,13 +1699,22 @@
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_BUGREPORT" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_APP_USER_DATA" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_LOCK" android:protectionLevel="internal|role"/>
+    <permission android:name="android.permission.QUERY_DEVICE_STOLEN_STATE" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_SYSTEM_APPS" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_WIPE_DATA" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_MTE" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_DEVICE_IDENTIFIERS" android:protectionLevel="internal|role"/>
+    <permission android:name="android.permission.MANAGE_DEVICE_POLICY_CONTENT_PROTECTION" android:protectionLevel="internal|role"/>
+    <permission android:name="android.permission.MANAGE_DEVICE_POLICY_MANAGED_SUBSCRIPTIONS" android:protectionLevel="internal|role"/>
+    <permission android:name="android.permission.MANAGE_DEVICE_POLICY_BLOCK_UNINSTALL" android:protectionLevel="internal|role"/>
+    <permission android:name="android.permission.MANAGE_DEVICE_POLICY_CAMERA_TOGGLE" android:protectionLevel="internal|role"/>
+    <permission android:name="android.permission.MANAGE_DEVICE_POLICY_MICROPHONE_TOGGLE" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_ACROSS_USERS_SECURITY_CRITICAL" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_ACROSS_USERS" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.MANAGE_DEVICE_POLICY_ACROSS_USERS_FULL" android:protectionLevel="internal|role"/>
+    <permission android:name="android.permission.MANAGE_DEVICE_POLICY_STORAGE_LIMIT" android:protectionLevel="internal"/>
+    <permission android:name="android.permission.MANAGE_ENHANCED_CONFIRMATION_STATES" android:protectionLevel="installer|signature"/>
+    <uses-permission android:name="android.permission.MANAGE_ENHANCED_CONFIRMATION_STATES"/>
     <permission android:knownCerts="@array/demo_device_provisioning_known_signers" android:name="android.permission.PROVISION_DEMO_DEVICE" android:protectionLevel="knownSigner|setup|signature"/>
     <permission android:name="android.permission.CLEAR_FREEZE_PERIOD" android:protectionLevel="signature"/>
     <permission android:name="android.permission.FORCE_DEVICE_POLICY_MANAGER_LOGS" android:protectionLevel="signature"/>
@@ -1681,6 +1724,7 @@
     <permission android:name="android.permission.MANAGE_ACTIVITY_STACKS" android:protectionLevel="signature"/>
     <permission android:name="android.permission.MANAGE_ACTIVITY_TASKS" android:protectionLevel="recents|signature"/>
     <permission android:name="android.permission.ACTIVITY_EMBEDDING" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.EMBED_ANY_APP_IN_UNTRUSTED_MODE" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.START_ANY_ACTIVITY" android:protectionLevel="signature"/>
     <permission android:name="android.permission.START_ACTIVITIES_FROM_BACKGROUND" android:protectionLevel="oem|privileged|role|signature|vendorPrivileged|verifier"/>
     <permission android:name="android.permission.START_FOREGROUND_SERVICES_FROM_BACKGROUND" android:protectionLevel="oem|privileged|role|signature|vendorPrivileged|verifier"/>
@@ -1717,6 +1761,7 @@
     <permission android:description="@string/permdesc_setWallpaper" android:label="@string/permlab_setWallpaper" android:name="android.permission.SET_WALLPAPER" android:protectionLevel="normal"/>
     <permission android:description="@string/permdesc_setWallpaperHints" android:label="@string/permlab_setWallpaperHints" android:name="android.permission.SET_WALLPAPER_HINTS" android:protectionLevel="normal"/>
     <permission android:name="android.permission.READ_WALLPAPER_INTERNAL" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.ALWAYS_UPDATE_WALLPAPER" android:protectionLevel="internal|role"/>
     <eat-comment/>
     <permission android:name="android.permission.SET_TIME" android:protectionLevel="privileged|role|signature"/>
     <permission android:description="@string/permdesc_setTimeZone" android:label="@string/permlab_setTimeZone" android:name="android.permission.SET_TIME_ZONE" android:protectionLevel="privileged|role|signature"/>
@@ -1785,6 +1830,7 @@
     <permission android:name="android.permission.VERIFY_ATTESTATION" android:protectionLevel="signature"/>
     <permission android:name="android.permission.BIND_ATTESTATION_VERIFICATION_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.REQUEST_UNIQUE_ID_ATTESTATION" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.BIND_RKP_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.LIST_ENABLED_CREDENTIAL_PROVIDERS" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.PROVIDE_DEFAULT_ENABLED_CREDENTIAL_SERVICE" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.CREDENTIAL_MANAGER_SET_ALLOWED_PROVIDERS" android:protectionLevel="normal"/>
@@ -1798,6 +1844,7 @@
     <permission android:name="android.permission.CONTROL_UI_TRACING" android:protectionLevel="development|privileged|signature"/>
     <permission android:name="android.permission.READ_LOGS" android:protectionLevel="development|privileged|signature"/>
     <permission android:name="android.permission.SET_DEBUG_APP" android:protectionLevel="development|privileged|signature"/>
+    <permission android:name="android.permission.READ_DROPBOX_DATA" android:protectionLevel="development|privileged|signature"/>
     <permission android:name="android.permission.SET_PROCESS_LIMIT" android:protectionLevel="development|privileged|signature"/>
     <permission android:name="android.permission.SET_ALWAYS_FINISH" android:protectionLevel="development|privileged|signature"/>
     <permission android:name="android.permission.SIGNAL_PERSISTENT_PROCESSES" android:protectionLevel="development|privileged|signature"/>
@@ -1811,7 +1858,7 @@
     <permission android:name="android.permission.STATUS_BAR" android:protectionLevel="privileged|recents|signature"/>
     <permission android:name="android.permission.TRIGGER_SHELL_BUGREPORT" android:protectionLevel="signature"/>
     <permission android:name="android.permission.TRIGGER_SHELL_PROFCOLLECT_UPLOAD" android:protectionLevel="signature"/>
-    <permission android:name="android.permission.STATUS_BAR_SERVICE" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.STATUS_BAR_SERVICE" android:protectionLevel="recents|signature"/>
     <permission android:name="android.permission.BIND_QUICK_SETTINGS_TILE" android:protectionLevel="recents|signature"/>
     <permission android:name="android.permission.BIND_CONTROLS" android:protectionLevel="signature"/>
     <permission android:name="android.permission.FORCE_BACK" android:protectionLevel="signature"/>
@@ -1821,7 +1868,7 @@
     <permission android:name="android.permission.UPDATE_APP_OPS_STATS" android:protectionLevel="installer|privileged|role|signature"/>
     <permission android:name="android.permission.MANAGE_APP_OPS_RESTRICTIONS" android:protectionLevel="installer|signature"/>
     <permission android:name="android.permission.MANAGE_APP_OPS_MODES" android:protectionLevel="installer|role|signature|verifier"/>
-    <permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" android:protectionLevel="module|signature"/>
+    <permission android:name="android.permission.INTERNAL_SYSTEM_WINDOW" android:protectionLevel="module|recents|signature"/>
     <permission android:name="android.permission.UNLIMITED_TOASTS" android:protectionLevel="signature"/>
     <uses-permission android:name="android.permission.UNLIMITED_TOASTS"/>
     <permission android:name="android.permission.HIDE_NON_SYSTEM_OVERLAY_WINDOWS" android:protectionLevel="preinstalled|signature"/>
@@ -1834,10 +1881,12 @@
     <permission android:name="android.permission.MODIFY_ACCESSIBILITY_DATA" android:protectionLevel="signature"/>
     <permission android:name="android.permission.ACT_AS_PACKAGE_FOR_ACCESSIBILITY" android:protectionLevel="signature"/>
     <permission android:name="android.permission.CHANGE_ACCESSIBILITY_VOLUME" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.ACCESSIBILITY_MOTION_EVENT_OBSERVING" android:protectionLevel="signature"/>
     <permission android:name="android.permission.FRAME_STATS" android:protectionLevel="signature"/>
     <permission android:name="android.permission.TEMPORARY_ENABLE_ACCESSIBILITY" android:protectionLevel="signature"/>
     <permission android:name="android.permission.OPEN_ACCESSIBILITY_DETAILS_SETTINGS" android:protectionLevel="installer|signature"/>
     <permission android:name="android.permission.SET_ACTIVITY_WATCHER" android:protectionLevel="signature"/>
+    <permission android:name="com.samsung.android.permission.DO_ACTIVE_LAUNCH" android:protectionLevel="signature"/>
     <permission android:name="android.permission.SHUTDOWN" android:protectionLevel="privileged|role|signature"/>
     <permission android:name="android.permission.STOP_APP_SWITCHES" android:protectionLevel="privileged|recents|signature"/>
     <permission android:name="android.permission.GET_TOP_ACTIVITY_INFO" android:protectionLevel="recents|signature"/>
@@ -1850,11 +1899,12 @@
     <uses-permission android:name="com.samsung.accessibility.permission.WRITE_SETTINGS"/>
     <uses-permission android:name="com.samsung.accessibility.permission.RECOMMEND_FOR_YOU"/>
     <uses-permission android:name="com.android.systemui.permission.EXTERNAL"/>
+    <permission android:name="com.samsung.android.permission.CHANGE_DISPLAY_COLOR" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.BIND_PRINT_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.BIND_PRINT_RECOMMENDATION_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.READ_PRINT_SERVICES" android:protectionLevel="preinstalled|signature"/>
     <permission android:name="android.permission.READ_PRINT_SERVICE_RECOMMENDATIONS" android:protectionLevel="preinstalled|signature"/>
-    <permission android:name="android.permission.BIND_NFC_SERVICE" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.BIND_NFC_SERVICE" android:protectionLevel="module|signature"/>
     <permission android:name="android.permission.BIND_QUICK_ACCESS_WALLET_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.BIND_PRINT_SPOOLER_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.BIND_COMPANION_DEVICE_MANAGER_SERVICE" android:protectionLevel="signature"/>
@@ -1872,7 +1922,7 @@
     <permission android:name="android.permission.BIND_HOTWORD_DETECTION_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.MANAGE_HOTWORD_DETECTION" android:protectionLevel="internal|preinstalled"/>
     <permission android:name="android.permission.BIND_VISUAL_QUERY_DETECTION_SERVICE" android:protectionLevel="signature"/>
-    <permission android:name="android.permission.SUBSCRIBE_TO_KEYGUARD_LOCKED_STATE" android:protectionLevel="role|signature"/>
+    <permission android:name="android.permission.SUBSCRIBE_TO_KEYGUARD_LOCKED_STATE" android:protectionLevel="module|role|signature"/>
     <permission android:name="android.permission.BIND_AUTOFILL_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.BIND_FIELD_CLASSIFICATION_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.BIND_CREDENTIAL_PROVIDER_SERVICE" android:protectionLevel="signature"/>
@@ -1892,6 +1942,7 @@
     <permission android:name="android.permission.MANAGE_VOICE_KEYPHRASES" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.KEYPHRASE_ENROLLMENT_APPLICATION" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.BIND_REMOTE_DISPLAY" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.BIND_TV_AD_SERVICE" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.BIND_TV_INPUT" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.BIND_TV_INTERACTIVE_APP" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.BIND_TV_REMOTE_SERVICE" android:protectionLevel="privileged|signature"/>
@@ -1941,6 +1992,7 @@
     <permission android:name="android.permission.KEEP_UNINSTALLED_PACKAGES" android:protectionLevel="signature"/>
     <permission android:name="android.permission.CHANGE_COMPONENT_ENABLED_STATE" android:protectionLevel="privileged|role|signature"/>
     <permission android:name="android.permission.GRANT_RUNTIME_PERMISSIONS" android:protectionLevel="installer|signature|verifier"/>
+    <permission android:name="android.permission.LAUNCH_PERMISSION_SETTINGS" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.INSTALL_GRANT_RUNTIME_PERMISSIONS" android:protectionLevel="installer|signature|verifier"/>
     <permission android:name="android.permission.REVOKE_RUNTIME_PERMISSIONS" android:protectionLevel="installer|signature|verifier"/>
     <permission android:name="android.permission.REVOKE_POST_NOTIFICATIONS_WITHOUT_KILL" android:protectionLevel="signature"/>
@@ -1952,13 +2004,16 @@
     <permission android:name="android.permission.WHITELIST_AUTO_REVOKE_PERMISSIONS" android:protectionLevel="installer|signature"/>
     <permission android:name="android.permission.OBSERVE_GRANT_REVOKE_PERMISSIONS" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.MANAGE_ONE_TIME_PERMISSION_SESSIONS" android:protectionLevel="installer|signature"/>
-    <permission android:name="android.permission.MANAGE_ROLE_HOLDERS" android:protectionLevel="installer|signature"/>
+    <permission android:name="android.permission.MANAGE_ROLE_HOLDERS" android:protectionLevel="installer|module|signature"/>
+    <uses-permission android:name="android.permission.MANAGE_ROLE_HOLDERS"/>
     <permission android:name="android.permission.MANAGE_DEFAULT_APPLICATIONS" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.BYPASS_ROLE_QUALIFICATION" android:protectionLevel="internal|role"/>
-    <permission android:name="android.permission.OBSERVE_ROLE_HOLDERS" android:protectionLevel="installer|signature"/>
+    <permission android:name="android.permission.OBSERVE_ROLE_HOLDERS" android:protectionLevel="installer|module|signature"/>
     <permission android:name="android.permission.MANAGE_COMPANION_DEVICES" android:protectionLevel="module|role|signature"/>
     <permission android:description="@string/permdesc_observeCompanionDevicePresence" android:label="@string/permlab_observeCompanionDevicePresence" android:name="android.permission.REQUEST_OBSERVE_COMPANION_DEVICE_PRESENCE" android:protectionLevel="normal"/>
+    <permission android:name="android.permission.REQUEST_OBSERVE_DEVICE_UUID_PRESENCE" android:protectionLevel="privileged|signature"/>
     <permission android:description="@string/permdesc_deliverCompanionMessages" android:label="@string/permlab_deliverCompanionMessages" android:name="android.permission.DELIVER_COMPANION_MESSAGES" android:protectionLevel="normal"/>
+    <permission android:name="android.permission.USE_COMPANION_TRANSPORTS" android:protectionLevel="signature"/>
     <permission android:name="android.permission.ASSOCIATE_COMPANION_DEVICES" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.ACCESS_SURFACE_FLINGER" android:protectionLevel="signature"/>
     <permission android:name="android.permission.ROTATE_SURFACE_FLINGER" android:protectionLevel="recents|signature"/>
@@ -1999,8 +2054,9 @@
     <permission android:name="android.permission.DISABLE_SYSTEM_SOUND_EFFECTS" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.REMOTE_DISPLAY_PROVIDER" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.CAPTURE_VIDEO_OUTPUT" android:protectionLevel="signature"/>
-    <permission android:name="android.permission.CAPTURE_SECURE_VIDEO_OUTPUT" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.CAPTURE_SECURE_VIDEO_OUTPUT" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.MEDIA_ROUTING_CONTROL" android:protectionLevel="appop|signature"/>
     <permission android:name="android.permission.SET_VOLUME_KEY_LONG_PRESS_LISTENER" android:protectionLevel="development|privileged|signature"/>
     <permission android:name="android.permission.SET_MEDIA_KEY_LISTENER" android:protectionLevel="development|privileged|signature"/>
     <permission android:name="android.permission.BRICK" android:protectionLevel="signature"/>
@@ -2028,10 +2084,11 @@
     <permission android:name="android.permission.ACCESS_CHECKIN_PROPERTIES" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.PACKAGE_USAGE_STATS" android:protectionLevel="appop|development|privileged|retailDemo|signature"/>
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
+    <permission android:name="android.permission.REPORT_USAGE_STATS" android:protectionLevel="module|signature"/>
     <permission android:name="android.permission.ACCESS_BROADCAST_RESPONSE_STATS" android:protectionLevel="development|privileged|signature"/>
     <permission android:name="android.permission.LOADER_USAGE_STATS" android:protectionLevel="appop|privileged|signature"/>
     <uses-permission android:name="android.permission.LOADER_USAGE_STATS"/>
-    <permission android:name="android.permission.OBSERVE_APP_USAGE" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.OBSERVE_APP_USAGE" android:protectionLevel="privileged|role|signature"/>
     <permission android:name="android.permission.CHANGE_APP_IDLE_STATE" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.CHANGE_APP_LAUNCH_TIME_ESTIMATE" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.CHANGE_DEVICE_IDLE_TEMP_WHITELIST" android:protectionLevel="privileged|signature"/>
@@ -2041,6 +2098,7 @@
     <permission android:label="Receive Detailed App States" android:name="diagandroid.app.receiveDetailedApplicationState" android:protectionLevel="signatureOrSystem"/>
     <permission android:label="Receive Detailed Call States" android:name="diagandroid.phone.receiveDetailedCallState" android:protectionLevel="signatureOrSystem"/>
     <permission android:label="Receive the PDP Context States" android:name="diagandroid.data.receivePDPContextState" android:protectionLevel="signatureOrSystem"/>
+    <permission android:label="Receive Binary SMS data" android:name="diagandroid.phone.receiveBinaryData" android:protectionLevel="signatureOrSystem"/>
     <permission android:label="Echolocate System TrafficStats Provider" android:name="com.tmobile.oem.echolocate.system.provider.trafficstats.TrafficStatsContentProvider.READ_TRAFFIC_STATS" android:protectionLevel="signatureOrSystem"/>
     <permission android:label="Echolocate System TrafficStats Provider" android:name="com.tmobile.oem.echolocate.system.provider.trafficstats.TrafficStatsContentProvider.WRITE_TRAFFIC_STATS" android:protectionLevel="signatureOrSystem"/>
     <permission android:name="android.permission.REGISTER_STATS_PULL_ATOM" android:protectionLevel="privileged|signature"/>
@@ -2058,8 +2116,8 @@
     <permission android:name="android.permission.CHANGE_BACKGROUND_DATA_SETTING" android:protectionLevel="signature"/>
     <permission android:name="android.permission.GLOBAL_SEARCH" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.GLOBAL_SEARCH_CONTROL" android:protectionLevel="signature"/>
-    <permission android:name="com.samsung.android.permission.SEM_GLOBAL_SEARCH" android:protectionLevel="signatureOrSystem"/>
     <permission android:name="android.permission.READ_SEARCH_INDEXABLES" android:protectionLevel="privileged|signature"/>
+    <permission android:name="com.samsung.android.provider.indexing.permission.ACCESS_PROVIDER" android:protectionLevel="signatureOrSystem"/>
     <permission android:name="android.permission.BIND_SETTINGS_SUGGESTIONS_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.WRITE_SETTINGS_HOMEPAGE_DATA" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.LAUNCH_MULTI_PANE_SETTINGS_DEEP_LINK" android:protectionLevel="preinstalled|signature"/>
@@ -2110,6 +2168,7 @@
     <permission android:name="android.permission.MANAGE_BIOMETRIC" android:protectionLevel="signature"/>
     <permission android:name="android.permission.USE_BIOMETRIC_INTERNAL" android:protectionLevel="signature"/>
     <permission android:name="android.permission.MANAGE_BIOMETRIC_DIALOG" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.SET_BIOMETRIC_DIALOG_ADVANCED" android:protectionLevel="privileged|signature"/>
     <permission android:name="com.samsung.android.permission.FINGERPRINT_PRIVILEGED" android:protectionLevel="signature"/>
     <permission android:name="com.samsung.android.permission.REQUEST_PROCESS_FIDO" android:protectionLevel="privileged|signature"/>
     <permission android:name="com.samsung.android.permission.BIOMETRICS_PRIVILEGED" android:protectionLevel="signature"/>
@@ -2140,6 +2199,7 @@
     <permission android:name="android.permission.ACCESS_NETWORK_CONDITIONS" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.ACCESS_DRM_CERTIFICATES" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.MANAGE_MEDIA_PROJECTION" android:protectionLevel="signature"/>
+    <permission android:featureFlag="android.permission.flags.sensitive_notification_app_protection" android:name="android.permission.RECORD_SENSITIVE_CONTENT" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_readInstallSessions" android:label="@string/permlab_readInstallSessions" android:name="android.permission.READ_INSTALL_SESSIONS" android:protectionLevel="normal"/>
     <permission android:name="android.permission.REMOVE_DRM_CERTIFICATES" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.BIND_CARRIER_MESSAGING_SERVICE" android:protectionLevel="privileged|signature"/>
@@ -2155,7 +2215,7 @@
     <uses-permission android:name="android.permission.LOCAL_MAC_ADDRESS"/>
     <permission android:name="android.permission.PEERS_MAC_ADDRESS" android:protectionLevel="role|setup|signature"/>
     <permission android:name="android.permission.DISPATCH_NFC_MESSAGE" android:protectionLevel="privileged|signature"/>
-    <permission android:name="android.permission.MODIFY_DAY_NIGHT_MODE" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.MODIFY_DAY_NIGHT_MODE" android:protectionLevel="privileged|role|signature"/>
     <permission android:name="android.permission.ENTER_CAR_MODE_PRIORITIZED" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.HANDLE_CAR_MODE_CHANGES" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.SEND_CATEGORY_CAR_NOTIFICATIONS" android:protectionLevel="privileged|signature"/>
@@ -2184,15 +2244,16 @@
     <permission android:name="android.permission.MANAGE_CLOUDSEARCH" android:protectionLevel="privileged|role|signature"/>
     <permission android:name="android.permission.MANAGE_MUSIC_RECOGNITION" android:protectionLevel="privileged|role|signature"/>
     <permission android:name="android.permission.MANAGE_SPEECH_RECOGNITION" android:protectionLevel="signature"/>
-    <permission android:name="android.permission.MANAGE_CONTENT_SUGGESTIONS" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.MANAGE_CONTENT_SUGGESTIONS" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.MANAGE_APP_PREDICTIONS" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.MANAGE_SEARCH_UI" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.MANAGE_SMARTSPACE" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.ACCESS_SMARTSPACE" android:protectionLevel="development|privileged|signature"/>
+    <permission android:featureFlag="android.app.contextualsearch.flags.enable_service" android:name="android.permission.ACCESS_CONTEXTUAL_SEARCH" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.MANAGE_WALLPAPER_EFFECTS_GENERATION" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.MODIFY_THEME_OVERLAY" android:protectionLevel="signature"/>
     <permission android:name="android.permission.INSTANT_APP_FOREGROUND_SERVICE" android:protectionLevel="appop|development|instant|signature"/>
     <permission android:description="@string/permdesc_foregroundService" android:label="@string/permlab_foregroundService" android:name="android.permission.FOREGROUND_SERVICE" android:protectionLevel="instant"/>
-    <permission android:name="com.samsung.android.knoxguard.STATUS" android:protectionLevel="signatureOrSystem"/>
     <permission android:description="@string/permdesc_foregroundServiceCamera" android:label="@string/permlab_foregroundServiceCamera" android:name="android.permission.FOREGROUND_SERVICE_CAMERA" android:protectionLevel="instant"/>
     <permission android:description="@string/permdesc_foregroundServiceConnectedDevice" android:label="@string/permlab_foregroundServiceConnectedDevice" android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" android:protectionLevel="instant"/>
     <permission android:description="@string/permdesc_foregroundServiceDataSync" android:label="@string/permlab_foregroundServiceDataSync" android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" android:protectionLevel="instant"/>
@@ -2205,14 +2266,16 @@
     <permission android:description="@string/permdesc_foregroundServiceRemoteMessaging" android:label="@string/permlab_foregroundServiceRemoteMessaging" android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" android:protectionLevel="instant"/>
     <permission android:description="@string/permdesc_foregroundServiceSystemExempted" android:label="@string/permlab_foregroundServiceSystemExempted" android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" android:protectionLevel="instant"/>
     <permission android:description="@string/permdesc_foregroundServiceFileManagement" android:label="@string/permlab_foregroundServiceFileManagement" android:name="android.permission.FOREGROUND_SERVICE_FILE_MANAGEMENT" android:protectionLevel="instant"/>
+    <permission android:description="@string/permdesc_foregroundServiceMediaProcessing" android:label="@string/permlab_foregroundServiceMediaProcessing" android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROCESSING" android:protectionLevel="instant"/>
     <permission android:description="@string/permdesc_foregroundServiceSpecialUse" android:label="@string/permlab_foregroundServiceSpecialUse" android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" android:protectionLevel="appop|instant"/>
+    <permission android:name="com.samsung.android.knoxguard.STATUS" android:protectionLevel="signatureOrSystem"/>
     <permission android:name="android.permission.ACCESS_SHORTCUTS" android:protectionLevel="recents|role|signature"/>
     <permission android:name="android.permission.UNLIMITED_SHORTCUTS_API_CALLS" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.READ_RUNTIME_PROFILES" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.MANAGE_AUDIO_POLICY" android:protectionLevel="signature"/>
     <permission android:name="android.permission.MODIFY_QUIET_MODE" android:protectionLevel="development|privileged|role|signature"/>
     <permission android:name="android.permission.MANAGE_CAMERA" android:protectionLevel="signature"/>
-    <permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS" android:protectionLevel="privileged|recents|signature"/>
     <permission android:name="android.permission.WATCH_APPOPS" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.DISABLE_HIDDEN_API_CHECKS" android:protectionLevel="signature"/>
     <permission android:name="android.permission.MONITOR_DEFAULT_SMS_PACKAGE" android:protectionLevel="privileged|signature"/>
@@ -2230,6 +2293,7 @@
     <permission android:name="android.permission.MARK_DEVICE_ORGANIZATION_OWNED" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.SMS_FINANCIAL_TRANSACTIONS" android:protectionLevel="appop|signature"/>
     <permission android:description="@string/permdesc_fullScreenIntent" android:label="@string/permlab_fullScreenIntent" android:name="android.permission.USE_FULL_SCREEN_INTENT" android:protectionLevel="appop"/>
+    <permission android:name="android.permission.RECEIVE_SANDBOX_TRIGGER_AUDIO" android:protectionLevel="appop|privileged|signature"/>
     <permission android:name="android.permission.SEND_DEVICE_CUSTOMIZATION_READY" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.RECEIVE_DEVICE_CUSTOMIZATION_READY" android:protectionLevel="preinstalled|signature"/>
     <permission android:name="android.permission.AMBIENT_WALLPAPER" android:protectionLevel="preinstalled|signature"/>
@@ -2256,8 +2320,8 @@
     <permission android:name="android.permission.ACCESS_LOCUS_ID_USAGE_STATS" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.MANAGE_APP_HIBERNATION" android:protectionLevel="installer|signature"/>
     <permission android:name="android.permission.RESET_APP_ERRORS" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.SET_THEME_OVERLAY_CONTROLLER_READY" android:protectionLevel="setup|signature"/>
     <permission android:name="android.permission.INPUT_CONSUMER" android:protectionLevel="signature"/>
-    <permission android:name="com.samsung.android.permission.CHANGE_DISPLAY_COLOR" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.CONTROL_DEVICE_STATE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.BIND_DISPLAY_HASHING_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.MANAGE_TOAST_RATE_LIMITING" android:protectionLevel="signature"/>
@@ -2266,6 +2330,7 @@
     <permission android:name="android.permission.ACCESS_FPS_COUNTER" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.MANAGE_GAME_ACTIVITY" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.SIGNAL_REBOOT_READINESS" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.SHOW_CUSTOMIZED_RESOLVER" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.GET_PEOPLE_TILE_PREVIEW" android:protectionLevel="recents|signature"/>
     <permission android:name="android.permission.READ_PEOPLE_DATA" android:protectionLevel="recents|role|signature"/>
     <permission android:name="android.permission.RENOUNCE_PERMISSIONS" android:protectionLevel="privileged|signature"/>
@@ -2281,6 +2346,9 @@
     <permission android:name="android.permission.READ_ASSISTANT_APP_SEARCH_DATA" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.READ_HOME_APP_SEARCH_DATA" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.EXECUTE_APP_ACTION" android:protectionLevel="internal|role"/>
+    <permission android:featureFlag="android.app.appfunctions.flags.enable_app_function_manager" android:name="android.permission.BIND_APP_FUNCTION_SERVICE" android:protectionLevel="signature"/>
+    <permission android:featureFlag="android.app.appfunctions.flags.enable_app_function_manager" android:name="android.permission.EXECUTE_APP_FUNCTIONS_TRUSTED" android:protectionLevel="internal|role"/>
+    <permission android:featureFlag="android.app.appfunctions.flags.enable_app_function_manager" android:name="android.permission.EXECUTE_APP_FUNCTIONS" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.PROVIDE_OWN_AUTOFILL_SUGGESTIONS" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.CREATE_VIRTUAL_DEVICE" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.SEND_SAFETY_CENTER_UPDATE" android:protectionLevel="internal|privileged"/>
@@ -2289,12 +2357,13 @@
     <permission android:name="android.permission.UPDATE_DEVICE_MANAGEMENT_RESOURCES" android:protectionLevel="role|signature"/>
     <permission android:name="android.permission.READ_SAFETY_CENTER_STATUS" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.MANAGE_SAFETY_CENTER" android:protectionLevel="installer|internal|role"/>
-    <permission android:description="@string/permdesc_mdmSDP" android:label="@string/permlab_mdmSDP" android:name="com.samsung.android.knox.permission.KNOX_SENSITIVE_DATA_PROTECTION" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission-group android:description="@string/permgroupdesc_mdm" android:label="@string/permgrouplab_mdm" android:name="com.sec.enterprise.permission-group.mdm"/>
+    <permission-group android:description="@string/permgroupdesc_mdm" android:label="@string/permgrouplab_mdm" android:name="com.samsung.android.knox.api-access-control-group"/>
     <permission android:description="@string/permdesc_spdControl" android:label="@string/permlab_spdControl" android:name="com.samsung.android.knox.permission.KNOX_SPDCONTROL" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_mdmRemoteControlSettings" android:label="@string/permlab_mdmRemoteControlSettings" android:name="com.samsung.android.knox.permission.KNOX_REMOTE_CONTROL" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_mdmEnterpriseContainer" android:label="@string/permlab_mdmEnterpriseContainer" android:name="com.samsung.android.knox.permission.KNOX_CONTAINER" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_mdmEnterpriseContainer" android:label="@string/permlab_mdmEnterpriseContainer" android:name="com.samsung.android.knox.permission.KNOX_APP_SEPARATION" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
+    <permission android:description="@string/permdesc_mdmEnterpriseContainer" android:label="@string/permlab_mdmEnterpriseContainer" android:name="com.samsung.android.knox.permission.KNOX_APP_SEPARATION_STANDALONE" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_enhancedAttestation" android:label="@string/permlab_enhancedAttestation" android:name="com.samsung.android.knox.permission.KNOX_ENHANCED_ATTESTATION" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:name="com.samsung.android.knox.permission.KNOX_DEVICE_REGISTRATION_REQUEST_INTENT_INTERNAL" android:protectionLevel="privileged|signature"/>
     <permission android:name="com.samsung.android.knox.permission.KPM_OPERATION_REQUEST_INFORM_ACTION_INTERNAL" android:protectionLevel="privileged|signature"/>
@@ -2317,6 +2386,10 @@
     <permission android:description="@string/permdesc_knoxCustomProKioskMode" android:label="@string/permlab_knoxCustomProKioskMode" android:name="com.samsung.android.knox.permission.KNOX_CUSTOM_SEALEDMODE" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_knoxCustomProKioskMode" android:label="@string/permlab_knoxCustomProKioskMode" android:name="com.samsung.android.knox.permission.KNOX_CUSTOM_PROKIOSK" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_knoxCustomSystem" android:label="@string/permlab_knoxCustomSystem" android:name="com.samsung.android.knox.permission.KNOX_CUSTOM_DEX" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
+    <permission android:name="com.samsung.android.knox.permission.KNOX_API_ACCESS_GRANT" android:permissionGroup="com.samsung.android.knox.api-access-control-group" android:protectionLevel="signature"/>
+    <permission android:name="com.samsung.android.knox.permission.KNOX_RC_API_ACCESS_GRANT" android:permissionGroup="com.samsung.android.knox.api-access-control-group" android:protectionLevel="signature"/>
+    <permission android:name="com.samsung.android.knox.permission.KNOX_AUTHORIZATION" android:protectionLevel="signature"/>
+    <protected-broadcast android:name="com.samsung.android.knox.intent.action.APP_AUTHORIZATION_SCOPES_CHANGED"/>
     <permission android:name="com.sec.android.permission.USE_MULTI_CONTROL_MANAGER" android:protectionLevel="signatureOrSystem"/>
     <permission android:name="com.samsung.android.permission.MULTI_CONTROL_RECEIVER_PERMISSION" android:protectionLevel="signatureOrSystem"/>
     <protected-broadcast android:name="com.samsung.android.inputshare.action.ACTION_MULTI_CONTROL_DIED"/>
@@ -2359,7 +2432,6 @@
     <permission android:description="@string/permdesc_overlay_component" android:label="@string/permlab_overlay_component" android:name="com.samsung.android.permission.SAMSUNG_OVERLAY_COMPONENT" android:protectionLevel="normal"/>
     <permission android:description="@string/permdesc_overlay_theme" android:label="@string/permlab_overlay_theme" android:name="com.samsung.android.permission.SAMSUNG_OVERLAY_THEME" android:protectionLevel="normal"/>
     <permission android:description="@string/perm_modify_theme_description" android:label="@string/perm_modify_theme_label" android:name="com.samsung.android.permission.MODIFY_THEME" android:protectionLevel="privileged|signature"/>
-    <uses-permission android:name="com.samsung.android.permission.MODIFY_THEME"/>
     <permission android:name="com.sec.restriction.permission.MTP_DISABLED" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_mdmDeActivateLicense" android:label="@string/permlab_mdmDeActivateLicense" android:name="com.sec.enterprise.knox.permission.KNOX_DEACTIVATE_LICENSE" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:name="com.samsung.container.OBSERVER" android:protectionLevel="privileged|signature"/>
@@ -2427,6 +2499,7 @@
     <permission android:description="@string/permdesc_knoxNPA" android:label="@string/permlab_knoxNPA" android:name="com.samsung.android.knox.permission.KNOX_NPA" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_knoxDualDAR" android:label="@string/permlab_knoxDualDAR" android:name="com.samsung.android.knox.permission.KNOX_DUAL_DAR" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_knoxDualDAR" android:label="@string/permlab_knoxDualDAR" android:name="com.samsung.android.knox.permission.KNOX_DUAL_DAR_INTERNAL" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
+    <permission android:description="@string/permdesc_knoxUCM" android:label="@string/permlab_knoxUCM" android:name="com.samsung.android.knox.permission.KNOX_UCM_INTERNAL" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:name="com.samsung.android.knox.permission.KNOX_SMARTCARD" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_mdmApplicationsPerm" android:label="@string/permlab_mdmApplicationsPerm" android:name="com.samsung.android.knox.permission.KNOX_APP_PERMISSION_MGMT" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:name="com.samsung.android.knox.permission.KNOX_KES_INTERNAL" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
@@ -2440,6 +2513,7 @@
     <permission android:name="com.samsung.android.bbc.bbcagent.permission.ACCESS_PROVIDER" android:protectionLevel="signature"/>
     <permission android:name="com.sec.knox.permission.KEYGUARD_SERVICE" android:protectionLevel="signatureOrSystem"/>
     <permission android:description="@string/permdesc_criticalCommunications" android:label="@string/permlab_criticalCommunications" android:name="com.samsung.android.knox.permission.KNOX_CRITICAL_COMMUNICATIONS" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
+    <permission android:name="com.samsung.android.knox.permission.KNOX_ZT_SECURITY_LOG_INTERNAL" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_mdmThreatDefense" android:label="@string/permlab_mdmThreatDefense" android:name="com.samsung.android.knox.permission.KNOX_MOBILE_THREAT_DEFENSE" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_knoxDeviceConfiguration" android:label="@string/permlab_knoxDeviceConfiguration" android:name="com.samsung.android.knox.permission.KNOX_DEVICE_CONFIGURATION" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
     <permission android:description="@string/permdesc_knoxNetworkFilterMgmt" android:label="@string/permlab_knoxNetworkFilter" android:name="com.samsung.android.knox.permission.KNOX_NETWORK_FILTER_MGMT" android:permissionGroup="com.sec.enterprise.permission-group.mdm" android:protectionLevel="signature"/>
@@ -2465,6 +2539,27 @@
     <protected-broadcast android:name="sec.intent.action.networkdiagnostic.USE_APP_FEATURE_SURVEY"/>
     <protected-broadcast android:name="com.samsung.android.intent.action.ACT_HQM_TEST_DIVISION"/>
     <protected-broadcast android:name="com.samsung.android.intent.action.ISSUETRACKER_NR_DIVISION"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_POSITION_NOTI"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_CELL_DB_REQUEST"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_GEOFENCE_RES"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_GEOFENCE_PATH_HISTORY_RES"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_LOCAL_DB_RES"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_WIFI_INFO_RES"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_TAC_ENB_INFO_REQUEST"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_PATH_HISTORY_RES"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_POLICY_REQUEST"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_SW_VERSION_RES"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_SERVER_POS_REQ"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_CELL_INFO_RES"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_CELL_DB_REQUEST_REV01"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_TACENB_INFO_REQUEST_REV01"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.CLM_TT_REGRESSION_RES"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.NOTIFY_PREPROCESSING_MAINTENANCE_MODE"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.NOTIFY_POSTPROCESSING_MAINTENANCE_MODE"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.HIDE_MAINTENANCE_MODE_MARK"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.SHOW_MAINTENANCE_MODE_MARK"/>
+    <permission android:name="com.samsung.android.permission.ACCESS_MAINTENANCE_MODE" android:protectionLevel="privileged|signature"/>
     <permission android:name="com.samsung.adaptivebrightnessgo.permission.ADAPTIVE_BRIGHTNESS_PERMISSION" android:protectionLevel="signatureOrSystem"/>
     <uses-permission android:name="com.samsung.adaptivebrightnessgo.permission.ADAPTIVE_BRIGHTNESS_PERMISSION"/>
     <permission android:name="com.samsung.adaptivebrightnessgo.permission.SEM_ADAPTIVE_BRIGHTNESS" android:protectionLevel="signatureOrSystem"/>
@@ -2475,7 +2570,6 @@
     <permission android:name="android.permission.ACCESS_AMBIENT_CONTEXT_EVENT" android:protectionLevel="privileged|role|signature"/>
     <permission android:name="android.permission.BIND_AMBIENT_CONTEXT_DETECTION_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.SET_UNRESTRICTED_KEEP_CLEAR_AREAS" android:protectionLevel="privileged|signature"/>
-    <uses-permission android:name="com.samsung.android.smartmirroring.READ"/>
     <permission android:name="com.samsung.android.permission.SEM_APP_RESTRICTION" android:protectionLevel="signatureOrSystem"/>
     <protected-broadcast android:name="FIRST_ALARM_TRIGGER_ACTION"/>
     <protected-broadcast android:name="com.sec.android.mars.APP_SLEEP_NOTIFY"/>
@@ -2484,9 +2578,8 @@
     <protected-broadcast android:name="com.android.server.am.MARS_TRIGGER_UDS_POLICY"/>
     <protected-broadcast android:name="com.android.server.am.MARS_TRIGGER_SBIKE_MODE_POLICY"/>
     <protected-broadcast android:name="com.android.server.am.MARS_TRIGGER_MPSM_POLICY"/>
-    <permission android:name="com.samsung.android.permission.SEM_CONTROL_DISPLAY_COLOR_TRANSFORMS" android:protectionLevel="signatureOrSystem"/>
-    <permission android:name="com.samsung.android.permission.READ_FRAME_BUFFER_IGNORE_POLICY" android:protectionLevel="privileged|signature"/>
-    <uses-permission android:name="com.samsung.android.permission.READ_FRAME_BUFFER_IGNORE_POLICY"/>
+    <protected-broadcast android:name="com.samsung.intent.action.OLAF_STATE_CHANGED"/>
+    <protected-broadcast android:name="com.sec.android.sdhms.action.TCPU_LOG"/>
     <permission android:name="android.permission.SET_UNRESTRICTED_GESTURE_EXCLUSION" android:protectionLevel="privileged|recents|signature"/>
     <permission android:name="android.permission.TIS_EXTENSION_INTERFACE" android:protectionLevel="privileged|signature|vendorPrivileged"/>
     <permission android:name="android.permission.WRITE_SECURITY_LOG" android:protectionLevel="privileged|signature"/>
@@ -2494,14 +2587,28 @@
     <permission android:name="android.permission.HANDLE_QUERY_PACKAGE_RESTART" android:protectionLevel="signature"/>
     <permission android:name="android.permission.REMAP_MODIFIER_KEYS" android:protectionLevel="signature"/>
     <permission android:name="android.permission.MONITOR_KEYBOARD_BACKLIGHT" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.MONITOR_STICKY_MODIFIER_STATE" android:protectionLevel="signature"/>
     <uses-permission android:name="android.permission.HANDLE_QUERY_PACKAGE_RESTART"/>
     <permission android:name="android.permission.MANAGE_DEVICE_LOCK_STATE" android:protectionLevel="internal|role"/>
     <permission android:name="android.permission.BIND_WEARABLE_SENSING_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.MANAGE_WEARABLE_SENSING_SERVICE" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.USE_ON_DEVICE_INTELLIGENCE" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.BIND_ON_DEVICE_INTELLIGENCE_SERVICE" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.BIND_ON_DEVICE_SANDBOXED_INFERENCE_SERVICE" android:protectionLevel="signature"/>
     <permission android:name="android.permission.RUN_USER_INITIATED_JOBS" android:protectionLevel="normal"/>
-    <permission android:name="android.permission.GET_APP_METADATA" android:protectionLevel="installer|signature"/>
+    <permission android:name="com.samsung.android.security.permission.SAMSUNG_KEYSTORE_PERMISSION" android:protectionLevel="signatureOrSystem"/>
+    <uses-permission android:name="com.samsung.android.security.permission.SAMSUNG_KEYSTORE_PERMISSION"/>
+    <permission android:name="com.samsung.android.security.permission.SAMSUNG_SECUREKEY_PERMISSION" android:protectionLevel="signatureOrSystem"/>
+    <uses-permission android:name="com.samsung.android.security.permission.SAMSUNG_SECUREKEY_PERMISSION"/>
+    <permission android:name="com.samsung.security.fabric.crypto.permission.KNOX_MATRIX" android:protectionLevel="signatureOrSystem"/>
+    <uses-permission android:name="com.samsung.security.fabric.crypto.permission.KNOX_MATRIX"/>
+    <permission android:name="com.samsung.android.dsms.permission.SEND_MESSAGE" android:protectionLevel="signature"/>
+    <uses-permission android:name="com.samsung.android.dsms.permission.SEND_MESSAGE"/>
+    <permission android:name="com.samsung.android.dsms.permission.ACCESS_LOGS" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.GET_APP_METADATA" android:protectionLevel="installer|signature|verifier"/>
     <permission android:knownCerts="@array/config_healthConnectRestoreKnownSigners" android:name="android.permission.STAGE_HEALTH_CONNECT_REMOTE_DATA" android:protectionLevel="knownSigner|signature"/>
     <permission android:name="android.permission.DELETE_STAGED_HEALTH_CONNECT_REMOTE_DATA" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.START_ACTIVITIES_FROM_SDK_SANDBOX" android:protectionLevel="signature"/>
     <permission android:knownCerts="@array/config_healthConnectMigrationKnownSigners" android:name="android.permission.MIGRATE_HEALTH_CONNECT_DATA" android:protectionLevel="knownSigner|signature"/>
     <permission android:name="android.permission.QUERY_CLONED_APPS" android:protectionLevel="privileged|signature"/>
     <permission android:name="android.permission.CAPTURE_CONSENTLESS_BUGREPORT_ON_USERDEBUG_BUILD" android:protectionLevel="appop|internal"/>
@@ -2510,9 +2617,33 @@
     <permission android:name="android.permission.GET_ANY_PROVIDER_TYPE" android:protectionLevel="signature"/>
     <permission android:name="com.samsung.android.permission.RUN_DISK_DEFRAGMENTATION" android:protectionLevel="privileged|signature"/>
     <permission android:name="com.samsung.android.permission.SEM_VOLD_DATA_MOVE" android:protectionLevel="signature"/>
-    <permission android:name="com.sec.android.permission.IN_APP_SOUND" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.SYNC_FLAGS" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.WRITE_FLAGS" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.GET_BINDING_UID_IMPORTANCE" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.MANAGE_DISPLAYS" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.PREPARE_FACTORY_RESET" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.OVERRIDE_SYSTEM_KEY_BEHAVIOR_IN_FOCUSED_WINDOW" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.RECEIVE_SENSITIVE_NOTIFICATIONS" android:protectionLevel="role|signature"/>
+    <permission android:name="android.permission.GET_BACKGROUND_INSTALLED_PACKAGES" android:protectionLevel="role|signature"/>
+    <permission android:name="android.permission.READ_SYSTEM_GRAMMATICAL_GENDER" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.EMERGENCY_INSTALL_PACKAGES" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.RESTRICT_DISPLAY_MODES" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.SCREEN_TIMEOUT_OVERRIDE" android:protectionLevel="signature"/>
+    <permission android:name="android.permission.SETUP_FSVERITY" android:protectionLevel="privileged|signature"/>
+    <permission android:name="android.permission.RESERVED_FOR_TESTING_SIGNATURE" android:protectionLevel="signature"/>
     <permission android:name="com.samsung.android.permission.SEM_UPDATE_NOTIFICATION_CHANNELS" android:protectionLevel="signatureOrSystem"/>
     <permission android:name="com.samsung.android.permission.SEM_AUTO_BIND_NOTIFICATION_LISTENER_SERVICE" android:protectionLevel="privileged|signature"/>
+    <permission android:name="com.samsung.android.permission.SEM_CONTROL_DISPLAY_COLOR_TRANSFORMS" android:protectionLevel="signatureOrSystem"/>
+    <permission android:name="com.samsung.android.permission.WRITE_CAPTURED_URL" android:protectionLevel="signatureOrSystem"/>
+    <uses-permission android:name="com.samsung.android.permission.WRITE_CAPTURED_URL"/>
+    <permission android:name="com.samsung.android.permission.SEM_WRITE_CAPTURED_URL" android:protectionLevel="signatureOrSystem"/>
+    <uses-permission android:name="com.samsung.android.permission.SEM_WRITE_CAPTURED_URL"/>
+    <protected-broadcast android:name="com.samsung.android.action.MULTI_WINDOW_ENABLE_CHANGED"/>
+    <permission android:name="com.samsung.android.permission.MULTI_WINDOW_MONITOR" android:protectionLevel="signatureOrSystem"/>
+    <permission android:name="com.oma.drm.permission.ACCESS_OMA_DRM" android:protectionLevel="normal"/>
+    <protected-broadcast android:name="com.samsung.android.multiwindow.MINIMIZE_ALL_BY_SYSTEM"/>
+    <permission android:name="com.samsung.android.permission.SEM_SET_DEVICE_BLOCK" android:protectionLevel="signature"/>
+    <permission android:name="com.samsung.android.permission.LID_STATE" android:protectionLevel="signature"/>
     <attribution android:label="@string/slocation_service" android:tag="SLocationService"/>
     <attribution android:label="@string/geofencing_service" android:tag="GeofencingService"/>
     <attribution android:label="@string/country_detector" android:tag="CountryDetector"/>
@@ -2522,34 +2653,12 @@
     <attribution android:label="@string/twilight_service" android:tag="TwilightService"/>
     <attribution android:label="@string/gnss_time_update_service" android:tag="GnssTimeUpdateService"/>
     <attribution android:label="@string/music_recognition_manager_service" android:tag="MusicRecognitionManagerService"/>
-    <attribution android:label="@string/biometrics_face_service" android:tag="Biometrics_FaceService"/>
-    <permission android:name="com.samsung.android.permission.SEM_SET_DEVICE_BLOCK" android:protectionLevel="signature"/>
-    <permission android:name="com.samsung.android.permission.LID_STATE" android:protectionLevel="signature"/>
-    <permission android:name="com.samsung.android.permission.SEM_WRITE_CAPTURED_URL" android:protectionLevel="signatureOrSystem"/>
-    <uses-permission android:name="com.samsung.android.permission.SEM_WRITE_CAPTURED_URL"/>
-    <permission android:name="com.samsung.android.permisson.SCREEN_ROTATION_ANIMATION_STARTED" android:protectionLevel="signature"/>
-    <uses-permission android:name="com.samsung.android.permisson.SCREEN_ROTATION_ANIMATION_STARTED"/>
-    <protected-broadcast android:name="com.samsung.android.action.SCREEN_ROTATION_ANIMATION_STARTED"/>
-    <protected-broadcast android:name="com.samsung.android.action.MULTI_WINDOW_ENABLE_CHANGED"/>
-    <permission android:name="com.samsung.android.permission.MULTI_WINDOW_MONITOR" android:protectionLevel="signatureOrSystem"/>
     <attribution android:label="@string/device_policy_manager_service" android:tag="DevicePolicyManagerService"/>
+    <attribution android:label="@string/sensor_context_provider" android:tag="SensorContextProvider"/>
+    <attribution android:label="@string/biometrics_face_service" android:tag="Biometrics_FaceService"/>
     <protected-broadcast android:name="com.samsung.android.action.ENTER_CONTENTS_TO_WINDOW"/>
-    <protected-broadcast android:name="com.samsung.android.multiwindow.MINIMIZE_ALL_BY_SYSTEM"/>
     <application android:allowClearUserData="false" android:backupAgent="com.android.server.backup.SystemBackupAgent" android:defaultToDeviceProtectedStorage="true" android:directBootAware="true" android:extractNativeLibs="true" android:forceQueryable="true" android:hasCode="false" android:icon="@drawable/ic_launcher_android" android:killAfterRestore="false" android:label="@string/android_system_label" android:persistent="true" android:process="system" android:supportsRtl="true" android:theme="@style/Theme.DeviceDefault.Light.DarkActionBar">
         <meta-data android:name="com.samsung.android.rubin.device_runestone_enabled" android:value="true"/>
-        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="true" android:label="@string/maintenance_mode_name" android:name="com.samsung.android.core.pm.mm.MaintenanceModeIntroActivity" android:permission="com.samsung.android.permission.ACCESS_MAINTENANCE_MODE" android:theme="@style/Theme.MaintenanceMode">
-            <intent-filter>
-                <action android:name="com.samsung.android.intent.action.ENABLE_MAINTENANCE_MODE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <service android:exported="false" android:foregroundServiceType="systemExempted" android:name="com.samsung.android.core.pm.mm.MaintenanceModeNotificationService" android:process=":ui"/>
-        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="true" android:label="@string/maintenance_mode_outro_label" android:name="com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity" android:permission="com.samsung.android.permission.ACCESS_MAINTENANCE_MODE" android:theme="@style/Theme.MaintenanceMode">
-            <intent-filter>
-                <action android:name="com.samsung.android.intent.action.DISABLE_MAINTENANCE_MODE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
         <activity android:documentLaunchMode="never" android:excludeFromRecents="true" android:exported="false" android:finishOnCloseSystemDialogs="true" android:name="com.android.internal.accessibility.dialog.AccessibilityShortcutChooserActivity" android:process=":ui" android:relinquishTaskIdentity="true" android:theme="@style/Theme.DeviceDefault.Dialog.Alert.DayNight" android:visibleToInstantApps="true">
             <intent-filter>
                 <action android:name="com.android.internal.intent.action.CHOOSE_ACCESSIBILITY_BUTTON"/>
@@ -2562,9 +2671,15 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:documentLaunchMode="never" android:excludeFromRecents="true" android:exported="false" android:finishOnCloseSystemDialogs="true" android:name="com.android.internal.accessibility.dialog.AccessibilityButtonChooserActivity" android:process=":ui" android:relinquishTaskIdentity="true" android:theme="@style/Theme.DeviceDefault.Resolver" android:visibleToInstantApps="true">
+        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:documentLaunchMode="never" android:excludeFromRecents="true" android:exported="false" android:finishOnCloseSystemDialogs="true" android:name="com.android.internal.accessibility.dialog.AccessibilityButtonChooserActivity" android:process=":ui" android:relinquishTaskIdentity="true" android:theme="@style/AccessibilityButtonChooserDialog" android:visibleToInstantApps="true">
             <intent-filter>
                 <action android:name="com.android.internal.intent.action.CHOOSE_ACCESSIBILITY_BUTTON"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:excludeFromRecents="true" android:exported="true" android:finishOnCloseSystemDialogs="true" android:multiprocess="true" android:name="com.android.internal.app.NfcResolverActivity" android:permission="android.permission.SHOW_CUSTOMIZED_RESOLVER" android:theme="@style/Theme.Dialog.Alert">
+            <intent-filter android:priority="100">
+                <action android:name="android.nfc.action.SHOW_NFC_RESOLVER"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
@@ -2573,13 +2688,57 @@
         <activity-alias android:exported="true" android:icon="@drawable/ic_corp_badge" android:label="@string/managed_profile_label" android:name="com.android.internal.app.ForwardIntentToManagedProfile" android:targetActivity="com.android.internal.app.IntentForwarderActivity"/>
         <activity-alias android:exported="true" android:icon="@drawable/ic_corp_badge" android:label="@string/secure_folder" android:name="com.android.internal.app.ForwardIntentToManagedProfile4" android:resizeableActivity="true" android:targetActivity="com.android.internal.app.IntentForwarderActivity"/>
         <activity android:excludeFromRecents="true" android:finishOnCloseSystemDialogs="true" android:label="@string/heavy_weight_switcher_title" android:name="com.android.internal.app.HeavyWeightSwitcherActivity" android:process=":ui" android:theme="@style/Theme.DeviceDefault.System.Dialog.Alert"/>
-        <activity android:configChanges="keyboardHidden|orientation|screenLayout|screenSize" android:icon="@drawable/platlogo" android:name="com.android.internal.app.PlatLogoActivity" android:process=":ui" android:theme="@style/Theme.Wallpaper.NoTitleBar.Fullscreen"/>
+        <activity android:configChanges="keyboardHidden|orientation|screenLayout|screenSize" android:enableOnBackInvokedCallback="true" android:icon="@drawable/platlogo" android:name="com.android.internal.app.PlatLogoActivity" android:process=":ui" android:theme="@style/Theme.NoTitleBar.Fullscreen"/>
         <activity android:excludeFromRecents="true" android:name="com.android.internal.app.DisableCarModeActivity" android:process=":ui" android:theme="@style/Theme.NoDisplay"/>
+        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="true" android:label="@string/maintenance_mode_name" android:name="com.samsung.android.core.pm.mm.MaintenanceModeIntroActivity" android:permission="com.samsung.android.permission.ACCESS_MAINTENANCE_MODE" android:theme="@style/Theme.MaintenanceMode">
+            <intent-filter>
+                <action android:name="com.samsung.android.intent.action.ENABLE_MAINTENANCE_MODE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="true" android:name="com.samsung.android.core.pm.mm.MaintenanceModeProxyActivity" android:noHistory="true" android:theme="@style/Theme.Translucent.NoTitleBar">
+            <intent-filter android:priority="1">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="oneui"/>
+                <data android:host="maintenance-mode"/>
+            </intent-filter>
+            <intent-filter android:priority="1">
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
+                <data android:host="www.samsung.com"/>
+                <data android:pathAdvancedPattern="/sec/maintenance-mode/{0,1}"/>
+                <data android:pathPattern="/.*/support/maintenance-mode"/>
+                <data android:pathPattern="/.*/support/maintenance-mode/"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
+                <data android:host="www.samsung.com"/>
+                <data android:pathAdvancedPattern="/sec/maintenance-mode/{0,1}"/>
+                <data android:pathPattern="/.*/support/maintenance-mode"/>
+                <data android:pathPattern="/.*/support/maintenance-mode/"/>
+            </intent-filter>
+        </activity>
+        <service android:exported="false" android:foregroundServiceType="systemExempted" android:name="com.samsung.android.core.pm.mm.MaintenanceModeNotificationService" android:process=":ui"/>
+        <receiver android:exported="false" android:name="com.samsung.android.core.pm.mm.MaintenanceModeNotificationService$DismissalReceiver"/>
+        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="true" android:label="@string/maintenance_mode_outro_label" android:name="com.samsung.android.core.pm.mm.MaintenanceModeOutroActivity" android:permission="com.samsung.android.permission.ACCESS_MAINTENANCE_MODE" android:theme="@style/Theme.MaintenanceMode">
+            <intent-filter>
+                <action android:name="com.samsung.android.intent.action.DISABLE_MAINTENANCE_MODE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
         <activity android:excludeFromRecents="true" android:exported="true" android:label="@string/choose_account_label" android:name="android.accounts.ChooseAccountActivity" android:process=":ui" android:theme="@style/Theme.DeviceDefault.Light.Dialog" android:visibleToInstantApps="true"/>
         <activity android:excludeFromRecents="true" android:exported="true" android:label="@string/choose_account_label" android:name="android.accounts.ChooseTypeAndAccountActivity" android:process=":ui" android:theme="@style/Theme.DeviceDefault.Light.Dialog" android:visibleToInstantApps="true"/>
         <activity android:excludeFromRecents="true" android:label="@string/choose_account_label" android:name="android.accounts.ChooseAccountTypeActivity" android:process=":ui" android:theme="@style/Theme.DeviceDefault.Light.Dialog" android:visibleToInstantApps="true"/>
         <activity android:excludeFromRecents="true" android:exported="true" android:name="android.accounts.CantAddAccountActivity" android:process=":ui" android:theme="@style/Theme.DeviceDefault.Light.Dialog.NoActionBar"/>
-        <activity android:excludeFromRecents="true" android:exported="true" android:name="android.accounts.GrantCredentialsPermissionActivity" android:process=":ui" android:theme="@style/Theme.DeviceDefault.Light.DialogWhenLarge" android:visibleToInstantApps="true"/>
+        <activity android:excludeFromRecents="true" android:exported="true" android:name="android.accounts.GrantCredentialsPermissionActivity" android:process=":ui" android:theme="@style/GrantCredentialsPermissionActivity" android:visibleToInstantApps="true"/>
         <activity android:label="@string/sync_too_many_deletes" android:name="android.content.SyncActivityTooManyDeletes" android:process=":ui" android:theme="@style/Theme.DeviceDefault.Light.Dialog"/>
         <activity android:excludeFromRecents="true" android:exported="true" android:name="com.android.internal.app.ShutdownActivity" android:permission="android.permission.SHUTDOWN" android:theme="@style/Theme.NoDisplay">
             <intent-filter>
@@ -2591,7 +2750,6 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:excludeFromRecents="true" android:name="com.android.internal.app.NetInitiatedActivity" android:process=":ui" android:theme="@style/Theme.Dialog.Confirmation"/>
         <activity android:enabled="false" android:exported="true" android:name="com.android.internal.app.SystemUserHomeActivity" android:process=":ui" android:systemUserOnly="true" android:theme="@style/Theme.Translucent.NoTitleBar">
             <intent-filter android:priority="-100">
                 <action android:name="android.intent.action.MAIN"/>
@@ -2604,22 +2762,30 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="false" android:name="com.samsung.android.core.pm.install.UnknownSourcePhishingActivity" android:theme="@style/Theme.UnknownSource"/>
-        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:exported="false" android:name="com.samsung.android.core.pm.install.UnknownSourceAppBlockActivity" android:theme="@style/Theme.UnknownSource"/>
+        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode" android:excludeFromRecents="true" android:exported="false" android:name="com.samsung.android.core.pm.install.UnknownSourceAppBlockActivity" android:process=":ui" android:theme="@style/Theme.UnknownSource"/>
         <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" android:excludeFromRecents="true" android:name="com.samsung.android.core.pm.install.UnknownSourceConfirmActivity" android:process=":ui" android:theme="@style/Theme.Dialog.Confirmation"/>
         <activity android:excludeFromRecents="true" android:name="com.android.internal.app.SuspendedAppActivity" android:process=":ui" android:theme="@style/Theme.Dialog.Confirmation"/>
         <activity android:excludeFromRecents="true" android:name="com.android.internal.app.FrozenAppActivity" android:process=":ui" android:theme="@style/Theme.NoDisplay"/>
         <activity android:excludeFromRecents="true" android:name="com.android.internal.app.UnlaunchableAppActivity" android:process=":ui" android:theme="@style/Theme.Dialog.Confirmation"/>
+        <activity android:excludeFromRecents="true" android:name="com.android.internal.app.SetScreenLockDialogActivity" android:process=":ui" android:theme="@style/Theme.Dialog.Confirmation"/>
         <activity android:excludeFromRecents="true" android:lockTaskMode="always" android:name="com.android.internal.app.BlockedAppActivity" android:process=":ui" android:theme="@style/Theme.Dialog.Confirmation"/>
-        <activity android:excludeFromRecents="true" android:name="com.android.internal.app.BlockedAppStreamingActivity" android:process=":ui" android:theme="@style/Theme.Dialog.Confirmation"/>
+        <activity android:excludeFromRecents="true" android:name="com.android.internal.app.BlockedAppStreamingActivity" android:process=":ui" android:showForAllUsers="true" android:theme="@style/Theme.Dialog.Confirmation"/>
         <activity android:excludeFromRecents="true" android:name="com.android.internal.app.LaunchAfterAuthenticationActivity" android:process=":ui" android:theme="@style/Theme.Translucent.NoTitleBar"/>
         <activity android:excludeFromRecents="true" android:name="com.android.settings.notification.NotificationAccessConfirmationActivity" android:theme="@style/Theme.Dialog.Confirmation"/>
         <activity android:excludeFromRecents="true" android:exported="false" android:label="@string/harmful_app_warning_title" android:name="com.android.internal.app.HarmfulAppWarningActivity" android:process=":ui" android:theme="@style/Theme.Dialog.Confirmation"/>
+        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode" android:excludeFromRecents="true" android:exported="true" android:name="com.samsung.android.core.AppBlockDialogActivity" android:process=":ui" android:theme="@style/Theme.Dialog.Confirmation">
+            <intent-filter>
+                <action android:name="com.samsung.intent.action.APP_JUMP_BLOCK_DIALOG"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
         <activity android:excludeFromRecents="true" android:exported="false" android:name="com.android.server.notification.NASLearnMoreActivity" android:theme="@style/Theme.Dialog.Confirmation"/>
+        <receiver android:enabled="true" android:exported="true" android:name="com.android.server.StorageManagerService$StorageBadRemovalReceiver" android:permission="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
         <activity android:excludeFromRecents="true" android:exported="true" android:name="android.service.games.GameSessionTrampolineActivity" android:permission="android.permission.MANAGE_GAME_ACTIVITY" android:theme="@style/Theme.GameSessionTrampoline"/>
         <receiver android:exported="true" android:name="com.android.server.BootReceiver" android:systemUserOnly="true">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
         <receiver android:exported="true" android:name="com.android.server.updates.CertPinInstallReceiver" android:permission="android.permission.UPDATE_CONFIG">
@@ -2658,7 +2824,7 @@
                 <data android:host="*" android:mimeType="*/*" android:scheme="content"/>
             </intent-filter>
         </receiver>
-        <service android:exported="false" android:name="com.android.server.DrmEventService" android:permission="android.permission.READ_PHONE_STATE" android:process=":drmService"/>
+        <service android:exported="false" android:name="com.android.server.DrmEventService" android:permission="android.permission.READ_PHONE_STATE"/>
         <receiver android:exported="true" android:name="com.android.server.updates.CertificateTransparencyLogInstallReceiver" android:permission="android.permission.UPDATE_CONFIG">
             <intent-filter>
                 <action android:name="android.intent.action.UPDATE_CT_LOGS"/>
@@ -2713,6 +2879,11 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+        <receiver android:exported="false" android:name="com.android.server.sdksandbox.SdkSandboxVerifierReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_NEEDS_VERIFICATION"/>
+            </intent-filter>
+        </receiver>
         <receiver android:exported="true" android:name="com.android.server.am.KillPolicyManager$AutoRestartParameterReceiver" android:systemUserOnly="true">
             <intent-filter>
                 <action android:name="com.android.server.am.BROADCAST_SET_PMM_AUTO_RESTART_PARAMETER_INTENT"/>
@@ -2733,7 +2904,9 @@
         <service android:name="com.android.server.content.SyncJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:exported="true" android:name="com.android.server.pm.BackgroundDexOptJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.pm.DynamicCodeLoggingService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:name="com.android.server.selinux.SelinuxAuditLogsService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.compos.IsolatedCompilationJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:name="com.android.system.virtualmachine.SecretkeeperJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.PruneInstantAppsJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.storage.DiskStatsLoggingService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.PreloadsFileCacheExpirationJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
@@ -2748,11 +2921,15 @@
             <meta-data android:name="android.accessibilityservice" android:resource="@xml/autofill_compat_accessibility_service"/>
         </service>
         <service android:name="com.android.server.blob.BlobStoreIdleJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
-        <service android:name="com.android.server.companion.InactiveAssociationsRemovalService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:name="com.android.server.am.mars.EventRecorder$RemoveOutdatedJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:name="com.android.server.companion.association.InactiveAssociationsRemovalService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:name="com.android.server.ipm.nap.NapBigDataService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:name="com.android.server.ipm.auf.IpmAufPredictor" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.appsearch.contactsindexer.ContactsIndexerMaintenanceService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.BinaryTransparencyService$UpdateMeasurementsJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.notification.ReviewNotificationPermissionsJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.notification.NotificationHistoryJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:name="com.android.server.notification.NotificationBitmapJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.healthconnect.HealthConnectDailyService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.healthconnect.migration.MigrationBroadcastJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.android.server.healthconnect.backuprestore.BackupRestore$BackupRestoreJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
@@ -2767,7 +2944,7 @@
             </intent-filter>
         </service>
         <service android:name="com.android.server.art.BackgroundDexoptJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
-        <service android:exported="true" android:name="com.android.server.companion.datatransfer.contextsync.CallMetadataSyncInCallService" android:permission="android.permission.BIND_INCALL_SERVICE">
+        <service android:enabled="@bool/config_enableContextSyncInCall" android:exported="true" android:name="com.android.server.companion.datatransfer.contextsync.CallMetadataSyncInCallService" android:permission="android.permission.BIND_INCALL_SERVICE">
             <meta-data android:name="android.telecom.INCLUDE_SELF_MANAGED_CALLS" android:value="true"/>
             <intent-filter>
                 <action android:name="android.telecom.InCallService"/>
@@ -2780,36 +2957,20 @@
         </service>
         <service android:exported="true" android:name="com.samsung.android.server.pm.rescueparty.SystemFileBackupManager$BackupJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:exported="true" android:name="com.samsung.android.server.pm.role.RoleLogger$RoleLoggingService" android:permission="android.permission.BIND_JOB_SERVICE"/>
-        <service android:name="com.android.server.wm.CoreSaStatusLoggingService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service android:exported="true" android:name="com.samsung.android.server.dynamicfeature.CheckUpdateJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service android:name="com.samsung.android.localeoverlaymanager.LocaleOverlaysSanityService" android:permission="android.permission.BIND_JOB_SERVICE"/>
         <provider android:authorities="com.android.textclassifier.icons" android:enabled="true" android:exported="true" android:name="com.android.server.textclassifier.IconsContentProvider" android:singleUser="true"/>
+        <provider android:authorities="com.samsung.android.content.clipboard" android:enabled="true" android:exported="true" android:multiprocess="false" android:name="com.samsung.android.content.clipboard.provider.SemImageClipDataProvider" android:singleUser="true"/>
         <meta-data android:name="com.android.server.patch.25239169" android:value="true"/>
         <provider android:authorities="com.samsung.server.wifi" android:exported="true" android:multiprocess="false" android:name="com.samsung.android.wifi.db.WifiControlHistoryProvider" android:permission="android.permission.NETWORK_SETTINGS" android:singleUser="true"/>
+        <provider android:authorities="com.samsung.server.wifi.mwips" android:exported="true" android:multiprocess="false" android:name="com.samsung.android.wifi.mobilewips.SemMobileWipsProvider" android:singleUser="true"/>
         <provider android:authorities="com.samsung.android.wifi.softap" android:exported="true" android:multiprocess="false" android:name="com.samsung.android.wifi.ap.SemWifiApContentProvider" android:readPermission="android.permission.OVERRIDE_WIFI_CONFIG" android:singleUser="true" android:writePermission="android.permission.OVERRIDE_WIFI_CONFIG"/>
-        <provider android:authorities="com.samsung.android.content.clipboard" android:enabled="true" android:exported="true" android:multiprocess="false" android:name="com.samsung.android.content.clipboard.provider.SemImageClipDataProvider" android:singleUser="true"/>
+        <provider android:authorities="com.android.server.chimera.provider" android:enabled="true" android:exported="true" android:name="com.android.server.chimera.PreferenceProvider"/>
         <provider android:authorities="com.sec.knox.provider" android:exported="true" android:multiprocess="false" android:name="com.android.server.enterprise.content.SecContentProvider" android:singleUser="true"/>
         <provider android:authorities="com.sec.knox.provider2" android:exported="true" android:multiprocess="false" android:name="com.android.server.enterprise.content.SecContentProvider2" android:singleUser="true"/>
         <provider android:authorities="com.samsung.android.knox.analytics.provider" android:enabled="true" android:exported="true" android:multiprocess="false" android:name="com.samsung.android.knox.analytics.database.KnoxAnalyticsContentProvider" android:singleUser="true"/>
-        <provider android:authorities="com.samsung.server.wifi.mwips" android:exported="true" android:multiprocess="false" android:name="com.samsung.android.wifi.mobilewips.SemMobileWipsProvider" android:singleUser="true"/>
         <provider android:authorities="com.android.server.notification.provider" android:enabled="true" android:exported="true" android:name="com.samsung.android.server.notification.NotificationHistoryImageProvider"/>
-        <provider android:authorities="com.android.server.chimera.provider" android:enabled="true" android:exported="true" android:name="com.android.server.chimera.PreferenceProvider"/>
     </application>
-    <permission android:name="com.samsung.android.security.permission.SAMSUNG_KEYSTORE_PERMISSION" android:protectionLevel="signatureOrSystem"/>
-    <uses-permission android:name="com.samsung.android.security.permission.SAMSUNG_KEYSTORE_PERMISSION"/>
-    <permission android:name="com.samsung.android.security.permission.SAMSUNG_SECUREKEY_PERMISSION" android:protectionLevel="signatureOrSystem"/>
-    <uses-permission android:name="com.samsung.android.security.permission.SAMSUNG_SECUREKEY_PERMISSION"/>
-    <permission android:name="com.samsung.permission.WIFI_WIPS" android:protectionLevel="signatureOrSystem"/>
-    <permission android:name="com.samsung.security.fabric.crypto.permission.KNOX_MATRIX" android:protectionLevel="signatureOrSystem"/>
-    <uses-permission android:name="com.samsung.security.fabric.crypto.permission.KNOX_MATRIX"/>
-    <permission android:name="com.samsung.android.dsms.permission.SEND_MESSAGE" android:protectionLevel="signature"/>
-    <uses-permission android:name="com.samsung.android.dsms.permission.SEND_MESSAGE"/>
-    <permission android:name="com.samsung.android.dsms.permission.ACCESS_LOGS" android:protectionLevel="signature"/>
-    <permission android:description="@string/permgroupdesc_secdir" android:label="@string/permgrouplab_secdir" android:name="com.samsung.android.permission.SEM_MEDIA_CONTENTS" android:protectionLevel="signatureOrSystem"/>
-    <uses-permission android:name="com.samsung.android.permission.SEM_MEDIA_CONTENTS"/>
-    <permission android:name="com.samsung.unifiedtp.permission.PROVISION_HOTSPOT_TRIGGER" android:protectionLevel="signatureOrSystem"/>
-    <permission android:name="com.samsung.permission.WIFI_FACTORY_TEST" android:protectionLevel="privileged|signature"/>
-    <permission android:name="com.samsung.permission.SEM_ACCESS_WIFI_SECURED_INFO" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="signatureOrSystem"/>
-    <permission android:name="com.samsung.permission.WIFI_DIAGNOSTICS_PROVIDER" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="privileged|signature"/>
     <protected-broadcast android:name="com.samsung.intent.action.BIG_DATA_INFO"/>
     <protected-broadcast android:name="com.verizon.provider.DATA_ACTIVITY_CHANGE"/>
     <protected-broadcast android:name="com.samsung.intent.action.ACTION_DRX_BACK_TO_DEFAULT"/>
@@ -2831,7 +2992,7 @@
     <protected-broadcast android:name="com.samsung.intent.action.FAKE_CELL"/>
     <protected-broadcast android:name="com.samsung.intent.action.MSG_DECODE_ERROR"/>
     <protected-broadcast android:name="com.samsung.telephony.event.EVENT_ICON_UW_DSQ_CHANGED"/>
-    <protected-broadcast android:name="com.samsung.intent.action.PS_BEARER_HANDOVER"/>
+    <protected-broadcast android:name="com.samsung.intent.action.SATELLITE_MODE_CHANGED"/>
     <permission android:name="com.verizon.mcptt.API_ACCESS" android:protectionLevel="privileged|signature"/>
     <permission android:name="com.verizon.ptt.API_ACCESS" android:protectionLevel="privileged|signature"/>
     <protected-broadcast android:name="com.sec.epdg.DISABLE_WIFI_CALLING"/>
@@ -2863,43 +3024,74 @@
     <protected-broadcast android:name="com.sec.epdg.action.EPDG_CONFIGURATION_UPDATED"/>
     <protected-broadcast android:name="com.tmobile.comm.METRIC"/>
     <protected-broadcast android:name="com.samsung.android.unifiedwfc.LAUNCH_UNIFIED_WFC"/>
-    <protected-broadcast android:name="android.intent.action.EcholocateEpdgHandover"/>
+    <protected-broadcast android:name="android.intent.action.EcholocateSliceConfigChanged"/>
+    <protected-broadcast android:name="samsung.net.ethernet.ETH_STATE_CHANGED"/>
     <protected-broadcast android:name="com.samsung.android.server.action_check_gms_network"/>
     <protected-broadcast android:name="com.samsung.android.server.action_insert_log"/>
     <protected-broadcast android:name="com.samsung.android.server.action_google_net_state"/>
-    <permission android:name="com.sec.permission.OTG_CHARGE_BLOCK" android:protectionLevel="signatureOrSystem"/>
-    <uses-permission android:name="com.samsung.android.permission.wirelesspowersharing"/>
-    <uses-permission android:name="com.samsung.android.permission.FAST_WIRELESS_CHARGING_CONTROL"/>
     <permission android:name="com.samsung.android.mdecservice.nms.SEM_CMC_PUSH" android:protectionLevel="signatureOrSystem"/>
     <permission android:description="@string/permdesc_barcodeRead" android:label="@string/permlab_barcodeRead" android:name="com.samsung.permission.BARCODE_READ" android:protectionLevel="privileged|signature"/>
-    <protected-broadcast android:name="com.samsung.android.secinputdev.MOTION_AIVF"/>
     <permission android:description="@string/permdesc_palmmotion" android:label="@string/permlab_palmmotion" android:name="com.samsung.permission.PALM_MOTION" android:protectionLevel="signatureOrSystem"/>
     <permission android:description="@string/permdesc_sensorhubreset" android:label="@string/permlab_sensorhubreset" android:name="com.samsung.permission.SENSORHUB_RESET" android:protectionLevel="signatureOrSystem"/>
     <permission android:description="@string/permdesc_ssensor" android:label="@string/permlab_ssensor" android:name="com.samsung.permission.SSENSOR" android:protectionLevel="signatureOrSystem"/>
     <uses-permission android:name="com.samsung.permission.SSENSOR"/>
-    <uses-permission android:name="com.sec.enterprise.knox.cloudmdm.smdms.permission.SAMSUNG_MDM_SERVICE"/>
     <protected-broadcast android:name="com.samsung.battery.ACTION_BATTERY_INFO_CHANGED"/>
     <protected-broadcast android:name="com.samsung.battery.ACTION_BATTERY_INFO_ADDED"/>
     <protected-broadcast android:name="com.samsung.battery.ACTION_BATTERY_INFO_REMOVED"/>
     <permission android:name="com.samsung.android.permission.SEM_BATTERY_INFO" android:protectionLevel="privileged|signature"/>
     <permission android:name="com.samsung.android.permission.SEM_BATTERY_INFO_PROVIDER" android:protectionLevel="privileged|signature"/>
-    <permission android:name="com.android.server.am.permission.PAGEBOOST" android:protectionLevel="signatureOrSystem"/>
-    <protected-broadcast android:name="com.samsung.android.action.PANIC_CALL"/>
-    <permission android:name="com.samsung.permission.CAPTURE" android:protectionLevel="signatureOrSystem"/>
-    <permission android:name="com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA" android:protectionLevel="signatureOrSystem"/>
-    <permission android:name="com.samsung.android.permission.CHANGE_SPEN_THEME" android:protectionLevel="signatureOrSystem"/>
+    <permission android:name="com.sec.android.permission.IN_APP_SOUND" android:protectionLevel="privileged|signature"/>
+    <permission android:name="com.samsung.permission.WIFI_WIPS" android:protectionLevel="signatureOrSystem"/>
+    <permission android:description="@string/permgroupdesc_secdir" android:label="@string/permgrouplab_secdir" android:name="com.samsung.android.permission.SEM_MEDIA_CONTENTS" android:protectionLevel="signatureOrSystem"/>
+    <uses-permission android:name="com.samsung.android.permission.SEM_MEDIA_CONTENTS"/>
+    <permission android:name="com.samsung.unifiedtp.permission.PROVISION_HOTSPOT_TRIGGER" android:protectionLevel="signatureOrSystem"/>
+    <permission android:name="com.samsung.permission.WIFI_FACTORY_TEST" android:protectionLevel="privileged|signature"/>
+    <permission android:name="com.samsung.permission.WIFI_DIAGNOSTICS_PROVIDER" android:permissionGroup="android.permission-group.UNDEFINED" android:protectionLevel="privileged|signature"/>
+    <permission android:name="com.sec.permission.OTG_CHARGE_BLOCK" android:protectionLevel="signatureOrSystem"/>
+    <uses-permission android:name="com.samsung.android.permission.wirelesspowersharing"/>
+    <uses-permission android:name="com.samsung.android.permission.FAST_WIRELESS_CHARGING_CONTROL"/>
+    <permission android:name="com.samsung.android.permission.READ_FRAME_BUFFER_IGNORE_POLICY" android:protectionLevel="privileged|signature"/>
+    <uses-permission android:name="com.samsung.android.permission.READ_FRAME_BUFFER_IGNORE_POLICY"/>
+    <permission android:name="com.samsung.android.permission.FREEZE_TASK_DISPLAY_AREA" android:protectionLevel="signature"/>
+    <protected-broadcast android:name="com.samsung.settings.ACTION_UPDATE_WIDGET"/>
     <protected-broadcast android:name="com.samsung.android.intent.ACTION_CAMERA_SERVICE_WORKER_LOGGING"/>
     <protected-broadcast android:name="com.samsung.android.camera.action.camera_open"/>
     <protected-broadcast android:name="com.samsung.android.camera.action.camera_close"/>
     <permission android:name="com.samsung.android.clipboard.ACCESS_SEMCLIPBOARD" android:protectionLevel="privileged|signature"/>
-    <protected-broadcast android:name="com.sec.android.app.soundalive.RECEIVE_GAME_EVENTS"/>
     <protected-broadcast android:name="com.sec.tasmanager.action.REGULAR_TIMER_EXPIRED"/>
     <protected-broadcast android:name="com.sec.tasmanager.action.INTERVAL_TIMER_EXPIRED"/>
-    <protected-broadcast android:name="com.sec.minidump.action.ACTION_VALIDITY_TIMEOUT0"/>
-    <protected-broadcast android:name="com.sec.minidump.action.ACTION_VALIDITY_TIMEOUT1"/>
+    <protected-broadcast android:name="com.samsung.android.settings.intelligence.ACTION_BATTERY_INFO_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.android.settings.intelligence.ACTION_BATTERY_INFO_ADDED"/>
+    <protected-broadcast android:name="com.samsung.android.settings.intelligence.ACTION_BATTERY_INFO_REMOVED"/>
+    <uses-permission android:name="com.sec.enterprise.knox.cloudmdm.smdms.permission.SAMSUNG_MDM_SERVICE"/>
+    <permission android:name="com.samsung.permission.CAPTURE" android:protectionLevel="signatureOrSystem"/>
+    <permission android:name="com.samsung.android.permission.EXTRACT_SMARTCLIP_DATA" android:protectionLevel="signatureOrSystem"/>
     <protected-broadcast android:name="com.samsung.android.intent.action.MODE_RESET_AUTOBLOCKER"/>
     <permission android:name="com.samsung.android.permission.ACCESS_AUTOBLOCKER" android:protectionLevel="signatureOrSystem"/>
-    <protected-broadcast android:name="com.samsung.android.wallpaper.intent.action.WALLPAPER_COMMAND"/>
-    <protected-broadcast android:name="com.samsung.android.knox.intent.action.UCM_CONFIG_STATUS"/>
-    <protected-broadcast android:name="com.samsung.rcs.CALL_STATE_CHANGED"/>
+    <protected-broadcast android:name="com.samsung.android.PEDOMETER_FAULT_DETECTION"/>
+    <permission android:name="com.android.server.am.permission.PAGEBOOST" android:protectionLevel="signatureOrSystem"/>
+    <protected-broadcast android:name="com.samsung.android.action.PANIC_CALL"/>
+    <uses-permission android:name="com.sec.phone.permission.SEC_FACTORY_PHONE"/>
+    <protected-broadcast android:name="com.sec.android.app.soundalive.RECEIVE_GAME_EVENTS"/>
+    <protected-broadcast android:name="com.samsung.android.sm.ACTION_USER_MEM_LOW"/>
+    <protected-broadcast android:name="com.samsung.android.sm.ACTION_CANCEL_USER_MEM_LOW"/>
+    <permission android:name="com.samsung.android.permission.CHANGE_SPEN_THEME" android:protectionLevel="signatureOrSystem"/>
+    <permission android:name="com.samsung.android.permission.HW_RESOURCE_SHARE" android:protectionLevel="signatureOrSystem"/>
+    <permission android:name="com.samsung.android.permission.READ_SSDID" android:protectionLevel="privileged|signature"/>
+    <protected-broadcast android:name="com.samsung.android.qmdservice.ACTION_BIG_DATA_INFO"/>
+    <protected-broadcast android:name="com.samsung.android.intent.action.WALLPAPER_ENGINE_SHOWN"/>
+    <protected-broadcast android:name="com.samsung.Keyguard.UNLOCK_FMM_ALERT"/>
+    <protected-broadcast android:name="com.samsung.systemui.power.action.ACTION_AUTOMATIC_TEST_MODE_OFF"/>
+    <protected-broadcast android:name="com.samsung.systemui.power.action.ACTION_AUTOMATIC_TEST_MODE_ON"/>
+    <protected-broadcast android:name="com.samsung.systemui.power.action.LOW_BATTERY_DUMP"/>
+    <protected-broadcast android:name="com.samsung.systemui.power.action.WATER_POPUP_DISMISSED"/>
+    <protected-broadcast android:name="com.samsung.systemui.power.action.USB_DAMAGE_POPUP_SHOW"/>
+    <protected-broadcast android:name="com.samsung.systemui.qs.action.NETWORK_MODE_CHANGED"/>
+    <protected-broadcast android:name="com.sec.android.systemui.action.FLASHLIGHT_OFF"/>
+    <protected-broadcast android:name="com.samsung.systemui.statusbar.ANIMATING"/>
+    <protected-broadcast android:name="com.samsung.systemui.statusbar.COLLAPSED"/>
+    <protected-broadcast android:name="com.samsung.systemui.statusbar.EXPANDED"/>
+    <protected-broadcast android:name="com.samsung.systemui.statusbar.STARTED"/>
+    <protected-broadcast android:name="com.sec.android.FindingLostPhonePlus.RELEASE"/>
+    <protected-broadcast android:name="com.samsung.android.snote.SCREEN_OFF"/>
 </manifest>

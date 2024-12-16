@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Bixby ilə danış</string>
     <string name="accessibility_corner_action_type_zoom_in">Miqyası artır</string>
     <string name="accessibility_corner_action_type_zoom_out">Miqyası azalt</string>
+    <string name="accessibility_dialog_button_allow_samsung">İcazə ver</string>
+    <string name="accessibility_dialog_button_deny_samsung">Rədd et</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Poz</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Enerji və Səs artırma düymələrinə cəld şəkildə basan zaman aşağıdakı funksiyalar yanacaq və ya sönəcək:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Yan düymə və Səs artırma düyməsinə sürətli şəkildə basmaq aşağıdakı funksiyaları yandıracaq və ya söndürəcək:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Enerji və Səs artırma düymələrinə cəld şəkildə basan zaman %s funksiyası yanacaq və ya sönəcək.</string>
@@ -117,6 +120,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">Təhlükəsizlik siyasəti bu hesabın əlavə edilməsinin qarşısını alır.</string>
     <string name="account_removal_restrict">Təhlükəsizlik siyasəti bu hesabın silinməsinin qarşısını alır.</string>
+    <string name="action_bar_up_description">Yuxarı keç</string>
     <string name="action_menu_overflow_description">Daha çox seçim</string>
     <string name="adb_active_notification_message">USB sazlanmasını qeyri-aktiv etmək üçün seç.</string>
     <string name="adb_active_notification_title">USB sazlanması qoşulub.</string>
@@ -125,6 +129,9 @@
     <string name="advance_wifi_sharing_msg">Mövcud Wi-Fi şəbəkəsi aşkar edildi. Mobil Giriş nöqtəsi üçün mobil data əvəzinə Wi-Fi paylaşımdan istifadə etmək üçün qoşulun.</string>
     <string name="airplanemode_restrict">Təhlükəsizlik siyasəti Uçuş rejiminin aktiv edilməsinin qarşısını alır.</string>
     <string name="allow_settings_changes">Təhlükəsizlik siyasəti parametrlərin dəyişdirilməsinin qarşısını alır.</string>
+    <string name="always_allow">Həmişə icazə verin</string>
+    <string name="app_block_button_open">Aç</string>
+    <string name="app_block_content">%1$s %2$s proqramını açmaq istəyir.</string>
     <string name="app_clone_storage">Daxili yaddaş (İkili Hesab)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Proqramlar seç</string>
     <string name="app_continuity_guide_cling_button_not_now">İndi yox</string>
@@ -139,32 +146,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">%s üçün bu günki bütün vaxtınızı sərf etdiniz. Bunu Parametrlərdə dəyişə bilərsiniz.</string>
     <string name="app_restricted_message_concentration_mode">%s Konsentrasiya rejimi zamanı bloklanır. Ətraflı məlumat üçün IT inzibatçınız ilə əlaqə saxlayın.</string>
     <string name="app_updating_message">%s yenilənir. Daha sonra yenidən cəhd edin.</string>
-    <string name="appblock_block_subtitle1_phone">Telefonunuzu və şəxsi məlumatlarınızı mühafizə etmək üçün bu proqramı quraşdırmaq mümkün deyil, çünki onun zərərli tərkibə malik olması şübhəsi var.</string>
-    <string name="appblock_block_subtitle1_tablet">Tabletinizi və şəxsi məlumatlarınızı mühafizə etmək üçün bu proqramı quraşdırmaq mümkün deyil, çünki onun zərərli tərkibə malik olması şübhəsi var.</string>
-    <string name="appblock_block_subtitle2">Bu proqramı quraşdırmaq mümkün deyil, çünki onun zərərli tərkibə malik olması barədə məlumat verilmişdir.</string>
-    <string name="appblock_block_text1">Bu proqram təsdiq edilmiş bir mənbədən deyil və şəxsi məlumatlarınızı oğurlamaq və ya sızdırmaq üçün istifadə edilə biləcək həssas icazələr tələb edir.</string>
-    <string name="appblock_block_text2">"Zərərli proqramlar sizin şəxsi məlumatlarınızı oğurlamaq, şəxsiyyətinizi kopyalamaq və ya maliyyə hesablarınıza giriş etmək üçün həssas icazələrdən istifadə edə bilər.
-
-Qanuni maliyyə təşkilatları ZIP faylların, APK faylların və ya fayl meneceri proqramlarının quraşdırılmasını tələb etmir.
-
-Quraşdırdığınız proqramların həmişə etibarlı mənbədən olmasından əmin olun."</string>
-    <string name="appblock_warn_subtitle">Bu proqram sizin şəxsi məlumatlarınızı oğurlaya və ya sızdıra bilər.</string>
+    <string name="appblock_block_text_phone">Bu proqramı quraşdırmaq mümkün deyil, çünki onun zərərli olması, yaxud zərərli bir proqrama oxşar olması barədə məlumat verilmişdir. Bu proqramdan fişinq kimi cinayətlərdə istifadə edilə bilər. Telefon və məlumatlarınızı təhlükədən kənar saxlamaq üçün bu məhdudiyyəti götürmək mümkün deyil.</string>
+    <string name="appblock_block_text_tablet">Bu proqramı quraşdırmaq mümkün deyil, çünki onun zərərli olması, yaxud zərərli bir proqrama oxşar olması barədə məlumat verilmişdir. Bu proqramdan fişinq kimi cinayətlərdə istifadə edilə bilər. Tablet və məlumatlarınızı təhlükədən kənar saxlamaq üçün bu məhdudiyyəti götürmək mümkün deyil.</string>
+    <string name="appblock_link_text">Ətraflı öyrən</string>
     <string name="appblock_warn_text1">"Təsdiq edilməmiş mənbələrdən proqramları quraşdırmaq həmin proqramların sizin şəxsi məlumatlarınızı toplamasına və ya fəaliyyətinizi izləməsinə icazə verə bilər.
 
 Bu proqramı quraşdırmaq tövsiyə edilmir.
 
 Əgər istənilən halda həmin proqramı quraşdırmaq seçimini etsəniz, proqramın Məxfilik Bildirişini diqqətlə nəzərdən keçirin və yalnız lazımi icazələri aktivləşdirdiyinizdən əmin olun."</string>
-    <string name="appblock_warn_text2">"Zərərli proqramlar adətən Kontaktlar, SMS və Foto icazələrindən istifadə etməklə şəxsi məlumatlarınızı əldə etməyə çalışır.
-
-Bu proqramı quraşdırmaq tövsiyə edilmir.
-
-İstənilən halda bu proqramı quraşdırmaq seçimini etsəniz, onun etibar etdiyiniz bir mənbədən olmasından əmin olun və məlumatlarınıza daxil olma icazəsi və ya digər girişlərə icazə verilməsi zamanı ehtiyatlı davranın."</string>
     <string name="application_default_restrict">Başqa proqram cihaz administratoru tərəfindən defolt kimi quruldu.</string>
     <string name="auto_click_paused">Avtomatik klikləmə dayandırıldı.</string>
     <string name="auto_click_resumed">Avtomatik klikləmə davam etdirildi.</string>
     <string name="autofill_never_use_for_this_app">Bu proqram üçün heç vaxt %s istifadə etməyin</string>
     <string name="autofill_save_cancel">Ləğv et</string>
     <string name="autofill_save_never_OK">OK</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">Təhlükəsizlik siyasəti Nüsxələmədən istifadənin qarşısını alır.</string>
     <string name="badPin2">PIN2 yalnışdır. Yenidən cəhd edin.</string>
     <string name="badPuk2">Daxil etdiyiniz PUK2 yalnışdır</string>
@@ -175,8 +171,6 @@ Bu proqramı quraşdırmaq tövsiyə edilmir.
     <string name="bluetooth_a2dp_restrict">Təhlükəsizlik siyasəti Bluetooth media audiosundan istifadənin qarşısını alır.</string>
     <string name="bluetooth_avrcp_restrict">Təhlükəsizlik siyasəti Bluetooth audio/video idarəetməsindən istifadənin qarşısını alır.</string>
     <string name="bluetooth_bpp_restrict">Təhlükəsizlik siyasəti Bluetooth-la çap etmənin qarşısını alır.</string>
-    <string name="bluetooth_china_popup_message">%1$s %2$s istifadə etmək üçün icazə istəyir. İcazə verilsin?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Təhlükəsizlik siyasəti Bluetooth vasitəsilə məlumat ötürülməsinin qarşısını alır.</string>
     <string name="bluetooth_desktop_restrict">Təhlükəsizlik siyasəti Bluetooth vasitəsilə iş masanıza qoşulmanın qarşısını alır.</string>
     <string name="bluetooth_device_restrict">Təhlükəsizlik siyasəti Bluetooth cihazı ilə cütləşdirmənin qarşısını alır.</string>
@@ -187,7 +181,6 @@ Bu proqramı quraşdırmaq tövsiyə edilmir.
     <string name="bluetooth_outgoing_call_restrict">Təhlükəsizlik siyasəti Bluetooth vasitəsilə zəng etməyin qarşısını alır.</string>
     <string name="bluetooth_pairing_restrict">Təhlükəsizlik siyasəti Bluetooth cütləşməsinin qarşısını alır.</string>
     <string name="bluetooth_pbap_restrict">Təhlükəsizlik siyasəti Bluetooth ünvan kitabçasından istifadənin qarşısını alır.</string>
-    <string name="bluetooth_permission_request">Bluetooth izacəsi sorğusu</string>
     <string name="bluetooth_restrict">Təhlükəsizlik siyasəti Bluetooth-dan istifadənin qarşısını alır.</string>
     <string name="bluetooth_sap_restrict">Təhlükəsizlik siyasəti Bluetooth vasitəsilə SIM kartınıza çıxışın qarşısını alır.</string>
     <string name="bluetooth_security_mode_disable">Təhlükəsizlik siyasəti Bluetooth-dan istifadənin qarşısını alır.</string>
@@ -250,11 +243,8 @@ Bu proqramı quraşdırmaq tövsiyə edilmir.
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">İcazəli cihazlar</string>
     <string name="data_call_restriction">Təhlükəsizlik siyasəti mobil məlumatlardan istifadəni məhdudlaşdırır.</string>
-    <string name="data_usage_disable_mobile">Mobil məlumat bağlantısı qeyri-aktiv edilsin?</string>
-    <string name="data_usage_enable_mobile_warning">Paket məlumatları vasitəsilə qoşulma əlavə qiymət tətbiq edə bilər. Davam edilsin?</string>
     <string name="data_usage_limit_body">Hesablaşma dövrü bitənədək mobil dataya pauza verilib.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Mobil data limitiniz aşılır</string>
-    <string name="data_usage_mobile_limit_title">Mobil data limitinə çatıb</string>
     <string name="data_usage_rapid_app_body">%s həmişəkindən çox mobil datadan istifadə edib.</string>
     <string name="data_usage_rapid_body">Proqramlarınız adətən olduğundan daha çox data istifadə edir.</string>
     <string name="data_usage_rapid_title">Yüksək mobil məlumat istifadəsi</string>
@@ -265,6 +255,7 @@ Bu proqramı quraşdırmaq tövsiyə edilmir.
     <string name="data_usage_warning_title_offpeak_chn">İst. olunan qeyri-pik data: %s</string>
     <string name="data_usage_warning_title_unlimited_chn">Mob. data sürəti limit. çatıldı</string>
     <string name="device_disabled">Cihaz qeyri-aktiv edildi. IT inzibatçı ilə əlaqə saxla</string>
+    <string name="device_info_not_available">İstifadə etmək mümkün deyil.</string>
     <string name="dex_cant_change_user_profile">Samsung DeX rejimində istifadəçi profilini dəyişmək olmur.</string>
     <string name="dex_dialog_launch_toast">Açıq proqramlar bağlana bilər. Samsung DeX işə salmazdan və ya çıxmaqdan öncə məlumatı saxlayın.</string>
     <string name="dex_disconnected_from_device">DeX-in %s ilə əlaqəsi kəsilib. TV-nizdə şəbəkə bağlantısını yoxlayın.</string>
@@ -273,9 +264,6 @@ Bu proqramı quraşdırmaq tövsiyə edilmir.
     <string name="dex_launcher_mode_change">Samsung DeX keçmək üçün %s bağlandı.</string>
     <string name="dex_mirroring_jit_msg">Samsung DeX-i tabletdə işə salan zaman daha böyük ekranda baxış üçün görüntünü HDMI vasitəsilə qoşulan istənilən displeyə əks etdirə bilərsiniz.</string>
     <string name="dex_mirroring_jit_title">DeX-i böyük ekrana əks etdir</string>
-    <string name="dex_restart_app_dialog_button_positive">Sönd yandr</string>
-    <string name="dex_restart_app_dialog_message">Bu proqram artıq başqa displeydə icra olunur. Onu burada açmaq üçün proqram yenidən başladılmalıdır. Onu yenidən başlatmazdan əvvəl vacib olanları yaddaşda saxlayın.</string>
-    <string name="dex_restart_app_dialog_title">%s söndürüb yandır?</string>
     <string name="dex_restriction_blockerMessage">Təhlükəsizlik siyasəti Samsung DeX istifadəsinin qarşısını alır.</string>
     <string name="dex_restriction_ethernetOnly">Təhlükəsizlik siyasəti Wi-Fi data, mobil data və DeX bağlantısından istifadənin qarşısını alır. Naqilli bağlantı şəbəkə funksiyaları üçün tələb edilir.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Təhlükəsizlik siyasəti səbəbindən xarici ekranı ayırın və Samsung DeX-dən çıxın.</string>
@@ -300,7 +288,6 @@ Bu proqramı quraşdırmaq tövsiyə edilmir.
     <string name="digital_signature_failure_user_notification">%d istifadəçi üçün rəqəmsal imza etibarlı deyil</string>
     <string name="disableupdate_application_restrict">Təhlükəsizlik siyasəti bu proqramın yenilənməsinin qarşısını alır.</string>
     <string name="display_chooser_button_positive">Sönd yandr</string>
-    <string name="display_chooser_dont_show_again">Bir daha göstərmə</string>
     <string name="dlg_confirm_kill_storage_users_text">USB yaddaş bağlanma istifadədə olan bəzi proqramları dayandıracaq. USB ilə bağlantını kəsməyənə kimi onlar mümkün olmaya bilər.</string>
     <string name="dlg_confirm_kill_storage_users_title">Yaddaşı PC-yə qoş</string>
     <string name="dlg_error_title">USB əməliyyatı uğursuzdur</string>
@@ -315,7 +302,7 @@ Bu proqramı quraşdırmaq tövsiyə edilmir.
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Bu proqramdan Çoxsaylı pəncərə görünüşündə istifadə etmək olmur.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Bu funksiyadan Çoxsaylı pəncərə görünüşündə istifadə etmək olmur.</string>
     <string name="edit_contact_at_sim_restriction">Təhlükəsizlik siyasəti SIM kart əlaqələrinin redaktə edilməsinin qarşısını alır.</string>
-    <string name="edm_policy_not_allow_open_wifiap">İcazəli cihazlar</string>
+    <string name="edm_policy_not_allow_open_wifiap">Təhlükəsizlik siyasəti qaynar nöqtə üçün təhlükəli bağlanma istifadəsini qadağan edir.</string>
     <string name="emergency_calls_only">Yalnız fövqəladə zənglər</string>
     <string name="ethernet_cable_connected_notification_message">Quraşdırmaq üçün vur.</string>
     <string name="ethernet_cable_connected_notification_title">Ethernet naqili qoşulmuşdur</string>
@@ -335,7 +322,7 @@ Bu proqramı quraşdırmaq tövsiyə edilmir.
     <string name="ext_media_unsupported_notification_message">Bu cihaz bu %s dəstəkləmir. Dəstəklənən formatda qurmaq üçün vur.</string>
     <string name="ext_media_unsupported_notification_title">Dəstəklənməyən %s</string>
     <string name="ext_storage_bad_removal_button">Söndür yandır</string>
-    <string name="ext_storage_bad_removal_title">Tableti yenidən başlat</string>
+    <string name="ext_storage_bad_removal_title">Telefonu yenidən başlat</string>
     <string name="extmedia_format_button_format">Format</string>
     <string name="extmedia_format_message_usbhost">USB yaddaşınızda yerləşdirilmiş bütün fayllar silinəcək. Bu addım geri dönülməzdir.</string>
     <string name="extmedia_format_title_usbhost">USB yaddaşına format atılsın?</string>
@@ -406,6 +393,7 @@ Bu proqramı quraşdırmaq tövsiyə edilmir.
     <string name="globalactions_unable_restart_msg_fmm">Telefon Mobilimi Tap ilə uzaqdan kilidləndiyi üçün onu söndürüb yandırmaq olmur.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Tablet Mobilimi Tap ilə uzaqdan kilidləndiyi üçün onu söndürüb yandırmaq olmur.</string>
     <string name="globalactions_unable_restart_msg_securelock">Kilidlənmiş telefonu söndürüb yandırmaq olmur. Qapağı açın və telefonu söndürüb yandırmaq üçün kiliddən açın.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">SIM kart kilidli olduqda telefonu yenidən başlatmaq mümkün deyil.</string>
     <string name="hardware_key_restrict">Təhlükəsizlik siyasəti bu kompüter açarından istifadənin qarşısını alır.</string>
     <string name="hardware_sec">Ekran klaviaturası</string>
     <string name="hbd_translate">Yazılan mətni tərc. et</string>
@@ -475,16 +463,16 @@ Bu proqramı quraşdırmaq tövsiyə edilmir.
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Texniki xidmət rejimini söndürmək üçün tabletinizi kiliddən çıxarmalı ola bilərsiniz.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Texniki xidmət rejimi yanılı olan zaman baş verən heç nə saxlanılmayacaq, buraya yüklənmiş verilənləri, proqram quraşdırmaları və ya parametr dəyişiklikləri daxildir.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Ekran kilidi təyin et</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Jurnal yaratmadan yenidən başlat</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Jurnal yarat və yenidən başlat</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Texniki xidmət rejimini yandırmaq üçün telefonunuz yenidən başladılmalıdır.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Əvvəlcə ekran kilidi təyin edin.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Texniki xidmət rejimini yandırmaq üçün tabletiniz yenidən başladılmalıdır.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Dəstək heyətimizin telefonunuz ilə bağlı hər hansı problemi təhlil etməsinə kömək etmək üçün Texniki xidmət rejimini başlatmamışdan əvvəl sistem qeydi yaratmağı tövsiyə edirik.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Dəstək heyətimizin telefonunuzla bağlı hər hansı problemi diaqnoz və təhlil etməsinə kömək məqsədilə Texniki qulluq rejimini başlatmazdan əvvəl sistem jurnalı yaratmağınızı məsləhət görürük.
 
-Qeyd hansı proqramların istifadə edildiyini və bu yaxınlarda baş vermiş hər hansı xətanı göstərir, lakin istənilən digər şəxsi məlumatları ehtiva etmir. Qeyd hər hansı digər məqsəd üçün deyil, yalnız problemləri təhlil etmək məqsədilə istifadə olunur. Qeyd yaratmaq, adətən, 2 dəqiqə vaxt aparır."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Dəstək heyətimizin tabletiniz ilə bağlı hər hansı problemi təhlil etməsinə kömək etmək üçün Texniki xidmət rejimini başlatmamışdan əvvəl sistem qeydi yaratmağı tövsiyə edirik.
+Jurnala yalnız hansı proqramların istifadə edilməsi, son zamanlar baş vermiş xətalar, bloklanmış telefon nömrələri və fayl yaddaş yeri tutumu kimi telefonunuzu bərpa etmək üçün vacib olan məlumatlar daxildir. Jurnal yalnız problemləri diaqnoz və təhlil etmək məqsədilə istifadə ediləcək, başqa heç bir məqsədə xidmət etməyəcək. Jurnal yaratmaq təxminən 2 dəqiqə vaxt aparır."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Dəstək heyətimizin tabletinizlə bağlı hər hansı problemi diaqnoz və təhlil etməsinə kömək məqsədilə Texniki qulluq rejimini başlatmazdan əvvəl sistem jurnalı yaratmağınızı məsləhət görürük.
 
-Qeyd hansı proqramların istifadə edildiyini və bu yaxınlarda baş vermiş hər hansı xətanı göstərir, lakin istənilən digər şəxsi məlumatları ehtiva etmir. Qeyd hər hansı digər məqsəd üçün deyil, yalnız problemləri təhlil etmək məqsədilə istifadə olunur. Qeyd yaratmaq, adətən, 2 dəqiqə vaxt aparır."</string>
+Jurnala yalnız hansı proqramların istifadə edilməsi, son zamanlar baş vermiş xətalar, bloklanmış telefon nömrələri və fayl yaddaş yeri tutumu kimi tabletinizi bərpa etmək üçün vacib olan məlumatlar daxildir. Jurnal yalnız problemləri diaqnoz və təhlil etmək məqsədilə istifadə ediləcək, başqa heç bir məqsədə xidmət etməyəcək. Jurnal yaratmaq təxminən 2 dəqiqə vaxt aparır."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Yaddaş yerini təhlil et</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Telefonunuzun daxili yaddaş yeri, demək olar ki, tam doludur. Yaddaş yeriniz bitsə, bəzi proqram və funksiyaların düzgün işləməsi dayana bilər. Artıq ehtiyacınız olmayan bəzi fayl və ya proqramları silməyi yoxlayın. Sildikdən sonra Zibil qutusunu boşaltmağı unutmayın.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Tabletinizin daxili yaddaş yeri, demək olar ki, tam doludur. Yaddaş yeriniz bitsə, bəzi proqram və funksiyaların düzgün işləməsi dayana bilər. Artıq ehtiyacınız olmayan bəzi fayl və ya proqramları silməyi yoxlayın. Sildikdən sonra Zibil qutusunu boşaltmağı unutmayın.</string>
@@ -506,10 +494,17 @@ Qeyd hansı proqramların istifadə edildiyini və bu yaxınlarda baş vermiş h
     <string name="maintenance_mode_outro_label">Texniki xidmət rejimindən çıx</string>
     <string name="maintenance_mode_outro_textview_message_phone">Texniki xidmət rejimini söndürmək üçün telefonunuzun kilidini açmalı olacaqsınız. Bunu etdikdə hər şey Texniki xidmət rejimi ilk dəfə yandırıldığı zaman olan formasına dəyişəcək. Texniki xidmət rejimi yanılı olarkən edilən dəyişikliklər, məsələn, yüklənmiş verilənlər, quraşdırılmış proqramlar və ya dəyişdirilmiş parametrlər yaddaşda saxlanılmır.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Texniki xidmət rejimini söndürmək üçün tabletinizin kilidini açmalı olacaqsınız. Bunu etdikdə hər şey Texniki xidmət rejimi ilk dəfə yandırıldığı zaman olan formasına dəyişəcək. Texniki xidmət rejimi yanılı olarkən edilən dəyişikliklər, məsələn, yüklənmiş verilənlər, quraşdırılmış proqramlar və ya dəyişdirilmiş parametrlər yaddaşda saxlanılmır.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">%s aktiv vəziyyətdə olarkən texniki qulluq rejimindən istifadə etmək mümkün deyil.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Məhdud proqramlar və Əsas ekranda Enerjiyə Qənaət rejimi yanılı olduqda Texniki Xidmət rejimindən istifadə etmək mümkün deyil.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Bu telefonda texniki qulluq rejimi dəstəklənmir.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Bu tabletdə texniki qulluq rejimi dəstəklənmir.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s yalnız cihazın sahibi tərəfindən istifadə oluna bilər.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Verilənlərinizin nüsxələnməsi dayandırılsın və Texniki xidmət rejimi yandırılsın?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Texniki xidmət rejimini yandırmaq üçün tamamlanmamış ehtiyat nüsxəni tamamlayın və ya silin.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Texniki xidmət rejimini yandırmaq üçün cari ehtiyat nüsxə çıxarılmasını dayandırmalısınız.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Texniki xidmət rejimini yandırmaq üçün ehtiyat nüsxə verilənlərinin bərpasını dayandırmalısınız.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Cihaz inzibatçısının proqramı</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Jurnal yaradılır…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Bu, adətən, 2 dəqiqə vaxt aparır. Qeyd yaradıldıqdan sonra telefonunuz Texniki xidmət rejimində yenidən başladılacaq, beləcə, telefonunuzu təhlükəsiz şəkildə texniki xidmətə göndərə bilərsiniz.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Bu, adətən, 2 dəqiqə vaxt aparır. Qeyd yaradıldıqdan sonra tabletiniz Texniki xidmət rejimində yenidən başladılacaq, beləcə, tabletinizi təhlükəsiz şəkildə texniki xidmətə göndərə bilərsiniz.</string>
@@ -532,13 +527,8 @@ Tabletiniz tezliklə yenidən başladılacaq."</string>
     <string name="media_checking_usbhost">USB yaddaş hazırda yoxlanılır.</string>
     <string name="media_unknown_state">Xarici media naməlum vəziyyətdədir.</string>
     <string name="mediaplayer_restrict">Təhlükəsizlik siyasəti MTP media pleyerindən istifadənin qarşısını alır.</string>
+    <string name="message_on_crash">Avtomatik Bloklama tərəfindən bloklandı</string>
     <string name="microphone_restrict">Təhlükəsizlik siyasəti mikrofondan istifadənin qarşısını alır.</string>
-    <string name="miniresolver_call">Zəng</string>
-    <string name="miniresolver_call_in_work">İş proqramından zəng edilsin?</string>
-    <string name="miniresolver_call_information">Təşkilatınız yalnız iş proqramlarından zəng etməyinizə icazə verir.</string>
-    <string name="miniresolver_sms_information">Təşkilatınız yalnız iş proqramlarından mesajlar göndərməyinizə icazə verir.</string>
-    <string name="miniresolver_switch">Keçir</string>
-    <string name="miniresolver_switch_to_work">İş proqramına keçid edilsin?</string>
     <string name="mmcc_authentication_reject_name_template">%s karta icazə verilmir</string>
     <string name="mmcc_illegal_me_name_template">%s karta icazə verilmir</string>
     <string name="mmcc_illegal_ms_name_template">%s karta icazə verilmir</string>
@@ -550,30 +540,6 @@ Tabletiniz tezliklə yenidən başladılacaq."</string>
     <string name="mock_location_reminder_disable">Söndür</string>
     <string name="mock_location_reminder_title">Saxta məkan yanılıdır</string>
     <string name="more_apps">Daha çox proqram</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s xidmət dəstəklənmir. Müştəri xidmətilə əlaqə saxla.</string>
-    <string name="mptcp_message_address_type_not_supported">%s bağlantısı zəifdir. Mövcud şəbəkələrlə təkrar qoşulur…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s bağlantısı zəifdir. Mövcud şəbəkələrlə təkrar qoşulur…</string>
-    <string name="mptcp_message_cmd_not_supported">%s şəbəkəsi müvəqqəti mövcud deyil. Mövcud şəbəkələrlə təkrar qoşulur…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s bağlantısı zəifdir. Mövcud şəbəkələrlə təkrar qoşulur…</string>
-    <string name="mptcp_message_connection_refused">%s bağlantısı zəifdir. Mövcud şəbəkələrlə təkrar qoşulur…</string>
-    <string name="mptcp_message_data_usage_limit">Data istifadə limitinə çatıldı. Data istifadə limitini dəyişmək üçün Parametrlərə keçin.</string>
-    <string name="mptcp_message_host_unreachable">%s bağlantısı zəifdir. Mövcud şəbəkələrlə təkrar qoşulur…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">%s-i aktiv etmək olmadı. Cihaz LTE şəbəkəsinə qoşulmayıb.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Beynəlxalq rouminq zamanı %s aktiv etmək olmadı.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Mobil giriş nöqtəsi və ya USB bağlantı aktiv olan zaman %s aktiv etmək olmadı.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Wi-Fi Direct aktiv olan zaman %s aktiv etmək olmadı.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Uçuş rejimi aktiv olan zaman %s aktiv etmək olmadı.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Mobil data sönülü olan zaman %s aktiv etmək olmadı.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Xidmət təminatçısından cavab yoxdur.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">%1$s-i aktiv etmək olmadı. İnternet paketinizdə və ya %3$s serverindən cavab olmadıqda %2$s aktiv olmayacaq.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">%s aktivləşdirmə sorğusu göndərmək olmadı. Mövcud şəbəkələrlə yenidən qoşul…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">%s-i aktiv etmək olmadı. Yanlış SIM kart daxil edilib.</string>
-    <string name="mptcp_message_network_unreachable">%s bağlantısı zəifdir. Mövcud şəbəkələrlə təkrar qoşulur…</string>
-    <string name="mptcp_message_non_mptcp_plan">Giga Multi-Path-ı aktiv etmək olmur. Funksiya data planla dəstəklənmir.</string>
-    <string name="mptcp_message_operation_disabled_overheating">Cihazın qızmasının qarşısını almaq üçün %s qeyri-aktiv edildi. Əvəzində mobil şəbəkə ilə yüklənir…</string>
-    <string name="mptcp_message_server_error">%s bağlantısı zəifdir. Mövcud şəbəkələrlə təkrar qoşulur…</string>
-    <string name="mptcp_message_setting_disabled_overheating">%s-i aktiv etmək olmadı. Cihaz həddindən artıq qızır. Cihazın soyumasını gözləyin və yenidən cəhd edin.</string>
-    <string name="mptcp_message_ttl_expired">%s şəbəkəsi müvəqqəti mövcud deyil. Mövcud şəbəkələrlə təkrar qoşulur…</string>
     <string name="multi_user_capability_restrict">Təhlükəsizlik siyasəti cihazınızda çoxsaylı istifadəçi imkanının qarşısını alır.</string>
     <string name="multi_user_creation_restrict">Təhlükəsizlik siyasəti cihazınızda yeni istifadəçi hesabının yaradılmasının qarşısını alır.</string>
     <string name="multi_user_removal_restrict">Təhlükəsizlik siyasəti cihazınızdan istifadəçi hesablarının silinməsinin qarşısını alır.</string>
@@ -592,24 +558,22 @@ Tabletiniz tezliklə yenidən başladılacaq."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Səs Bluetooth audio cihazınızda səsləndirilir. Bunu söndürmək üçün bura vurun</string>
     <string name="multisound_sound_via_headphone">%s səs qulaqlıqda səslənir. Bunu söndürmək üçün bura vurun.</string>
     <string name="multisound_sound_via_headphone_multiselection">Səs qulaqlıqlarınız vasitəsilə səsləndirilir. Bunu söndürmək üçün bura vurun.</string>
-    <string name="multisound_sound_via_phone_speaker">%s səs tablet dinamikində səslənir. Bunu söndürmək üçün bura vurun.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Səs tablet dinamikiniz vasitəsilə səsləndirilir. Bunu söndürmək üçün bura vurun.</string>
+    <string name="multisound_sound_via_phone_speaker">%s səs telefon dinamikində səslənir. Söndürmək üçün bura vurun.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Səs telefon dinamikiniz vasitəsilə səsləndirilir. Bunu söndürmək üçün bura vurun.</string>
     <string name="multisound_sound_via_usb_audio">%s səs USB audio cihazında səslənir. Bunu söndürmək üçün bura vurun.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Səs USB audio cihazınız vasitəsilə səsləndirilir. Bunu söndürmək üçün bura vurun.</string>
     <string name="multisound_title">Ayrı proqram səsi</string>
     <string name="multisound_turn_off_multisound">Söndür</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX-də işləyə bilmir. Tablet rejimində işlətməyə çalışın.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX-də işləyə bilmir. O, tabletin Əsas ekranı üçündür.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Bəzi oyunlar yalnız sensor ekranlarda işləyir. Samsung DeX-də siçan ilə idarəetmə işləmirsə, tablet rejimində oynamağı yoxlayın.</string>
-    <string name="my_device">Bu tablet</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX-də açıla bilmir. Telefon rejimdə açmağa çalışın.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX-də açıla bilmir. O, telefonun Əsas ekranı üçündür.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Bəzi oyunlar yalnız sensor ekranlarda işləyir. Samsung DeX-də siçan ilə idarəetmə işləmirsə, telefon rejimində oynamağı yoxlayın.</string>
+    <string name="my_device">Bu telefon</string>
     <string name="network_locked_sim_dialog_message_ais">Abunə şərt və qaydalarına cavab vermədiyindən SIM kartınız bu telefonda düzgün işləmir. Bununla bağlı sualınız və ya əlavə məlumata ehtiyacınız olarsa, Samsung Müştəri Xidməti və ya məhsulu sizə satan mağaza ilə əlaqə saxlayın.</string>
     <string name="network_locked_sim_notification_text">Şəbəkə SIM kartı kilidləyib.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Standart Əsas ekran proqramını One UI Əsas ekranına dəyişdirin.</string>
     <string name="nfc_restrict">Təhlük siyas NFC-nin qarşısını alır.</string>
     <string name="nosim_limited_service">Məhdud xidmət</string>
-    <string name="not_support_ai_key">AI düyməsi hələ ki sizin tabletinizlə işləmir. Tezliklə yeniləmə əlçatan olacaq.</string>
-    <string name="notification_app_name_settings">Parametrlər</string>
     <string name="notification_channel_dex_policy">Samsung DeX siyasəti</string>
     <string name="ntfs_usb_storage_readonly_mount_message">Bu yaddaş NTFS formatından istifadə etdiyinə görə yalnız oxunandır.</string>
     <string name="ntfs_usb_storage_readonly_mount_title">Yalnız oxunan USB yaddaş yeri</string>
@@ -784,7 +748,6 @@ QAYIT"</string>
     <string name="permlab_scheduleExactAlarm">Zəngli saatlar və xatırlatmalar təyin et</string>
     <string name="permlab_spdControl">Təhlükəsizlik siyasətlərinin yeniləməsini idarə et</string>
     <string name="permlab_ucsPlugin">Universal Sertifikat İdarəetməsi Girişi</string>
-    <string name="personal_apps_suspended_turn_profile_on">Yandır</string>
     <string name="phoneTypeConference">Konfrans</string>
     <string name="policydesc_allow_bluetoothmode">Bluetooth-dan istifadənin qarşısını al.</string>
     <string name="policydesc_allow_browser">İnternetdən istifadənin qarşısını al.</string>
@@ -792,7 +755,7 @@ QAYIT"</string>
     <string name="policydesc_allow_desktopsync">İş masası sinxronlaşmasından istifadənin qarşısını al.</string>
     <string name="policydesc_allow_internetsharing">Mobil Giriş nöqtəsindən istifadənin qarşısını al.</string>
     <string name="policydesc_allow_irda">IrDA-dan istifadənin qarşısını al.</string>
-    <string name="policydesc_allow_popimapemail">Tabletdə POP və IMAP e-poçtundan istifadənin qarşısını al.</string>
+    <string name="policydesc_allow_popimapemail">Telefonda POP və IMAP e-poçtundan istifadənin qarşısını al.</string>
     <string name="policydesc_allow_storagecard">SD kartlardan istifadənin qarşısını al.</string>
     <string name="policydesc_allow_textmessaging">Mətn və multimedia mesajlaşmasından istifadənin qarşısını al.</string>
     <string name="policydesc_allow_thirdParty">Bu proqram üçüncü tərəf proqramlarının işləməsinin qarşısını ala bilər.</string>
@@ -838,7 +801,7 @@ QAYIT"</string>
     <string name="pwd_change_enforced">Təhlükəsizlik siyasəti parolu dəyişməyi tələb edir.</string>
     <string name="recording_fail">%2$s-də istifadə edilən zaman %1$s-də mikrofondan istifadə etmək olmur.</string>
     <string name="recording_popup">%s mikrofondan istifadə edin.</string>
-    <string name="recording_popup_device">Tablet</string>
+    <string name="recording_popup_device">Telefon</string>
     <string name="recording_popup_with_bluetooth">%s Bluetooth mikrofonundan istifadə edir.</string>
     <string name="recording_popup_with_device">%1$s %2$s cihazının mikrofonundan istifadə edir.</string>
     <string name="redo">Geri</string>
@@ -904,12 +867,12 @@ tutqunluq"</string>
     <string name="screencapture_restrict">Təhlükəsizlik siyasəti ekran çəkilişindən istifadənin qarşısını alır.</string>
     <string name="sd_card_unavailable_message">Başqa bir istifadəçi profili istifadə edilərkən SD kart taxıldığı üçün ondan istifadə etmək mümkün deyil.</string>
     <string name="sd_card_unavailable_title">SD kartı əlçatan deyil</string>
-    <string name="sdcard_bad_removal_message">SD kart təhlükəli qaydada çıxarıldı. Tabletinizin gözlənilmədən yenidən başladılmasının qarşısını almaq üçün saxlanılmamış verilənləri saxlayın və elə indi yenidən başladın.</string>
+    <string name="sdcard_bad_removal_message">SD kart təhlükəli qaydada çıxarıldı. Telefonunuzun gözlənilmədən yenidən başladılmasının qarşısını almaq üçün saxlanılmamış verilənləri saxlayın və elə indi yenidən başladın.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD kartın şifrini aç</string>
     <string name="sdcard_batch_decrypt_noti_title">SD kart şifrinin açılması</string>
     <string name="sdcard_batch_decrypt_popup_content">Şifrlənmiş SD kartdan istifadə etmək üçün onun şifri açılmalıdır. Şifraçma bir və ya bir neçə saat davam edə bilər. Doldurulmuş batareya ilə başlayın və şifraçma tamamlanana kimi onu enerji mənbəyindən ayırmayın. Şifraçma prosesinin dayandırılması bəzi və ya bütün məlumatların itməsinə səbəb olacaq.</string>
     <string name="sdcard_decrypt_err_notification">SD kart şifrinin açılması səhvi baş verdi.</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD kartdakı bəzi fayllar başqa cihazda şifrləndi və bu tabletdə istifadə edilə bilməz.</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD kartdakı bəzi fayllar başqa cihazda şifrləndi və bu telefonda istifadə edilə bilməz.</string>
     <string name="sdcard_decrypt_notification">SD kartın şifri açıldı.</string>
     <string name="sdcard_decrypt_title_notification">SD kart şifrinin açılması</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD kartın şifri açılır…</string>
@@ -926,14 +889,6 @@ tutqunluq"</string>
     <string name="sdcard_unmount_policy_noti_title">IT siyasəti ilə əlaqədar SD kart çıxarıldı.</string>
     <string name="sdhms_nr_control_low_battery">Batareya enerjisinə qənaət etmək üçün telefonda batareya səviyyəsi 15%-dən aşağı olan zaman 5G-ni söndürün.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth funksiyası Uçuş rejimində də yanılı qalacaq.</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Bu proqram tam ekran rejimindən istifadə edir. Naviqasiya üçün sürüşdürmə jestləri status panelini göstərəcək. Naviqasiya üçün status paneli görünən zaman yenidən sürüşdürün.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Bu proqram tam ekrandan istifadə edir. Maneələri azaltmaq və proqramdan təsadüfən çıxmanızın qarşısını almaq üçün Əsas ekran, Geri və Sonuncular düymələri gizlədilmişdir.
-
-Telefonu çevirdikdə belə, düymələr həmişə yükləmə portunun yanında olacaq. Ekranın kənarından oxla göstərildiyi kimi içəri sürüşdürməklə düymələri yenidən görünən edə bilərsiniz."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Bu proqram tam ekran rejimində istifadə olunur. Əsas ekran, Geri və Sonuncular düymələri yayındırıcı amilləri azaltmaq və təsadüfən proqramdan çıxma hallarının qarşısını almaq məqsədilə gizlədilib.
-
-Düymələrin yenidən göstərilməsi üçün ox ilə göstərilən qaydada ekranın aşağısından yuxarı sürüşdürün."</string>
     <string name="sec_monotype_default">İlkin təyin olunan</string>
     <string name="sec_ringtone_category_brand_sound">Samsung brend səsi</string>
     <string name="sec_ringtone_category_calm">Sakit</string>
@@ -943,6 +898,10 @@ Düymələrin yenidən göstərilməsi üçün ox ilə göstərilən qaydada ekr
     <string name="sec_ringtone_category_open_theme">Cari mövzunun defoltu</string>
     <string name="sec_ringtone_category_retro">Retro</string>
     <string name="sec_ringtone_silent">Səssiz</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Ləğv et</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Peykə qoşulmaq üçün şəbəkə operatorunuz Avtomatik seç olaraq təyin edilməlidir.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Yandır</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Avtomatik şəbəkə seçimi yandırılsın?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Danışmaq üçün Mikrofona giriş imkanını yandırın.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">%s istifadəsi üçün Kameraya giriş imkanını yandırın.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">%s istifadəsi üçün Mikrofona giriş imkanını yandırın.</string>
@@ -1038,6 +997,8 @@ Düymələrin yenidən göstərilməsi üçün ox ilə göstərilən qaydada ekr
     <string name="sem_face_error_already_in_use_by_VT">Video zənglər zamanı üz tanınmasından istifadə etmək olmur.</string>
     <string name="sem_face_error_camera_access_off">Kameraya giriş icazəsi sönülü olduğu üçün üz tanımadan istifadə etmək mümkün deyil</string>
     <string name="sem_face_error_camera_fail">Kameranı açmaq olmadı. Yenidən cəhd et.</string>
+    <string name="sem_face_error_lockout">Həddindən artıq yanlış cəhd sayına görə biometrik doğrulama əlçatan deyil.</string>
+    <string name="sem_face_error_lockout_permanent">Həddindən artıq yanlış cəhd sayına görə biometrik doğrulama əlçatan deyil.</string>
     <string name="sem_face_error_ppp_timeout">Kimliyinizi təsdiq edəndən uzun zaman keçib. Üzünüzü qeydiyyatdan keçirmək üçün yenidən başlamalısınız.</string>
     <string name="sem_face_error_too_dark">Üzü aşkarlaya bilmək üçün çox qaranlıqdır</string>
     <string name="sem_face_error_too_dark_to_enroll">Çox qaranlıqdır. İşığı yandırmağı və ya daha işıqlı yerə getməyi yoxlayın.</string>
@@ -1053,13 +1014,18 @@ Düymələrin yenidən göstərilməsi üçün ox ilə göstərilən qaydada ekr
     <string name="sem_fingerprint_acquired_tsp_block">S Pen ucunu ekrandan uzaq tutub barmaq izini skan edin.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Barmaq izlərindən istifadə etmək üçün əvvəlcə ekran kilidi növünü (nümunə, PIN və ya parol) təyin edin.</string>
+    <string name="sem_fingerprint_error_lockout">Həddindən artıq yanlış cəhd sayına görə biometrik doğrulama əlçatan deyil.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Həddindən artıq yanlış cəhd sayına görə biometrik doğrulama əlçatan deyil.</string>
     <string name="sem_fingerprint_error_onehand_mode">Bir əlli rejimdə barmaq izi skanerindən istifadə etmək olmur.</string>
     <string name="sem_fingerprint_error_smart_view">%s istifadə zamanı barmaq izini skan etmək olmur.</string>
+    <string name="sem_fingerprint_error_system_failure">Barmaq izi sensoru cavab vermir. Bir qədər sonra yenidən cəhd edin. Bu hal davam etdiyi halda telefonunuzu söndürüb-yandırmağa çalışın.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Barmaq izi məlumatı silindi. Barmaq izlərinizi yenidən əlavə edin.</string>
     <string name="sem_fingerprint_error_wireless_charger">Barmaq izindən istifadə etmək üçün simsiz doldurma qurğusundan ayırın</string>
     <string name="sem_fingerprint_name_template">Barmaq izi %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Sonra</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">İndi yox</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Sil və qeydiyyatdan keçir</string>
+    <string name="sem_fingerprint_register_dialog_message">Barmaq izi tanınması son proqram yeniləməsində yaxşılaşdırıldı. Barmaq izlərini silənədək və yenidən qeydiyyatdan keçirilənəcək barmaq izi tanınmasından istifadə edilə bilməyəcək.</string>
     <string name="sem_fingerprint_register_dialog_title">Barmaq izini yenidən əlavə edin</string>
     <string name="sem_fingerprint_result_failed">Uyğunluq yoxdur.</string>
     <string name="sem_fingerprint_result_retry">Yenidən cəhd et.</string>
@@ -1079,7 +1045,7 @@ Düymələrin yenidən göstərilməsi üçün ox ilə göstərilən qaydada ekr
     <string name="sem_resolver_button_always_accessibility">Həmişə seçilmiş proqramlardan istifadə et</string>
     <string name="sem_resolver_button_just_once_accessibility">Seçilən proqramı yalnız bir dəfə istifadə et</string>
     <string name="sem_resolver_choose_what_to_do">Nə etmək lazım olduğunu seçin</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Standart proqram parametrlərini dəyişmək üçün Parametrlər > Proqramlar > Standart proqramlar seç bölməsinə keçin.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Bu növ faylı açmaq üçün istifadə olunan standart proqramı dəyişdirmək üçün Parametrlər > Proqramlar bölməsinə keçin, cari standart proqramı seçin, sonra isə Standart kimi təyin et > Standartları sil seçiminə vurun.</string>
     <string name="sem_resolver_icon_content_description">Məlumat</string>
     <string name="sem_resolver_personal_tab_accessibility">Şəxsi</string>
     <string name="sem_resolver_share_live_default_text">Dərhal yaxınlıqdakı şəxslərlə paylaşın. Cihazlarını aşkarlanan etmiş şəxslər burada göstəriləcək.</string>
@@ -1091,9 +1057,6 @@ Düymələrin yenidən göstərilməsi üçün ox ilə göstərilən qaydada ekr
     <string name="sem_resolver_work_tab_accessibility">İş</string>
     <string name="sem_switch_off">Sönülü</string>
     <string name="sem_switch_on">Yanılı</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Proqramlar üçün Kameraya giriş söndürülüb</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Yandır</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Proqramlar üçün Mikrofona giriş söndürülüb</string>
     <string name="serviceErased">Silmə uğurlu oldu.</string>
     <string name="serviceModeAll">Hamısını</string>
     <string name="serviceModeAllConditional">şərti</string>
@@ -1103,6 +1066,7 @@ Düymələrin yenidən göstərilməsi üçün ox ilə göstərilən qaydada ekr
     <string name="serviceModeUnconditional">birbaşa.</string>
     <string name="serviceisDisabled">Xidmət söndürüldü.</string>
     <string name="serviceisEnabled">Xidmət işə salınmışdır.</string>
+    <string name="settings">Parametrlər</string>
     <string name="sf_quick_switch_not_supported">Bu vəziyyətdə cəld keçid dəstəklənmir.</string>
     <string name="sf_quick_switch_securefolder_view">%s olaraq dəyişildi.</string>
     <string name="share">Paylaş</string>
@@ -1111,26 +1075,30 @@ Düymələrin yenidən göstərilməsi üçün ox ilə göstərilən qaydada ekr
     <string name="sharelist_restrict">Təhlükəsizlik siyasəti məlumat paylaşmasının qarşısını alır.</string>
     <string name="show_keyboard_button">Klaviatura düyməsini göstər</string>
     <string name="show_keyboard_button_description">Naviqasiya panelində %s göstər.</string>
+    <string name="showing_esc_dialog">Esc düyməsini Geri düyməsi kimi təyin edə bilərsiniz.</string>
     <string name="showing_touch_sensitivity_noti_action">Yandır</string>
     <string name="showing_touch_sensitivity_noti_text">Privacy Screen və ya Notepaper Screen-dən istifadə edərkən daha yüksək sensor dəqiqliyi üçün Sensor həssaslığını yandırın.</string>
     <string name="showing_touch_sensitivity_noti_title">Sensor həssaslığını artır</string>
+    <string name="side_key_double_press_archived_app">Proqram arxivləşdirildi. Başqa bir şey seçin.</string>
     <string name="side_key_double_press_deleted_app">Proqram pozuldu. Başqa bir şey seçin.</string>
     <string name="side_key_double_press_disabled_app">%s qeyri-aktiv. Başqa bir şey seçin.</string>
     <string name="signature_identity_toast">%s imzalandı</string>
     <string name="simRefresh">SIM məlumatı yenilənir</string>
     <string name="simReset">SIM verilənləri yenilənir…</string>
     <string name="sim_check_old_sim_message">Köhnə və ya zədələnmiş SIM kartlar şəbəkə bağlantısı ilə bağlı problemlərə səbəb ola bilər. Əvəzlənməyə ehtiyacın olub-olmadığını öyrənmək üçün xidmət təminatçınızla əlaqə saxlayın və ya mağazalarından birini ziyarət edin.</string>
+    <string name="sim_check_old_sim_message_skt">Köhnə və ya zədələnmiş SIM kartlar şəbəkə bağlantısı ilə bağlı problemlərə səbəb ola bilər. Əvəzlənməyə ehtiyacın olub-olmadığını öyrənmək üçün xidmət təminatçınızla əlaqə saxlayın və ya mağazalarından birini ziyarət edin.</string>
     <string name="sim_check_old_sim_title">SIM kartınızı dəyişməyə ehtiyac ola bilər</string>
+    <string name="sim_check_old_sim_title_skt">SIM kartınızı dəyişmək lazım gələ bilər</string>
     <string name="sim_count_mismatched_ds_to_ss">SIM kart rejimi İkili SIM-dən Tək SIM-ə keçirildi. Bu parametri tətbiq etmək üçün cihaz zavod parametrlərinə sıfırlanacaq və sönüb yanacaq.</string>
     <string name="sim_count_mismatched_ss_to_ds">SIM kart rejimi Tək SIM-dən İkili SIM-ə keçirildi. Bu parametri tətbiq etmək üçün cihaz zavod parametrlərinə sıfırlanacaq və sönüb yanacaq.</string>
     <string name="sim_count_mismatched_title">SIM kart rejiminə çatıldı</string>
-    <string name="sim_imsreg_error_message_lgt">Telefonunuz SIM kartı tanımadığına görə səsli zənglər edə bilməyəcək. SIM kartı çıxarıb yenidən daxil etməyə çalışın. Bu problem davam edərsə, SIM kartınızı dəyişdirməlisiniz. Kömək üçün LG U+ mağazasına daxil olun və ya 1544-0010 nömrəsi vasitəsilə LG U+ Müştəri Xidməti ilə əlaqə saxlayın.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Tabletiniz SIM kartı tanımadığı üçün səsli zənglər edə bilməyəcək. SIM kartı çıxarıb yenidən daxil etməyə çalışın. Bu problem davam edərsə, SIM kartınızı dəyişdirməlisiniz. Yardım üçün LG U+ mağazasına müraciət edin və ya 1544-0010 nömrəsi vasitəsilə LG U+ Müştəri Xidmətləri ilə əlaqə saxlayın.</string>
+    <string name="sim_imsreg_error_message_lgt">Telefonunuz SIM kartı tanımadığı üçün səsli zənglər edə bilməyəcək. SIM kartı çıxarıb yenidən daxil etməyə çalışın. Bu problem davam edərsə, LG U+ mağazasında SIM kartınızı dəyişdirməli ola bilərsiniz.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Tabletiniz SIM kartı tanımadığı üçün səsli zənglər edə bilməyəcək. SIM kartı çıxarıb yenidən daxil etməyə çalışın. Bu problem davam edərsə, LG U+ mağazasında SIM kartınızı dəyişdirməli ola bilərsiniz.</string>
     <string name="sim_off_noti_message">Bütün SIM-lər söndürüldüyü halda zəng edə, mesaj göndərə və ya mobil internetdən istifadə edə bilməzsiniz. SIM-ləri yandırmaq üçün bura vurun.</string>
     <string name="sim_off_noti_title">Bütün SIM-lər sönülüdür</string>
     <string name="sim_off_toast_message">Daxil etdiyiniz SIM kart sönülüdür. İstifadə etmək üçün Parametrlər > Bağlantılar > SIM meneceri bölməsinə keçin, sonra onu yandırın.</string>
     <string name="sim_recognize_error_message_kt">SIM kartınız tanınmadı. SIM kartı çıxarıb yenidən daxil etməyə çalışın. Bu problem davam edərsə, SIM kartınızı dəyişdirməlisiniz. Kömək üçün KT mağazasına daxil olun və ya 1588-0010 nömrəsi vasitəsilə KT Müştəri Xidməti ilə əlaqə saxlayın.</string>
-    <string name="sim_recognize_error_message_lgt">SIM kartınız tanınmadı. SIM kartı çıxarıb yenidən daxil etməyə çalışın. Bu problem davam edərsə, SIM kartınızı dəyişdirməlisiniz. Kömək üçün LG U+ mağazasına daxil olun və ya 1544-0010 nömrəsi vasitəsilə LG U+ Müştəri Xidməti ilə əlaqə saxlayın.</string>
+    <string name="sim_recognize_error_message_lgt">SIM kartınız tanınmadı. SIM kartı çıxarıb yenidən daxil etməyə çalışın. Bu problem davam edərsə, LG U+ mağazasında SIM kartınızı dəyişdirməli ola bilərsiniz.</string>
     <string name="sim_recognize_error_message_skt">SIM kartı oxumaq olmur. Bəzi proqramlar və funksiyalar işləməyə bilər. SIM kartınızı çıxarıb, təkrar taxın sonra telefonunuzu yenidən başladın. Bu, problemi həll etməsə, telefonunuzu və SIM kartınızı Müştəri Xidmətinə aparın.</string>
     <string name="sim_recognize_error_message_skt_tablet">SIM kartı oxumaq olmur. Bəzi proqramlar və funksiyalar işləməyə bilər. SIM kartınızı çıxarıb, təkrar taxın sonra tabletinizi yenidən başladın. Bu, problemi həll etməsə, tabletinizi və SIM kartınızı Müştəri Xidmətinə aparın.</string>
     <string name="sim_recognize_error_title_lgt">USIM kartını tanımaq mümkün deyil</string>
@@ -1140,10 +1108,8 @@ Düymələrin yenidən göstərilməsi üçün ox ilə göstərilən qaydada ekr
     <string name="sim_removed_message_hotswap_us_tablet">Wi-Fi şəbəkəsinə qoşulun və ya SIM kart daxil olub mobil datadan istifadə edin.</string>
     <string name="sim_removed_title_hotswap">SIM kart daxil edilməyib</string>
     <string name="sim_removed_title_hotswap_us_tablet">SIM kart daxil et</string>
+    <string name="smart_tip_action_click_hint_text">Bağla</string>
     <string name="smartclip_restrict">Təhlükəsizlik siyahısı Asan klipdən istifadənin qarşısını alır.</string>
-    <string name="sms_short_code_remember_undo_instruction">Daha sonra bunu Parametrlərdə dəyişə bilərsiniz > Proqramlar</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Sonradan Parametrlər > Proqramlar > Daha çox seçim düyməsi > Xüsusi çıxış > Premium mətn mesajı xidmətlərindən istifadə et seçməklə bunu dəyişə bilərsiniz.</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">HEÇ VAXT İCAZƏ VERMƏ vursanız, bu proqram Mətn mesajı göndərmək icazəsi verildikdə belə bu proqram fonda mesaj göndərə bilməyəcək.</string>
     <string name="ss_do_not_show_again_us">Bir daha göstərmə</string>
     <string name="sss_translate">Tərcümə et</string>
     <string name="ssu_lock_body_vzw">Təəssüf, cihazınız hazırda başqa daşıyıcı şəbəkəsində aktiv edilə bilmir. Kömək üçün%1$s və ya %2$s (əvvəldən ödəniş planları) ilə Verizonla əlaqə saxlayın</string>
@@ -1174,7 +1140,6 @@ Düymələrin yenidən göstərilməsi üçün ox ilə göstərilən qaydada ekr
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">Mobil Giriş nöqtəsi</string>
     <string name="title_dialog_check_rotate_or_not">Ekranın avtomatik fırlanması sönsün?</string>
-    <string name="title_uds">Ultra dataya qənaət rejimi</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Telefonu qurarkən Bixby-dən istifadə etmək mümkün deyil.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Tableti qurarkən Bixby-dən istifadə etmək mümkün deyil.</string>
     <string name="toast_warning_pattern_lock">Naxış kilidi Universal keçirici ilə istifadə edilə bilməz. Əvvəl fərqli kilid növünə dəyiş.</string>
@@ -1214,9 +1179,13 @@ Bu qorumanı aradan qaldırmaq üçün Parametrlər > Təhlükəsizlik və məxf
     <string name="unknown_install_blocked_esm_title">Naməlum proqram bloklandı</string>
     <string name="unknown_install_dlg_desc">Bu proqram təsdiqlənmiş mağazadan yüklənməyib. Bu proqramı quraşdırmaq təhlükəsizliyinizi və məxfiliyinizi risk altında qoyur. Proqram şəxsi məlumatlarınızı toplaya və ya verilənlərinizin itməsinə səbəb ola bilər.</string>
     <string name="unknown_install_dlg_desc2">Bu proqram ən son təhlükəsizlik funksiyalarını dəstəkləmir. Bu proqramı quraşdırmaq aşağıdakı təhlükəsizlik risklərinə səbəb ola bilər:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Bu proqram quraşdırılması faylı təhlükəli ola bilər. Ola bilsin ki, bu fayl iddia olunan proqram deyil. Telefonunuz və şəxsi məlumatlarınızı mühafizə etmək üçün əvəzində, proqramı etibar etdiyiniz proqram mağazasından quraşdırın.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Bu proqram quraşdırılması faylı təhlükəli ola bilər. Ola bilsin ki, bu fayl iddia olunan proqram deyil. Tabletiniz və şəxsi məlumatlarınızı mühafizə etmək üçün əvəzində, proqramı etibar etdiyiniz proqram mağazasından quraşdırın.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Bu proqramın zərərli olduğuna dair şübhə var, telefonunuz və məlumatlarınız risk altına düşə bilər. Bu proqramın quraşdırılması tövsiyə olunmur.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Bu proqramın zərərli olduğuna dair şübhə var, tabletiniz və məlumatlarınız risk altına düşə bilər. Bu proqramın quraşdırılması tövsiyə olunmur.</string>
-    <string name="unknown_install_dlg_general_title">Bu proqram naməlum mənbədəndir</string>
+    <string name="unknown_install_dlg_desc_phone">Bu proqram səlahiyyətli proqram mağazasından yüklənməyib. Telefonunuzu və şəxsi məlumatlarınızı qorumaq üçün proqramı Play Store və ya Galaxy Store kimi səlahiyyətli mağazadan yükləyib quraşdırın.</string>
+    <string name="unknown_install_dlg_desc_tablet">Bu proqram səlahiyyətli proqram mağazasından yüklənməyib. Tabletinizi və şəxsi məlumatlarınızı qorumaq üçün proqramı Play Store və ya Galaxy Store kimi səlahiyyətli mağazadan yükləyib quraşdırın.</string>
+    <string name="unknown_install_dlg_general_title">Bu proqramı quraşdırmaq tövsiyə edilmir</string>
     <string name="unknown_install_dlg_negative_button">Quraşdırma</string>
     <string name="unknown_install_dlg_perm_desc1">Proqram qəbul etdiyiniz mətn mesajlarından doğrulama kodlarını ələ keçirə bilər.</string>
     <string name="unknown_install_dlg_perm_desc2">Gedən zənglər məlumatınız olmadan başqa telefon nömrəsinə yönləndirilə bilər.</string>
@@ -1235,7 +1204,7 @@ Bu qorumanı aradan qaldırmaq üçün Parametrlər > Təhlükəsizlik və məxf
     <string name="usb_abnormal_reset_title">USB bağlantısı stabil deyil</string>
     <string name="usb_abnormal_reset_toast">USB bağlantısı sabit deyil. Naqili ayırn və yenidən taxın və ya fərqli naqili sınayın.</string>
     <string name="usb_accessory_notification_title">USB aksesuarına qoşuldu</string>
-    <string name="usb_bad_removal_message">USB yaddaş cihazı təhlükəli qaydada çıxarıldı. Tabletinizin gözlənilmədən yenidən başladılmasının qarşısını almaq üçün saxlanılmamış verilənləri saxlayın və elə indi yenidən başladın.</string>
+    <string name="usb_bad_removal_message">USB yaddaş yeri cihazı təhlükəli qaydada çıxarıldı. Telefonunuzun gözlənilmədən yenidən başladılmasının qarşısını almaq üçün saxlanılmamış verilənləri saxlayın və elə indi yenidən başladın.</string>
     <string name="usb_blocked_by_emergency_mode">Bəzi USB funksiyaları Fövqəladə rejimdə işləmir.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Maksimum enerjiyə qənaət rejimi aktiv olan zaman qoşulmuş USB cihazı ilə əlaqədar funksiyalardan istifadə etmək olmur.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Maksimal enerjiyə qənaət rejimi yanılı olduqda bəzi USB funksiyaları məhdudlaşacaq.</string>
@@ -1244,13 +1213,15 @@ Bu qorumanı aradan qaldırmaq üçün Parametrlər > Təhlükəsizlik və məxf
     <string name="usb_camera_connected_notification_title">Media cihazı qoşuldu</string>
     <string name="usb_camera_disconnected_notification_title">Media cihazı ilə əlaqə kəsildi</string>
     <string name="usb_cd_installer_notification_title">Proqram yeniləməsi</string>
-    <string name="usb_charing_only_notification_title">Qoşuldu</string>
+    <string name="usb_charing_only_notification_title">USB adapteri</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Avtomatik Bloklama maksimum məhdudiyyətlərlə aktivdir.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB əlaqəsi bloklandı</string>
     <string name="usb_debugging_only_notification_title">Yalnız sazlama</string>
-    <string name="usb_host_resource_exceed_message">Tabletinizin USB idarəedicisi cihazı qoşmaq üçün kifayət qədər resursa malik deyil. Cihazı ayırın və yenidən qoşun.</string>
+    <string name="usb_host_resource_exceed_message">Telefonunuzun USB idarəedicisi cihazı qoşmaq üçün kifayət qədər resursa malik deyil. Cihazı ayırın və yenidən qoşun.</string>
     <string name="usb_host_resource_exceed_title">USB idarəedici resursu yetərincə deyil</string>
-    <string name="usb_hub_depth_exceed_message">Tabletiniz eyni anda ən çoxu 5 USB paylayıcı qoşulmasını dəstəkləyir.</string>
+    <string name="usb_hub_depth_exceed_message">Telefonunuz eyni anda ən çoxu 5 USB paylayıcı qoşulmasını dəstəkləyir.</string>
     <string name="usb_hub_depth_exceed_title">Maks. USB paylayıcı qoşulması</string>
-    <string name="usb_hub_power_exceed_message">Tabletiniz bu USB cihaz üçün kifayət qədər enerji təmin edə bilmir. Cihazı tabletinizə qoşmazdan əvvəl onu özünü enerji ilə təmin edən USB paylayıcıya qoşun.</string>
+    <string name="usb_hub_power_exceed_message">Telefonunuz bu USB cihaz üçün kifayət qədər enerji təmin edə bilmir. Cihazı telefonunuza qoşmazdan əvvəl onu özünü enerji ilə təmin edən USB paylayıcıya qoşun.</string>
     <string name="usb_increase_battery_usage">USB bağlantısı batareya istifadəsini artıra bilər.</string>
     <string name="usb_mass_storage_restrict">Təhlükəsizlik siyasəti USB kütləvi yaddaş yerindən istifadənin qarşısını alır.</string>
     <string name="usb_midi_notification_title">MIDI üçün USB</string>
@@ -1276,8 +1247,9 @@ Bu qorumanı aradan qaldırmaq üçün Parametrlər > Təhlükəsizlik və məxf
     <string name="usb_storage_stop_title">USB yaddaşı istifadədədir.</string>
     <string name="usb_storage_title">USB qoşuldu.</string>
     <string name="usb_type_c_supply_power_notification_title">USB adapterinə qoşulan cihaz</string>
-    <string name="usb_unblock_by_screen_unlock">Qoşulmuş USB cihazından istifadə etmək üçün tabletin kilidini açın.</string>
-    <string name="usb_unsupport_accessory_message">Bu USB cihaz tabletiniz tərəfindən dəstəklənmir.</string>
+    <string name="usb_unblock_by_screen_unlock">Qoşulmuş USB cihazından istifadə etmək üçün telefonun kilidini açın.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USB cihazından istifadə etmək üçün telefonunuzu kiliddən çıxarın və USB cihazı ilə yenidən əlaqələndirin.</string>
+    <string name="usb_unsupport_accessory_message">Bu USB cihaz telefonunuz tərəfindən dəstəklənmir.</string>
     <string name="usb_unsupport_accessory_title">USB cihaz dəstəklənmir</string>
     <string name="usb_unsupported_device">Qoşulmuş USB cihazı dəstəklənmir.</string>
     <string name="usb_unsupported_device_title">Cihaz dəstəklənmir</string>
@@ -1295,31 +1267,33 @@ Bu qorumanı aradan qaldırmaq üçün Parametrlər > Təhlükəsizlik və məxf
     <string name="usb_water_dialg_method_2_desc_2">Fen və ya quruducunu (yalnız soyuq hava) porta yönləndirərək qurumanı sürətləndirə bilərsiniz.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Doldurma/USB portunuzda nəm və ya yad cisim aşkar etmişik.
 
-Doldurma/USB portunuzda toz və ya zibil kimi hər hansı yad cismin olub-olmadığını yoxlayın. Tabletinizin zədələnməsinin qarşısını almaq üçün doldurma portu təmiz olana və nəm aradan qalxana qədər ona heç nə taxmayın.
+Doldurma/USB portunuzda toz və ya zibil kimi hər hansı yad cismin olub-olmadığını yoxlayın. Telefonunuzun zədələnməsinin qarşısını almaq üçün doldurma portu təmiz olana və nəm aradan qalxana qədər ona heç nə taxmayın.
 
 Portu qurutmaq üçün nəmi silkələyib çıxararaq qurumasını gözləyin, bu, bir neçə saat çəkə bilər. Ventilyator və ya feni (yalnız sərin hava) porta tutmaqla qurutma prosesini sürətləndirə bilərsiniz."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Doldurma/USB portunuzda nəm və ya yad cisim aşkar etmişik.
 
-Doldurma/USB portunuzda toz və ya zibil kimi hər hansı yad cismin olub-olmadığını yoxlayın. Tabletinizin zədələnməsinin qarşısını almaq üçün doldurma portu təmiz olana və nəm aradan qalxana qədər ona heç nə taxmayın.
+Doldurma/USB portunuzda toz və ya zibil kimi hər hansı yad cismin olub-olmadığını yoxlayın. Telefonunuzun zədələnməsinin qarşısını almaq üçün doldurma portu təmiz olana və nəm aradan qalxana qədər ona heç nə taxmayın.
 
 Portu qurutmaq üçün nəmi silkələyib çıxararaq qurumasını gözləyin, bu, bir neçə saat çəkə bilər. Ventilyator və ya feni (yalnız sərin hava) porta tutmaqla qurutma prosesini sürətləndirə bilərsiniz.
 
-Bu müddət ərzində tabletinizi simsiz doldura bilərsiniz."</string>
+Bu müddət ərzində telefonunuzu simsiz doldura bilərsiniz."</string>
     <string name="usb_water_notification_content">Doldurma/USB portunuzda nəm və ya xarici maddə var. Doldurmazdan öncə yoxlayın.</string>
-    <string name="usb_water_notification_message">Adapter/USB port-da nəm aşkar edildi. Tableti yükləməzdən öncə onun quru olduğundan əmin olun. Tam qurumaq üçün bir qədər vaxt lazım ola bilər.</string>
+    <string name="usb_water_notification_message">Adapter/USB port-da nəm aşkar edildi. Telefonu yükləməzdən öncə onun quru olduğundan əmin olun. Tam qurumaq üçün bir qədər vaxt lazım ola bilər.</string>
     <string name="usb_water_notification_message_button">Təfərrüatlar</string>
     <string name="usb_water_notification_title">Adapteri/USB portunu yoxlayın</string>
     <string name="usbhostStorage_restrict">Təhlükəsizlik siyasəti USB host yaddaşından istifadənin qarşısını alır.</string>
     <string name="usbmemory_added_notification_title">USB yaddaş yeri əlavə edildi</string>
-    <string name="usbmemory_readonly_mount_notification_message">USB daşıyıcınız düzgün işləmir və məlumat itkisinin qarşısını almaq məqsədilə yalnız oxumaq üçün təyin edilib. USB daşıyıcı cihazınızda məlumatların ehtiyat nüsxəsini çıxarmaq tövsiyə edilir.</string>
-    <string name="usbmemory_readonly_mount_notification_title">USB daşıyıcıya yazmaq alınmadı</string>
+    <string name="usbmemory_readonly_mount_notification_message">USB yaddaş yeri cihazı düzgün işləmir və məlumat itkisinin qarşısını almaq məqsədilə yalnız oxumaq üçün təyin edilib. USB yaddaş yeri cihazınızda məlumatların ehtiyat nüsxəsini çıxarmaq tövsiyə edilir.</string>
+    <string name="usbmemory_readonly_mount_notification_title">USB yaddaş yerinə yazmaq alınmadı</string>
     <string name="user_encrypted_title_phone">Telefon sönüb yandı</string>
     <string name="user_encrypted_title_tablet">Tablet sönüb yandı</string>
     <string name="voice_to_text_message_guide_toast">Bu funksiyadan istifadə etmək üçün Samsung Klaviaturasını standart olaraq təyin etməlisiniz.</string>
     <string name="vpn_allowOnlySecureConnection">VPN profili qorunmur</string>
     <string name="vpn_error_text">VPN ilə bağlantı yaratmaq üçün vurun.</string>
     <string name="vpn_error_title">VPN bağlantısı səhvi</string>
+    <string name="vpn_fail_text_long">%s ilə bağlantı yaratmaq mümkün olmadı. Bu VPN-i idarə etmək üçün vurun.</string>
+    <string name="vpn_fail_title">VPN qoşulmayıb</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Tableti soyutmaq üçün proqramlar bağlanır</string>
     <string name="vzw_cooldown_mode_ok">OK</string>
@@ -1382,6 +1356,7 @@ Bu müddət ərzində tabletinizi simsiz doldura bilərsiniz."</string>
     <string name="wifi_network_available_detailed">Açıq Wi-Fi şəbəkəsi əlçatandır.</string>
     <string name="wifi_networks_available">Wi-Fi şəbəkələri əlçatandır</string>
     <string name="wifi_networks_available_detailed">Açıq Wi-Fi şəbəkələri əlçatandır.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">WLAN bağlantınız yavaş və ya qeyri-stabil olduğu üçün %s mobil datadan istifadə edir.</string>
     <string name="wifi_notification_switch_wifi_detail">Wi-Fi şəbəkəsi qeyri-sabit olduğundan telefon mobil dataya keçdi.</string>
     <string name="wifi_notification_switch_wifi_title">Mobil dataya keçdi</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Fövqəladə bildirişlər</string>
@@ -1413,9 +1388,5 @@ Bu müddət ərzində tabletinizi simsiz doldura bilərsiniz."</string>
     <string name="work_profile_on_message">Bu, sizə iş proqramları, bildirişlər, məlumat və başqa iş profili funksiyalarına çıxış imkanı verəcək.</string>
     <string name="work_profile_on_title">İş profili yandırılsın?</string>
     <string name="work_profile_restricted">Avtomatik Bloklama maksimum məhdudiyyətlər ilə yanılıdır. Təhlükəsizliyinizi qorumaq üçün iş profilləri yaradıla bilməz.</string>
-    <string name="work_profile_telephony_paused_text">İş proqramlarını dayandırmısınız. Onlardan telefon zəngləri və ya mətn mesajları almayacaqsınız.</string>
-    <string name="work_profile_telephony_paused_title">Zəng və mesajlar söndürülüb</string>
-    <string name="work_profile_telephony_paused_turn_on_button">İş profili yandırılsın?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">Mən söndürənə qədər</string>
 </resources>

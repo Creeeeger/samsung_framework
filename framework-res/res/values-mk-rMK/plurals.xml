@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Вашиот таблет е нестабилен затоа што е отстранета SD-картичка на којашто имало инсталирани апликации. Вашиот таблет ќе се рестартира за %d секунди за да се врати во нормала. Зачувајте ги сите незачувани податоци пред да се рестартира таблетот.</item>
+        <item quantity="other">Вашиот телефон е нестабилен затоа што е отстранета SD-картичка на којашто имало инсталирани апликации. Вашиот телефон ќе се рестартира за %d секунди за да се врати во нормала. Зачувајте ги сите незачувани податоци пред да се рестартира телефонот.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Вашиот таблет е нестабилен затоа што е отстранета SD-картичка на којашто имало инсталирани апликации. Вашиот таблет ќе се рестартира за %d секунда за да се врати во нормала. Зачувајте ги сите незачувани податоци пред да се рестартира таблетот.</item>
+        <item quantity="one">Вашиот телефон е нестабилен затоа што е отстранета SD-картичка на којашто имало инсталирани апликации. Вашиот телефон ќе се рестартира за %d секунда за да се врати во нормала. Зачувајте ги сите незачувани податоци пред да се рестартира телефонот.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Вашиот таб.ќе се рестарт.за %d секунди</item>
+        <item quantity="other">Вашиот тел. ќе се рест. за %d секунди</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Вашиот таб.ќе се рестарт.за %d секунда</item>
+        <item quantity="one">Вашиот тел. ќе се рест. за %d секунда</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
@@ -100,14 +100,6 @@
         <item quantity="other">%d ставки</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">%d ставка</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">N/A</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">Мрежата Wi-Fi на којашто сакате да се поврзете може да се поврзе само со %d уреда истовремено. Исклучете ги сите други уреди од таа мрежа, а потоа обидете се повторно.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">Мрежата Wi-Fi на којашто сакате да се поврзете може да се поврзе само со %d уред истовремено. Исклучете ги сите други уреди од таа мрежа, а потоа обидете се повторно.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

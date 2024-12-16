@@ -43,7 +43,7 @@
     <string name="ColrMmi">​ຂໍ້​ຈຳ​ກັດ Line ID ທີ່​ເຊື່ອມ​ໂຍງ</string>
     <string name="CwMmi">ສາຍຊ້ອນ</string>
     <string name="DndMmi">ຫ້າມລົບກວນ</string>
-    <string name="EmergencyCallWarningSummary">ບໍ່ສາມາດໂທສຸກເສີນຜ່ານ Wi‑Fi ໄດ້</string>
+    <string name="EmergencyCallWarningSummary">ໂທ​ສຸກ​ເສີນຕ້ອງໃຊ້ເຄືອຂ່າຍມືຖື</string>
     <string name="EmergencyCallWarningTitle">ບໍ່ສາມາດໃຊ້ການໂທສຸກເສີນໄດ້</string>
     <string name="Midnight">ທ່ຽງຄືນ</string>
     <string name="NetworkPreferenceSwitchSummary">ໃຫ້ລອງປ່ຽນເຄືອຂ່າຍທີ່ຕ້ອງການ. ແຕະເພື່ອປ່ຽນ.</string>
@@ -174,14 +174,19 @@
     <string name="accessibility_button_prompt_text">ເລືອກຄຸນສົມບັດທີ່ຈະໃຊ້ເມື່ອທ່ານແຕະປຸ່ມການຊ່ວຍເຂົ້າເຖິງ:</string>
     <string name="accessibility_dialog_button_allow">ອະນຸຍາດ</string>
     <string name="accessibility_dialog_button_deny">ປະຕິເສດ</string>
+    <string name="accessibility_dialog_button_uninstall">ຖອນການຕິດຕັ້ງ</string>
+    <string name="accessibility_dialog_touch_filtered_warning">ແອັບໜຶ່ງກຳລັງປິດບັງຄຳຮ້ອງຂໍການອະນຸຍາດ ດັ່ງນັ້ນຈຶ່ງບໍ່ສາມາດຢັ້ງຢືນຄຳຕອບຂອງທ່ານໄດ້.</string>
     <string name="accessibility_edit_shortcut_menu_button_title">ເລືອກຄຸນສົມບັດເພື່ອໃຊ້ກັບປຸ່ມການຊ່ວຍເຂົ້າເຖິງ</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">ເລືອກຄຸນສົມບັດເພື່ອໃຊ້ກັບທາງລັດປຸ່ມລະດັບສຽງ</string>
     <string name="accessibility_enable_service_title">ອະນຸຍາດໃຫ້ %1$s ຄວບຄຸມອຸປະກອນທ່ານໄດ້ເຕັມຮູບແບບບໍ?</string>
-    <string name="accessibility_freeform_caption">ແຖບຄຳບັນຍາຍຂອງ %1$s.</string>
     <string name="accessibility_gesture_3finger_instructional_text">ເພື່ອສະຫຼັບລະຫວ່າງຄຸນສົມບັດຕ່າງໆ, ໃຫ້ປັດຂຶ້ນດ້ວຍສາມນິ້ວຄ້າງໄວ້.</string>
     <string name="accessibility_gesture_3finger_prompt_text">ເລືອກຄຸນສົມບັດເພື່ອໃຊ້ກັບທ່າທາງການຊ່ວຍເຂົ້າເຖິງ (ປັດຂຶ້ນຈາກລຸ່ມສຸດຂອງໜ້າຈໍດ້ວຍສາມນິ້ວ):</string>
     <string name="accessibility_gesture_instructional_text">ເພື່ອສະຫຼັບລະຫວ່າງບໍລິຄຸນສົມບັດຕ່າງໆ, ໃຫ້ປັດຂຶ້ນດ້ວຍສອງນິ້ວຄ້າງໄວ້.</string>
     <string name="accessibility_gesture_prompt_text">ເລືອກຄຸນສົມບັດເພື່ອໃຊ້ກັບທ່າທາງການຊ່ວຍເຂົ້າເຖິງ (ປັດຂຶ້ນຈາກລຸ່ມສຸດຂອງໜ້າຈໍດ້ວຍສອງນິ້ວ):</string>
+    <string name="accessibility_label_clone_profile">ໂຄລນ</string>
+    <string name="accessibility_label_communal_profile">ສ່ວນກາງ</string>
+    <string name="accessibility_label_managed_profile">ໂປຣໄຟລ໌ບ່ອນເຮັດວຽກ</string>
+    <string name="accessibility_label_private_profile">ພື້ນທີ່ສ່ວນບຸກຄົນ</string>
     <string name="accessibility_magnification_chooser_text">ການຂະຫຍາຍ</string>
     <string name="accessibility_select_shortcut_menu_title">ແຕະໃສ່ຄຸນສົມບັດໃດໜຶ່ງເພື່ອເລີ່ມການນຳໃຊ້ມັນ:</string>
     <string name="accessibility_service_action_perform_description">ມັນສາມາດຕິດຕາມການໂຕ້ຕອບຂອງທ່ານກັບແອັບ ຫຼື ເຊັນເຊີຮາດແວໃດໜຶ່ງ ແລະ ໂຕ້ຕອບກັບແອັບໃນນາມຂອງທ່ານໄດ້.</string>
@@ -267,14 +272,17 @@
     <string name="alert_windows_notification_title">%s ກຳລັງສະແດງຜົນບັງແອັບອື່ນຢູ່</string>
     <string name="alert_windows_notification_turn_off_action">ປິດ</string>
     <string name="allow">ອະນຸຍາດ</string>
+    <string name="alternative_face_setup_notification_content">ໃຊ້ການປົດລັອກດ້ວຍໜ້າເມື່ອລະບົບບໍ່ຈຳແນກລາຍນິ້ວມືຂອງທ່ານ ເຊັ່ນ: ເມື່ອນິ້ວມືຂອງທ່ານປຽກ</string>
+    <string name="alternative_fp_setup_notification_content">ໃຊ້ການປົດລັອກດ້ວຍລາຍນິ້ວມືເມື່ອລະບົບບໍ່ຈຳແນກໃບໜ້າຂອງທ່ານ ເຊັ່ນ: ເມື່ອບໍ່ມີແສງພຽງພໍ</string>
+    <string name="alternative_unlock_setup_notification_title">ລອງໃຊ້ວິທີອື່ນເພື່ອປົດລັອກ</string>
     <string name="alwaysUse">ໃຊ້ໂດຍຄ່າເລີ່ມຕົນສຳລັບການເຮັດວຽກນີ້.</string>
     <string name="android_preparing_apk">ກຳ​ລັງ​ກຽມ %1$s.</string>
-    <string name="android_start_title">ກຳລັງເລີ່ມແທັບເລັດ…</string>
+    <string name="android_start_title">ກຳລັງເລີ່ມໂທລະສັບ…</string>
     <string name="android_system_label">ລະບົບ Android</string>
     <string name="android_upgrading_complete">ກຳລັງສຳເລັດການເປີດລະບົບ.</string>
     <string name="android_upgrading_notification_title">ກຳລັງສຳເລັດການອັບເດດລະບົບ…</string>
     <string name="android_upgrading_starting_apps">ກຳລັງເປີດແອັບຯ.</string>
-    <string name="android_upgrading_title">ກຳລັງອັບເດດແທັບເລັດ…</string>
+    <string name="android_upgrading_title">ກຳລັງອັບເດດໂທລະສັບ…</string>
     <string name="anr_activity_application">%2$s ບໍ່ຕອບສະໜອງ</string>
     <string name="anr_activity_process">%1$s ບໍ່ຕອບສະໜອງ</string>
     <string name="anr_application_process">%1$s ບໍ່ຕອບສະໜອງ</string>
@@ -295,16 +303,17 @@
     <string name="app_not_found">ບໍ່ພົບແອັບພລິເຄຊັນເພື່ອຈັດການເຮັດວຽກນີ້.</string>
     <string name="app_running_notification_text">ແຕະເພື່ອເບິ່ງຂໍ້ມູນເພີ່ມເຕີມ ຫຼື ເພື່ອຢຸດການເຮັດວຽກຂອງແອັບ.</string>
     <string name="app_running_notification_title">%1$s ກຳລັງເຮັດວຽກຢູ່</string>
-    <string name="app_streaming_blocked_message">ບໍ່ສາມາດເຂົ້າເຖິງແອັບນີ້ໄດ້ຢູ່ %1$s ຂອງທ່ານໃນຕອນນີ້. ກະລຸນາລອງຢູ່ແທັບເລັດຂອງທ່ານແທນ.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">ແອັບນີ້ກຳລັງຮ້ອງຂໍຄວາມປອດໄພເພີ່ມເຕີມ. ກະລຸນາລອງຢູ່ແທັບເລັດຂອງທ່ານແທນ.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">ບໍ່ສາມາດເຂົ້າເຖິງແອັບນີ້ໄດ້ຢູ່ %1$s ຂອງທ່ານ. ກະລຸນາລອງຢູ່ແທັບເລັດຂອງທ່ານແທນ.</string>
+    <string name="app_streaming_blocked_message">ບໍ່ສາມາດເຂົ້າເຖິງແອັບນີ້ໄດ້ຢູ່ %1$s ຂອງທ່ານໃນຕອນນີ້. ກະລຸນາລອງຢູ່ໂທລະສັບຂອງທ່ານແທນ.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">ແອັບນີ້ກຳລັງຮ້ອງຂໍຄວາມປອດໄພເພີ່ມເຕີມ. ກະລຸນາລອງຢູ່ໂທລະສັບຂອງທ່ານແທນ.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">ແອັບນີ້ກຳລັງຮ້ອງຂໍການອະນຸຍາດເພີ່ມເຕີມ, ແຕ່ບໍ່ສາມາດໃຫ້ການອະນຸຍາດໃນເຊດຊັນການສະຕຣີມໄດ້. ກະລຸນາໃຫ້ການອະນຸຍາດໃນໂທລະສັບຂອງທ່ານກ່ອນ.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">ບໍ່ສາມາດເຂົ້າເຖິງແອັບນີ້ໄດ້ຢູ່ %1$s ຂອງທ່ານ. ກະລຸນາລອງຢູ່ໂທລະສັບຂອງທ່ານແທນ.</string>
     <string name="app_streaming_blocked_title">ບໍ່ສາມາດໃຊ້ %1$s ໄດ້</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">ກ້ອງຖ່າຍຮູບບໍ່ສາມາດໃຊ້ໄດ້</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">ສືບຕໍ່ຢູ່ໂທລະສັບ</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">ໄມໂຄຣໂຟນບໍ່ສາມາດໃຊ້ໄດ້</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">ຕ້ອງມີການອະນຸຍາດ</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">ຄຳຮ້ອງຂໍການອະນຸຍາດຖືກລະງັບ</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">ບໍ່ສາມາດໃຊ້ Play Store ໄດ້</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">ການຕັ້ງຄ່າແທັບເລັດບໍ່ສາມາດໃຊ້ໄດ້</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">ການຕັ້ງຄ່າໂທລະສັບບໍ່ສາມາດໃຊ້ໄດ້</string>
     <string name="app_suspended_default_message">%1$s ບໍ່ສາມາດໃຊ້ໄດ້ໃນຕອນນີ້. ມັນຖືກຈັດການໂດຍ %2$s.</string>
     <string name="app_suspended_more_details">ສຶກສາເພີ່ມເຕີມ</string>
     <string name="app_suspended_title">ບໍ່ສາມາດໃຊ້ແອັບໄດ້</string>
@@ -344,13 +353,15 @@
     <string name="back_button_label">ກັບຄືນ</string>
     <string name="badPin">ລະຫັດ PIN ເກົ່າທີ່ທ່ານພິມນັ້ນບໍ່ຖືກຕ້ອງ.</string>
     <string name="badPuk">ລະຫັດ PUK ທີ່ທ່ານພິມນັ້ນບໍ່ຖືກຕ້ອງ.</string>
-    <string name="battery_saver_charged_notification_summary">ແທັບເລັດມີໄຟພຽງພໍແລ້ວ. ບໍ່ມີການຈຳກັດຄຸນສົມບັດອີກຕໍ່ໄປແລ້ວ.</string>
+    <string name="battery_saver_charged_notification_summary">ໂທລະສັບມີໄຟພຽງພໍແລ້ວ. ບໍ່ມີການຈຳກັດຄຸນສົມບັດອີກຕໍ່ໄປແລ້ວ.</string>
     <string name="battery_saver_description">ຕົວປະຢັດແບັດເຕີຣີຈະເປີດໃຊ້ຮູບແບບສີສັນມືດ ແລະ ຈຳກັດ ຫຼື ປິດການເຄື່ອນໄຫວໃນພື້ນຫຼັງ, ເອັບເຟັກທາງພາບຈຳນວນໜຶ່ງ, ຄຸນສົມບັດບາງຢ່າງ ແລະ ການເຊື່ອມຕໍ່ເຄືອຂ່າຍບາງອັນ.</string>
     <string name="battery_saver_description_with_learn_more">ຕົວປະຢັດແບັດເຕີຣີຈະເປີດໃຊ້ຮູບແບບສີສັນມືດ ແລະ ຈຳກັດ ຫຼື ປິດການເຄື່ອນໄຫວໃນພື້ນຫຼັງ, ເອັບເຟັກທາງພາບຈຳນວນໜຶ່ງ, ຄຸນສົມບັດບາງຢ່າງ ແລະ ການເຊື່ອມຕໍ່ເຄືອຂ່າຍບາງອັນ.</string>
     <string name="battery_saver_notification_channel_name">ຕົວປະຢັດແບັດເຕີຣີ</string>
     <string name="battery_saver_off_notification_title">ປິດຕົວປະຢັດແບັດເຕີຣີແລ້ວ</string>
     <string name="beforeOneMonthDurationPast">ຫຼາຍກວ່າ 1 ເດືອນກ່ອນ</string>
     <string name="biometric_app_setting_name">ໃຊ້ລະບົບຊີວະມິຕິ</string>
+    <string name="biometric_dangling_notification_action_not_now">ບໍ່ຟ້າວເທື່ອ</string>
+    <string name="biometric_dangling_notification_action_set_up">ຕັ້ງຄ່າ</string>
     <string name="biometric_dialog_default_subtitle">ໃຊ້ລະບົບຊີວະມິຕິຂອງທ່ານເພື່ອດຳເນີນການຕໍ່</string>
     <string name="biometric_dialog_default_title">ຢັ້ງຢືນວ່າແມ່ນທ່ານ</string>
     <string name="biometric_error_canceled">ຍົກເລີກການຮັບຮອງຄວາມຖືກຕ້ອງແລ້ວ</string>
@@ -358,6 +369,7 @@
     <string name="biometric_error_generic">ເກີດຄວາມຜິດພາດໃນການພິສູດຢືນຢັນ</string>
     <string name="biometric_error_hw_unavailable">ຮາດແວຊີວະມິຕິບໍ່ສາມາດໃຊ້ໄດ້</string>
     <string name="biometric_error_user_canceled">ຍົກເລີກການຮັບຮອງຄວາມຖືກຕ້ອງແລ້ວ</string>
+    <string name="biometric_face_not_recognized">ບໍ່ສາມາດຈຳແນກໜ້າໄດ້</string>
     <string name="biometric_not_recognized">ບໍ່ຮັບຮູ້</string>
     <string name="biometric_or_screen_lock_app_setting_name">ໃຊ້ລະບົບຊີວະມິຕິ ຫຼື ການລັອກໜ້າຈໍ</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">ໃຊ້ລະບົບຊີວະມິຕິ ຫຼື ການລັອກໜ້າຈໍຂອງທ່ານເພື່ອດຳເນີນການຕໍ່</string>
@@ -420,7 +432,7 @@
     <string name="color_inversion_feature_name">ການປີ້ນສີ</string>
     <string name="common_name">ຊື່ສາມັນ:</string>
     <string name="concurrent_display_notification_active_content">%1$s ກຳລັງໃຊ້ຈໍສະແດງຜົນທັງສອງເພື່ອສະແດງເນື້ອຫາ</string>
-    <string name="concurrent_display_notification_active_title">ເປີດໜ້າຈໍຄູ່ຢູ່</string>
+    <string name="concurrent_display_notification_active_title">ເປີດ Dual Screen ຢູ່</string>
     <string name="concurrent_display_notification_name">ໜ້າຈໍຄູ່</string>
     <string name="concurrent_display_notification_power_save_content">Dual Screen ໃຊ້ບໍ່ໄດ້ເນື່ອງຈາກເປີດຕົວປະຢັດແບັດເຕີຣີຢູ່. ທ່ານສາມາດປິດສິ່ງນີ້ໄດ້ໃນການຕັ້ງຄ່າ.</string>
     <string name="concurrent_display_notification_power_save_title">Dual Screen ໃຊ້ບໍ່ໄດ້</string>
@@ -433,11 +445,16 @@
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">ຕົກລົງ</string>
+    <string name="connected_display_thermally_unavailable_notification_content">ອຸປະກອນຂອງທ່ານຮ້ອນເກີນໄປ ແລະ ບໍ່ສາມາດສະທ້ອນໄປຫາຈໍສະແດງຜົນໄດ້ຈົນກວ່າມັນຈະເຢັນລົງ</string>
+    <string name="connected_display_unavailable_notification_content">ກະລຸນາໃຊ້ສາຍອື່ນແລ້ວລອງໃໝ່</string>
+    <string name="connected_display_unavailable_notification_title">ບໍ່ສາມາດສະທ້ອນໄປຫາຈໍສະແດງຜົນໄດ້</string>
     <string name="console_running_notification_message">ມີຜົນກະທົບກັບປະສິດທິພາບ. ເພື່ອປິດການນຳໃຊ້, ໃຫ້ກວດສອບ bootloader ເບິ່ງ.</string>
     <string name="console_running_notification_title">ເປີດນຳໃຊ້ຊີຣຽວຄອນໂຊແລ້ວ</string>
     <string name="contentServiceSync">ການຊິ້ງຂໍ້ມູນ</string>
     <string name="contentServiceSyncNotificationTitle">ບໍ່ສາມາດຊິ້ງຂໍ້ມູນໄດ້</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">ພະຍາຍາມລຶບ %s ຫຼາຍເກີນໄປ.</string>
+    <string name="content_description_collapsed">ຫຍໍ້ລົງແລ້ວ</string>
+    <string name="content_description_expanded">ຂະຫຍາຍແລ້ວ</string>
     <string name="content_description_sliding_handle">ເລື່ອນບ່ອນຖື ແລ້ວແຕະຄ້າງໄວ້.</string>
     <string name="conversation_single_line_image_placeholder">ສົ່ງຮູບແລ້ວ</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -454,7 +471,7 @@
     <string name="csd_momentary_exposure_warning">"ກວດພົບສຽງດັງ
 
 ຫູຟັງຢູ່ໃນລະດັບສຽງທີ່ດັງກວ່າທີ່ແນະນຳ, ເຊິ່ງສາມາດເປັນອັນຕະລາຍຕໍ່ການໄດ້ຍິນຂອງທ່ານໄດ້"</string>
-    <string name="data_saver_description">ເພື່ອຊ່ວຍຫຼຸດຜ່ອນການນຳໃຊ້ຂໍ້ມູນ, ຕົວປະຢັດອິນເຕີເນັດຈະປ້ອງກັນບໍ່ໃຫ້ບາງແອັບສົ່ງ ຫຼື ຮັບຂໍ້ມູນໃນພື້ນຫຼັງ. ແອັບໃດໜຶ່ງທີ່ທ່ານກຳລັງໃຊ້ຢູ່ຈະສາມາດເຂົ້າເຖິງຂໍ້ມູນໄດ້ ແຕ່ອາດເຂົ້າເຖິງໄດ້ຖີ່ໜ້ອຍລົງ. ນີ້ອາດໝາຍຄວາມວ່າ ຮູບພາບຕ່າງໆອາດບໍ່ສະແດງຈົນກວ່າທ່ານຈະແຕະໃສ່ກ່ອນ.</string>
+    <string name="data_saver_description">ເພື່ອຊ່ວຍຫຼຸດຜ່ອນການນຳໃຊ້ຂໍ້ມູນ, ຕົວປະຢັດຂໍ້ມູນຈະປ້ອງກັນບໍ່ໃຫ້ບາງແອັບສົ່ງ ຫຼື ຮັບຂໍ້ມູນໃນພື້ນຫຼັງ. ແອັບໃດໜຶ່ງທີ່ທ່ານກຳລັງໃຊ້ຢູ່ຈະສາມາດເຂົ້າເຖິງຂໍ້ມູນໄດ້ ແຕ່ອາດເຂົ້າເຖິງໄດ້ຖີ່ໜ້ອຍລົງ. ນີ້ອາດໝາຍຄວາມວ່າ ຮູບພາບຕ່າງໆອາດບໍ່ສະແດງຈົນກວ່າທ່ານຈະແຕະໃສ່ກ່ອນ.</string>
     <string name="data_saver_enable_button">ເປີດໃຊ້</string>
     <string name="data_saver_enable_title">ເປີດຕົວປະຢັດອິນເຕີເນັດບໍ?</string>
     <string name="data_usage_limit_body">ຢຸດຂໍ້ມູນຊົ່ວຄາວສຳລັບຮອບທີ່ເຫຼືອຂອງທ່ານແລ້ວ</string>
@@ -486,7 +503,7 @@
     <string name="decline">ປະຕິເສດ</string>
     <string name="decline_remote_bugreport_action">ປະຕິເສດ</string>
     <string name="default_audio_route_category_name">ລະບົບ</string>
-    <string name="default_audio_route_name">ແທັບເລັດ</string>
+    <string name="default_audio_route_name">ໂທລະສັບ</string>
     <string name="default_audio_route_name_dock_speakers">ບ່ອນຕັ້ງລຳໂພງ</string>
     <string name="default_audio_route_name_external_device">ອຸປະກອນພາຍນອກ</string>
     <string name="default_audio_route_name_headphones">ຫູຟັງ</string>
@@ -508,6 +525,7 @@
     <string name="device_state_notification_settings_button">ເຂົ້າໄປການຕັ້ງຄ່າ</string>
     <string name="device_state_notification_turn_off_button">ປິດໄວ້</string>
     <string name="device_storage_monitor_notification_channel">ບ່ອນຈັດເກັບຂໍ້ມູນອຸປະກອນ</string>
+    <string name="device_unlock_notification_name">ການປົດລັອກອຸປະກອນ</string>
     <string name="dial_number_using">"ກົດເລກໝາຍ
 ໂດຍໃຊ້ %s"</string>
     <string name="disable_accessibility_shortcut">ປິດປຸ່ມລັດ</string>
@@ -525,6 +543,7 @@
     <string name="dlg_ok">ຕົກລົງ</string>
     <string name="done_accessibility_shortcut_menu_button">ແລ້ວໆ</string>
     <string name="done_label">ແລ້ວໆ</string>
+    <string name="dream_accessibility_action_click">ປິດໄວ້</string>
     <string name="dream_preview_title">ຕົວຢ່າງ, %1$s</string>
     <string name="dump_heap_notification">%1$s ເກີນ​ຂີດ​ຄວາມ​ຈຳ​ແລ້ວ</string>
     <string name="dump_heap_notification_detail">ກວດພົບ Heap dump. ແຕະເພື່ອແບ່ງປັນ.</string>
@@ -551,7 +570,9 @@
     <string name="duration_years_shortest_future">ໃນ %dປ</string>
     <string name="dynamic_mode_notification_channel_name">ການແຈ້ງເຕືອນຂໍ້ມູນໂໝດກິດຈະວັດປະຈຳວັນ</string>
     <string name="dynamic_mode_notification_summary">ກຳລັງຫຼຸດການໃຊ້ແບັດເຕີຣີເພື່ອຍືດອາຍຸແບັດເຕີຣີ</string>
+    <string name="dynamic_mode_notification_summary_v2">ຕົວປະຢັດແບັດເຕີຣີເປີດຢູ່ເພື່ອຍືດອາຍຸແບັດເຕີຣີ</string>
     <string name="dynamic_mode_notification_title">ເປີດໃຊ້ຕົວປະຢັດແບັດເຕີຣີແລ້ວ</string>
+    <string name="dynamic_mode_notification_title_v2">ຕົວປະຢັດແບັດເຕີຣີເປີດຢູ່</string>
     <string name="editTextMenuTitle">ການເຮັດວຽກຂອງຂໍ້ຄວາມ</string>
     <string name="edit_accessibility_shortcut_menu_button">ແກ້ໄຂທາງລັດ</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
@@ -564,8 +585,10 @@
     <string name="emergency_call_dialog_number_for_display">ເບີໂທສຸກເສີນ</string>
     <string name="emergency_calls_only">ສຳລັບການໂທສຸກເສີນເທົ່ານັ້ນ</string>
     <string name="enablePin">ບໍ່ສຳເລັດ, ເປີດນໍາໃຊ້ການລັອກຂອງ SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s ຕ້ອງການເປີດນຳໃຊ້ \"ການສຳຫຼວດໂດຍສຳພັດ\". ເມື່ອເປີດ \"ການສຳຫຼວດໂດຍສຳພັດ\" ແລ້ວ ທ່ານຈະສາມາດໄດ້ຍິນ ຫຼືເຫັນຄຳບັນຍາຍວ່າມີຫຍັງຢູ່ກ້ອງນິ້ວມືຂອງທ່ານ ຫຼືໃຊ້ຮູບແບບການເຄື່ອນໄຫວເພື່ອໂຕ້ຕອບກັບແທັບເລັດ.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s ຕ້ອງການເປີດນຳໃຊ້ \"ການສຳຫຼວດໂດຍສຳພັດ\". ເມື່ອເປີດ \"ການສຳຫຼວດໂດຍສຳພັດ\" ແລ້ວ ທ່ານຈະສາມາດໄດ້ຍິນ ຫຼືເຫັນຄຳບັນຍາຍວ່າມີຫຍັງຢູ່ກ້ອງນິ້ວມືຂອງທ່ານ ຫຼືໃຊ້ຮູບແບບການເຄື່ອນໄຫວເພື່ອໂຕ້ຕອບກັບໂທລະສັບ.</string>
     <string name="enable_explore_by_touch_warning_title">ເປີດນຳໃຊ້ \"ການສຳຫຼວດໂດຍສຳພັດ\" ບໍ່?</string>
+    <string name="error_handwriting_unsupported">ບໍ່ຮອງຮັບການຂຽນດ້ວຍມືໃນຊ່ອງຂໍ້ມູນນີ້</string>
+    <string name="error_handwriting_unsupported_password">ຊ່ອງຂໍ້ມູນລະຫັດຜ່ານບໍ່ຮອງຮັບການຂຽນດ້ວຍມື</string>
     <string name="error_message_change_not_allowed">ຜູ້ເບິ່ງແຍງລະບົບຂອງທ່ານບໍ່ອະນຸຍາດໃຫ້ປ່ຽນແປງສິ່ງນີ້</string>
     <string name="error_message_title">ຜິດພາດ</string>
     <string name="etws_primary_default_message_earthquake">ໃຈເຢັນໆ ແລະ ຊອກຫາບ່ອນພັກຢູ່ໃກ້ໆ.</string>
@@ -646,7 +669,7 @@
     <string name="face_acquired_too_bright">ແຈ້ງເກີນໄປ. ລອງຄ່ອຍແສງໄຟລົງ.</string>
     <string name="face_acquired_too_close">ເລື່ອນໂທລະສັບອອກໄປໄກຂຶ້ນ</string>
     <string name="face_acquired_too_dark">ແສງບໍ່ພໍ</string>
-    <string name="face_acquired_too_different">ບໍ່ສາມາດຈຳແນກໃບໜ້າໄດ້. ກະລຸນາລອງໃໝ່.</string>
+    <string name="face_acquired_too_different">ບໍ່ສາມາດຈຳແນກໜ້າໄດ້. ລອງໃໝ່.</string>
     <string name="face_acquired_too_far">ເລື່ອນໂທລະສັບເຂົ້າໄປໃກ້ຂຶ້ນ</string>
     <string name="face_acquired_too_high">ຍົກໂທລະສັບໃຫ້ສູງຂຶ້ນ</string>
     <string name="face_acquired_too_left">ເລື່ອນໂທລະສັບໄປທາງຂວາຂອງທ່ານ</string>
@@ -657,6 +680,8 @@
     <string name="face_app_setting_name">ໃຊ້ການປົດລັອກດ້ວຍໜ້າ</string>
     <string name="face_authenticated_confirmation_required">ພິສູດຢືນຢັນໃບໜ້າແລ້ວ, ກະລຸນາກົດຢືນຢັນ</string>
     <string name="face_authenticated_no_confirmation_required">ພິສູດຢືນຢັນໃບໜ້າແລ້ວ</string>
+    <string name="face_dangling_notification_msg">ບໍ່ສາມາດຈຳແນກຮູບແບບໃບໜ້າຂອງທ່ານໄດ້ອີກຕໍ່ໄປ. ກະລຸນາຕັ້ງຄ່າການປົດລັອກດ້ວຍໜ້າອີກຄັ້ງ.</string>
+    <string name="face_dangling_notification_title">ຕັ້ງຄ່າການປົດລັອກດ້ວຍໜ້າຄືນໃໝ່</string>
     <string name="face_dialog_default_subtitle">ໃຊ້ໜ້າທ່ານເພື່ອສືບຕໍ່</string>
     <string name="face_error_canceled">ຍົກເລີກການດຳເນີນການກັບໃບໜ້າແລ້ວ.</string>
     <string name="face_error_hw_not_available">ບໍ່ສາມາດຢັ້ງຢືນໃບໜ້າໄດ້. ບໍ່ມີຮາດແວໃຫ້ໃຊ້.</string>
@@ -679,8 +704,6 @@
     <string name="face_recalibrate_notification_name">ປົດລັອກດ້ວຍໜ້າ</string>
     <string name="face_recalibrate_notification_title">ເກີດບັນຫາກັບການປົດລັອກດ້ວຍໜ້າ</string>
     <string name="face_sensor_privacy_enabled">ເພື່ອໃຊ້ການປົດລັອກດ້ວຍໜ້າ, ກະລຸນາເປີດໃຊ້ <b>ສິດເຂົ້າເຖິງກ້ອງຖ່າຍຮູບ</b> ໃນການຕັ້ງຄ່າ > ຄວາມເປັນສ່ວນຕົວ</string>
-    <string name="face_setup_notification_content">ປົດລັອກໂທລະສັບຂອງທ່ານໂດຍການເບິ່ງມັນ</string>
-    <string name="face_setup_notification_title">ຕັ້ງຄ່າການປົດລັອກດ້ວຍໜ້າ</string>
     <string name="faceunlock_multiple_failures">ຄວາມພະຍາຍາມປົດລັອກດ້ວຍໜ້ານັ້ນ ເກີນຈຳນວນທີ່ກຳນົດແລ້ວ</string>
     <string name="factory_reset_message">"ບໍ່ສາມາດໃຊ້ແອັບຜູ້ເບິ່ງແຍງລະບົບໄດ້. ອຸປະກອນຂອງທ່ານຈະຖືກລຶບຂໍ້ມູນໃນຕອນນີ້.
 
@@ -705,7 +728,7 @@
     <string name="fingerprint_acquired_imager_dirty">ໃຫ້ອະນາໄມເຊັນ​ເຊີລາຍນິ້ວ​ມືແລ້ວລອງໃໝ່</string>
     <string name="fingerprint_acquired_imager_dirty_alt">ໃຫ້ອະນາໄມເຊັນ​ເຊີແລ້ວລອງໃໝ່</string>
     <string name="fingerprint_acquired_immobile">ປ່ຽນຕຳແໜ່ງຂອງນິ້ວມືຂອງທ່ານເລັກນ້ອຍໃນແຕ່ລະເທື່ອ</string>
-    <string name="fingerprint_acquired_insufficient">ບໍ່ສາມາດຈຳແນກລາຍນິ້ວມືໄດ້. ກະລຸນາລອງໃໝ່.</string>
+    <string name="fingerprint_acquired_insufficient">ບໍ່ສາມາດຈຳແນກລາຍນິ້ວມືໄດ້. ລອງໃໝ່.</string>
     <string name="fingerprint_acquired_partial">ກົດຢູ່ເຊັນເຊີໃຫ້ແໜ້ນ</string>
     <string name="fingerprint_acquired_power_press">ກວດພົບແຮງກົດ</string>
     <string name="fingerprint_acquired_too_bright">ແຈ້ງເກີນໄປ</string>
@@ -714,21 +737,27 @@
     <string name="fingerprint_acquired_try_adjusting">ກະລຸນາລອງປັບແກ້</string>
     <string name="fingerprint_app_setting_name">ໃຊ້ລາຍນິ້ວມື</string>
     <string name="fingerprint_authenticated">ພິສູດຢືນຢັນລາຍນິ້ວມືແລ້ວ</string>
+    <string name="fingerprint_dangling_notification_msg_1">ບໍ່ສາມາດຈຳແນກ %s ໄດ້ອີກຕໍ່ໄປ.</string>
+    <string name="fingerprint_dangling_notification_msg_2">ບໍ່ສາມາດຈຳແນກ %1$s ແລະ %2$s ໄດ້ອີກຕໍ່ໄປ.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_1">ບໍ່ສາມາດຈຳແນກ %s ໄດ້ອີກຕໍ່ໄປ. ກະລຸນາຕັ້ງຄ່າການປົດລັອກດ້ວຍລາຍນິ້ວມືອີກຄັ້ງ.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_2">ບໍ່ສາມາດຈຳແນກ %1$s ແລະ %2$s ໄດ້ອີກຕໍ່ໄປ. ກະລຸນາຕັ້ງຄ່າການປົດລັອກດ້ວຍລາຍນິ້ວມືອີກຄັ້ງ.</string>
+    <string name="fingerprint_dangling_notification_title">ຕັ້ງຄ່າການປົດລັອກດ້ວຍລາຍນິ້ວມືຄືນໃໝ່</string>
     <string name="fingerprint_dialog_default_subtitle">ໃຊ້​ລາຍ​ນີ້ວ​ມື​ຂອງ​ທ່ານ​ເພື່ອ​ສືບ​ຕໍ່</string>
-    <string name="fingerprint_error_bad_calibration">ບໍ່ສາມາດໃຊ້ເຊັນ​ເຊີລາຍນິ້ວ​ມືໄດ້. ກະລຸນາໄປຫາຜູ້ໃຫ້ບໍລິການສ້ອມແປງ</string>
-    <string name="fingerprint_error_canceled">ຍົກ​ເລີກ​ການ​ດຳ​ເນີນ​ການ​ລາຍ​ນີ້ວ​ມື​ແລ້ວ.</string>
-    <string name="fingerprint_error_hw_not_available">ບໍ່​ມີ​ຮາດ​ແວລາຍ​ນີ້ວ​ມື​ໃຫ້​ຢູ່.</string>
-    <string name="fingerprint_error_hw_not_present">ອຸປະກອນນີ້ບໍ່ມີເຊັນເຊີລາຍນິ້ວມື.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">ບໍ່ສາມາດຈຳແນກໜ້າໄດ້. ໃຊ້ລາຍນິ້ວມືແທນ.</string>
+    <string name="fingerprint_error_bad_calibration">ບໍ່ສາມາດໃຊ້ເຊັນ​ເຊີລາຍນິ້ວ​ມືໄດ້. ກະລຸນາໄປຫາຜູ້ໃຫ້ບໍລິການສ້ອມແປງ.</string>
+    <string name="fingerprint_error_canceled">ຍົກເລີກການເຮັດວຽກຂອງລາຍນິ້ວມືແລ້ວ</string>
+    <string name="fingerprint_error_hw_not_available">ຮາດແວລາຍນິ້ວມືບໍ່ມີໃຫ້ໃຊ້</string>
+    <string name="fingerprint_error_hw_not_present">ອຸປະກອນນີ້ບໍ່ມີເຊັນເຊີລາຍນິ້ວມື</string>
     <string name="fingerprint_error_lockout">ພະຍາຍາມຫຼາຍເທື່ອເກີນໄປ. ກະລຸນາໃຊ້ການລອກໜ້າຈໍແທນ.</string>
     <string name="fingerprint_error_lockout_permanent">ພະຍາຍາມຫຼາຍເທື່ອເກີນໄປ. ກະລຸນາໃຊ້ການລອກໜ້າຈໍແທນ.</string>
-    <string name="fingerprint_error_no_fingerprints">ບໍ່ມີການລົງທະບຽນລາຍນິ້ວມື.</string>
+    <string name="fingerprint_error_no_fingerprints">ບໍ່ມີການລົງທະບຽນລາຍນິ້ວມື</string>
     <string name="fingerprint_error_no_space">ບໍ່ສາມາດຕັ້ງຄ່າລາຍນິ້ວມືໄດ້</string>
     <string name="fingerprint_error_not_match">ບໍ່ຮູ້ຈັກລາຍນິ້ວມື</string>
     <string name="fingerprint_error_power_pressed">ກົດປຸ່ມເປີດປິດແລ້ວ</string>
-    <string name="fingerprint_error_security_update_required">ປິດການເຮັດວຽກຂອງເຊັນເຊີໄວ້ຊົ່ວຄາວແລ້ວ.</string>
+    <string name="fingerprint_error_security_update_required">ປິດການເຮັດວຽກຂອງເຊັນເຊີໄວ້ຊົ່ຄາວແລ້ວ</string>
     <string name="fingerprint_error_timeout">ໝົດເວລາຕັ້ງຄ່າລາຍນິ້ວມື. ກະລຸນາລອງໃໝ່.</string>
     <string name="fingerprint_error_unable_to_process">ບໍ່ສາມາດປະມວນຜົນລາຍນິ້ວມືໄດ້. ກະລຸນາລອງໃໝ່.</string>
-    <string name="fingerprint_error_user_canceled">ຜູ້ໃຊ້ໄດ້ຍົກເລີກຄຳສັ່ງລາຍນິ້ວມືແລ້ວ.</string>
+    <string name="fingerprint_error_user_canceled">ຜູ້ໃຊ້ໄດ້ຍົກເລີກການເຮັດວຽກຂອງລາຍນິ້ວມືແລ້ວ</string>
     <string name="fingerprint_error_vendor_unknown">ມີບາງຢ່າງຜິດພາດເກີດຂຶ້ນ. ກະລຸນາລອງໃໝ່.</string>
     <string name="fingerprint_name_template">ນີ້ວ​ມື %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">ໃຊ້ລາຍນິ້ວມື ຫຼື ການລັອກໜ້າຈໍ</string>
@@ -736,8 +765,6 @@
     <string name="fingerprint_recalibrate_notification_content">ກະລຸນາໄປຫາຜູ້ໃຫ້ບໍລິການສ້ອມແປງ.</string>
     <string name="fingerprint_recalibrate_notification_name">ປົດລັອກດ້ວຍລາຍນິ້ວມື</string>
     <string name="fingerprint_recalibrate_notification_title">ບໍ່ສາມາດໃຊ້ເຊັນ​ເຊີລາຍນິ້ວ​ມືໄດ້</string>
-    <string name="fingerprint_setup_notification_content">ແຕະເພື່ອເພີ່ມລາຍນິ້ວມື</string>
-    <string name="fingerprint_setup_notification_title">ຕັ້ງຄ່າວິທີເພີ່ມເຕີມເພື່ອປົດລັອກ</string>
     <string name="fingerprint_udfps_error_not_match">ບໍ່ຮູ້ຈັກລາຍນິ້ວມື</string>
     <string name="fingerprints">ລາຍນິ້ວມື:</string>
     <string name="floating_toolbar_close_overflow_description">ປິດ​ການ​ໄຫຼ​ລົ້ນ​ອອກ​ມາ</string>
@@ -779,7 +806,7 @@
     <string name="global_action_silent_mode_on_status">ປິດສຽງແລ້ວ</string>
     <string name="global_action_toggle_silent_mode">ໂໝດປິດສຽງ</string>
     <string name="global_action_voice_assist">ຊ່ວຍ​ເຫຼືອ​ທາງ​ສຽງ</string>
-    <string name="global_actions">ໂຕເລືອກແທັບເລັດ</string>
+    <string name="global_actions">ໂຕເລືອກໂທລະສັບ</string>
     <string name="global_actions_airplane_mode_off_status">ປິດໂໝດໃນຍົນແລ້ວ</string>
     <string name="global_actions_airplane_mode_on_status">ເປີດໂໝດຢູ່ໃນຍົນແລ້ວ</string>
     <string name="global_actions_toggle_airplane_mode">ໂໝດຢູ່ໃນຍົນ</string>
@@ -798,7 +825,7 @@
     <string name="granularity_label_link">ລິ້ງ</string>
     <string name="granularity_label_word">ຄຳສັບ</string>
     <string name="guest_name">ແຂກ</string>
-    <string name="hardware">ສະແດງແປ້ນພິມສະເໝືອນ</string>
+    <string name="hardware">ໃຊ້ແປ້ນພິມໃນໜ້າຈໍ</string>
     <string name="harmful_app_warning_open_anyway">ຢືນຢັນການເປີດ</string>
     <string name="harmful_app_warning_title">ກວດສອບແອັບທີ່ເປັນອັນຕະລາຍ</string>
     <string name="harmful_app_warning_uninstall">ຖອນການຕິດຕັ້ງ</string>
@@ -846,8 +873,8 @@
     <string name="ime_action_search">ຊອກຫາ</string>
     <string name="ime_action_send">ສົ່ງ</string>
     <string name="imei">IMEI</string>
-    <string name="immersive_cling_description">ຫາກຕ້ອງການອອກ, ໃຫ້ຮູດຈາກທາງເທິງລົງມາທາງລຸ່ມ.</string>
-    <string name="immersive_cling_positive">ໄດ້​ແລ້ວ</string>
+    <string name="immersive_cling_description">ເພື່ອອອກ, ໃຫ້ປັດລົງຈາກເທິງສຸດຂອງໜ້າຈໍຂອງທ່ານ</string>
+    <string name="immersive_cling_positive">ເຂົ້າ​ໃຈ​ແລ້ວ</string>
     <string name="immersive_cling_title">ການ​ເບິ່ງ​ເຕັມ​ໜ້າ​ຈໍ</string>
     <string name="importance_from_person">ຂໍ້ຄວາມນີ້ສຳຄັນເນື່ອງຈາກບຸກຄົນທີ່ກ່ຽວຂ້ອງ.</string>
     <string name="importance_from_user">ທ່ານຕັ້ງຄວາມສຳຄັນຂອງການແຈ້ງເຕືອນເຫຼົ່ານີ້.</string>
@@ -920,11 +947,11 @@
     <string name="keyguard_password_entry_touch_hint"><font size="17">ແຕະເພື່ອພິມລະຫັດຜ່ານ</font></string>
     <string name="keyguard_password_wrong_pin_code">ລະຫັດ PIN ບໍ່ຖືກຕ້ອງ.</string>
     <string name="kg_enter_confirm_pin_hint">ຢືນຢັນລະຫັດ PIN ທີ່ຕ້ອງການ</string>
-    <string name="kg_failed_attempts_almost_at_login">"ທ່ານແຕ້ມຮູບແບບປົດລັອກຜິດ %1$d ເທື່ອແລ້ວ. ຫຼັງຈາກແຕ້ມຜິດອີກ %2$d ເທື່ອ, ທ່ານຈະຖືກຖາມໃຫ້ປົດລັອກແທັບເລັດຂອງທ່ານ ດ້ວຍການເຂົ້າສູ່ລະບົບໂດຍໃຊ້ອີເມວຂອງທ່ານ.
+    <string name="kg_failed_attempts_almost_at_login">"ທ່ານແຕ້ມຮູບແບບປົດລັອກຂອງທ່ານຜິດ %1$d ເທື່ອແລ້ວ. ຫຼັງຈາກຄວາມພະຍາຍາມອີກ %2$d ເທື່ອ ທ່ານຈະຖືກຖາມໃຫ້ປົດລັອກໂທລະສັບຂອງທ່ານດ້ວຍບັນຊີອີເມວ.
 
- ກະລຸນາລອງໃໝ່ອີກຄັ້ງໃນອີກ %3$d ວິນາທີ."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">ທ່ານໄດ້ພະຍາຍາມປົດລັອກແທັບເລັດບໍ່ສຳເລັດ %1$d ເທື່ອແລ້ວ. ຫຼັງຈາກຄວາມພະຍາຍາມອີກ %2$d ເທື່ອ ແທັບເລັດຂອງທ່ານຈະຖືກຕັ້ງ ໃຫ້ກັບໄປໃຊ້ຄ່າເລີ່ມຕົ້ນຈາກໂຮງງານຄືນໃໝ່ ແລະຂໍ້ມູນຜູ່ໃຊ້ທັງໝົດຈະສູນຫາຍໄປ.</string>
-    <string name="kg_failed_attempts_now_wiping">ທ່ານໄດ້ພະຍາຍາມປົດລັອກແທັບເລັດບໍ່ສຳເລັດ %d ເທື່ອແລ້ວ. ຕອນນີ້ແທັບເລັດຈະຖືກຕັ້ງໃຫ້ກັບໄປໃຊ້ຄ່າເລີ່ມຕົ້ນຈາກໂຮງງານ.</string>
+ ລອງໃໝ່ອີກຄັ້ງໃນ %3$d ວິນາທີ."</string>
+    <string name="kg_failed_attempts_almost_at_wipe">ທ່ານໄດ້ພະຍາຍາມປົດລັອກໂທລະສັບບໍ່ສຳເລັດ %1$d ເທື່ອແລ້ວ. ຫຼັງຈາກຄວາມພະຍາຍາມອີກ %2$d ເທື່ອ ໂທລະສັບຂອງທ່ານຈະຖືກຕັ້ງ ໃຫ້ກັບໄປໃຊ້ຄ່າເລີ່ມຕົ້ນຈາກໂຮງງານຄືນໃໝ່ ແລະຂໍ້ມູນຜູ່ໃຊ້ທັງໝົດຈະສູນຫາຍໄປ.</string>
+    <string name="kg_failed_attempts_now_wiping">ທ່ານໄດ້ພະຍາຍາມປົດລັອກໂທລະສັບບໍ່ຖືກ %d ເທື່ອແລ້ວ. ຕອນນີ້ໂທລະສັບຈະຖືກຣີເຊັດເປັນຄ່າຈາກໂຮງງານ.</string>
     <string name="kg_forgot_pattern_button_text">ລືມຮູບແບບປົດລັອກ?</string>
     <string name="kg_invalid_confirm_pin_hint">ລະຫັດ PIN ບໍ່ກົງກັນ</string>
     <string name="kg_invalid_puk">ປ້ອນລະຫັດ PUK ທີ່ຖືກຕ້ອງຄືນໃໝ່. ການພະຍາຍາມໃສ່ຫຼາຍເທື່ອຈະເຮັດໃຫ້ຊິມກາດໃຊ້ບໍ່ໄດ້ຖາວອນ.</string>
@@ -989,11 +1016,11 @@
     <string name="lockscreen_access_pattern_start">ຮູບແບບເລີ່ມຕົ້ນແລ້ວ</string>
     <string name="lockscreen_carrier_default">ບໍ່ມີບໍລິການ</string>
     <string name="lockscreen_emergency_call">ສຸກ​ເສີນ</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">ທ່ານພະຍາຍາມປັດລັອກແທັບເລັດຜິດ %1$d ເທື່ອແລ້ວ. ຫຼັງຈາກຜິດອີກ %2$d ເທື່ອ, ແທັບເລັດຈະຖືກຣີເຊັດໃຫ້ເປັນແບບທີ່ມາຈາກໂຮງງານ ແລະຂໍ້ມູນທັງໝົດຈະຖືກຫາຍໄປ.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"ທ່ານແຕ້ມຮູບແບບປົດລັອກຂອງທ່ານຜິດ %1$d ເທື່ອແລ້ວ. ຫຼັງຈາກຄວາມພະຍາຍາມອີກ %2$d ເທື່ອ ທ່ານຈະຖືກຖາມໃຫ້ປົດລັອກແທັບເລັດຂອງທ່ານ ດ້ວຍການເຂົ້າສູ່ລະບົບຂອງ Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">ທ່ານໄດ້ພະຍາຍາມປົດລັອກໂທລະສັບເປັນຈຳນວນ %1$d ເທື່ອແລ້ວ. ຫຼັງຈາກການພະຍາຍາມອີກ %2$d ເທື່ອແລ້ວບໍ່ສຳເລັດຜົນ, ໂທລະສັບຈະຖືກຕັ້ງຄ່າໃຫ້ເປັນຄ່າຈາກໂຮງງານ ແລະຂໍ້ມູນທັງໝົດຈະສູນຫາຍໄປ.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"ທ່ານແຕ້ມຮູບແບບປົດລັອກຜິດ %1$d ເທື່ອແລ້ວ. ຫຼັງຈາກແຕ້ມຜິດອີກ %2$d ເທື່ອ, ທ່ານຈະຖືກຖາມໃຫ້ປົດລັອກໂທລະສັບຂອງທ່ານ ດ້ວຍການເຂົ້າສູ່ລະບົບ Google.
 
- ລອງໃໝ່ອີກຄັ້ງໃນ %3$d ວິນາທີ."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">ທ່ານພະຍາຍາມປົດລັອກແທັບເລັດຜິດ %d ເທື່ອແລ້ວ. ຕອນນີ້ແທັບເລັດຈະຖືກຣີເຊັດເປັນຄ່າຈາກໂຮງງານ.</string>
+ ລອງໃໝ່ໃນອີກ %3$d ວິນາທີ."</string>
+    <string name="lockscreen_failed_attempts_now_wiping">ທ່ານໄດ້ພະຍາຍາມປົດລັອກໂທລະສັບຜິດ %d ເທື່ອແລ້ວ. ໂທລະສັບຈະຖືກຣີເຊັດໃຫ້ເປັນຄ່າທີ່ມາຈາກໂຮງງານ.</string>
     <string name="lockscreen_forgot_pattern_button_text">ລືມຮູບແບບປົດລັອກ?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"ລືມຊື່ຜູ່ໃຊ້ ຫຼືລະຫັດຜ່ານຂອງທ່ານບໍ?
 ໄປທີ່ "<b>google.com/accounts/recovery</b>.</string>
@@ -1009,7 +1036,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">ກົດ ເມນູ ເພື່ອປົດລັອກ ຫຼື ໂທອອກຫາເບີສຸກເສີນ.</string>
     <string name="lockscreen_missing_sim_instructions">ເພີ່ມຊິມ.</string>
     <string name="lockscreen_missing_sim_instructions_long">ບໍ່ມີຊິມ ຫຼື ອ່ານຊິມບໍ່ໄດ້. ເພີ່ມຊິມ.</string>
-    <string name="lockscreen_missing_sim_message">ບໍ່ມີຊິມໃນແທັບເລັດ.</string>
+    <string name="lockscreen_missing_sim_message">ບໍ່ມີຊິມໃນໂທລະສັບ.</string>
     <string name="lockscreen_missing_sim_message_short">ບໍ່ມີຊິມ</string>
     <string name="lockscreen_network_locked_message">ເຄືອຂ່າຍຖືກລັອກ</string>
     <string name="lockscreen_password_wrong">ທົດລອງອີກຄັ້ງ</string>
@@ -1049,7 +1076,7 @@
     <string name="low_internal_storage_view_text">ການເຮັດວຽກບາງຢ່າງຂອງລະບົບບາງອາດຈະໃຊ້ບໍ່ໄດ້</string>
     <string name="low_internal_storage_view_text_no_boot">​ບໍ່​ມີ​ບ່ອນ​ເກັບ​ຂໍ້​ມູນ​ພຽງ​ພໍ​ສຳ​ລັບ​ລະ​ບົບ. ກວດ​ສອບ​ໃຫ້​ແນ່​ໃຈ​ວ່າ​ທ່ານ​ມີ​ພື້ນ​ທີ່​ຫວ່າງ​ຢ່າງ​ໜ້ອຍ 250MB ​ແລ້ວລອງ​ໃໝ່.</string>
     <string name="low_internal_storage_view_title">ພື້ນທີ່ຈັດເກັບຂໍ້ມູນກຳລັງຈະເຕັມ</string>
-    <string name="low_memory">ພື້ນທີ່ຈັດເກັບຂໍ້ມູນໃນແທັບເລັດເຕັມ. ລຶບບາງໄຟລ໌ອອກເພື່ອເພີ່ມພື້ນທີ່ຫວ່າງ.</string>
+    <string name="low_memory">ພື້ນທີ່ໃນໂທລະສັບເຕັມແລ້ວ. ກະລຸນາລຶບບາງໄຟລ໌ອອກເພື່ອເພີ່ມພື້ນທີ່ຫວ່າງ.</string>
     <string name="managed_profile_app_label">ປ່ຽນໄປໃຊ້ໂປຣໄຟລ໌ວຽກໃນ %1$s</string>
     <string name="managed_profile_label">ສະຫຼັບໄປໃຊ້ໂປຣໄຟລ໌ບ່ອນເຮັດວຽກ</string>
     <string name="managed_profile_label_badge">​ບ່ອນ​ເຮັດ​ວຽກ %1$s</string>
@@ -1207,6 +1234,8 @@
     <string name="miniresolver_open_in_personal">ເປີດໃນ %s ສ່ວນຕົວບໍ?</string>
     <string name="miniresolver_open_in_work">ເປີດໃນ %s ສຳລັບວຽກບໍ?</string>
     <string name="miniresolver_open_work">ເປີດ %s ສຳລັບວຽກບໍ?</string>
+    <string name="miniresolver_private_space_messages_information">ທ່ານສາມາດສົ່ງຂໍ້ຄວາມ SMS ໄດ້ຈາກແອັບ Messages ສ່ວນຕົວຂອງທ່ານເທົ່ານັ້ນ.</string>
+    <string name="miniresolver_private_space_phone_information">ທ່ານສາມາດໂທໄດ້ຈາກແອັບໂທລະສັບສ່ວນຕົວຂອງທ່ານເທົ່ານັ້ນ. ລະບົບຈະເພີ່ມການໂທດ້ວຍແອັບໂທລະສັບສ່ວນຕົວໃສ່ໃນປະຫວັດການໂທສ່ວນຕົວຂອງທ່ານ.</string>
     <string name="miniresolver_sms_information">ອົງການຂອງທ່ານອະນຸຍາດໃຫ້ທ່ານສົ່ງຂໍ້ຄວາມໄດ້ຈາກແອັບບ່ອນເຮັດວຽກເທົ່ານັ້ນ</string>
     <string name="miniresolver_switch">ສະຫຼັບ</string>
     <string name="miniresolver_switch_to_work">ສະຫຼັບໄປເປັນແອັບບ່ອນເຮັດວຽກບໍ?</string>
@@ -1285,6 +1314,7 @@
     <string name="notification_channel_developer">ຂໍ້ຄວາມນັກພັດທະນາ</string>
     <string name="notification_channel_developer_important">ຂໍ້ຄວາມສຳຄັນຈາກຜູ້ພັດທະນາ</string>
     <string name="notification_channel_device_admin">ການເຕືອນຈາກຜູ້ເບິ່ງແຍງໄອທີຂອງທ່ານ</string>
+    <string name="notification_channel_display">ຈໍສະແດງຜົນ</string>
     <string name="notification_channel_do_not_disturb">ຫ້າມລົບກວນ</string>
     <string name="notification_channel_emergency_callback">ໂໝດໂທກັບສຸກເສີນ</string>
     <string name="notification_channel_foreground_service">ແອັບທີ່ກຳລັງໃຊ້ແບັດເຕີຣີ</string>
@@ -1306,6 +1336,7 @@
     <string name="notification_channel_voice_mail">ຂໍ້ຄວາມສຽງ</string>
     <string name="notification_channel_vpn">ສະຖານະ VPN</string>
     <string name="notification_channel_wfc">ການ​ໂທ Wi-Fi</string>
+    <string name="notification_compact_heads_up_reply">ຕອບກັບ</string>
     <string name="notification_content_abusive_bg_apps">%1$s ກຳລັງເອີ້ນໃຊ້ໃນພື້ນຫຼັງ. ແຕະເພື່ອຈັດການການໃຊ້ແບັດເຕີຣີ.</string>
     <string name="notification_content_long_running_fgs">%1$s ອາດສົ່ງຜົນກະທົບຕໍ່ອາຍຸແບັດເຕີຣີ. ແຕະເພື່ອກວດສອບແອັບທີ່ນຳໃຊ້ຢູ່.</string>
     <string name="notification_feedback_indicator">ສົ່ງຄຳຕິຊົມ</string>
@@ -1342,7 +1373,8 @@
     <string name="other_networks_no_internet">ເຄືອຂ່າຍບໍ່ສາມາດເຂົ້າເຖິງອິນເຕີເນັດໄດ້</string>
     <string name="owner_name">ເຈົ້າຂອງ</string>
     <string name="package_deleted_device_owner">ຖືກລຶບອອກໂດຍຜູ້ເບິ່ງແຍງລະບົບຂອງທ່ານ</string>
-    <string name="package_installed_device_owner">ຖືກຕິດຕັ້ງໂດຍຜູ້ເບິ່ງແຍງລະບົບຂອງທ່ານ</string>
+    <string name="package_installed_device_owner">"ຕິດຕັ້ງໂດຍຜູ້ເບິ່ງແຍງຂອງທ່ານ.
+ເຂົ້າໄປການຕັ້ງຄ່າເພື່ອເບິ່ງສິດທີ່ໄດ້ຮັບອະນຸຍາດ"</string>
     <string name="package_updated_device_owner">ຖືກອັບໂຫລດໂດຍຜູ້ເບິ່ງແຍງລະບົບຂອງທ່ານ</string>
     <string name="passwordIncorrect">ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ</string>
     <string name="password_keyboard_label_alpha_key">ABC</string>
@@ -1359,7 +1391,9 @@
     <string name="permdesc_accessCoarseLocation">ແອັບນີ້ສາມາດຂໍສະຖານທີ່ໂດຍປະມານຂອງທ່ານຈາກບໍລິການສະຖານທີ່ໄດ້ໃນຂະນະທີ່ກຳລັງໃຊ້ແອັບຢູ່. ທ່ານຕ້ອງເປີດໃຊ້ບໍລິການສະຖານທີ່ສຳລັບອຸປະກອນຂອງທ່ານກ່ອນເພື່ອໃຫ້ແອັບຂໍຂໍ້ມູນສະຖານທີ່.</string>
     <string name="permdesc_accessDrmCertificates">ອະນຸຍາດ​ໃຫ້​ແອັບພລິເຄຊັນ​ຈັດຫາ ແລະ​ນຳໃຊ້​ໃບຮັບຮອງ DRM. ແອັບຯ​ທຳມະດາ​ບໍ່​ຄວນ​ຕ້ອງ​ການ​ໃຊ້.</string>
     <string name="permdesc_accessFineLocation">ແອັບນີ້ສາມາດຂໍສະຖານທີ່ແບບລະອຽດຂອງທ່ານຈາກບໍລິການສະຖານທີ່ໄດ້ໃນຂະນະທີ່ກຳລັງໃຊ້ແອັບຢູ່. ທ່ານຕ້ອງເປີດໃຊ້ບໍລິການສະຖານທີ່ສຳລັບອຸປະກອນຂອງທ່ານກ່ອນເພື່ອໃຫ້ແອັບຂໍຂໍ້ມູນສະຖານທີ່. ນີ້ອາດເພີ່ມການນຳໃຊ້ແບັດເຕີຣີ.</string>
+    <string name="permdesc_accessHiddenProfile">ອະນຸຍາດໃຫ້ແອັບເຂົ້າເຖິງໂປຣໄຟລ໌ທີ່ຖືກເຊື່ອງໄວ້.</string>
     <string name="permdesc_accessImsCallService">ອະ​ນຸ​ຍາດ​ໃຫ້​ແອັບ​ໃຊ້​ການ​ບໍ​ລິ​ການ IMS ເພື່ອ​ໂທ​ໂດຍ​ບໍ່​ມີ​ການ​ຊ່ວຍ​ເຫຼືອ​ຂອງ​ທ່ານ.</string>
+    <string name="permdesc_accessLastKnownCellId">ອະນຸຍາດໃຫ້ແອັບເຂົ້າເຖິງລະຫັດເສົາໂທລະສັບທີ່ຮູ້ຈັກຫຼ້າສຸດເຊິ່ງໄດ້ຮັບຈາກໂທລະສັບ.</string>
     <string name="permdesc_accessLocationExtraCommands">ອະນຸຍາດ​ໃຫ້​ແອັບຯ​ເຂົ້າເຖິງ​ຄຳສັ່ງ​ເພີ່ມເຕີມ​ຂອງ​ຜູ່​ໃຫ້​ບໍລິການ​ສະຖານທີ່. ນີ້​ອາດ​ຈະ​ເປັນ​ການ​ເຮັດ​ໃຫ້​ແອັບຯ ລົບກວນ​ການ​ເຮັດ​ວຽກ​ຂອງ GPS ຫຼື​ແຫລ່ງ​ຂໍ້ມູນ​ສະຖານທີ່​ອື່ນໆ​ໄດ້.</string>
     <string name="permdesc_accessNetworkConditions">ອະນຸຍາດໃຫ້ແອັບພລິເຄຊັ່ນຕິດຕາມເພື່ອສັງເກດສະພາບຂອງເຄືອຂ່າຍ. ປົກກະຕິແລ້ວແອັບຯທຳມະດາຈະບໍ່ຕ້ອງການໃຊ້.</string>
     <string name="permdesc_accessNetworkState">ອະນຸຍາດໃຫ້ແອັບຯ ເບິ່ງຂໍ້ມູນກ່ຽວກັບການເຊື່ອມຕໍ່ເຄືອຂ່າຍ ເຊັ່ນວ່າມີເຄືອຂ່າຍໃດແດ່ ແລະໄດ້ເຊື່ອມຕໍ່ກັບເຄືອຂ່າຍໃດ.</string>
@@ -1380,23 +1414,24 @@
     <string name="permdesc_bindNotificationListenerService">ອະນຸຍາດໃຫ້ເຈົ້າຂອງເຊື່ອມໂຍງສ່ວນຕິດຕໍ່ລະດັບເທິງສຸດ ຂອງຜູ່ຟັງບໍລິການການແຈ້ງເຕືອນ. ບໍ່ຈຳເປັນສຳລັບແອັບຯທົ່ວໄປ.</string>
     <string name="permdesc_bind_connection_service">​ອະ​ນຸ​ຍາດ​ໃຫ້​ແອັບຯ​ສັ່ງ​​ບໍ​ລິ​ການ​ໂທ​ລະ​ສັບ​ເພື່ອ​ໂທຫຼື​ຮັບ​ສາຍ​ໄດ້.</string>
     <string name="permdesc_bind_incall_service">ອະນຸຍາດ​ໃຫ້​ແອັບຯ​ຄວບຄຸມ​ເວລາ ແລະ​ວິທີ​ການ​ທີ່​ຜູ່ໃຊ້​ເຫັນ​ໜ້າ​ຈໍ​ການ​ໂທ​ໄດ້.</string>
-    <string name="permdesc_bluetooth">ອະນຸຍາດໃຫ້ແອັບຯເບິ່ງການຕັ້ງຄ່າຂອງ Bluetooth ໃນແທັບເລັດ ຕະຫຼອດຈົນເຊື່ອມຕໍ່ ແລະຍອມຮັບການເຊື່ອມຕໍ່ກັບອຸປະກອນທີ່ຈັບຄູ່ກັນແລ້ວ.</string>
-    <string name="permdesc_bluetoothAdmin">ອະນຸຍາດໃຫ້ແອັບຯຕັ້ງຄ່າແທັບເລັດ Bluetooth ພາຍໃນ ແລະຊອກຫາ ແລະເຊື່ອມຕໍ່ໄວ້ກັບອຸປະກອນພາຍນອກ.</string>
+    <string name="permdesc_bluetooth">ອະນຸຍາດໃຫ້ແອັບຯເບິ່ງການຕັ້ງຄ່າຂອງ Bluetooth ໃນໂທລະສັບ, ຮວມທັງໃຫ້ສ້າງ ແລະຮັບການເຊື່ອມຕໍ່ຈາກອຸປະກອນທີ່ຈັບຄູ່ກັນ.</string>
+    <string name="permdesc_bluetoothAdmin">ອະນຸຍາດໃຫ້ແອັບຯຕັ້ງຄ່າ Bluetooth ໃນໂທລະສັບ ເພື່ອຊອກຫາ ແລະການເຊື່ອມຕໍ່ກັບອຸປະກອນໄຮ້ສາຍພາຍນອກ.</string>
     <string name="permdesc_bluetooth_advertise">ອະນຸຍາດໃຫ້ແອັບໂຄສະນາຫາອຸປະກອນ Bluetooth ທີ່ຢູ່ໃກ້ຄຽງໄດ້</string>
     <string name="permdesc_bluetooth_connect">ອະນຸຍາດໃຫ້ແອັບເຊື່ອມຕໍ່ຫາອຸປະກອນ Bluetooth ທີ່ຈັບຄູ່ແລ້ວໄດ້</string>
     <string name="permdesc_bluetooth_scan">ອະນຸຍາດໃຫ້ແອັບຄົ້ນພົບ ແລະ ຈັບຄູ່ອຸປະກອນ Bluetooth ທີ່ຢູ່ໃກ້ຄຽງໄດ້</string>
     <string name="permdesc_bodySensors">ອະນຸຍາດໃຫ້ແອັບເຂົ້າເຖິງຂໍ້ມູນເຊັນເຊີຮ່າງກາຍ, ເຊັ່ນ: ອັດຕາການເຕັ້ນຫົວໃຈ, ອຸນຫະພູມ ແລະ ເປີເຊັນອອກຊິເຈນໃນເລືອດ, ໃນຂະນະທີ່ໃຊ້ແອັບຢູ່.</string>
     <string name="permdesc_bodySensors_background">ອະນຸຍາດໃຫ້ແອັບເຂົ້າເຖິງຂໍ້ມູນເຊັນເຊີຮ່າງກາຍ, ເຊັ່ນ: ອັດຕາການເຕັ້ນຫົວໃຈ, ອຸນຫະພູມ ແລະ ເປີເຊັນອອກຊິເຈນໃນເລືອດ, ໃນຂະນະທີ່ແອັບຢູ່ໃນພື້ນຫຼັງ.</string>
-    <string name="permdesc_broadcastSticky">ອະນຸຍາດໃຫ້ແອັບພລິເຄຊັນສົ່ງການກະຈາຍສັນຍານແບບຍຶດຕິດ, ທີ່ຍັງຄົງເຫຼືອຫຼັງຈາກການກະຈາຍສັນຍານສິ້ນສຸດລົງ. ການນຳໃຊ້ແບບມະຫາສານອາດເຮັດໃຫ້ແທັບເລັດຊ້າ ຫຼືບໍ່ສະຖຽນ ໂດຍການໃຊ້ໜ່ວຍຄວາມຈຳຫຼາຍເກີນໄປ.</string>
+    <string name="permdesc_broadcastSticky">ອະນຸຍາດໃຫ້ແອັບພລິເຄຊັນສົ່ງການກະຈາຍສັນຍານແບບຍຶດຕິດ, ທີ່ຍັງຄົງເຫຼືອຫຼັງຈາກການກະຈາຍສັນຍານສິ້ນສຸດລົງ. ການນຳໃຊ້ແບບມະຫາສານອາດເຮັດໃຫ້ໂທລະສັບຊ້າ ຫຼືບໍ່ສະຖຽນ ໂດຍການໃຊ້ໜ່ວຍຄວາມຈຳຫຼາຍເກີນໄປ.</string>
     <string name="permdesc_callCompanionApp">ອະນຸຍາດໃຫ້ແອັບເຫັນ ແລະ ຄວບຄຸມການໂທທີ່ກຳລັງດຳເນີນຢູ່ອຸປະກອນ. ນີ້ຮວມເຖິງຂໍ້ມູນ ເຊັ່ນ: ເບີໂທສຳລັບການໂທ ແລະ ສະຖານະຂອງການໂທນຳ.</string>
     <string name="permdesc_callPhone">ອະນຸຍາດໃຫ້ແອັບໂທເຂົ້າເບີໂທລະສັບໂດຍບໍ່ຕ້ອງໃຫ້ທ່ານຈັດການ. ເຊິ່ງອາດເຮັດໃຫ້ມີການຮຽກເກັບເງິນ ຫຼື ການໂທທີ່ບໍ່ຄາດຄິດ. ກະລຸນາຮັບຊາບວ່າການດຳເນີນການນີ້ບໍ່ໄດ້ອະນຸຍາດໃຫ້ແອັບໂທຫາເບີໂທສຸກເສີນ. ແອັບທີ່ເປັນອັນຕະລາຍອາດເຮັດໃຫ້ທ່ານຕ້ອງເສຍຄ່າໃຊ້ຈ່າຍດ້ວຍການໂທໂດຍບໍ່ຂໍການຢືນຢັນຈາກທ່ານ ຫຼື ກົດລະຫັດຜູ້ໃຫ້ບໍລິການເຊິ່ງເຮັດໃຫ້ສາຍໂທເຂົ້າຖືກສົ່ງຕໍ່ໄປຫາເບີອື່ນໂດຍອັດຕະໂນມັດ.</string>
     <string name="permdesc_camera">ແອັບນີ້ສາມາດຖ່າຍຮູບ ແລະ ບັນທຶກວິດີໂອໂດຍໃຊ້ກ້ອງຖ່າຍຮູບໃນເວລາທີ່ກຳລັງໃຊ້ແອັບຢູ່ໄດ້.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">ແອັບນີ້ສາມາດເຂົ້າເຖິງກ້ອງໃນຖານະຜູ້ໃຊ້ລະບົບແບບບໍ່ມີສ່ວນຫົວໄດ້.</string>
     <string name="permdesc_cameraOpenCloseListener">ແອັບນີ້ສາມາດຮັບການເອີ້ນກັບໄດ້ເມື່ອມີອຸປະກອນກ້ອງໃດຖືກເປີດ (ໂດຍແພັກເກດແອັບພລິເຄຊັນຫຍັງ) ຫຼື ຖືກປິດ.</string>
     <string name="permdesc_changeNetworkState">ອະນຸຍາດໃຫ້ແອັບຯປ່ຽນສະຖານະການເຊື່ອມຕໍ່ຂອງເຄືອຂ່າຍໄດ້.</string>
     <string name="permdesc_changeTetherState">ອະນຸຍາດໃຫ້ແອັບຯປ່ຽນແປງສະຖານະ ຂອງເຄືອຂ່າຍການເຊື່ອມຕໍ່ອິນເຕີເນັດຜ່ານມືຖື.</string>
-    <string name="permdesc_changeWifiMulticastState">ອະນຸຍາດໃຫ້ແອັບຯຮັບຂໍ້ມູນແພັກເກັດ ທີ່ຖືກສົ່ງ ໄປຫາທຸກອຸປະກອນໃນເຄືອຂ່າຍ WiFi ໂດຍການນຳໃຊ້ການກະຈາຍຂໍ້ມູນໃນວົງກວ້າງ, ບໍ່ແມ່ນສະເພາະແທັບເລັດຂອງທ່ານ. ມັນໃຊ້ພະລັງງານຫຼາຍກວ່າໂຫມດກະຈາຍຂໍ້ມູນແບບໂດຍກົງ.</string>
+    <string name="permdesc_changeWifiMulticastState">ອະນຸຍາດໃຫ້ແອັບຯ ຮັບຂໍ້ມູນແພັກເກດທີ່ສົ່ງໄປໃຫ້ທຸກອຸປະກອນໃນເຄືອຂ່າຍ Wi-Fi ໂດຍໃຊ້ທີ່ຢູ່ multicast ບໍ່ສະເພາະພຽງໂທລະສັບຂອງທ່ານ, ເຊິ່ງຈະໃຊ້ພະລັງງານຫຼາຍກວ່າໃນໂໝດທີ່ບໍ່ແມ່ນ multicast.</string>
     <string name="permdesc_changeWifiState">ອະນຸຍາດໃຫ້ແອັບຯເຊື່ອມຕໍ່ ແລະຕັດການເຊື່ອມຕໍ່ຈາກຈຸດເຊື່ອມຕໍ່ Wi-Fi ແລະໃຫ້ສາມາດປ່ຽນແປງຄ່າຂອງອຸປະກອນສຳລັບເຄືອຂ່າຍ Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">ອະນຸຍາດໃຫ້ແອັບຯເຊື່ອມຕໍ່ ແລະຕັດການເຊື່ອມຕໍ່ແທັບເລັດຈາກເຄືອຂ່າຍ WiMAX.</string>
+    <string name="permdesc_changeWimaxState">ອະນຸຍາດໃຫ້ແອັບຯເຊື່ອມຕໍ່ ແລະຕັດການເຊື່ອມຕໍ່ຂອງໂທລະສັບຈາກເຄືອຂ່າຍ WiMax ໄດ້.</string>
     <string name="permdesc_companionProfileWatch">ອະນຸຍາດໃຫ້ແອັບຊ່ວຍເຫຼືອຈັດການໂມງ.</string>
     <string name="permdesc_connection_manager">​ອະ​ນຸ​ຍາດ​ໃຫ້​ແອັບຯ​ຈັດ​ການ​ການ​ເຊື່ອມ​ຕໍ່​​ໂທ​ລະ​ຄົມ​ມະ​ນາ​ຄົມ.</string>
     <string name="permdesc_control_incall_experience">ອະ​ນຸ​ຍາດ​ໃຫ້​ແອັບຯ​ສະ​ໜອງ​ປະ​ສົບ​ການ​ຜູ່​ໃຊ້​ໃນ​ການ​ໂທ​ລະ​ສັບ.</string>
@@ -1415,6 +1450,7 @@
     <string name="permdesc_foregroundServiceHealth">ອະນຸຍາດໃຫ້ແອັບໃຊ້ປະໂຫຍດຈາກບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ສຸຂະພາບ\"</string>
     <string name="permdesc_foregroundServiceLocation">ອະນຸຍາດໃຫ້ແອັບໃຊ້ປະໂຫຍດຈາກບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ສະຖານທີ່\"</string>
     <string name="permdesc_foregroundServiceMediaPlayback">ອະນຸຍາດໃຫ້ແອັບໃຊ້ປະໂຫຍດຈາກບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ການຫຼິ້ນມີເດຍ\"</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">ອະນຸຍາດໃຫ້ແອັບໃຊ້ປະໂຫຍດຈາກບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"mediaProcessing\"</string>
     <string name="permdesc_foregroundServiceMediaProjection">ອະນຸຍາດໃຫ້ແອັບໃຊ້ປະໂຫຍດຈາກບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ການສາຍພາບມີເດຍ\"</string>
     <string name="permdesc_foregroundServiceMicrophone">ອະນຸຍາດໃຫ້ແອັບໃຊ້ປະໂຫຍດຈາກບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ໄມໂຄຣໂຟນ\"</string>
     <string name="permdesc_foregroundServicePhoneCall">ອະນຸຍາດໃຫ້ແອັບໃຊ້ປະໂຫຍດຈາກບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ສາຍໂທ\"</string>
@@ -1422,7 +1458,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">ອະນຸຍາດໃຫ້ແອັບໃຊ້ປະໂຫຍດຈາກບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ການນຳໃຊ້ພິເສດ\"</string>
     <string name="permdesc_foregroundServiceSystemExempted">ອະນຸຍາດໃຫ້ແອັບໃຊ້ປະໂຫຍດຈາກບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ໄດ້ຮັບການຍົກເວັ້ນຈາກລະບົບ\"</string>
     <string name="permdesc_fullScreenIntent">ອະນຸຍາດໃຫ້ແອັບສະແດງການແຈ້ງເຕືອນເປັນການເຄື່ອນໄຫວແບບເຕັມຈໍຢູ່ອຸປະກອນທີ່ລັອກໄວ້</string>
-    <string name="permdesc_getAccounts">ອະນຸຍາດໃຫ້ແອັບຯຮັບເອົາລາຍການຂອງບັນຊີທີ່ຮູ້ຈັກໂດຍແທັບເລັດ. ນີ້ອາດຮວມທັງບັນຊີຕ່າງໆ ທີ່ຖືກສ້າງໂດຍແອັບພລິເຄຊັນທີ່ທ່ານໄດ້ຕິດຕັ້ງໄວ້.</string>
+    <string name="permdesc_getAccounts">ອະນຸຍາດໃຫ້ແອັບພລິເຄຊັນ ດຶງຂໍ້ມູນລາຍຊື່ຂອງບັນຊີທີ່ໂທລະສັບມີ ເຊິ່ງອາດຮວມເຖິງບັນຊີທີ່ໃດໆທີ່ສ້າງຂຶ້ນ ໂດຍແອັບພລິເຄຊັນທີ່ທ່ານຕິດຕັ້ງໄວ້.</string>
     <string name="permdesc_getPackageSize">ອະນຸຍາດໃຫ້ແອັບຯດຶງໂຄດ, ຂໍ້ມູນ ແລະຂະໜາດ cache ຂອງມັນໄດ້.</string>
     <string name="permdesc_getTasks">ອະນຸຍາດໃຫ້ແອັບຯດຶງຂໍ້ມູນກ່ຽວກັບການເຮັດວຽກໃນປັດຈຸບັນ ແລະຫາກໍຜ່ານມາ. ແອັບຯທີ່ເປັນອັນຕະລາຍອາດຄົ້ນພົບຂໍ້ມູນ ກ່ຽວກັບແອັບພລິເຄຊັນທີ່ໃຊ້ຢູ່ໃນອຸປະກອນໄດ້.</string>
     <string name="permdesc_handoverStatus">ອະ​ນຸ​ຍາດ​ໃຫ້​ແອັບ​ພລິ​ເຄ​ຊັນ​ນີ້​ຮັບ​ຂໍ້​ມູນ​ກ່ຽວ​ກັບ​ການ​ໂອນ​ຂໍ້​ມູນ Android Beam ໃນ​ປັດ​ຈຸ​ບັນ</string>
@@ -1444,17 +1480,18 @@
     <string name="permdesc_mount_unmount_filesystems">ອະນຸຍາດໃຫ້ແອພພລິເຄຊັນຕໍ່ ແລະປິດລະບົບໄຟລ໌ສໍາລັບອຸປະກອນທີ່ສາມາດເຄື່ອນຍ້າຍໄດ້.</string>
     <string name="permdesc_nearby_wifi_devices">ອະນຸຍາດໃຫ້ແອັບໂຄສະນາ, ເຊື່ອມຕໍ່ ແລະ ກຳນົດຕຳແໜ່ງສຳພັນຂອງອຸປະກອນ Wi-Fi ທີ່ຢູ່ໃກ້ຄຽງໄດ້</string>
     <string name="permdesc_nfc">ອະນຸຍາດໃຫ້ແອັບຯຕິດຕໍ່ສື່ສານກັບປ້າຍກຳກັບ, ບັດ ແລະໂຕອ່ານຂອງການສື່ສານໄລຍະສັ້ນ (NFC).</string>
+    <string name="permdesc_nfcTransactionEvent">ອະນຸຍາດໃຫ້ແອັບຮັບຂໍ້ມູນກ່ຽວກັບທຸລະກໍາທີ່ເກີດຂຶ້ນຢູ່ໃນອົງປະກອບທີ່ປອດໄພ.</string>
     <string name="permdesc_observeCompanionDevicePresence">ອະນຸຍາດໃຫ້ແອັບຊ່ວຍເຫຼືອສັງເກດການປາກົດຂອງອຸປະກອນຊ່ວຍເຫຼືອເມື່ອອຸປະກອນຢູ່ໃກ້ຄຽງ ຫຼື ໄກອອກໄປ.</string>
-    <string name="permdesc_persistentActivity">ອະນຸຍາດໃຫ້ແອັບຯ ສາມາດເຮັດໃຫ້ບາງພາກສ່ວນຂອງມັນເອັງ ຄົງໂຕໃນໜ່ວຍຄວາມຈຳ. ສິ່ງນີ້ສາມາດຈຳກັດໜ່ວຍຄວາມຈຳທີ່ສາມາດໃຊ້ໄດ້ໂດຍແອັບຯອື່ນ ເຮັດໃຫ້ແທັບເລັດຊ້າລົງ.</string>
+    <string name="permdesc_persistentActivity">ອະນຸຍາດໃຫ້ແອັບຯເຮັດໃຫ້ສ່ວນນຶ່ງຂອງຕົນເອງ ຄົງຢູ່ຖາວອນໃນໜ່ວຍຄວາມຈຳ ເຊິ່ງອາດສາມາດ ເຮັດໃຫ້ການນຳໃຊ້ໜ່ວຍຄວາມຈຳຂອງແອັບຯ ອື່ນຖືກຈຳກັດ ສົ່ງຜົນເຮັດໃຫ້ມືຖືຂອງທ່ານເຮັດວຽກຊ້າລົງໄດ້.</string>
     <string name="permdesc_postNotification">ອະນຸຍາດໃຫ້ແອັບສະແດງການແຈ້ງເຕືອນ</string>
     <string name="permdesc_preferredPaymentInfo">ອະນຸຍາດໃຫ້ແອັບຮັບຂໍ້ມູນບໍລິການການຈ່າຍເງິນ NFC ທີ່ຕ້ອງການໄດ້ ເຊັ່ນ: ການຊ່ວຍເຫຼືອແບບລົງທະບຽນ ແລະ ປາຍທາງເສັ້ນທາງ.</string>
     <string name="permdesc_processOutgoingCalls">ອະ​ນຸ​ຍາດ​ໃຫ້​ແອັບຯ​ເບິ່ງ​​ໝາຍ​ເລກເບີ​ໂທ ໃນ​ລະ​ຫວ່າງ​ການ​ໂທ​ອອກ ພ້ອມ​ທັງ​ໂຕ​ເລືອກ​ໃນ​ການ​ປ່ຽນ​ເສັ້ນ​ທາງ​ການ​ໂທ​ໄປ​ຫາ​ເບີ​ອື່ນ ຫຼື ລາຍ​ລະ​ອຽດກ່ຽວ​ກັບ​ເບີ​ໂທ​ລະ​ສັບ.</string>
     <string name="permdesc_queryAllPackages">ອະນຸຍາດໃຫ້ແອັບເບິ່ງເຫັນແພັກເກດທີ່ຕິດຕັ້ງແລ້ວທັງໝົດໄດ້.</string>
     <string name="permdesc_readBasicPhoneState">ອະນຸຍາດໃຫ້ແອັບເຂົ້າເຖິງຄຸນສົມບັດໂທລະສັບພື້ນຖານຂອງອຸປະກອນໄດ້.</string>
-    <string name="permdesc_readCalendar">This app can read all calendar events stored on your tablet and share or save your calendar data.</string>
+    <string name="permdesc_readCalendar">This app can read all calendar events stored on your phone and share or save your calendar data.</string>
     <string name="permdesc_readCallLog">This app can read your call history.</string>
     <string name="permdesc_readCellBroadcasts">ອະນຸຍາດໃຫ້ແອັບຯ ສາມາດອ່ານຂໍ້ຄວາມແຈ້ງເຕືອນເຫດສຸກເສີນ ທີ່ໄດ້ຮັບໂດຍອຸປະກອນຂອງທ່ານ. ການແຈ້ງເຕືອນສຸກເສີນທີ່ມີໃຫ້ບໍລິການໃນບາງພື້ນທີ່ ເພື່ອແຈ້ງເຕືອນໃຫ້ທ່ານຮູ້ເຖິງສະຖານະການສຸກເສີນ. ແອັບພລິເຄຊັນທີ່ເປັນອັນຕະລາຍອາດລົບກວນປະສິດທິພາບ ຫຼືການດຳເນີນງານຂອງອຸປະກອນຂອງທ່ານ ເມື່ອໄດ້ການຮັບແຈ້ງເຕືອນສຸກເສີນຈາກສະຖານີມືຖື.</string>
-    <string name="permdesc_readContacts">ອະນຸຍາດໃຫ້ແອັບອ່ານຂໍ້ມູນກ່ຽວກັບລາຍຊື່ຜູ້ຕິດຕໍ່ທີ່ບັນທຶກໄວ້ຢູ່ແທັບເລັດຂອງທ່ານ. ນອກຈາກນັ້ນ, ແອັບຕ່າງໆຍັງມີສິດເຂົ້າເຖິງບັນຊີຢູ່ແທັບເລັດຂອງທ່ານທີ່ສ້າງລາຍຊື່ຜູ້ຕິດຕໍ່ໄດ້ນຳ. ນີ້ອາດຮວມເຖິງບັນຊີທີ່ສ້າງຂຶ້ນມາໂດຍແອັບທີ່ທ່ານຕິດຕັ້ງໄວ້ນຳ. ສິດອະນຸຍາດນີ້ຈະເຮັດໃຫ້ແອັບຕ່າງໆສາມາດບັນທຶກຂໍ້ມູນລາຍຊື່ຜູ້ຕິດຕໍ່ຂອງທ່ານ ແລະ ແອັບທີ່ເປັນອັນຕະລາຍອາດແບ່ງປັນຂໍ້ມູນລາຍຊື່ຜູ້ຕິດຕໍ່ໄດ້ໂດຍທີ່ທ່ານບໍ່ຮູ້ໄດ້.</string>
+    <string name="permdesc_readContacts">ອະນຸຍາດໃຫ້ແອັບອ່ານຂໍ້ມູນກ່ຽວກັບລາຍຊື່ຜູ້ຕິດຕໍ່ທີ່ບັນທຶກໄວ້ຢູ່ໂທລະສັບຂອງທ່ານ. ນອກຈາກນັ້ນ, ແອັບຕ່າງໆຍັງມີສິດເຂົ້າເຖິງບັນຊີຢູ່ໂທລະສັບຂອງທ່ານທີ່ສ້າງລາຍຊື່ຜູ້ຕິດຕໍ່ໄດ້ນຳ. ນີ້ອາດຮວມເຖິງບັນຊີທີ່ສ້າງຂຶ້ນມາໂດຍແອັບທີ່ທ່ານຕິດຕັ້ງໄວ້ນຳ. ສິດອະນຸຍາດນີ້ຈະເຮັດໃຫ້ແອັບຕ່າງໆສາມາດບັນທຶກຂໍ້ມູນລາຍຊື່ຜູ້ຕິດຕໍ່ຂອງທ່ານ ແລະ ແອັບທີ່ເປັນອັນຕະລາຍອາດແບ່ງປັນຂໍ້ມູນລາຍຊື່ຜູ້ຕິດຕໍ່ໄດ້ໂດຍທີ່ທ່ານບໍ່ຮູ້ໄດ້.</string>
     <string name="permdesc_readInstallSessions">​ອະ​ນຸ​ຍາດ​ໃຫ້​ແອັບ​ພລິ​ເຄ​ຊັນ​ອ່ານ​ເຊດ​ຊັນ​ການ​ຕິດ​ຕັ້ງ​ໄດ້. ນີ້​ຈະ​ອະ​ນຸ​ຍາດ​ໃຫ້​ມັນ​ເບິ່ງ​ເຫັນ​ລາຍ​ລະ​ອຽດ​ກ່ຽວ​ກັບ​ການ​ຕິດ​ຕັ້ງ​ແພັກ​ເກດ​ທີ່​ເຮັດ​​ວຽກ​ຢູ່​ໄດ້.</string>
     <string name="permdesc_readMediaAudio">ອະນຸຍາດໃຫ້ແອັບອ່ານໄຟລ໌ສຽງຈາກບ່ອນຈັດເກັບຂໍ້ມູນທີ່ແບ່ງປັນຂອງທ່ານ.</string>
     <string name="permdesc_readMediaImages">ອະນຸຍາດໃຫ້ແອັບອ່ານໄຟລ໌ຮູບຈາກບ່ອນຈັດເກັບຂໍ້ມູນທີ່ແບ່ງປັນຂອງທ່ານ.</string>
@@ -1462,11 +1499,11 @@
     <string name="permdesc_readNetworkUsageHistory">ອະນຸຍາດໃຫ້ແອັບຯ ອ່ານປະຫວັດການນຳໃຊ້ເຄືອຂ່າຍຂອງແອັບຯ ແລະເຄືອຂ່າຍໃດນຶ່ງ.</string>
     <string name="permdesc_readPhoneNumbers">ອະນຸຍາດໃຫ້ແອັບເຂົ້າເຖິງເບີໂທລະສັບຂອງອຸປະກອນໄດ້.</string>
     <string name="permdesc_readPhoneState">ອະນຸຍາດໃຫ້ແອັບຯ ເຂົ້າເຖິງຄວາມສາມາດການໂທລະສັບຂອງອຸປະກອນ. ການກຳນົດສິດນີ້ເຮັດໃຫ້ແອັບຯສາມາດກວດສອບເບີໂທລະສັບ ແລະ ID ຂອງອຸປະກອນ, ບໍ່ວ່າການໂທຈະຍັງດຳເນີນຢູ່ ແລະເບີປາຍທາງເຊື່ອມຕໍ່ຢູ່ຫຼືບໍ່ກໍຕາມ.</string>
-    <string name="permdesc_readSms">This app can read all SMS (text) messages stored on your tablet.</string>
+    <string name="permdesc_readSms">This app can read all SMS (text) messages stored on your phone.</string>
     <string name="permdesc_readSyncSettings">ອະນຸຍາດໃຫ້ແອັບຯ ອ່ານການຕັ້ງຄ່າການຊິ້ງຂໍ້ມູນຂອງບັນຊີໄດ້. ຕົວຢ່າງເຊັ່ນ: ມັນຈະສາມາດກວດສອບໄດ້ແອັບຯ People ຖືກຊິ້ງຂໍ້ມູນກັບບັນຊີໃດນຶ່ງແລ້ວຫຼືຍັງ.</string>
     <string name="permdesc_readSyncStats">ອະນຸຍາດໃຫ້ແອັບຯ ອ່ານສະຖິຕິການຊິ້ງຂໍ້ມູນຂອງບັນຊີໃດນຶ່ງ ຮວມທັງປະຫວັດການຊິ້ງຂໍ້ມູນ ແລະຈຳນວນຂໍ້ມູນທີ່ຖືກຊິ້ງ.</string>
     <string name="permdesc_readVisualUserSelect">ອະນຸຍາດໃຫ້ແອັບອ່ານໄຟລ໌ຮູບ ແລະ ວິດີໂອທີ່ທ່ານເລືອກຈາກບ່ອນຈັດເກັບຂໍ້ມູນທີ່ແບ່ງປັນຂອງທ່ານ.</string>
-    <string name="permdesc_receiveBootCompleted">ອະນຸຍາດໃຫ້ແອັບຯ ເປີດໂຕມັນເອງທັນທີທີ່ເປີດລະບົບຂຶ້ນມາສຳເລັດ. ນີ້ສາມາດເຮັດໃຫ້ການເລີ່ມເປີດຂອງແທັບເລັດໃຊ້ເວລາດົນຂຶ້ນ ແລະເຮັດໃຫ້ການເຮັດວຽກໂດຍຮວມຂອງແທັບເລັດຊ້າລົງ ໂດຍການເຮັດວຽກຕະຫຼອດເວລາ.</string>
+    <string name="permdesc_receiveBootCompleted">ອະນຸຍາດໃຫ້ແອັບຯ ເປີດໂຕມັນເອງທັນທີທີ່ລະບົບສຳເລັດເປີດເຄື່ອງ. ນີ້ສາມາດເຮັດໃຫ້ການເລີ່ມເປີດຂອງໂທລະສັບໃຊ້ເວລາດົນຂຶ້ນ ແລະປ່ອຍໃຫ້ແອັບຯ ເຮັດໃຫ້ໂທລະສັບໂດຍຮວມຊ້າລົງ ດ້ວຍການເຮັດວຽກຢູ່ຕະຫຼອດເວລາ.</string>
     <string name="permdesc_receiveMms">ອະນຸຍາດໃຫ້ແອັບຯ ຮັບແລະປະມວນຜົນຂໍ້ຄວາມ MMS. ນີ້ໝາຍຄວາມວ່າແອັບຯສາມາດຕິດຕາມ ຫຼືລຶບຂໍ້ຄວາມທີ່ສົ່ງເຂົ້າອຸປະກອນຂອງທ່ານ ໂດຍທີ່ບໍ່ສະແດງພວກມັນໃຫ້ທ່ານເຫັນ.</string>
     <string name="permdesc_receiveSms">ອະນຸຍາດໃຫ້ແອັບຯຮັບ ແລະປະມວນຜົນຂໍ້ຄວາມ SMS. ນີ້ໝາຍຄວາມວ່າແອັບຯສາມາດຕິດຕາມ ຫຼືລຶບຂໍ້ຄວາມທີ່ສົ່ງເຂົ້າອຸປະກອນຂອງທ່ານ ໂດຍທີ່ບໍ່ສະແດງພວກມັນໃຫ້ທ່ານເຫັນ.</string>
     <string name="permdesc_receiveWapPush">ອະນຸຍາດໃຫ້ແອັບຯຮັບ ແລະປະມວນຜົນຂໍ້ຄວາມ WAP. ການອະນຸຍາດນີ້ຮວມເຖິງຄວາມສາມາດໃນການກວດເບິ່ງ ແລະລຶບຂໍ້ຄວາມທີ່ສົ່ງແລ້ວ ໂດຍບໍ່ຕ້ອງສະແດງໃຫ້ທ່ານເຫັນ.</string>
@@ -1488,7 +1525,7 @@
     <string name="permdesc_sendSms">ອະນຸຍາດໃຫ້ແອັບຯສົ່ງຂໍ້ຄວາມ SMS ໄດ້. ນີ້ອາດເຮັດໃຫ້ທ່ານເກີດການຄິດຄ່າບໍລິການທີ່ບໍ່ຄາດຄິດໄດ້. ແອັບຯທີ່ເປັນອັນຕະລາຍ ອາດເຮັດໃຫ້ທ່ານເສຍເງິນຍ້ອນການສົ່ງຂໍ້ຄວາມໂດຍທີ່ທ່ານບໍ່ຮູ້ໂຕໄດ້.</string>
     <string name="permdesc_setAlarm">ອະນຸຍາດໃຫ້ແອັບຯຕັ້ງໂມງປຸກໃນແອັບຯໂມງປຸກທີ່ຕິດຕັ້ງໄວ້. ບາງແອັບຯໂມງປຸກອາດບໍ່ມີຄຸນສົມບັດແບບນີ້ເທື່ອ.</string>
     <string name="permdesc_setInputCalibration">ອະ​ນຸ​ຍາດ​ໃຫ້​ແອັບຯ​ແກ້​ໄຂ​ຄ່າ​ການວັດ​ແທ້​ໜ້າ​ຈ​ໍ​ສຳ​ຜັດ. ​ແອັບຯ​ທຳ​ມະ​ດາບໍ່​ຄວນ​ໃຊ້.</string>
-    <string name="permdesc_setTimeZone">ອະນຸຍາດໃຫ້ແອັບຯປ່ຽນເຂດເວລາຂອງແທັບເລັດ.</string>
+    <string name="permdesc_setTimeZone">ອະນຸຍາດໃຫ້ແອັບຯ ປ່ຽນເຂດເວລາຂອງໂທລະສັບ.</string>
     <string name="permdesc_setWallpaper">ອະນຸຍາດໃຫ້ແອັບຯຕັ້ງຄ່າພາບພື້ນຫຼັງຂອງລະບົບໄດ້.</string>
     <string name="permdesc_setWallpaperHints">ອະນຸຍາດໃຫ້ແອັບຯ ຕັ້ງຄ່າຄຳແນະນຳຂະໜາດພາບພື້ນຫຼັງ.</string>
     <string name="permdesc_sim_communication">ອະນຸຍາດໃຫ້ແອັບຯສົ່ງຄຳສັ່ງຫາ SIM. ສິ່ງນີ້ອັນຕະລາຍຫຼາຍ.</string>
@@ -1501,7 +1538,7 @@
     <string name="permdesc_subscribedFeedsRead">ອະນຸຍາດໃຫ້ແອັບຯ ດຶງລາຍລະອຽດກ່ຽວກັບຂໍ້ມູນທີ່ກຳລັງຊິ້ງຢູ່.</string>
     <string name="permdesc_systemAlertWindow">This app can appear on top of other apps or other parts of the screen. This may interfere with normal app usage and change the way that other apps appear.</string>
     <string name="permdesc_systemCamera">ສິດ ຫຼື ແອັບລະບົບນີ້ສາມາດຖ່າຍຮູບ ແລະ ບັນທຶກວິດີໂອໂດຍໃຊ້ກ້ອງຂອງລະບົບຕອນໃດກໍໄດ້. ຕ້ອງໃຊ້ສິດອະນຸຍາດ android.permission.CAMERA ໃຫ້ແອັບຖືນຳ</string>
-    <string name="permdesc_transmitIr">ອະນຸຍາດໃຫ້ແອັບຯໃຊ້ການສົ່ງອິນຟຣາເຣດຂອງແທັບເລັດໄດ້.</string>
+    <string name="permdesc_transmitIr">ອະນຸຍາດໃຫ້ແອັບຯໃຊ້ການສົ່ງອິນຟຣາເຣດຂອງໂທລະສັບໄດ້.</string>
     <string name="permdesc_turnScreenOn">ອະນຸຍາດໃຫ້ແອັບເປີດໜ້າຈໍໄດ້.</string>
     <string name="permdesc_uninstall_shortcut">ອະນຸຍາດໃຫ້ແອັບພລິເຄຊັນລຶບທາງລັດໃນໜ້າຫຼັກໄດ້ ໂດຍບໍ່ຕ້ອງຮັບການຢືນຢັນຈາກຜູ່ໃຊ້.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">ອະນຸຍາດໃຫ້ຜູ້ຖືອັບເດດແອັບທີ່ໄດ້ຕິດຕັ້ງໄວ້ກ່ອນໜ້າໂດຍບໍ່ຕ້ອງມີຄຳສັ່ງຜູ້ໃຊ້</string>
@@ -1514,12 +1551,13 @@
     <string name="permdesc_vibrate">ອະນຸຍາດໃຫ້ແອັບຯຄວບຄຸມໂຕສັ່ນ.</string>
     <string name="permdesc_vibrator_state">ອະນຸຍາດໃຫ້ແອັບເຂົ້າເຖິງສະຖານະການສັ່ນໄດ້.</string>
     <string name="permdesc_videoWrite">ອະນຸຍາດໃຫ້ແອັບແກ້ໄຂຄໍເລັກຊັນວິດີໂອຂອງທ່ານ.</string>
-    <string name="permdesc_wakeLock">ອະນຸຍາດໃຫ້ແອັບຯ ປ້ອງກັນບໍ່ໃຫ້ປິດໜ້າຈໍແທັບເລັດ.</string>
-    <string name="permdesc_writeCalendar">This app can add, remove, or change calendar events on your tablet. This app can send messages that may appear to come from calendar owners, or change events without notifying their owners.</string>
-    <string name="permdesc_writeCallLog">ອະນຸຍາດໃຫ້ແອັບຯແກ້ໄຂບັນທຶກການໂທຂອງແທັບເລັດ ຮວມທັງຂໍ້ມູນກ່ຽວກັບການໂທອອກ ແລະໂທເຂົ້ານຳ. ແອັບຯທີ່ເປັນອັນຕະລາຍອາດໃຊ້ຄຸນສົມບັດນີ້ເພື່ອລຶບ ຫຼືແກ້ໄຂບັນທຶກການໂທຂອງທ່ານໄດ້.</string>
-    <string name="permdesc_writeContacts">ອະນຸຍາດໃຫ້ແອັບແກ້ໄຂຂໍ້ມູນກ່ຽວກັບລາຍຊື່ຜູ້ຕິດຕໍ່ທີ່ບັນທຶກໄວ້ຢູ່ແທັບເລັດຂອງທ່ານ. ສິດອະນຸຍາດນີ້ຈະເຮັດໃຫ້ແອັບສາມາດລຶບຂໍ້ມູນລາຍຊື່ຜູ້ຕິດຕໍ່ອອກໄດ້.</string>
+    <string name="permdesc_wakeLock">ອະນຸຍາດໃຫ້ແອັບຯປ້ອງກັນບໍ່ໃຫ້ປິດໜ້າຈໍໂທລະສັບ.</string>
+    <string name="permdesc_writeCalendar">This app can add, remove, or change calendar events on your phone. This app can send messages that may appear to come from calendar owners, or change events without notifying their owners.</string>
+    <string name="permdesc_writeCallLog">ອະນຸຍາດໃຫ້ແອັບຯ ແກ້ໄຂລາຍການການໂທໃນໂທລະສັບຂອງທ່ານ, ຮວມທັງຂໍ້ມູນກ່ຽວກັບສາຍໂທເຂົ້າ ແລະການໂທອອກ. ແອັບຯທີ່ເປັນອັນຕະລາຍ ອາດໃຊ້ຄວາມສາມາດນີ້ ເພື່ອລຶບ ຫຼືແກ້ໄຂລາຍການການໂທຂອງທ່ານໄດ້.</string>
+    <string name="permdesc_writeContacts">ອະນຸຍາດໃຫ້ແອັບແກ້ໄຂຂໍ້ມູນກ່ຽວກັບລາຍຊື່ຜູ້ຕິດຕໍ່ທີ່ບັນທຶກໄວ້ຢູ່ໂທລະສັບຂອງທ່ານ. ສິດອະນຸຍາດນີ້ຈະເຮັດໃຫ້ແອັບສາມາດລຶບຂໍ້ມູນລາຍຊື່ຜູ້ຕິດຕໍ່ອອກໄດ້.</string>
     <string name="permdesc_writeSettings">ອະນຸຍາດໃຫ້ແອັບຯ ແກ້ໄຂຂໍ້ມູນການຕັ້ງຄ່າລະບົບ. ແອັບຯທີ່ເປັນອັນຕະລາຍ ອາດເຮັດໃຫ້ການຕັ້ງຄ່າຂອງລະບົບເສຍຫາຍໄດ້.</string>
     <string name="permdesc_writeSyncSettings">ອະນຸຍາດໃຫ້ແອັບຯແກ້ໄຂການຕັ້ງຄ່າການຊິ້ງຂໍ້ມູນສຳລັບບັນຊີ. ຍົກຕົວຢ່າງ: ມັນສາມາດໃຊ້ເພື່ອເປີດນຳໃຊ້ການຊິ້ງຂໍ້ມູນຂອງ People ແອັບຯກັບບັນຊີໃດນຶ່ງໄດ້.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">ອະນຸຍາດໃຫ້ແອັບອັບເດດສະຖານະການຢັ້ງຢືນຂອງກະແຈລາຍຊື່ຜູ້ຕິດຕໍ່ E2EE ທີ່ເປັນຂອງແອັບອື່ນໆ</string>
     <string name="permgroupdesc_activityRecognition">ເຂົ້າເຖິງກິດຈະກຳທາງກາຍະພາບຂອງທ່ານ</string>
     <string name="permgroupdesc_calendar">ເຂົ້າ​ຫາ​ປະ​ຕິ​ທິນ​ຂອງ​ທ່ານ</string>
     <string name="permgroupdesc_calllog">ອ່ານ ແລະ ຂຽນບັນທຶກການໂທ</string>
@@ -1560,7 +1598,9 @@
     <string name="permlab_accessCoarseLocation">ເຂົ້າເຖິງສະຖານທີ່ໂດຍປະມານເມື່ອຢູ່ໃນພື້ນໜ້າເທົ່ານັ້ນ</string>
     <string name="permlab_accessDrmCertificates">ເຂົ້າ​ເຖິງ​ໃບຮັບຮອງ DRM</string>
     <string name="permlab_accessFineLocation">ເຂົ້າເຖິງສະຖານທີ່ແນ່ນອນໃນພື້ນໜ້າເທົ່ານັ້ນ</string>
+    <string name="permlab_accessHiddenProfile">ເຂົ້າເຖິງໂປຣໄຟລ໌ທີ່ຖືກເຊື່ອງໄວ້</string>
     <string name="permlab_accessImsCallService">ເຂົ້າ​ຫາ​ການ​ບໍ​ລິ​ການ​ໂທ IMS</string>
+    <string name="permlab_accessLastKnownCellId">ເຂົ້າເຖິງລະຫັດເສົາໂທລະສັບທີ່ຮູ້ຈັກຫຼ້າສຸດ.</string>
     <string name="permlab_accessLocationExtraCommands">ເຂົ້າເຖິງຄຳສັ່ງຜູ່ໃຫ້ບໍລິການພິກັດສະຖານທີ່</string>
     <string name="permlab_accessNetworkConditions">ຕິດຕາມເພື່ອສັງເກດສະພາບຂອງເຄືອຂ່າຍ</string>
     <string name="permlab_accessNetworkState">ເບິ່ງການເຊື່ອມຕໍ່ເຄືອຂ່າຍ</string>
@@ -1592,6 +1632,7 @@
     <string name="permlab_callCompanionApp">ເຫັນ ແລະ ຄວບຄຸມການໂທຜ່ານລະບົບ.</string>
     <string name="permlab_callPhone">ໂທຫາເບີໂທລະສັບໂດຍກົງ</string>
     <string name="permlab_camera">ຖ່າຍຮູບ ແລະວິດີໂອ</string>
+    <string name="permlab_cameraHeadlessSystemUser">ອະນຸຍາດໃຫ້ແອັບພລິເຄຊັນ ຫຼື ບໍລິການເຂົ້າເຖິງກ້ອງໃນຖານະຜູ້ໃຊ້ລະບົບແບບບໍ່ມີສ່ວນຫົວ.</string>
     <string name="permlab_cameraOpenCloseListener">ອະນຸຍາດໃຫ້ແອັບພລິເຄຊັນ ຫຼື ບໍລິການຮັບການເອີ້ນກັບກ່ຽວກັບອຸປະກອນກ້ອງຖືກເປີດ ຫຼື ປິດໄດ້.</string>
     <string name="permlab_changeNetworkState">ປ່ຽນການເຊື່ອມຕໍ່ເຄືອຂ່າຍ</string>
     <string name="permlab_changeTetherState">ປ່ຽນການເຊື່ອມຕໍ່ທີ່ປ່ອຍສັນຍານໄວ້</string>
@@ -1616,6 +1657,7 @@
     <string name="permlab_foregroundServiceHealth">ເອີ້ນໃຊ້ບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ສຸຂະພາບ\"</string>
     <string name="permlab_foregroundServiceLocation">ເອີ້ນໃຊ້ບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ສະຖານທີ່\"</string>
     <string name="permlab_foregroundServiceMediaPlayback">ເອີ້ນໃຊ້ບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ການຫຼິ້ນມີເດຍ\"</string>
+    <string name="permlab_foregroundServiceMediaProcessing">ເອີ້ນໃຊ້ບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"mediaProcessing\"</string>
     <string name="permlab_foregroundServiceMediaProjection">ເອີ້ນໃຊ້ບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ການສາຍພາບມີເດຍ\"</string>
     <string name="permlab_foregroundServiceMicrophone">ເອີ້ນໃຊ້ບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ໄມໂຄຣໂຟນ\"</string>
     <string name="permlab_foregroundServicePhoneCall">ເອີ້ນໃຊ້ບໍລິການທີ່ເຮັດວຽກຢູ່ເບື້ອງໜ້າໂດຍມີປະເພດເປັນ \"ສາຍໂທ\"</string>
@@ -1645,6 +1687,7 @@
     <string name="permlab_mount_unmount_filesystems">ເຂົ້າຫາລະບົບໄຟລ໌ແຜ່ນ SD</string>
     <string name="permlab_nearby_wifi_devices">ໂຕ້ຕອບກັບອຸປະກອນ Wi‑Fi ທີ່ຢູ່ໃກ້ຄຽງ</string>
     <string name="permlab_nfc">ຄວບຄຸມ Near Field Communication</string>
+    <string name="permlab_nfcTransactionEvent">ເຫດການທຸລະກໍາອົງປະກອບຄວາມປອດໄພ</string>
     <string name="permlab_observeCompanionDevicePresence">ສັງເກດການປາກົດຂອງອຸປະກອນຊ່ວຍເຫຼືອ</string>
     <string name="permlab_persistentActivity">ເຮັດໃຫ້ແອັບຯເຮັດວຽກຕະຫຼອດເວລາ</string>
     <string name="permlab_postNotification">ສະແດງການແຈ້ງເຕືອນ</string>
@@ -1714,12 +1757,13 @@
     <string name="permlab_uwb_ranging">ກຳນົດຕຳແໜ່ງທີ່ສຳພັນກັນລະຫວ່າງອຸປະກອນ Ultra-Wideband ທີ່ຢູ່ໃກ້ຄຽງ</string>
     <string name="permlab_vibrate">ຄວບຄຸມການສັ່ນ</string>
     <string name="permlab_videoWrite">ແກ້ໄຂຄໍເລັກຊັນວິດີໂອຂອງທ່ານ</string>
-    <string name="permlab_wakeLock">ຂັດຂວາງບໍ່ໃຫ້ປິດໜ້າຈໍແທັບເລັດ</string>
+    <string name="permlab_wakeLock">ຂັດຂວາງບໍ່ໃຫ້ໂທລະສັບປິດໜ້າຈໍ</string>
     <string name="permlab_writeCalendar">ເພີ່ມ ຫຼືແກ້ໄຂນັດໝາຍໃນປະຕິທິນ ແລະສົ່ງອີເມວຫາຜູ່ເຂົ້າຮ່ວມໂດຍບໍ່ຕ້ອງໃຫ້ເຈົ້າຂອງຮັບຮູ້</string>
     <string name="permlab_writeCallLog">ຂຽນຂໍ້ມູນການໂທ</string>
     <string name="permlab_writeContacts">ແກ້ໄຂລາຍຊື່ຜູ່ຕິດຕໍ່ຂອງທ່ານ</string>
     <string name="permlab_writeSettings">ແກ້ໄຂການຕັ້ງຄ່າລະບົບ</string>
     <string name="permlab_writeSyncSettings">ສະລັບການເປີດ ແລະປິດການຊິ້ງຂໍ້ມູນ</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">ອັບເດດສະຖານະການຢັ້ງຢືນຂອງກະແຈລາຍຊື່ຜູ້ຕິດຕໍ່ E2EE ທີ່ເປັນຂອງແອັບອື່ນໆ</string>
     <string name="perms_description_app">ສະໜອງໂດຍ %1$s .</string>
     <string name="perms_new_perm_prefix"><font fgcolor="#ff33b5e5" size="12">ໃໝ່: </font></string>
     <string name="personal_apps_suspended_turn_profile_on">ເປີດໃຊ້</string>
@@ -1757,10 +1801,10 @@
     <string name="policydesc_limitPassword">ຄວບຄຸມຄວາມຍາວ ແລະຕົວອັກສອນທີ່ອະ​ນຸ​ຍາດ​ໃຫ້​ຢູ່​ໃນລະ​ຫັດລັອກໜ້າຈໍ ແລະ PIN.</string>
     <string name="policydesc_resetPassword">ປ່ຽນ​ລັອກ​ໜ້າ​ຈໍ.</string>
     <string name="policydesc_setGlobalProxy">ຕັ້ງໃຫ້ພຣັອກຊີສ່ວນກາງຂອງອຸປະກອນ ທີ່ຈະໃຊ້ໃນຂະນະທີ່ເປີດນຳໃຊ້ນະໂຍບາຍ. ພຽງ​ແຕ່​ເຈົ້າ​ຂອງ​ອຸ​ປະ​ກອນ​ເທົ່າ​ນັ້ນ​ສາ​ມາດ​ຕັ້ງ​ພ​ຣັອກ​ຊີ​ທົ່ວ​ໄປ​ໄດ້.</string>
-    <string name="policydesc_watchLogin">ຕິດຕາມເບິ່ງຈຳນວນການພິມລະຫັດຜ່ານທີ່ບໍ່ຖືກຕ້ອງ ໃນເວລາປົດລັອກໜ້າຈໍ ແລະລັອກແທັບເລັດ ຫຼືລຶບຂໍ້ມູນທັງໝົດຂອງແທັບເລັດ ຖ້າມີການພິມລະຫັດຜ່ານບໍ່ຖືກຕ້ອງຫຼາຍເທື່ອເກີນໄປ.</string>
-    <string name="policydesc_watchLogin_secondaryUser">ຕິດ​ຕາມ​ຈຳ​ນວນ​ຂອງ​ລະ​ຫັດ​ຜ່ານ​ບໍ່​ຖືກ​ຕ້ອງ​ທີ່​ພິມ​ໄປ​ແລ້ວ ເມື່ອ​ປົດ​ລັອກ​ໜ້າ​ຈໍ, ແລະ​ລັອກແທັບ​ເລັດ ຫຼື​ລຶບ​ທຸກ​ຂໍ້​ມູນຜູ້​ໃຊ້​ນີ້ ຖ້າ​ໄດ້​ພິມ​ລະ​ຫັດ​ຜ່ານ​ບໍ່​ຖືກ​ຕ້ອງ​ເຂົ້າ​ໄປ​ຫຼາຍ​ອັນ​ເກີນ​ໄປ.</string>
-    <string name="policydesc_wipeData">ລຶບຂໍ້ມູນຂອງແທັບເລັດໂດຍບໍ່ມີການເຕືອນ ໂດຍການຣີເຊັດກັບຄືນໃຫ້ເປັນແບບທີ່ມາຈາກໂຮງງານ.</string>
-    <string name="policydesc_wipeData_secondaryUser">ລຶບ​ຂໍ້​ມູນ​ຂອງ​ຜູ້​ໃຊ້​ນີ້​ຢູ່​ໃນ​ໂທ​ລະ​ທັດ​ນີ້​ໂດຍ​ບໍ່​ມີ​ການ​ເຕືອນ.</string>
+    <string name="policydesc_watchLogin">ຕິດຕາມເບິ່ງຈຳນວນການພິມລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ ໃນເວລາປົດລັອກໜ້າຈໍ ແລະລັອກໂທລະສັບ ຫຼືລຶບຂໍ້ມູນທັງໝົດຂອງໂປລະສັບ ຖ້າມີການພິມລະຫັດຜ່ານບໍ່ຖືກຕ້ອງຫຼາຍເທື່ອເກີນໄປ.</string>
+    <string name="policydesc_watchLogin_secondaryUser">ຕິດ​ຕາມ​ຈຳ​ນວນ​ຂອງ​ລະ​ຫັດ​ຜ່ານ​ບໍ່​ຖືກ​ຕ້ອງ​ທີ່​ພິມ​ໄປ​ແລ້ວ ເມື່ອ​ປົດ​ລັອກ​ໜ້າ​ຈໍ, ແລະ​ລັອກໂທລະສັບ ຫຼື​ລຶບ​ທຸກ​ຂໍ້​ມູນຜູ້​ໃຊ້​ນີ້ ຖ້າ​ໄດ້​ພິມ​ລະ​ຫັດ​ຜ່ານ​ບໍ່​ຖືກ​ຕ້ອງ​ເຂົ້າ​ໄປ​ຫຼາຍ​ອັນ​ເກີນ​ໄປ.</string>
+    <string name="policydesc_wipeData">ລຶບຂໍ້ມູນຂອງໂທລະສັບໂດຍບໍ່ມີການເຕືອນ ໂດຍການຣີເຊັດກັບຄືນໃຫ້ເປັນແບບທີ່ມາຈາກໂຮງງານ.</string>
+    <string name="policydesc_wipeData_secondaryUser">ລຶບ​ຂໍ້​ມູນ​ຂອງ​ຜູ້​ໃຊ້​ນີ້​ຢູ່​ໃນ​ໂທ​ລະ​ສັບ​ນີ້​ໂດຍ​ບໍ່​ມີ​ການ​ເຕືອນ.</string>
     <string name="policylab_disableCamera">ປິດການໃຊ້ກ້ອງ</string>
     <string name="policylab_disableKeyguardFeatures">ປິດການນຳໃຊ້ຄຸນສົມບັດໜ້າຈໍລັອກ</string>
     <string name="policylab_encryptedStorage">ຕັ້ງຄ່າການເຂົ້າລະຫັດທີ່ເກັບຂໍ້ມູນ</string>
@@ -1777,7 +1821,7 @@
     <string name="postalTypeHome">ເຮືອນ</string>
     <string name="postalTypeOther">ອື່ນໆ</string>
     <string name="postalTypeWork">ຫ້ອງການ</string>
-    <string name="power_dialog">ໂຕເລືອກແທັບເລັດ</string>
+    <string name="power_dialog">ໂຕເລືອກໂທລະສັບ</string>
     <string name="power_off">ປິດເຄື່ອງ</string>
     <string name="prepend_shortcut_label">ເມນູ+</string>
     <string name="preposition_for_date">ວັນທີ %s</string>
@@ -1787,9 +1831,21 @@
     <string name="print_service_installed_title">ຕິດຕັ້ງບໍລິການ %s ແລ້ວ</string>
     <string name="printing_disabled_by">ການພິມຖືກປິດໄວ້ໂດຍ %s.</string>
     <string name="private_dns_broken_detailed">ບໍ່ສາມາດເຂົ້າເຖິງເຊີບເວີ DNS ສ່ວນຕົວໄດ້</string>
+    <string name="private_profile_label_badge">%1$s ສ່ວນຕົວ</string>
+    <string name="private_space_biometric_prompt_title">ພື້ນທີ່ສ່ວນບຸກຄົນ</string>
+    <string name="private_space_deleted_by_admin">ລຶບພື້ນທີ່ສ່ວນບຸກຄົນອອກແລ້ວ</string>
+    <string name="private_space_deleted_by_admin_details">ອົງກອນຂອງທ່ານບໍ່ອະນຸຍາດໃຫ້ມີພື້ນທີ່ສ່ວນບຸກຄົນໃນອຸປະກອນທີ່ໄດ້ຮັບການຈັດການນີ້.</string>
+    <string name="private_space_set_up_screen_lock_message">ເພື່ອໃຊ້ພື້ນທີ່ສ່ວນບຸກຄົນ, ໃຫ້ຕັ້ງລັອກໜ້າຈໍຢູ່ອຸປະກອນນີ້</string>
     <string name="profile_encrypted_detail">ໂປຣໄຟລ໌ບ່ອນເຮັດວຽກຖືກລັອກ</string>
     <string name="profile_encrypted_message">ແຕະເພື່ອປົດລັອກໂປຣໄຟລ໌ບ່ອນເຮັດວຽກ</string>
     <string name="profile_encrypted_title">ຄຸນສົມບັດບາງຢ່າງອາດຖືກຈຳກັດໄວ້</string>
+    <string name="profile_label_clone">ໂຄລນ</string>
+    <string name="profile_label_communal">ສ່ວນກາງ</string>
+    <string name="profile_label_private">ສ່ວນບຸກຄົນ</string>
+    <string name="profile_label_test">ທົດສອບ</string>
+    <string name="profile_label_work">ວຽກ</string>
+    <string name="profile_label_work_2">ວຽກ 2</string>
+    <string name="profile_label_work_3">ວຽກ 3</string>
     <string name="progress_erasing">ກຳລັງລຶບບ່ອນຈັດເກັບຂໍ້ມູນທີ່ແບ່ງປັນ…</string>
     <string name="progress_erasing_usbhost">ກໍາລັງຟໍແມັດເຄື່ອງເກັບຂໍ້ມູນ USB…</string>
     <string name="progress_unmounting">ກໍາລັງປິດແຜ່ນ SD…</string>
@@ -1807,6 +1863,8 @@
     <string name="reboot_to_update_reboot">ກຳ​ລັງ​ເລີ່ມລະບົບໃໝ່…</string>
     <string name="reboot_to_update_title">ການອັບເດດລະບົບ Android</string>
     <string name="recent_tasks_title">ຫຼ້າສຸດ</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">ເນື້ອຫາການແຈ້ງເຕືອນທີ່ລະອຽດອ່ອນເຊື່ອງຢູ່</string>
     <string name="redo">ເຮັດໃໝ່</string>
     <string name="reduce_bright_colors_feature_name">ຫຼຸດແສງເປັນພິເສດ</string>
     <string name="region_picker_section_all">ທຸກຂົງເຂດ</string>
@@ -1884,12 +1942,36 @@
     <string name="safe_media_volume_warning">"ເພີ່ມ​ລະ​ດັບ​ສຽງ​ໃຫ້​ເກີນກວ່າ​ລະ​ດັບ​ທີ່​ແນະ​ນຳ​ບໍ?
 
 ​ການ​ຮັບ​ຟັງ​ສຽງ​ໃນ​ລະ​ດັບ​ທີ່​ສູງ​ເປັນ​ໄລ​ຍະ​ເວ​ລາ​ດົນ​​ອາດ​ເຮັດ​ໃຫ້​ການ​ຟັງ​ຂອງ​ທ່ານ​ມີ​ບັນ​ຫາ​ໄດ້."</string>
+    <string name="satellite_notification_how_it_works">ມັນເຮັດວຽກແນວໃດ</string>
+    <string name="satellite_notification_manual_summary">ຮັບ ແລະ ສົ່ງຂໍ້ຄວາມໂດຍບໍ່ຕ້ອງໃຊ້ເຄືອຂ່າຍໂທລະສັບມືຖື ຫຼື Wi-Fi</string>
+    <string name="satellite_notification_manual_title">ໃຊ້ການຮັບສົ່ງຂໍ້ຄວາມຜ່ານດາວທຽມບໍ?</string>
+    <string name="satellite_notification_open_message">ເປີດ Messages</string>
+    <string name="satellite_notification_summary">ທ່ານສາມາດສົ່ງ ແລະ ຮັບຂໍ້ຄວາມໂດຍບໍ່ຕ້ອງໃຊ້ເຄືອຂ່າຍມືຖື ຫຼື Wi-Fi</string>
+    <string name="satellite_notification_title">ເຊື່ອມຕໍ່ກັບດາວທຽມໂດຍອັດຕະໂນມັດ</string>
+    <string name="scCellularNetworkSecuritySummary">ການເຂົ້າລະຫັດ, ການແຈ້ງເຕືອນສຳລັບເຄືອຂ່າຍທີ່ບໍ່ໄດ້ຖືກເຂົ້າລະຫັດ</string>
+    <string name="scCellularNetworkSecurityTitle">ຄວາມປອດໄພເຄືອຂ່າຍມືຖື</string>
+    <string name="scIdentifierDisclosureIssueSummary">"ເມື່ອເວລາ %1$s, ເຄືອຂ່າຍໃກ້ຄຽງໄດ້ບັນທຶກ ID ທີ່ບໍ່ຊ້ຳກັນຂອງອຸປະກອນຂອງທ່ານ (IMSI ຫຼື IMEI) ໃນລະຫວ່າງທີ່ໃຊ້ຊິມ %2$s ຂອງທ່ານ.
+
+ເຊິ່ງໝາຍຄວາມວ່າສະຖານທີ່, ການເຄື່ອນໄຫວ ຫຼື ຂໍ້ມູນລະບຸຕົວຕົນຂອງທ່ານໄດ້ຖືກບັນທຶກໄວ້ແລ້ວ. ນີ້ແມ່ນແນວທາງປະຕິບັດທົ່ວໄປ ແຕ່ອາດເປັນບັນຫາສຳລັບຜູ້ທີ່ກັງວົນກ່ຽວກັບຄວາມເປັນສ່ວນຕົວ."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">ເມື່ອເວລາ %1$s, ເຄືອຂ່າຍໃກ້ຄຽງໄດ້ບັນທຶກ ID ທີ່ບໍ່ຊ້ຳກັນຂອງອຸປະກອນຂອງທ່ານ (IMSI ຫຼື IMEI) ໃນລະຫວ່າງທີ່ໃຊ້ຊິມ %2$s ຂອງທ່ານ</string>
+    <string name="scIdentifierDisclosureIssueTitle">ເຂົ້າເຖິງ ID ອຸປະກອນແລ້ວ</string>
+    <string name="scNullCipherIssueActionGotIt">ເຂົ້າໃຈແລ້ວ</string>
+    <string name="scNullCipherIssueActionLearnMore">ສຶກສາເພີ່ມເຕີມ</string>
+    <string name="scNullCipherIssueActionSettings">ການຕັ້ງຄ່າຄວາມປອດໄພເຄືອຂ່າຍມືຖື</string>
+    <string name="scNullCipherIssueEncryptedSummary">ການເຊື່ອມຕໍ່ຊິມ %1$s ປອດໄພຍິ່ງຂຶ້ນແລ້ວ</string>
+    <string name="scNullCipherIssueEncryptedTitle">ເຊື່ອມຕໍ່ກັບເຄືອຂ່າຍ %1$s ທີ່ໄດ້ຖືກເຂົ້າລະຫັດແລ້ວ</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"ຕອນນີ້ການໂທ, ຂໍ້ຄວາມ ແລະ ຂໍ້ມູນກຳລັງຢູ່ໃນຄວາມສ່ຽງໃນລະຫວ່າງທີ່ໃຊ້ຊິມ %1$s ຂອງທ່ານ.
+
+ເມື່ອການເຊື່ອມຕໍ່ຂອງທ່ານໄດ້ຖືກເຂົ້າລະຫັດອີກຄັ້ງ, ທ່ານຈະໄດ້ຮັບການແຈ້ງເຕືອນອີກຄັ້ງ."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">ຕອນນີ້ການໂທ, ຂໍ້ຄວາມ ແລະ ຂໍ້ມູນກຳລັງຢູ່ໃນຄວາມສ່ຽງໃນລະຫວ່າງທີ່ໃຊ້ຊິມ %1$s ຂອງທ່ານ</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">ເຊື່ອມຕໍ່ກັບເຄືອຂ່າຍທີ່ບໍ່ໄດ້ຖືກເຂົ້າລະຫັດແລ້ວ</string>
     <string name="screen_compat_mode_hint">ເປີດການເຮັດວຽກນີ້ຄືນໄດ້ໃນ ການຕັ້ງຄ່າລະບົບ > ແອັບຯ > ດາວໂຫລດແລ້ວ</string>
     <string name="screen_compat_mode_scale">ຂະໜາດ</string>
     <string name="screen_compat_mode_show">ສະແດງຕະຫຼອດເວລາ</string>
     <string name="screen_lock">ລັອກໜ້າຈໍ</string>
     <string name="screen_lock_app_setting_name">ໃຊ້ການລັອກໜ້າຈໍ</string>
     <string name="screen_lock_dialog_default_subtitle">ໃສ່ການລັອກໜ້າຈໍຂອງທ່ານເພື່ອສືບຕໍ່</string>
+    <string name="screen_not_shared_sensitive_content">ເນື້ອຫາແອັບຖືກເຊື່ອງໄວ້ຈາກການແບ່ງປັນໜ້າຈໍເພື່ອຄວາມປອດໄພ</string>
     <string name="screenshot_edit">ແກ້ໄຂ</string>
     <string name="search_hint">ຊອກຫາ...</string>
     <string name="search_language_hint">ພິມຊື່ພາສາ</string>
@@ -1933,6 +2015,8 @@
     <string name="serviceErased">ການລຶບສົມບູນແລ້ວ.</string>
     <string name="serviceNotProvisioned">ບໍ່ໄດ້ເປີດໃຊ້ບໍລິການ.</string>
     <string name="serviceRegistered">ການລົງທະບຽນສຳເລັດແລ້ວ.</string>
+    <string name="set_up_screen_lock_action_label">ຕັ້ງການລັອກໜ້າຈໍ</string>
+    <string name="set_up_screen_lock_title">ຕັ້ງການລັອກໜ້າຈໍ</string>
     <string name="sha1_fingerprint">ລາຍນິ້ວມື SHA-1:</string>
     <string name="sha256_fingerprint">ພິມລາຍນິ້ວມື SHA-256:</string>
     <string name="share">ແບ່ງປັນ</string>
@@ -1949,7 +2033,7 @@
     <string name="shortcut_restore_unknown_issue">ບໍ່ສາມາດກູ້ທາງລັດຄືນມາໄດ້</string>
     <string name="shortcut_restored_on_lower_version">ດາວເກຣດເວີຊັນແອັບແລ້ວ ຫຼື ບໍ່ສາມາດໃຊ້ຮ່ວມກັບທາງລັດນີ້ໄດ້</string>
     <string name="show_ime">ເປີດໃຊ້ໃຫ້ມັນຢູ່ໃນໜ້າຈໍໃນຂະນະທີ່ໃຊ້ແປ້ນພິມພາຍນອກຢູ່</string>
-    <string name="shutdown_confirm">ແທັບເລັດຂອງທ່ານຈະຖືກປິດ.</string>
+    <string name="shutdown_confirm">ໂທລະສັບຂອງທ່ານຈະຖືກປິດ.</string>
     <string name="shutdown_confirm_question">ທ່ານຕ້ອງການທີ່ຈະປິດບໍ່?</string>
     <string name="shutdown_progress">ກຳລັງປິດລະບົບລົງ...</string>
     <string name="silent_mode">ໂໝດປິດສຽງ</string>
@@ -2047,6 +2131,7 @@
     <string name="twilight_service">ບໍລິການ Twilight</string>
     <string name="ui_translation_accessibility_translated_text">ແປ %1$s ແລ້ວ.</string>
     <string name="ui_translation_accessibility_translation_finished">ແປຂໍ້ຄວາມຈາກ %1$s ເປັນ %2$s ແລ້ວ.</string>
+    <string name="unarchival_session_app_label">ລໍຖ້າດຳເນີນການ...</string>
     <string name="undo">ບໍ່​ເຮັດ</string>
     <string name="unpin_specific_target">ຖອດປັກມຸດ %1$s</string>
     <string name="unpin_target">ຖອນປັກໝຸດ</string>
@@ -2121,7 +2206,7 @@
     <string name="user_switched">ຜູ່ໃຊ້ປັດຈຸບັນ %1$s .</string>
     <string name="user_switching_message">ກຳລັງສະຫຼັບໄປຫາ%1$s…</string>
     <string name="validity_period">ອາຍຸການນຳໃຊ້:</string>
-    <string name="vdm_camera_access_denied">ບໍ່ສາມາດເຂົ້າເຖິງກ້ອງຖ່າຍຮູບຂອງແທັບເລັດຈາກ %1$s ຂອງທ່ານໄດ້</string>
+    <string name="vdm_camera_access_denied">ບໍ່ສາມາດເຂົ້າເຖິງກ້ອງຖ່າຍຮູບຂອງໂທລະສັບຈາກ %1$s ຂອງທ່ານໄດ້</string>
     <string name="vdm_pip_blocked">ບໍ່ສາມາດເບິ່ງການສະແດງຜົນຊ້ອນກັນໃນຂະນະທີ່ສະຕຣີມໄດ້</string>
     <string name="vdm_secure_window">ບໍ່ສາມາດເຂົ້າເຖິງເນື້ອຫານີ້ໄດ້ໃນຂະນະທີ່ຍັງສະຕຣີມຢູ່. ກະລຸນາລອງຢູ່ໂທລະສັບຂອງທ່ານແທນ.</string>
     <string name="view_and_control_notification_content">%s ສາມາດເບິ່ງ ແລະ ຄວບຄຸມໜ້າຈໍຂອງທ່ານໄດ້. ແຕະເພື່ອກວດສອບ.</string>
@@ -2240,7 +2325,13 @@
     <string name="zen_mode_feature_name">ຫ້າມ​ລົບ​ກວນ</string>
     <string name="zen_mode_forever">ຈົນກວ່າທ່ານຈະປິດ</string>
     <string name="zen_mode_forever_dnd">ຈົນ​ກ່​ວາ​ທ່ານ​ປິດ​ຫ້າມ​ລົບ​ກວນ</string>
+    <string name="zen_mode_implicit_activated">ເປີດຢູ່</string>
+    <string name="zen_mode_implicit_deactivated">ປິດຢູ່</string>
+    <string name="zen_mode_implicit_trigger_description">ຈັດການໂດຍ %1$s</string>
     <string name="zen_mode_rule_name_combination">%1$s / %2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">ປະ​ຕິ​ທິນ​ໃດ​ກໍໄດ້</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s - %2$s</string>
     <string name="zen_mode_until">ຈົນ​ຮອດ %1$s</string>
     <string name="zen_mode_until_next_day">ຈົນຮອດ %1$s</string>
     <string name="zen_upgrade_notification_content">ແຕະເພື່ອກວດສອບວ່າມີຫຍັງຖືກບລັອກໄວ້ແດ່.</string>

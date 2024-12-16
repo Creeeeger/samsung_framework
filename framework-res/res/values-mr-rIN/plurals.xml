@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">आपला टॅबलेट अस्थिर आहे कारण ज्या SD कार्ड वर अनुप्रयोग इन्स्टॉल केले ते काढण्यात आले. सामान्य वर परत येण्या साठी आपल्या टॅबलेटचा%d सेकंदांत पुनरारंभ होईल. टॅबलेटचा पुनरारंभ करण्या पूर्वी कोणताही जतन न केलेला डेटा जतन करा.</item>
+        <item quantity="other">आपला फोन अस्थिर आहे कारण ज्या SD कार्ड वर अनुप्रयोग इन्स्टॉल केले होते त्यावरून ते काढले आहेत. सामान्या वर परत येण्या साठी आपल्या फोनचा %d सेकंदांत पुनरारंभ होईल. फोनचा पुनरारंभ करण्या पूर्वी कोणताही जतन न केलेला डेटा जतन करा.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">आपला टॅबलेट अस्थिर आहे कारण ज्या SD कार्ड वर अनुप्रयोग इन्स्टॉल केले ते काढण्यात आले. सामान्य वर परत येण्या साठी आपल्या टॅबलेटचा%d सेकंदात पुनरारंभ होईल. टॅबलेटचा पुनरारंभ करण्या पूर्वी कोणताही जतन न केलेला डेटा जतन करा.</item>
+        <item quantity="one">आपला फोन अस्थिर आहे कारण ज्या SD कार्ड वर अनुप्रयोग इन्स्टॉल केले होते त्यावरून ते काढले आहेत. सामान्या वर परत येण्या साठी आपल्या फोनचा %d सेकंदात पुनरारंभ होईल. फोनचा पुनरारंभ करण्या पूर्वी कोणताही जतन न केलेला डेटा जतन करा.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">आपल्या टॅबलेटचा %d सेकंदां मध्ये पुनरारंभ होईल</item>
+        <item quantity="other">%d सेकंदां मध्ये आपल्या फोनचा पुनरारंभ होईल</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">आपल्या टॅबलेटचा %d सेकंदा मध्ये पुनरारंभ होईल</item>
+        <item quantity="one">%d सेकंदा मध्ये आपल्या फोनचा पुनरारंभ होईल</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
@@ -100,14 +100,6 @@
         <item quantity="other">%d आयटम</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">%d आयटम</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">N/A</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">आपण कनेक्ट करू इच्छित Wi-Fi नेटवर्क एका वेळी केवळ %d उपकरणांशी कनेक्ट केले जाऊ शकते. त्या नेटवर्कवरून इतर कोणत्याही उपकरणाचे कनेक्शन डिस्कनेक्ट करा, नंतर पुन्हा प्रयत्न करा.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">आपण कनेक्ट करू इच्छित Wi-Fi नेटवर्क एका वेळी केवळ %d उपकरणाशी कनेक्ट केले जाऊ शकते. त्या नेटवर्कवरून इतर कोणत्याही उपकरणाचे कनेक्शन डिस्कनेक्ट करा, नंतर पुन्हा प्रयत्न करा.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

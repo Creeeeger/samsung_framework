@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Bixby သို့ ပြောပါ</string>
     <string name="accessibility_corner_action_type_zoom_in">ချဲ့ပါ</string>
     <string name="accessibility_corner_action_type_zoom_out">ချုံ့ပါ</string>
+    <string name="accessibility_dialog_button_allow_samsung">ခွင့်ပြုပါ</string>
+    <string name="accessibility_dialog_button_deny_samsung">ငြင်းဆိုပါ</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">ဖြုတ်ပါ</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">ပါဝါနှင့် အသံကျယ်ခလုတ်များကို အမြန်နှိပ်လျှင် အောက်ပါ လုပ်ဆောင်ချက်များသည် ပွင့် (သို့) ပိတ်သွားပါမည် :</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">ဘေးခလုတ်နှင့် အသံကျယ်ခလုတ်ကို အမြန်ဖိထားလျှင် အောက်ပါ လုပ်ဆောင်ချက်များကို ပွင့် (သို့) ပိတ်စေပါမည် :</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">ပါဝါနှင့် အသံကျယ်ခလုတ်များကို အမြန်နှိပ်လျှင် %s သည် ပွင့် (သို့) ပိတ်သွားပါမည်။</string>
@@ -117,6 +120,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">ဤအကောင့် တိုးခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="account_removal_restrict">ဤအကောင့် ဖြုတ်ခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
+    <string name="action_bar_up_description">အပေါ်ကို မောင်းသွားပါ</string>
     <string name="action_menu_overflow_description">နောက်ထပ် ရွေးစရာများ</string>
     <string name="adb_active_notification_message">USB မှ ချွတ်ယွင်းချက်များ ရှာဖွေးမယ်ရှားမှုကို ရပ်တန့်ရန် ရွေးချယ်ပါ။</string>
     <string name="adb_active_notification_title">USB မှ ချွတ်ယွင်းချက်များ ရှာဖွေးမယ်ရှားမှုနှင့် ချိပ်ဆက်ပြီးပါပြီ။</string>
@@ -125,6 +129,9 @@
     <string name="advance_wifi_sharing_msg">သုံးနိုင်သော Wi-Fi ကွန်ရက်တစ်ခုကို ရှာတွေ့ထားသည်။ သင့်မိုဘိုင်းဟော့စပေါ့အတွက် မိုဘိုင်းဒေတာအစား Wi-Fi မျှဝေနည်းကို အသုံးပြုရန် ချိဆ်ဆက်ပါ။</string>
     <string name="airplanemode_restrict">ပျံသန်းအနေအထား ရစေခြင်းကို လုံခြုံရေးပေါ်လစီက တားဆီးသည်။</string>
     <string name="allow_settings_changes">ဆက်တင်များ ပြောင်းခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်ထားသည်။</string>
+    <string name="always_allow">အမြဲ ခွင့်ပြုပါ</string>
+    <string name="app_block_button_open">ဖွင့်ရန်</string>
+    <string name="app_block_content">%1$s အက်ပ်က %2$s အက်ပ်ကို ဖွင့်လိုသည်။</string>
     <string name="app_clone_storage">စက်တွင်း သိုလှောင်ခန်း (Dual Messenger)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">အက်ပ်များ ရွေးချယ်ပါ</string>
     <string name="app_continuity_guide_cling_button_not_now">ယခု မဟုတ်သေးပါ</string>
@@ -139,32 +146,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">ယနေ့ သင့်အချိန်အားလုံးကို %s အတွက် သုံးလိုက်ပါပြီ။ ၎င်းကို သတ်မှတ်ချက်များထဲတွင် ပြောင်းနိုင်သည်။</string>
     <string name="app_restricted_message_concentration_mode">%s ကို အာရုံစူးစိုက်မှု အနေအထား အချိန်အတွင်းမှာ တားမြစ်ထားသည်။ ပိုမိုလေ့လာရန် သင့် IT စီမံခန့်ခွဲသူကို ဆက်သွယ်ပါ။</string>
     <string name="app_updating_message">%s ကို အပ်ဒိတ်လုပ်နေသည်။ နောက်မှ ထပ်မံကြိုးစားပါ။</string>
-    <string name="appblock_block_subtitle1_phone">သင့်ဖုန်းနှင့် ကိုယ်ရေးသီးသန့်ဒေတာကို ကာကွယ်ရန် ဤအက်ပ်ကို ထည့်သွင်း၍မရနိုင်ပါ၊ အကြောင်းမှာ ၎င်းသည် အနှောင့်အယှက်ပေးနေသည်ဟု မသင်္ကာရသောကြောင့်ဖြစ်သည်။</string>
-    <string name="appblock_block_subtitle1_tablet">သင့်တက်ဘလက်နှင့် ကိုယ်ရေးသီးသန့်ဒေတာကို ကာကွယ်ရန် ဤအက်ပ်ကို ထည့်သွင်း၍မရနိုင်ပါ၊ အကြောင်းမှာ ၎င်းသည် အနှောင့်အယှက်ပေးနေသည်ဟု မသင်္ကာရသောကြောင့်ဖြစ်သည်။</string>
-    <string name="appblock_block_subtitle2">ဤအက်ပ်ကို အနှောင့်အယှက်ပေးသော အက်ပ်အဖြစ် တိုင်ကြားထားသောကြောင့် ၎င်းကို ထည့်သွင်း၍မရပါ။</string>
-    <string name="appblock_block_text1">ဤအက်ပ်သည် စိစစ်ထားသော ရင်းမြစ်တစ်ခုမှ မဟုတ်ဘဲ သင်၏ ကိုယ်ရေးသီးသန့်ဒေတာကို ခိုးယူရန် (သို့) ပေါက်ကြားရန် အသုံးပြုနိုင်သည့် ထိရှလွယ်သော ခွင့်ပြုချက်များကို တောင်းဆိုသည်။</string>
-    <string name="appblock_block_text2">"အနှောင့်အယှက်ပေးနိုင်သော အက်ပ်များသည် သင်၏ ကိုယ်ရေးသီးသန့်ဒေတာကို ခိုးယူရန်၊ သင့်အထောက်အထားကို အယောင်ဆောင်ရန် (သို့) သင်၏ ငွေကြေးဆိုင်ရာ အကောင့်များကို ဝင်သုံးရန်အတွက် ထိရှလွယ်သော ခွင့်ပြုချက်များကို သုံးကောင်းသုံးနိုင်သည်။
-
-တရားဝင်ဖြစ်သော ငွေကြေးဆိုင်ရာ အဖွဲ့အစည်းများသည် ZIP ဖိုင်များ၊ APK ဖိုင်များ (သို့) ဖိုင် မန်နေဂျာ အက်ပ်များ ထည့်သွင်းခြင်းကို မတောင်းဆိုကြပါ။
-
-သင် ထည့်သွင်းသည့် အက်ပ်များသည် ယုံကြည်ရသော ရင်းမြစ်မှဖြစ်ကြောင်း သေချာအောင်လုပ်ပါ။"</string>
-    <string name="appblock_warn_subtitle">ဤအက်ပ်သည် သင်၏ ကိုယ်ရေးသီးသန့် အချက်အလက်ကို ခိုးယူနေနိုင်သည် (သို့) ပေါက်ကြားစေနိုင်သည်။</string>
+    <string name="appblock_block_text_phone">ဤအက်ပ်သည် အန္တရာယ်ရှိသည်ဟု တိုင်ကြားခံထားရသောကြောင့် (သို့) အန္တရာယ်ရှိသည်ဟု တိုင်ကြားခံရသည့် အက်ပ်တစ်ခုနှင့် ဆင်တူသောကြောင့် ၎င်းကို ထည့်သွင်း၍မရပါ။ ဤအက်ပ်ကို အချက်အလက်လိမ်လည်ခိုးယူခြင်းကဲ့သို့သော ရာဇဝတ်မှုများတွင် အသုံးပြုနိုင်ဖွယ်ရှိသည်။ သင့်ဖုန်းနှင့် ဒေတာကို ဘေးကင်းစေရန်အလို့ငှာ ဤကန့်သတ်ချက်ကို ရှောင်လွှဲ၍မရပါ။</string>
+    <string name="appblock_block_text_tablet">ဤအက်ပ်သည် အန္တရာယ်ရှိသည်ဟု တိုင်ကြားခံထားရသောကြောင့် (သို့) အန္တရာယ်ရှိသည်ဟု တိုင်ကြားခံရသည့် အက်ပ်တစ်ခုနှင့် ဆင်တူသောကြောင့် ၎င်းကို ထည့်သွင်း၍မရပါ။ ဤအက်ပ်ကို အချက်အလက်လိမ်လည်ခိုးယူခြင်းကဲ့သို့သော ရာဇဝတ်မှုများတွင် အသုံးပြုနိုင်ဖွယ်ရှိသည်။ သင့်တက်ဘလက်နှင့် ဒေတာကို ဘေးကင်းစေရန်အလို့ငှာ ဤကန့်သတ်ချက်ကို ရှောင်လွှဲ၍မရပါ။</string>
+    <string name="appblock_link_text">ပိုမိုလေ့လာပါ</string>
     <string name="appblock_warn_text1">"မစိစစ်ထားသော အရင်းအမြစ်များမှ အက်ပ်များကို ထည့်သွင်းခြင်းသည် အက်ပ်များကို သင်၏ ကိုယ်ရေးသီးသန့် အချက်အလက် စုဆောင်းရန် (သို့) သင့်လှုပ်ရှားမှုကို ခြေရာခံရန် ခွင့်ပြုပေးနိုင်သည်။
 
 ဤအက်ပ် ထည့်သွင်းခြင်းကို မထောက်ခံပါ။
 
 မည်သို့ဖြစ်စေ ၎င်းကို ထည့်သွင်းရန် ရွေးချယ်ပါက အက်ပ်၏ သီးသန့်ဖြစ်မှု ကြေညာချက်ကို ဂရုတစိုက် သုံးသပ်ပြီး လိုအပ်သော ခွင့်ပြုချက်များကိုသာ သင် ခွင့်ပြုထားကြောင်း သေချာအောင်လုပ်ပါ။"</string>
-    <string name="appblock_warn_text2">"အနှောင့်အယှက်ပေးနိုင်သော အက်ပ်များသည် အဆက်အသွယ်များ၊ SMS နှင့် ဓါတ်ပုံများ ခွင့်ပြုချက်များကို အသုံးပြု၍ သင်၏ ကိုယ်ရေးသီးသန့် အချက်အလက်များကို ရယူရန် ကြိုးပမ်းလေ့ရှိသည်။
-
-ဤအက်ပ် ထည့်သွင်းခြင်းကို မထောက်ခံပါ။
-
-မည်သို့ဖြစ်စေ ဤအက်ပ်ကို ထည့်သွင်းရန် ရွေးချယ်ပါက သင် ယုံကြည်ရသည့် ရင်းမြစ်မှလာကြောင်း သေချာအောင်လုပ်ပြီး ခွင့်ပြုချက်များကို ခွင့်ပြုခြင်း (သို့) သင့်ဒေတာကို အခြားသော ဝင်ရောက်သုံးစွဲခွင့်တို့ကို ဂရုစိုက်ပါ။"</string>
     <string name="application_default_restrict">နောက်ထပ် အက်ပ်ကို ကိရိယာ စီမံသူက မူရင်းပါပုံစံအဖြစ် သတ်မှတ်ထားသည်။</string>
     <string name="auto_click_paused">အလိုအလျောက် ကလစ်နှိပ်မှုကို ခေတ္တရပ်ထားသည်။</string>
     <string name="auto_click_resumed">အလိုအလျောက် ကလစ်နှိပ်မှုကို ပြန်ဆက်လုပ်ထားသည်။</string>
     <string name="autofill_never_use_for_this_app">ဤအက်ပ်အတွက် %s ကို ဘယ်တော့မှ မသုံးပါနှင့်</string>
     <string name="autofill_save_cancel">မလုပ်တော့</string>
     <string name="autofill_save_never_OK">အိုကေ</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">အရန်သိမ်း သုံးခြင်းကို လုံခြုံရေးပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="badPin2">PIN2 မမှန်ပါ။ ထပ်ကြိုးစားပါ။</string>
     <string name="badPuk2">သင် ထည့်သွင်းသော PUK2 သည် မမှန်ပါ။</string>
@@ -175,8 +171,6 @@
     <string name="bluetooth_a2dp_restrict">ဘလူးတုသ် မီဒီယာ အသံ သုံးခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="bluetooth_avrcp_restrict">ဘလူးတုသ် အသံ/ဗီဒီယို အထိန်း သုံးခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="bluetooth_bpp_restrict">ဘလူးတုသ် မှတဆင့် ပုံနှိပ်ခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
-    <string name="bluetooth_china_popup_message">%1$s သည် %2$s ကိုသုံးရန် ခွင့်ပြုချက်တောင်းဆိုနေသည်။ ခွင့်ပြုမလား?</string>
-    <string name="bluetooth_china_popup_title">ဘလူးတုသ်</string>
     <string name="bluetooth_data_transfer_restrict">ဘလူးတုသ် မှတဆင့် ဒေတာ လွှဲပြောင်းခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="bluetooth_desktop_restrict">ဘလူးတုသ် မှတဆင့် သင့် ဒက်စတော့သို့ ချိတ်ဆက်ခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="bluetooth_device_restrict">ဤ ဘလူးတုသ် ကိရိယာနှင့် တွဲခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
@@ -187,7 +181,6 @@
     <string name="bluetooth_outgoing_call_restrict">ဘလူးတုသ် မှတဆင့် အထွက် ခေါ်ဆိုမှုများ လုပ်ခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="bluetooth_pairing_restrict">ဘလူးတုသ် တွဲခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="bluetooth_pbap_restrict">လိပ်စာ စာအုပ် သုံးခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
-    <string name="bluetooth_permission_request">ဘလူးတုသ် ခွင့်ပြုရန် မေတ္တာရပ်ခံချက်</string>
     <string name="bluetooth_restrict">ဘလူးတုသ် သုံးခြင်းကို လုံခြုံရေးပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="bluetooth_sap_restrict">ဘလူးတုသ် မှတဆင့် SIM ကတ် ဝင်ရောက်ခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="bluetooth_security_mode_disable">ဘလူးတုသ် သုံးခြင်းကို လုံခြုံရေးပေါ်လစီက ကန့်သတ်သည်။</string>
@@ -250,11 +243,8 @@
     <string name="ctc_plmn_locked_card">သော့ခတ်ထားသော ကတ်</string>
     <string name="d2dalloweddevice">ခွင့်ပြု ကိရိယာများ</string>
     <string name="data_call_restriction">လုံခြုံရေး ပေါ်လစီသည် မိုဘိုင်းဒေတာ အသုံးပြုမှုကို ကန့်သတ်ထားသည်။</string>
-    <string name="data_usage_disable_mobile">မိုဘိုင်း ဒေတာ ချိတ်ဆက်မှု ပိတ်မည်လား?</string>
-    <string name="data_usage_enable_mobile_warning">ဆက်လက်လုပ်ဆောင်လိုပါသလား?</string>
     <string name="data_usage_limit_body">သင်၏ကျသင့်ငွေတောင်းခံသည့် ကာလ မကုန်ဆုံးမီ မိုဘိုင်းဒေတာကို ရပ်ထားပါသည်။</string>
     <string name="data_usage_mobile_limit_snoozed_title">သင်၏ မိုဘိုင်း ဒေတာ ကန့်သတ်ချက် ကျော်နေသည်</string>
-    <string name="data_usage_mobile_limit_title">မိုဘိုင်းဒေတာ အသုံးပြုမှု ကန့်သတ်ချက်သို့ ရောက်ပါပြီ</string>
     <string name="data_usage_rapid_app_body">%s က ပုံမှန်ထက်ပို၍ ဒေတာသုံးထားသည်။</string>
     <string name="data_usage_rapid_body">သင့်အက်ပ်များက ဒေတာကို ပုံမှန်ထက်ပို၍ သုံးထားသည်။</string>
     <string name="data_usage_rapid_title">မြင့်မားသော မိုဘိုင်းအချက်အလက် အသုံးပြုမှု</string>
@@ -265,6 +255,7 @@
     <string name="data_usage_warning_title_offpeak_chn">အသုံးပြုပြီးသော အသုံးနည်းချိန် သုံးစွဲသည့် ဒေတာ၏ %s</string>
     <string name="data_usage_warning_title_unlimited_chn">မိုဘိုင်းဒေတာ အသုံးပြုမှု ကန့်သတ်ချက်သို့ ရောက်ပါပြီ</string>
     <string name="device_disabled">ကိရိယာ ပိတ်ထားသည်။ IT အုပ်ချုပ်သူထံ ဆက်သွယ်ပါ။</string>
+    <string name="device_info_not_available">မရနိုင်ပါ</string>
     <string name="dex_cant_change_user_profile">Samsung DeX အနေအထားထဲတွင် ရှိနေစဉ် သုံးသူပရိုဖိုင်ကို ပြောင်း၍မရပါ။</string>
     <string name="dex_dialog_launch_toast">ပွင့်နေသည့်အက်ပ်များက ပိတ်သွားနိုင်သည်။ Samsung Dex မစတင်မီ (သို့) မထွက်မီ သင့်ဒေတာကို သိမ်းဆည်းပါ။</string>
     <string name="dex_disconnected_from_device">DeX ကို %s မှ ချိတ်ဆက်မှုဖြုတ်လိုက်သည်။ သင့် TV ရှိ ကွန်ရက် ချိတ်ဆက်မှုကို စစ်ဆေးပါ။</string>
@@ -273,9 +264,6 @@
     <string name="dex_launcher_mode_change">Samsung DeX သို့ပြောင်းရန် %s ကိုပိတ်ထားသည်။</string>
     <string name="dex_mirroring_jit_msg">သင့်တက်ဘလက်တွင် Samsung DeX ကို လုပ်ဆောင်သောအခါ၊ ပိုမိုကြီးမားသော မြင်ကွင်းအတွက် HDMI-ချိတ်ဆက်ထားသော ပြသချက်ပေါ်တွင် မျက်နှာပြင်ကို ပူးတွဲပြသနိုင်သည်။</string>
     <string name="dex_mirroring_jit_title">DeX ကို ပိုကြီသည့် ဖန်သားပြင်တွင် ထုတ်လွှင့်ပြသရန်</string>
-    <string name="dex_restart_app_dialog_button_positive">ပြန်စဖွင့်ပါ</string>
-    <string name="dex_restart_app_dialog_message">ဤအက်ပ်ကို အခြားပြသချက်ပေါ်တွင် ဖွင့်ထားပြီးသား ဖြစ်သည်။ ၎င်းကို ဤနေရာတွင် ဖွင့်ရန် အက်ပ်ကို ပြန်စဖွင့်ရမည်။ ပြန်လည်မစတင်မီ အရေးကြီးသည့် အရာအားလုံးကို သိမ်းပါ။</string>
-    <string name="dex_restart_app_dialog_title">%s ကို ပြန်စမည်လား?</string>
     <string name="dex_restriction_blockerMessage">လုံခြုံရေးပေါ်လစီက Samsung DeX သုံးပုံသုံးနည်းကို တားဆီးထားသည်။</string>
     <string name="dex_restriction_ethernetOnly">လုံခြုံရေးပေါ်လစီသည် Wi-Fi ဒေတာ၊ မိုဘိုင်းဒေတာ နှင့်၊ DeX ထဲရှိ အင်တာနက်မျှသုံးနည်းကို အသုံးပြုခြင်းမှ တားမြစ်ထားသည်။ ကွန်ရက်အစီအစဉ်များအတွက် ဝိုင်ယာကြိုးဆက် ချိတ်ဆက်မှုတစ်ခု လိုအပ်ပါသည်။</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">လုံခြုံရေး မူဝါဒကြောင့် Samsung DeX မှထွက်ရန် ပြင်ပပြသမှုနှင့် ချိတ်ဆက်မှု ဖြုတ်ပါ။</string>
@@ -300,7 +288,6 @@
     <string name="digital_signature_failure_user_notification">အသုံးပြုသူ %d ဦးတို့အတွက် ဒီဂျစ်တယ်လက်မှတ်မှာ ဘောင်မဝင်ပါ</string>
     <string name="disableupdate_application_restrict">ဤအပလီကေးရှင်း အပ်ဒိတ်လုပ်ခြင်းကို လုံခြုံရေးပေါ်လစီက တားဆီးသည်။</string>
     <string name="display_chooser_button_positive">ပြန်စဖွင့်ပါ</string>
-    <string name="display_chooser_dont_show_again">ထပ်မပြပါနှင့်</string>
     <string name="dlg_confirm_kill_storage_users_text">USB သိုလှောင်မှုကို ဆက်သွယ်ပါက အသုံးပြု နေသည့် အချို့သောအက်ပ်တို့ကို ရပ်တန့်စေပါ လိမ့်မည်။ ၎င်းတို့သည် USB မဖြုတ်မချင်း အလုပ် လုပ်မည်မ ဟုတ်ပါ။</string>
     <string name="dlg_confirm_kill_storage_users_title">သိုလှောင်ခန်း ကို PC သို့ ချိပ်ဆက်ပါ</string>
     <string name="dlg_error_title">USBဆောင်ရွက်မှုမအောင်မြင်ပါ</string>
@@ -315,7 +302,7 @@
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">ဤအက်ပ်ကို Multi window မြင်ကွင်းတွင် သုံး၍မရပါ။</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">ဤအစီအစဉ်ကို Multi window မြင်ကွင်းတွင် သုံး၍မရပါ။</string>
     <string name="edit_contact_at_sim_restriction">SIM ကတ် အဆက်အသွယ်များ ပြုပြင်ခြင်းကို လုံခြုံရေးပေါ်လစီက တားဆီးသည်။</string>
-    <string name="edm_policy_not_allow_open_wifiap">ခွင့်ပြု ကိရိယာများ</string>
+    <string name="edm_policy_not_allow_open_wifiap">ဟော့စပေါ့အတွက် စိတ်မချရသော လံထားခြင်း သုံးရန် လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="emergency_calls_only">အရေးပေါ် ခေါ်ဆိုမှုများသာလျှင်</string>
     <string name="ethernet_cable_connected_notification_message">ဖွဲ့စည်းရန် ပုတ်ပါ</string>
     <string name="ethernet_cable_connected_notification_title">အီသာနက် ကေဘယ်ဖြင့် ချိတ်ဆက်သည်</string>
@@ -339,7 +326,7 @@
     <string name="ext_media_unsupported_notification_message">ဤကိရိယာက %s ကို ပံ့ပိုးမပေးပါ။ ပံ့ပိုးပေးထားသည့် ဖောမတ်ထဲတွင် သတ်မှတ်ရန် နှိပ်ပါ။</string>
     <string name="ext_media_unsupported_notification_title">%s ကို ပံ့ပိုးမပေးထားပါ</string>
     <string name="ext_storage_bad_removal_button">ပြန်စ</string>
-    <string name="ext_storage_bad_removal_title">သင့်တက်ဘလက်ကို ပြန်လည်စတင်ပါ</string>
+    <string name="ext_storage_bad_removal_title">သင့်ဖုန်းကို ပြန်လည်စတင်ပါ</string>
     <string name="extmedia_format_button_format">ပုံစံ</string>
     <string name="extmedia_format_message">သင့် ကဒ် ထဲက ဒေတာ အားလုံး ဆုံးသွားမည်။</string>
     <string name="extmedia_format_message_usbhost">သင်၏ USB သိုလှောင်ခန်းထဲ သိုလှောင်ထားသည့် ဖိုင်အားလုံး ဖျက်ခံရမည်။ ဒီလုပ်ရပ်ကို ပြန်ပြီး ပြောင်းလဲ မရနိုင်ပါ။</string>
@@ -413,6 +400,7 @@
     <string name="globalactions_unable_restart_msg_fmm">ဖုန်းကို Find My Mobile ဖြင့် အဝေးမှ လော့ခ်ချထားသောကြောင့် ပြန်လည်စတင်၍ မရပါ။</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">တက်ဘလက်ကို Find My Mobile ဖြင့် အဝေးမှ လော့ခ်ချထားသောကြောင့် ပြန်လည်စတင်၍ မရပါ။</string>
     <string name="globalactions_unable_restart_msg_securelock">သော့ခတ်ထားစဉ် ဖုန်းကို ပြန်စတင်၍မရပါ။ ဖုန်းကို ပြန်စတင်ရန် အဖုံးဖွင့်ပြီး သော့ဖွင့်ပါ။</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">SIM ကတ်ကို သော့ခတ်ထားစဉ် ဖုန်းကို ပြန်စတင်၍မရပါ။</string>
     <string name="hardware_key_restrict">ဤဟဒ်ဝဲ ကီး သုံးခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="hardware_sec">ဖန်သားပြင်-ပေါ် ကီးဘုတ်</string>
     <string name="hbd_translate">ကီးဘုတ်ဘာသာပြန်ချက်</string>
@@ -482,16 +470,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို ပိတ်ရန်အတွက် သင့်တက်ဘလက်ကို သော့ဖွင့်ရန် လိုပါမည်။</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">ဒေါင်းလုဒ်လုပ်ထားသည့် ဒေတာ၊ အက်ပ် ထည့်သွင်းမှုများ (သို့) သတ်မှတ်ချက်ပြောင်းလဲမှုများကဲ့သို့ ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို ဖွင့်ထားစဉ် ဖြစ်ပွားသမျှကို သိမ်းထားမည် မဟုတ်ပါ။</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">ဖန်သားပြင်သော့ သတ်မှတ်ပါ</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">မှတ်တမ်း မဖန်တီးဘဲ ပြန်လည်စတင်ပါ</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">မှတ်တမ်းဖန်တီး၍ ပြန်လည်စတင်ပါ</string>
     <string name="maintenance_mode_intro_dialog_message_phone">သင့်ဖုန်းသည် ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို ဖွင့်ရန်အတွက် ပြန်လည်စတင်ရန် လိုသည်။</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">ဖန်သားပြင်သော့ကို ဦးစွာသတ်မှတ်ပါ။</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">သင့်တက်ဘလက်သည် ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို ဖွင့်ရန်အတွက် ပြန်လည်စတင်ရန် လိုသည်။</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"သင့်ဖုန်းရှိ ပြဿနာများကို ကျွန်ုပ်တို့၏ ပံ့ပိုးရေး ဝန်ထမ်းများ ဖြေရှင်းနိုင်စေရေး အထောက်အကူဖြစ်စေရန် ထိန်းသိမ်းမှု အနေအထားစတင်မီ စနစ်မှတ်တမ်းကို ဖန်တီးရန် အကြံပြုပါသည်။
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"သင့်ဖုန်းနှင့်ပတ်သက်၍ ချွတ်ယွင်းချက်ရှာဖွေပြီး ပြဿနာများကို ဆန်းစစ်ရာတွင် ကျွန်ုပ်တို့၏ ပံ့ပိုးကူညီရေး ဝန်ထမ်းများအား အထောက်အကူပြုစေရန်အလို့ငှာ ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို မစတင်မီ စနစ်မှတ်တမ်းတစ်ခု ဖန်တီးရန် အကြံပြုပါသည်။
 
-စာရင်းတွင် သုံးခဲ့သော အက်ပ်များနှင့် မကြာမီကဖြစ်ပွားခဲ့သော ချို့ယွင်းချက်များကို ပြသပေးသော်လည်း အခြားမည်သည့် ကိုယ်ရေး အချက်အလက်မျှ မပါဝင်ပါ။ မှတ်တမ်းကို အခြားရည်ရွယ်ချက်များအတွက် မဟုတ်ဘဲ ပြဿနာများကို စိစစ်ပိုင်းခြားရန်အတွက်သာ သုံးပါမည်။ မှတ်တမ်းကို ဖန်တီးရန် ပုံမှန်အားဖြင့် ၂ မိနစ်ခန့်ကြာသည်။"</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"သင့်တက်ဘလက်ရှိ ပြဿနာများကို ကျွန်ုပ်တို့၏ ပံ့ပိုးရေး ဝန်ထမ်းများ ဖြေရှင်းနိုင်စေရေး အထောက်အကူဖြစ်စေရန် ထိန်းသိမ်းမှု အနေအထားစတင်မီ စနစ်မှတ်တမ်းကို ဖန်တီးရန် အကြံပြုပါသည်။
+မှတ်တမ်းတွင် အသုံးပြုထားသည့် အက်ပ်များ၊ မကြာသေးမီက တွေ့ရှိခဲ့သည့် ချွတ်ယွင်းချက်များ၊ ပိတ်ပင်ထားသော ဖုန်း နံပါတ်များနှင့် ဖိုင်သိုလှောင်နိုင်စွမ်းကဲ့သို့ သင့်ဖုန်းကို ပြုပြင်ရာတွင် မရှိမဖြစ်လိုအပ်သော အချက်အလက်များသာ ပါဝင်သည်။ မှတ်တမ်းကို အခြားရည်ရွယ်ချက်များအတွက်မဟုတ်ဘဲ ချွတ်ယွင်းချက်ရှာဖွေပြီး ပြဿနာများကို ဆန်းစစ်ရန်အတွက်သာ သုံးပါမည်။ မှတ်တမ်းကို ဖန်တီးရန် ပုံမှန်အားဖြင့် ၂ မိနစ်ခန့်ကြာသည်။"</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"သင့်တက်ဘလက်နှင့်ပတ်သက်၍ ချွတ်ယွင်းချက်ရှာဖွေပြီး ပြဿနာများကို ဆန်းစစ်ရာတွင် ကျွန်ုပ်တို့၏ ပံ့ပိုးကူညီရေး ဝန်ထမ်းများအား အထောက်အကူပြုစေရန်အလို့ငှာ ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို မစတင်မီ စနစ်မှတ်တမ်းတစ်ခု ဖန်တီးရန် အကြံပြုပါသည်။
 
-စာရင်းတွင် သုံးခဲ့သော အက်ပ်များနှင့် မကြာမီကဖြစ်ပွားခဲ့သော ချို့ယွင်းချက်များကို ပြသပေးသော်လည်း အခြားမည်သည့် ကိုယ်ရေး အချက်အလက်မျှ မပါဝင်ပါ။ မှတ်တမ်းကို အခြားရည်ရွယ်ချက်များအတွက် မဟုတ်ဘဲ ပြဿနာများကို စိစစ်ပိုင်းခြားရန်အတွက်သာ သုံးပါမည်။ မှတ်တမ်းကို ဖန်တီးရန် ပုံမှန်အားဖြင့် ၂ မိနစ်ခန့်ကြာသည်။"</string>
+မှတ်တမ်းတွင် အသုံးပြုထားသည့် အက်ပ်များ၊ မကြာသေးမီက တွေ့ရှိခဲ့သည့် ချွတ်ယွင်းချက်များ၊ ပိတ်ပင်ထားသော ဖုန်း နံပါတ်များနှင့် ဖိုင်သိုလှောင်နိုင်စွမ်းကဲ့သို့ သင့်တက်ဘလက်ကို ပြုပြင်ရာတွင် မရှိမဖြစ်လိုအပ်သော အချက်အလက်များသာ ပါဝင်သည်။ မှတ်တမ်းကို အခြားရည်ရွယ်ချက်များအတွက်မဟုတ်ဘဲ ချွတ်ယွင်းချက်ရှာဖွေပြီး ပြဿနာများကို ဆန်းစစ်ရန်အတွက်သာ သုံးပါမည်။ မှတ်တမ်းကို ဖန်တီးရန် ပုံမှန်အားဖြင့် ၂ မိနစ်ခန့်ကြာသည်။"</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">သိုလှောင်ခန်းကို စိစစ်ပါ</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">သင့်ဖုန်း၏ စက်တွင်းသိုလှောင်ခန်း လုံးဝပြည့်ခါနီးပြီ။ သိုလှောင်ခန်းနေရာ ကုန်သွားပါက အချို့သော အက်ပ်များနှင့် လုပ်ဆောင်ချက်များ မှန်ကန်စွာ အလုပ်လုပ်ခြင်း ရပ်သွားနိုင်သည်။ သင်နောက်ထပ် မလိုအပ်တော့သော အချို့ဖိုင်များ (သို့) အက်ပ်များကို ဖျက်ကြည့်ပါ။ ဖျက်ပြီးနောက် အမှိုက်ပုံးကို ရှင်းရန် မမေ့ပါနှင့်။</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">သင့်တက်ဘလက်၏ စက်တွင်းသိုလှောင်ခန်း လုံးဝပြည့်ခါနီးပြီ။ သိုလှောင်ခန်းနေရာ ကုန်သွားပါက အချို့သော အက်ပ်များနှင့် လုပ်ဆောင်ချက်များ မှန်ကန်စွာ အလုပ်လုပ်ခြင်း ရပ်သွားနိုင်သည်။ သင်နောက်ထပ် မလိုအပ်တော့သော အချို့ဖိုင်များ (သို့) အက်ပ်များကို ဖျက်ကြည့်ပါ။ ဖျက်ပြီးနောက် အမှိုက်ပုံးကို ရှင်းရန် မမေ့ပါနှင့်။</string>
@@ -513,10 +501,17 @@
     <string name="maintenance_mode_outro_label">ပြုပြင်ထိန်းသိမ်းမှု အနေအထားမှ ထွက်မည်</string>
     <string name="maintenance_mode_outro_textview_message_phone">ပြုပြင်ထိန်းသိမ်းမှု အနေအထားကို ပိတ်ရန်အတွက် သင့်ဖုန်းကို သော့ဖွင့်ရန် လိုပါမည်။ သင်လုပ်ဆောင်သည့်အခါ အရာအားလုံးသည် ပြုပြင်ထိန်းသိမ်းမှု အနေအထားကို ဦးစွာဖွင့်ခဲ့သည့် ပုံစံအတိုင်း ပြန်ဖြစ်သွားပါမည်။ ဒေါင်းလုတ်လုပ်ထားသော ဒေတာ၊ ထည့်သွင်းထားသော အက်ပ်များ (သို့) သတ်မှတ်ချက် ပြောင်းလဲမှုများကဲ့သို့ ပြုပြင်ထိန်းသိမ်းမှု အနေအထားကို ဖွင့်ထားစဉ် ပြုလုပ်ခဲ့သော အပြောင်းအလဲများကို မသိမ်းဆည်းပါ။</string>
     <string name="maintenance_mode_outro_textview_message_tablet">ပြုပြင်ထိန်းသိမ်းမှု အနေအထားကို ပိတ်ရန်အတွက် သင့်တက်ဘလက်ကို သော့ဖွင့်ရန် လိုပါမည်။ သင်လုပ်ဆောင်သည့်အခါ အရာအားလုံးသည် ပြုပြင်ထိန်းသိမ်းမှု အနေအထားကို ဦးစွာဖွင့်ခဲ့သည့် ပုံစံအတိုင်း ပြန်ဖြစ်သွားပါမည်။ ဒေါင်းလုတ်လုပ်ထားသော ဒေတာ၊ ထည့်သွင်းထားသော အက်ပ်များ (သို့) သတ်မှတ်ချက် ပြောင်းလဲမှုများကဲ့သို့ ပြုပြင်ထိန်းသိမ်းမှု အနေအထားကို ဖွင့်ထားစဉ် ပြုလုပ်ခဲ့သော အပြောင်းအလဲများကို မသိမ်းဆည်းပါ။</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">%s ကို ဖွင့်ထားစဉ် ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို အသုံးပြု၍ မရနိုင်ပါ။</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">ကန့်သတ်ထားသော အက်ပ်များနှင့် ပင်မ ဖန်သားပြင်တွင် ပါဝါချွေတာရေးကို ဖွင့်ထားစဉ် ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို အသုံးပြု၍ မရနိုင်ပါ။</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">ဤဖုန်းတွင် ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို ပံ့ပိုးမပေးပါ။</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">ဤတက်ဘလက်တွင် ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို ပံ့ပိုးမပေးပါ။</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">ကိရိယာ ပိုင်ရှင်ကသာ %s ကို သုံးနိုင်သည်။</string>
     <string name="maintenance_mode_stop_backup_dialog_message">သင့်ဒေတာကို အရန်သိမ်းခြင်းမှ ရပ်တန့်ပြီး ပြုပြင်ထိန်းသိမ်းခြင်းအနေအထားကို ဖွင့်မလား?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို ဖွင့်ရန် သင်၏ မပြီးသေးသော အရံသိမ်းမှုကို ပြီးဆုံးအောင်လုပ်ရမည် သို့မဟုတ် ဖျက်ပစ်ရမည်။</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို ဖွင့်ရန် သင်၏ ဆက်လုပ်နေသော အရံသိမ်းမှုကို ရပ်တန့်ရမည်။</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">ပြုပြင်ထိန်းသိမ်းရေး အနေအထားကို ဖွင့်ရန် သင်၏ အရံသိမ်းမှု ဒေတာကို မူလအတိုင်းပြန်ထားခြင်းကို ရပ်တန့်ရမည်။</string>
+    <string name="maintenance_mode_toast_text_device_admin">ကိရိယာ စီမံသူအက်ပ်</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">မှတ်တမ်း ဖန်တီးနေသည်…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">၎င်းသည် ပုံမှန်အားဖြင့် ၂ မိနစ်ခန့်ကြာသည်။ စာရင်းကို ဖန်တီးပြီးနောက် သင့်ဖုန်းသည် ထိန်းသိမ်းမှု အနေအထားတွင် ပြန်လည်စတင်မည်ဖြစ်ပြီး သင့်ဖုန်းကို ထိန်းသိမ်းမှုလုပ်ရန်အတွက် ဘေးကင်းစွာ လွှဲပြောင်းနိုင်သည်။</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">၎င်းသည် ပုံမှန်အားဖြင့် ၂ မိနစ်ခန့်ကြာသည်။ စာရင်းကို ဖန်တီးပြီးနောက် သင့်တက်ဘလက်သည် ထိန်းသိမ်းမှု အနေအထားတွင် ပြန်လည်စတင်မည်ဖြစ်ပြီး သင့်တက်ဘလက်ကို ထိန်းသိမ်းမှုလုပ်ရန်အတွက် ဘေးကင်းစွာ လွှဲပြောင်းနိုင်သည်။</string>
@@ -542,13 +537,8 @@
     <string name="media_shared">SDကဒ်အားယခုကွန်ပြုတာမှအသုံးပြုနေပါသည်</string>
     <string name="media_unknown_state">ပြင်ပမီဒီယာသည် မသိသော အခြေအနေတွင် ရှိနေပါသည်။</string>
     <string name="mediaplayer_restrict">MTP မီဒီယာ ဖွင့်စက် သုံးခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
+    <string name="message_on_crash">အလိုအလျောက် ပိတ်ပင်စနစ်က ပိတ်ဆို့ထားသည်</string>
     <string name="microphone_restrict">မိုက်ကရိုဖုန်း သုံးခြင်းကို လုံခြုံရေးပေါ်လစီက ကန့်သတ်သည်။</string>
-    <string name="miniresolver_call">ဖုန်းခေါ်မှု</string>
-    <string name="miniresolver_call_in_work">အလုပ်အက်ပ်မှ ဖုန်းခေါ်ဆိုမှုလား?</string>
-    <string name="miniresolver_call_information">သင့်အဖွဲ့အစည်းသည် သင့်ကို အလုပ်အက်ပ်များမှသာ ဖုန်းခေါ်ဆိုခွင့်ပြုသည်။</string>
-    <string name="miniresolver_sms_information">သင့်အဖွဲ့အစည်းသည် သင့်ကို အလုပ်အက်ပ်များမှသာ မက်ဆေ့ချ်များ ပို့ခွင့်ပြုသည်။</string>
-    <string name="miniresolver_switch">ပြောင်းလဲပါ</string>
-    <string name="miniresolver_switch_to_work">အလုပ်အက်ပ်သို့ ပြောင်းမလား?</string>
     <string name="mmcc_authentication_reject_name_template">%s ကို ခွင့်ပြုမထားပါ</string>
     <string name="mmcc_illegal_me_name_template">%s ကို ခွင့်ပြုမထားပါ</string>
     <string name="mmcc_illegal_ms_name_template">%s ကို ခွင့်ပြုမထားပါ</string>
@@ -560,30 +550,6 @@
     <string name="mock_location_reminder_disable">ပိတ်ပါ</string>
     <string name="mock_location_reminder_title">အယောင်ပြ တည်နေရာကို ဖွင့်ထားသည်</string>
     <string name="more_apps">နောက်ထပ် အက်ပ်</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s ဝန်ဆောင်မှု ပံ့ပိုးမထားပါ။ သုံးစွဲသူဝန်ဆောင်မှုများသို့ ဆက်သွယ်ပါ။</string>
-    <string name="mptcp_message_address_type_not_supported">%s ချိတ်ဆက်မှု အားနည်းသည်။ ရရှိနိုင်သည့် ကွန်ယက်မှတဆင့် ပြန်လည်ချိတ်ဆက်နေဆဲ…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s ချိတ်ဆက်မှု အားနည်းသည်။ ရရှိနိုင်သည့် ကွန်ယက်မှတဆင့် ပြန်လည်ချိတ်ဆက်နေဆဲ…</string>
-    <string name="mptcp_message_cmd_not_supported">%s ကွန်ယက်ကို ယာယီမရရှိနိုင်ပါ။ ရရှိနိုင်သည့် ကွန်ယက်မှတဆင့် ပြန်လည်ချိတ်ဆက်နေဆဲ…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s ချိတ်ဆက်မှု အားနည်းသည်။ ရရှိနိုင်သည့် ကွန်ယက်မှတဆင့် ပြန်လည်ချိတ်ဆက်နေဆဲ…</string>
-    <string name="mptcp_message_connection_refused">%s ချိတ်ဆက်မှု အားနည်းသည်။ ရရှိနိုင်သည့် ကွန်ယက်မှတဆင့် ပြန်လည်ချိတ်ဆက်နေဆဲ…</string>
-    <string name="mptcp_message_data_usage_limit">ဒေတာအသုံးပြုမှုအကန့်အသတ်သို့ ရောက်ရှိထားသည်။ ဒေတာအသုံးပြုမှုအကန့်အသတ်ကိုပြောင်းရန်၊ သတ်မှတ်ချက်များသို့သွားပါ။</string>
-    <string name="mptcp_message_host_unreachable">%s ချိတ်ဆက်မှု အားနည်းသည်။ ရရှိနိုင်သည့် ကွန်ယက်မှတဆင့် ပြန်လည်ချိတ်ဆက်နေဆဲ…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">%s ကိုဖွင့်၍မရနိုင်ပါ။ ကိရိယာသည် LTE ကွန်ယက်သို့ချိတ်ဆက်မထားပါ။</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">နိုင်ငံတကာဆိုင်ရာ အခြားကွန်ယက်အသုံးပြုစဉ် %s ကိုဖွင့်၍မရနိုင်ပါ။</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">မိုဘိုင်းဟော့စပေါ့ (သို့) USB မျှဝေသုံးစွဲမှုကို ဖွင့်ထားစဉ် %s ကိုဖွင့်၍မရနိုင်ပါ။</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Wi-Fi Direct ဖွင့်ထားစဉ် %s ကိုဖွင့်၍မရနိုင်ပါ။</string>
-    <string name="mptcp_message_mptcp_capability_airplane">ပျံသန်းအနေအထား ဖွင့်ထားစဉ် %s ကိုဖွင့်၍မရနိုင်ပါ။</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">မိုဘိုင်းဒေတာဖွင့်ထားစဉ် %s ကိုဖွင့်၍မရနိုင်ပါ။</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">ဝန်ဆောင်မှုပေးသူမှ တုန့်ပြန်မှုမရှိပါ။</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">%1$s ကိုဖွင့်၍ မရနိုင်ပါ။ %2$s ကို သင့်အင်တာနက် ပက်ကေ့ချ်ဖြင့် သုံး၍ မရနိုင်ပါ (သို့) %3$s ဆာဗာမှ မည်သည့်တုံ့ပြန်ချက်မှ လက်ခံမရရှိထားပါ။</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">%s သင်ဝင်စေမှုတောင်းဆိုချက်ပို့ရန် မအောင်မြင်ပါ။ ရနိုင်သည့်ကွန်ယက်များမှတဆင့် ပြန်လည်ချိတ်ဆက်နေဆဲ…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">%s ကိုဖွင့်၍မရနိုင်ပါ။ မမှန်ကန်သည့် SIM ကဒ် ထည့်သွင်းထားသည်။</string>
-    <string name="mptcp_message_network_unreachable">%s ချိတ်ဆက်မှု အားနည်းသည်။ ရရှိနိုင်သည့် ကွန်ယက်မှတဆင့် ပြန်လည်ချိတ်ဆက်နေဆဲ…</string>
-    <string name="mptcp_message_non_mptcp_plan">Giga မာတီ-ပက်ကို ဖွင့်၍မရနိုင်ပါ။ လုပ်ဆောင်ချက်ကို ဒေတာအစီအစဉ်မှ ပံ့ပိုးမထားပါ။</string>
-    <string name="mptcp_message_operation_disabled_overheating">ကိရိယာ အလွန်ပူခြင်းကို တားဆီးရန် %s ကိုပိတ်ထားသည်။ မိုဘိုင်းကွန်ယက်မှတဆင့် အစားထိုးဒေါင်းလုတ်လုပ်နေဆဲ…</string>
-    <string name="mptcp_message_server_error">%s ချိတ်ဆက်မှု အားနည်းသည်။ ရရှိနိုင်သည့် ကွန်ယက်မှတဆင့် ပြန်လည်ချိတ်ဆက်နေဆဲ…</string>
-    <string name="mptcp_message_setting_disabled_overheating">%s ကိုဖွင့်၍မရနိုင်ပါ။ ကိရိယာ အလွန်ပူနေသည်။ ကိရိယာအေးသွားစေရန် စောင့်ပြီး ထပ်မံကြိုးစားပါ။</string>
-    <string name="mptcp_message_ttl_expired">%s ကွန်ယက်ကို ယာယီမရရှိနိုင်ပါ။ ရရှိနိုင်သည့် ကွန်ယက်မှတဆင့် ပြန်လည်ချိတ်ဆက်နေဆဲ…</string>
     <string name="multi_user_capability_restrict">သင့်ကိရိယာပေါ်တွင် သုံးသူ အများ လုပ်နိုင်စွမ်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်ထားသည်။</string>
     <string name="multi_user_creation_restrict">သင့်ကိရိယာပေါ် သုံးသူ အကောင့်သစ်များ ဖန်တီးခြင်းကို လုံခြုံရေး ပေါ်လစီက တားဆီးသည်။</string>
     <string name="multi_user_removal_restrict">သင့်ကိရိယာမှ သုံးသူ အကောင့်များ ဖြုတ်ခြင်းကို လုံခြုံရေး ပေါ်လစီက တားဆီးသည်။</string>
@@ -602,24 +568,22 @@
     <string name="multisound_sound_via_bluetooth_multiselection">အသံကို သင့်ဘလူးတုသ် အော်ဒီယို ကိရိယာတွင် ဖွင့်နေသည်။ ၎င်းကို ပိတ်ရန် ဒီမှာ နှိပ်ပါ</string>
     <string name="multisound_sound_via_headphone">%s အသံကို သင့်နားကြပ်မှတဆင့် ဖွင့်ထားပါသည်။ ၎င်းကို ပိတ်ရန် ဤနေရာမှာ နှိပ်ပါ။</string>
     <string name="multisound_sound_via_headphone_multiselection">အသံကို သင့်နားကြပ်များမှတစ်ဆင့် ဖွင့်ထားပါသည်။ ၎င်းကို ပိတ်ရန် ဒီမှာ နှိပ်ပါ။</string>
-    <string name="multisound_sound_via_phone_speaker">%s အသံကို သင့်တက်ဘလက်စပီကာမှတဆင့် ဖွင့်ထားသည်။ ၎င်းကို ပိတ်ရန် ဤနေရာမှာ နှိပ်ပါ။</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">အသံကို သင့်တက်ဘလက်စပီကာမှတစ်ဆင့် ဖွင့်ထားသည်။ ၎င်းကို ပိတ်ရန် ဒီမှာ နှိပ်ပါ။</string>
+    <string name="multisound_sound_via_phone_speaker">%s အသံကို သင့်ဖုန်းစပီကာမှတဆင့် ဖွင့်ထားသည်။ ဤအရာကို ပိတ်ရန် ဤနေရာမှာ နှိပ်ပါ။</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">အသံကို သင့်ဖုန်းစပီကာမှတစ်ဆင့် ဖွင့်ထားသည်။ ၎င်းကို ပိတ်ရန် ဒီမှာ နှိပ်ပါ။</string>
     <string name="multisound_sound_via_usb_audio">%s အသံကို သင့် USB အော်ဒီယိုစက်မှတဆင့် ဖွင့်ထားပါသည်။ ၎င်းကို ပိတ်ရန် ဤနေရာမှာ နှိပ်ပါ။</string>
     <string name="multisound_sound_via_usb_audio_multiselection">အသံကို သင့် USB အော်ဒီယို ကိရိယာမှတစ်ဆင့် ဖွင့်ထားပါသည်။ ၎င်းကို ပိတ်ရန် ဒီမှာ နှိပ်ပါ။</string>
     <string name="multisound_title">အက်ပ် အသံကို ခွဲခြားပါ</string>
     <string name="multisound_turn_off_multisound">ပိတ်ပါ</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX တွင် %s က အလုပ်မလုပ်ပါ။ တက်ဘလက်အနေအထားတွင် လုပ်ဆောင်ကြည့်ပါ။</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX တွင် %s က အလုပ်မလုပ်ပါ။ တက်ဘလက် ပင်မ ဖန်သားပြင်များအတွက် ၎င်းကို ဒီဇိုင်းပြုလုပ်ထားသည်။</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ဂိမ်းအချို့သည် ထိနှိပ် ဖန်သားပြင်များတွင်သာ လုပ်ဆောင်နိုင်ပါသည်။ Samsung DeX တွင် မောက်စ်ဖြင့် ထိန်းချုပ်သည့်စနစ်များက အလုပ်မလုပ်ပါက တက်ဘလက်အနေအထားတွင် အစားထိုး ကစားကြည့်ပါ။</string>
-    <string name="my_device">ဤတက်ဘလက်</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX တွင် %s က အလုပ်မလုပ်ပါ။ ဖုန်းအနေအထားတွင် လုပ်ဆောင်ကြည့်ပါ။</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX တွင် %s က အလုပ်မလုပ်ပါ။ ဖုန်း ပင်မ ဖန်သားပြင်များအတွက် ၎င်းကို ဒီဇိုင်းပြုလုပ်ထားသည်။</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ဂိမ်းအချို့သည် ထိနှိပ် ဖန်သားပြင်များတွင်သာ လုပ်ဆောင်နိုင်ပါသည်။ Samsung DeX တွင် မောက်စ်ဖြင့် ထိန်းချုပ်သည့်စနစ်များက အလုပ်မလုပ်ပါက ဖုန်းအနေအထားတွင် အစားထိုး ကစားကြည့်ပါ။</string>
+    <string name="my_device">ဤဖုန်း</string>
     <string name="network_locked_sim_dialog_message_ais">သင့် SIM ကတ်သည် သင်၏ စာရင်းသွင်းမှာယူမှု စည်းမျဉ်းကန့်သတ်ချက်များကို မလိုက်နာသောကြောင့် ၎င်းက ဤဖုန်းဖြင့် အပြည့်အဝ မစီမံနိုင်ပါ။ သင့်တွင် မေးစရာများ ရှိလျှင် (သို့) ယင်းကိစ္စနှင့် ပတ်သက်၍ နောက်ထပ် အချက်အလက် လိုအပ်လျှင်၊ ဆမ်ဆောင် ဖောက်သည်ဝန်ဆာင်မှု တည်နေရာ (သို့) သင့်အား အဆိုပါပစ္စည်းများ ရောင်းချသော စတိုးဆိုင်ကို ဆက်သွယ်ပါ။</string>
     <string name="network_locked_sim_notification_text">ကွန်ရက် သော့ခတ် SIM ကဒ်ကို ထည့်ထား။</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">သင်၏ မူရင်းပါပုံစံ ပင်မ အက်ပ်ကို One UI Home သို့ ပြောင်းပါ။</string>
     <string name="nfc_restrict">လုံခြုံရေး မူဝါဒသည် NFC အသုံးပြုမှုကို ကာကွယ်ထားသည်။</string>
     <string name="nosim_limited_service">ကန့်သတ်ထားသော ဝန်ဆောင်မှု</string>
-    <string name="not_support_ai_key">AI ကီးသည် သင့်တက်ဘလက်တွင် အလုပ်မလုပ်သေးပါ။ မကြာမီ အပ်ဒိတ်ရနိုင်ပါမည်။</string>
-    <string name="notification_app_name_settings">သတ်မှတ်ချက်များ</string>
     <string name="notification_channel_dex_policy">Samsung DeX မူဝါဒ</string>
     <string name="ntfs_usb_storage_readonly_mount_message">ဤသိုလှောင်ခန်းသည် NTFS ဖောမတ်ကို သုံးထားသောကြောင့် ဖတ်ရန်အတွက်သာ ဖြစ်သည်။</string>
     <string name="ntfs_usb_storage_readonly_mount_title">ဖတ်ရန်သီးသန့် USB သိုလှောင်ခန်းကို ထည့်ထားသည်</string>
@@ -795,7 +759,6 @@
     <string name="permlab_scheduleExactAlarm">နှိုးစက်များနှင့် သတိပေးချက်များကို သတ်မှတ်ပါ</string>
     <string name="permlab_spdControl">လုံခြုံရေး မူဝါဒအပ်ဒိတ်များကို စီမံပါ</string>
     <string name="permlab_ucsPlugin">ယူနီဗာဆယ် အထောက်အထား စီမံခန့်ခွဲမှု ပလပ်အင်</string>
-    <string name="personal_apps_suspended_turn_profile_on">ဖွင့်ပါ</string>
     <string name="phoneTypeConference">ကွန်ဖရင့်</string>
     <string name="policydesc_allow_bluetoothmode">ဘလူးတုသ် သုံးခြင်းကို တားမြစ်ပါ။</string>
     <string name="policydesc_allow_browser">အင်တာနက်အသုံးပြုမှုကို တားမြစ်ပါ။</string>
@@ -803,7 +766,7 @@
     <string name="policydesc_allow_desktopsync">ဒက်စ်တော့ပ်ဆင့်ခ်အား သုံးခြင်းကို တားမြစ်ပါ။</string>
     <string name="policydesc_allow_internetsharing">မိုဘိုင်း ဟော့စပေါ့သုံးခြင်းကို တားမြစ်ပါ။</string>
     <string name="policydesc_allow_irda">IrDA သုံးခြင်းကို တားမြစ်ပါ။</string>
-    <string name="policydesc_allow_popimapemail">တက်ဘလက်တွင် POP နှင့် IMAP အီးမေးလ်အသုံးပြုမှုကို တားမြစ်ပါ။</string>
+    <string name="policydesc_allow_popimapemail">ဖုန်းတွင် POP နှင့် IMAP အီးမေးလ်အသုံးပြုမှုကို တားမြစ်ပါ။</string>
     <string name="policydesc_allow_storagecard">SD ကတ်များ အသုံးပြုမှုကို တားမြစ်ပါ။</string>
     <string name="policydesc_allow_textmessaging">စာနှင့် မာတီမီဒီယာ မက်ဆေ့ချ်ပေးပို့စနစ် အသုံးပြုမှုကို တားမြစ်ပါ။</string>
     <string name="policydesc_allow_thirdParty">ဤအပလီကေးရှင်းက တတိယ-ကြားလူ၏ အပလီကေးရှင်းများအား သုံးခြင်းကို တားဆီးနိုင်ပါသည်။</string>
@@ -849,7 +812,7 @@
     <string name="pwd_change_enforced">သင့် စကားဝှက် ပြောင်းရန် လုံခြုံရေး ပေါ်လစီက တောင်းဆိုသည်။</string>
     <string name="recording_fail">%2$s တွင် ၎င်းကိုအသုံးပြုနေစဉ် %1$s ရှိ မိုက်ကို အသုံးမပြုနိုင်ပါ။</string>
     <string name="recording_popup">%s က မိုက်ခရိုဖုန်းကို အသုံးပြုနေသည်။</string>
-    <string name="recording_popup_device">တက်ဘလက်</string>
+    <string name="recording_popup_device">ဖုန်း</string>
     <string name="recording_popup_with_bluetooth">%s သည် ဘလူးတုသ် မိုက်ခရိုဖုန်းကို သုံးနေသည်။</string>
     <string name="recording_popup_with_device">%1$s သည် %2$s ၏ မိုက်ခရိုဖုန်းကို သုံးနေသည်။</string>
     <string name="redo">ပြန်လုပ်</string>
@@ -915,12 +878,12 @@
     <string name="screencapture_restrict">ဖန်သားပြင် ဖမ်းယူမှု သုံးခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="sd_card_unavailable_message">မတူညီသော အသုံးပြုသူပရိုဖိုင်ကို အသုံးပြုစဉ်တွင် SD ကတ်ကို ထည့်ထားသောကြောင့် ၎င်းကို အသုံးမပြုနိုင်ပါ။</string>
     <string name="sd_card_unavailable_title">SD ကတ် မရရှိနိုင်ပါ</string>
-    <string name="sdcard_bad_removal_message">အန္တရာယ်ရှိလျက်ဖြင့် SD ကတ်ကို ဖယ်ရှားခဲ့သည်။ မမျှော်လင့်ဘဲ သင့်တက်ဘလက် ပြန်လည်စတင်ခြင်းကို တားဆီးရန် မသိမ်းရသေးသည့် ဒေတာများကို သိမ်းပြီး ယခု ပြန်လည်စတင်ပါ။</string>
+    <string name="sdcard_bad_removal_message">အန္တရာယ်ရှိလျက်ဖြင့် SD ကတ်ကို ဖယ်ရှားခဲ့သည်။ မမျှော်လင့်ဘဲ သင့်ဖုန်း ပြန်လည်စတင်ခြင်းကို တားဆီးရန် မသိမ်းရသေးသည့် ဒေတာများကို သိမ်းပြီး ယခု ပြန်လည်စတင်ပါ။</string>
     <string name="sdcard_batch_decrypt_noti_content">SD ကတ် ပြန်ဖော်ပါ</string>
     <string name="sdcard_batch_decrypt_noti_title">SD ကတ် ဖော်ခြင်း</string>
     <string name="sdcard_batch_decrypt_popup_content">မြှုပ်ထားသည့် SD ကတ်ကို မသုံးမီ ပြန်ဖော်ရမည်။ ပြန်ဖော်ခြင်းက တစ်နာရီ သို့မဟုတ် ထို့ထက် ကြာနိုင်သည်။ အားသွင်းထားသော ဘက်ထရီ တစ်ခုဖြင့် စတင်ကာ ပြန်ဖော်ခြင်း ပြီးပြည့်စုံသည်အထိ ကိရိယာကို ပလက်ထိုးထားပါ။ ပြန်ဖော်ခြင်း လုပ်ငန်းစဉ်ကို နှောက်ယှက်ခြင်းက ဒေတာ အချို့ သို့မဟုတ် အားလုံး ဆုံးရှုံးစေနိုင်သည်။</string>
     <string name="sdcard_decrypt_err_notification">SD ကတ် ဖော်ခြင်း အမှား ဖြစ်သွားသည်။</string>
-    <string name="sdcard_decrypt_error_otherdevice">သင့် SD ကတ်ရှိ ဖိုင်အချို့ကို အခြားကိရိယာတွင် ကုဒ်ပြောင်းထည့်ခဲ့ပြီး ဤတက်ဘလက်မှာ အသုံးပြုနိုင်မည် မဟုတ်ပါ။</string>
+    <string name="sdcard_decrypt_error_otherdevice">သင့် SD ကတ်ရှိ ဖိုင်အချို့ကို အခြားကိရိယာတွင် ကုဒ်ပြောင်းထည့်ခဲ့ပြီး ဤဖုန်းမှာ အသုံးပြုနိုင်မည် မဟုတ်ပါ။</string>
     <string name="sdcard_decrypt_notification">SD ကတ် ဖော်ပြီးပြီ။</string>
     <string name="sdcard_decrypt_title_notification">SD ကတ် ဖော်ခြင်း</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD ကဒ်ကို ကုဒ်ပြောင်းဖော်နေဆဲ…</string>
@@ -937,14 +900,6 @@
     <string name="sdcard_unmount_policy_noti_title">IT ပေါ်လစီကြောင့် SD ကတ် တက်မလာသေးပါ။</string>
     <string name="sdhms_nr_control_low_battery">ဖုန်းတွင် ဘက်ထရီ ၁၅% ထက် နည်း၍ ကျန်ရှိသည့်အခါ ဘက်ထရီ ချွေတာရန် 5G ကို ပိတ်ပါ။</string>
     <string name="sec_bluetooth_airplane_mode_toast">လေယာဉ်ပျံ အနေအထားတွင် ဘလူးတုသ် ပွင့်မြဲပွင့်နေပါမည်။</string>
-    <string name="sec_immersive_cling_button_ok">အိုကေ</string>
-    <string name="sec_immersive_cling_guide_text_gesture">ဤအက်ပ်သည် ဖန်သားပြင် အပြည့်ကို အသုံးပြုနေသည်။ သွားလာရန်အတွက် ပွတ်ဆွဲ ဟန်ပန်များသုံးပြီး အခြေအနေပြ ဘားကို ပြသနိုင်စေပါသည်။ သွားလာရန်အတွက် အခြေအနေပြ ဘားကို မြင်နေရစဉ် နောက်တစ်ကြိမ် ပွတ်ဆွဲပါ။</string>
-    <string name="sec_immersive_cling_guide_text_phone">"ဤအက်ပ်သည် ဖန်သားပြင် အပြည့်ကို အသုံးပြုနေသည်။ အာရုံပျက်ပြားမှုကို လျှော့ချရန်နှင့် အက်ပ်မှ မတော်တဆ ထွက်သွားခြင်း မဖြစ်စေရန် ပင်မ၊ နောက်သို့နှင့် လတ်တလော ခလုတ်များကို ဖျောက်ထားသည်။
-
-သင့်ဖုန်းကို လှည့်လိုက်သည့်အခါတွင်ပင် ခလုတ်များသည် အားသွင်းအပေါက်၏ ဘေးတွင် အမြဲတမ်း ရှိနေပါသည်။ မြားဖြင့် ပြထားသည့်အတိုင်း ဖန်သားပြင်၏ အစွန်းမှ အတွင်းဘက်သို့ ပွတ်ဆွဲခြင်းဖြင့် ခလုတ်များ ပြန်ပေါ်လာအောင် လုပ်နိုင်သည်။"</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"ဤအက်ပ်သည် ဖန်သားပြင် အပြည့်ကို အသုံးပြုနေသည်။ အာရုံပျက်ပြားမှုကို လျှော့ချရန်နှင့် အက်ပ်မှ မတော်တဆ ထွက်သွားခြင်း မဖြစ်စေရန် ပင်မ၊ နောက်သို့နှင့် လတ်တလော ခလုတ်များကို ဖျောက်ထားသည်။
-
-ခလုတ်များ ပြန်ပေါ်လာစေရန် မြားဖြင့် ပြသထားသည့်အတိုင်း ဖန်သားပြင်၏ အောက်ခြေမှ အပေါ်သို့ ပွတ်ဆွဲပါ။"</string>
     <string name="sec_monotype_default">မူလသတ်မှတ်ထားသော</string>
     <string name="sec_ringtone_category_brand_sound">ဆမ်ဆောင် ကုန်အမှတ်တံဆိပ်အသံ</string>
     <string name="sec_ringtone_category_calm">တည်ငြိမ်မှု</string>
@@ -954,6 +909,10 @@
     <string name="sec_ringtone_category_open_theme">လက်ရှိ အကြောင်းအရာသည် မူရင်းပါပုံစံ ဖြစ်သည်</string>
     <string name="sec_ringtone_category_retro">နောက်ပြန်</string>
     <string name="sec_ringtone_silent">အသံတိတ်</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">ပယ်ဖျက်ပါ</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">ဂြိုဟ်တုနှင့် ချိတ်ဆက်ရန် သင်၏ကွန်ရက်အော်ပရေတာကို “အလိုအလျောက် ရွေးချယ်ပါ” သို့ သတ်မှတ်ရန် လိုအပ်သည်။</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">ဖွင့်ပါ</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">အလိုအလျောက် ကွန်ရက်ရွေးချယ်မှုကို ဖွင့်မလား?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">စကားပြောရန် မိုက်ခရိုဖုန်း ဝင်ရောက် သုံးစွဲမှုကို ဖွင့်ပါ။</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">%s အသုံးပြုရန် ကင်မရာ သုံးခွင့်ကို ဖွင့်ပါ။</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">%s အသုံးပြုရန် မိုက်ခရိုဖုန်း သုံးခွင့်ကို ဖွင့်ပါ။</string>
@@ -1049,6 +1008,8 @@
     <string name="sem_face_error_already_in_use_by_VT">ဗီဒီယို ဖုန်းခေါ်ဆိုနေစဉ် မျက်နှာ မှတ်သားခြင်းကို ဖွင့်၍မရပါ။</string>
     <string name="sem_face_error_camera_access_off">ကင်မရာခွင့်ပြုချက်ကို ပိတ်ထားသဖြင့် မျက်နှာမှတ်မိခြင်းကို သုံး၍မရပါ</string>
     <string name="sem_face_error_camera_fail">ကင်မရာကို ဖွင့်၍ မရပါ။ ထပ်မံကြိုးစားပါ။</string>
+    <string name="sem_face_error_lockout">မမှန်ကန်သည့် ကြိုးပမ်းမှုများစွာ ပြုလုပ်ထားသောကြောင့် ဇီဝရုပ်လက္ခဏာ စိစစ်အတည်ပြုမှုကို မရရှိနိုင်ပါ။</string>
+    <string name="sem_face_error_lockout_permanent">မမှန်ကန်သည့် ကြိုးပမ်းမှုများစွာ ပြုလုပ်ထားသောကြောင့် ဇီဝရုပ်လက္ခဏာ စိစစ်အတည်ပြုမှုကို မရရှိနိုင်ပါ။</string>
     <string name="sem_face_error_ppp_timeout">သင့်အထောက်အထားကို အတည်ပြုပြီးကတည်းက အချိန်အတော် ကြာသွားပါပြီ။ သင့်မျက်နှာကို မှတ်ပုံတင်ရန် ထပ်မံစတင်ရပါလိမ့်မည်။</string>
     <string name="sem_face_error_too_dark">မျက်နှာကို ရှာဖွေ တွေ့ရှိရန် မှောင်လွန်းနေသည်</string>
     <string name="sem_face_error_too_dark_to_enroll">မှောင်လွန်းသည်။ မီးကိုဖွင့်ပါ (သို့) ပို၍ လင်းသော တစ်နေရာရာသို့ သွားပါ။</string>
@@ -1064,13 +1025,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">သင့်လက်ဗွေရာကို စကန်ဖတ်ရန် သင့် S Pen ၏ ထိပ်ကို ဖန်သားပြင်နှင့် ဝေးဝေးသို့ ရွှေ့ပါ။</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">လက်ဗွေများကို သုံးရန် လုံခြုံသော ဖန်သားပြင်သော့ အမျိုးအစား (ပုံစံ၊ PIN သို့မဟုတ် စကားဝှက်) ကို အရင်ဆုံး သတ်မှတ်ပါ။</string>
+    <string name="sem_fingerprint_error_lockout">မမှန်ကန်သည့် ကြိုးပမ်းမှုများစွာ ပြုလုပ်ထားသောကြောင့် ဇီဝရုပ်လက္ခဏာ စိစစ်အတည်ပြုမှုကို မရရှိနိုင်ပါ။</string>
+    <string name="sem_fingerprint_error_lockout_permanent">မမှန်ကန်သည့် ကြိုးပမ်းမှုများစွာ ပြုလုပ်ထားသောကြောင့် ဇီဝရုပ်လက္ခဏာ စိစစ်အတည်ပြုမှုကို မရရှိနိုင်ပါ။</string>
     <string name="sem_fingerprint_error_onehand_mode">လက်တစ်ဖက်တည်းသုံး အနေအထားတွင် လက်ဗွေရာ စကန်ဖတ်သည့်စက်ကို အသုံးပြု၍ မရပါ။</string>
     <string name="sem_fingerprint_error_smart_view">%s ကို အသုံးပြုနေစဉ် လက်ဗွေရာကို စကန်ဖတ်၍ မရနိုင်ပါ။</string>
+    <string name="sem_fingerprint_error_system_failure">လက်ဗွေရာ အာရုံခံဆင်ဆာ တုံ့ပြန်ခြင်း မရှိပါ။ နောက်မှ ထပ်မံကြိုးစားပါ။ ဤသို့ဆက်ဖြစ်နေပါက သင့်ဖုန်းကို ပြန်လည်စတင်ကြည့်ပါ။</string>
+    <string name="sem_fingerprint_error_template_corrupt">လက်ဗွေရာ အချက်အလက်များ ချို့ယွင်းထားသည်။ သင့်လက်ဗွေရာများ ထပ်မံ ထည့်ပါ။</string>
     <string name="sem_fingerprint_error_wireless_charger">သင့်လက်ဗွေ အသုံးပြုရန် ကြိုးမဲ့အားသွင်းခြင်းမှ ချိတ်ဆက်ဖြုတ်ပါ</string>
     <string name="sem_fingerprint_name_template">လက်ဗွေရာ %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">နောက်မှ</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">ယခု မဟုတ်သေးပါ</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">ဖယ်ရှားပြီး မှတ်ပုံတင်ရန်</string>
+    <string name="sem_fingerprint_register_dialog_message">နောက်ဆုံးထွက် ဆော့ဝဲလ်အပ်ဒိတ်တွင် လက်ဗွေမှတ်မိခြင်းကို ပိုကောင်းအောင် မွမ်းမံခဲ့သည်။ သင့်လက်ဗွေများကို ဖယ်ရှားပြီး ထပ်မံ မှတ်ပုံမတင်မချင်း လက်ဗွေမှတ်မိခြင်းကို သုံးနိုင်မည်မဟုတ်ပါ။</string>
     <string name="sem_fingerprint_register_dialog_title">လက်ဗွေရာများကို ထပ်မံ မှတ်ပုံတင်ပါ</string>
     <string name="sem_fingerprint_result_failed">ကိုက်ညီမှု မရှိပါ။</string>
     <string name="sem_fingerprint_result_retry">ထပ်မံကြိုးစားပါ။</string>
@@ -1090,7 +1056,7 @@
     <string name="sem_resolver_button_always_accessibility">ရွေးချယ်ထားသော အက်ပ်ကို အမြဲသုံးပါ</string>
     <string name="sem_resolver_button_just_once_accessibility">ရွေးချယ်ထားသော အက်ပ်ကို တစ်ကြိမ်သာ အသုံးပြုပါ</string>
     <string name="sem_resolver_choose_what_to_do">လုပ်ရမည့်အရာကို ရွေးပါ</string>
-    <string name="sem_resolver_go_to_settings_tips_description">မူရင်းပါပုံစံ အက်ပ် သတ်မှတ်ချက်များကို ပြောင်းရန်၊ သတ်မှတ်ချက်များ > အက်ပ် > မူရင်းပါပုံစံ အက်ပ်များ ရွေးပါသို့ သွားပါ။</string>
+    <string name="sem_resolver_go_to_settings_tips_description">ဤဖိုင်အမျိုးအစားကို ဖွင့်ရန်အတွက် သုံးထားသော ပုံသေအက်ပ်ကို ပြောင်းရန် သတ်မှတ်ချက်များ > အက်ပ်များသို့ သွားပါ၊ လက်ရှိပုံသေအက်ပ်ကို ရွေးချယ်ပြီးနောက် “ပုံသေအဖြစ် သတ်မှတ်ရန်” > ပုံသေများကို ရှင်းလင်းရန်ကို နှိပ်ပါ။</string>
     <string name="sem_resolver_icon_content_description">အချက်အလက်</string>
     <string name="sem_resolver_personal_tab_accessibility">ကိုယ်ရေး</string>
     <string name="sem_resolver_share_live_default_text">အနီးအနားရှိ လူများနှင့် ချက်ချင်း မျှဝေလိုက်ပါ။ ကိရိယာများကို မြင်ရအောင် ပြုလုပ်ထားသူများကို ဤနေရာတွင် ပြသပါမည်။</string>
@@ -1102,9 +1068,6 @@
     <string name="sem_resolver_work_tab_accessibility">အလုပ်</string>
     <string name="sem_switch_off">ပိတ်</string>
     <string name="sem_switch_on">ဖွင့်</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">အက်ပ်အားလုံးအတွက် ကင်မရာသုံးခွင့် ပိတ်ထားသည်</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">ဖွင့်ပါ</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">အက်ပ်အားလုံးအတွက် မိုက်ခရိုဖုန်းသုံးခွင့် ပိတ်ထားသည်</string>
     <string name="serviceErased">အယ်ရာရှူးဝါ အောင်မြင်ပါသည်။</string>
     <string name="serviceModeAll">အားလုံး</string>
     <string name="serviceModeAllConditional">အခြေအနေပေါ်မူတည်၍</string>
@@ -1114,6 +1077,7 @@
     <string name="serviceModeUnconditional">ခြွင်းချက်မရှိ</string>
     <string name="serviceisDisabled">၀န်ဆောင်မှု ရပ်တန့်ပြီးပါပြီ။</string>
     <string name="serviceisEnabled">၀န်ဆောင်မှု စတင် ပြီးပါပြီ။</string>
+    <string name="settings">သတ်မှတ်ချက်များ</string>
     <string name="sf_quick_switch_not_supported">အမြန် ခလုတ်ကို ဤအခြေအနေတွင် အသုံးပြု၍ မရပါ။</string>
     <string name="sf_quick_switch_securefolder_view">%s သို့ ပြောင်းထားသည်။</string>
     <string name="share">မျှဝေပါ</string>
@@ -1122,26 +1086,30 @@
     <string name="sharelist_restrict">ဒေတာ မျှဝေခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
     <string name="show_keyboard_button">ကီးဘုတ်ခလုတ်ကို ပြပါ</string>
     <string name="show_keyboard_button_description">%s ကို လမ်းညွှန်ဘားပေါ်၌ ပြပါ။</string>
+    <string name="showing_esc_dialog">Esc ကီးကို နောက်သို့ ခလုတ်အဖြစ် လုပ်ဆောင်စေရန် သတ်မှတ်နိုင်သည်။</string>
     <string name="showing_touch_sensitivity_noti_action">ဖွင့်ပါ</string>
     <string name="showing_touch_sensitivity_noti_text">Privacy Screen (သို့) Notepaper Screen ကို သုံးစဉ် ပိုမိုမှန်ကန်တိကျသည့် ထိနှိပ်တုံ့ပြန်မှုများ ရှိစေရန် ထိနှိပ်မှု အာရုံခံနိုင်စွမ်းကို ဖွင့်ပါ။</string>
     <string name="showing_touch_sensitivity_noti_title">ထိနှိပ်မှု အာရုံခံနိုင်စွမ်းကို မြှင့်ပါ</string>
+    <string name="side_key_double_press_archived_app">အက်ပ်ကို စုစည်းသိမ်းဆည်းထားသည်။ အခြားတစ်ခုခုကို ရွေးပါ။</string>
     <string name="side_key_double_press_deleted_app">အက်ပ်ကို ပြန်ဖြုတ်ထားသည်။ အခြားတစ်ခုခု ရွေးပါ။</string>
     <string name="side_key_double_press_disabled_app">%s ပိတ်ထားသည်။ အခြားတစ်ခုခု ရွေးပါ။</string>
     <string name="signature_identity_toast">%s တွင် လက်မှတ်ထိုးသူမှာ</string>
     <string name="simRefresh">SIM အချက်အလက်များ ပြန်လည်တက်ကြွှလှုပ်ရှားရန် ဆောင်ရွက်နေပါသည်။</string>
     <string name="simReset">SIM ဒေတာကို အပ်ဒိတ်လုပ်နေသည်…</string>
     <string name="sim_check_old_sim_message">SIM ကဒ် အဟောင်း (သို့) အပျက်များသည် ကွန်ယက် ချိတ်ဆက်မှု ပြဿနာများ ဖြစ်စေနိုင်သည်။ ၎င်းကို အစားထိုးရန် လိုမလို စစ်ဆေးရန် သင်၏ ဝန်ဆောင်မှု ပေးသူကို ဆက်သွယ်ပါ (သို့) ၎င်းတို့၏ စတိုးတစ်ခုသို့ သွားရောက်ပါ။</string>
+    <string name="sim_check_old_sim_message_skt">ဟောင်းနေသော (သို့) ပျက်စီးနေသော SIM ကတ်များသည် ကွန်ယက်ချိတ်ဆက်မှုပြဿနာများကို ဖြစ်စေနိုင်သည်။ ၎င်းကို အစားထိုးရန် လိုအပ်ခြင်းရှိ၊ မရှိ စစ်ဆေးရန် သင်၏ ဝန်ဆောင်မှု ပေးသူကို ဆက်သွယ်ပါ (သို့) ၎င်းတို့၏ ဆိုင်များမှ တစ်ဆိုင်သို့ သွားရောက်ပါ။</string>
     <string name="sim_check_old_sim_title">သင့် SIM ကို အစားထိုးရန် လိုအပ်နိုင်သည်</string>
+    <string name="sim_check_old_sim_title_skt">သင့် SIM ကို အစားထိုးရန် လိုအပ်နိုင်သည်</string>
     <string name="sim_count_mismatched_ds_to_ss">SIM ကဒ် အနေအထားကို SIM နှစ်ခုမှ SIM တစ်ခုသို့ ကူးပြောင်းသွားမည်။ ဤသတ်မှတ်ချက်ကိုကျင့်သုံးရန်၊ ကိရိယာကို ၎င်း၏စက်ရုံထုတ် မူရင်းပါပုံစံသတ်မှတ်ချက်များသို့ ပြန်လည်သတ်မှတ်ပြီး ပြန်လည်စတင်သွားမည်။</string>
     <string name="sim_count_mismatched_ss_to_ds">SIM ကဒ် အနေအထားကို SIM တစ်ခုမှ SIM နှစ်ခုသို့ ကူးပြောင်းသွားမည်။ ဤသတ်မှတ်ချက်ကိုကျင့်သုံးရန်၊ ကိရိယာကို ၎င်း၏စက်ရုံထုတ် မူရင်းပါပုံစံသတ်မှတ်ချက်များသို့ ပြန်လည်သတ်မှတ်ပြီး ပြန်လည်စတင်သွားမည်။</string>
     <string name="sim_count_mismatched_title">SIM ကဒ်အနေအထားကို ကူးပြောင်းထားသည်</string>
-    <string name="sim_imsreg_error_message_lgt">သင့်ဖုန်းသည် SIM ကတ်ကို အသိအမှတ်ပြု၍ မရသောကြောင့် အသံ ခေါ်ဆိုမှုများကို ပြုလုပ်နိုင်မည်မဟုတ်ပါ။ SIM ကတ်ကို ဖြုတ်ပြီး ပြန်ထည့်ကြည့်ပါ။ ဤပြဿနာ ဆက်ရှိနေပါက သင့် SIM ကတ်ကို အသစ်လဲရန် လိုနိုင်သည်။ အကူအညီရယူရန် LG U+ စတိုးသို့ သွားပါ (သို့) LG U+ ဖောက်သည်ဝန်ဆောင်မှုသို့ 1544-0010 မှတစ်ဆင့် ဆက်သွယ်ပါ။</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">သင့်တက်ဘလက်သည် SIM ကတ်ကို သိမှတ်၍ မရသောကြောင့် အသံ ဖုန်းခေါ်ဆိုမှုများ ပြုလုပ်၍မရပါ။ SIM ကတ်ကို ဖြုတ်ပြီး ပြန်ထည့်ကြည့်ပါ။ ဤပြဿနာ ဆက်ရှိနေပါက သင့် SIM ကတ်ကို အသစ်လဲရန် လိုနိုင်သည်။ အကူအညီယူရန် LG U+ စတိုးသို့ သွားပါ (သို့) LG U+ သုံးစွဲသူ ဝန်ဆောင်မှုကို 1544-0010 မှတစ်ဆင့် ဆက်သွယ်ပါ။</string>
+    <string name="sim_imsreg_error_message_lgt">သင့်ဖုန်းသည် SIM ကတ်ကို ဖော်ထုတ်မသိရှိသောကြောင့် အသံ ခေါ်ဆိုမှုများကို ပြုလုပ်နိုင်မည်မဟုတ်ပါ။ SIM ကတ်ကို ဖြုတ်ပြီး ပြန်ထည့်ကြည့်ပါ။ ဤပြဿနာ ဆက်ရှိနေပါက သင့် SIM ကတ်ကို LG U+ ဆိုင်တွင် အသစ်လဲရန် လိုနိုင်သည်။</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">သင့်တက်ဘလက်သည် SIM ကတ်ကို ဖော်ထုတ်မသိရှိသောကြောင့် အသံ ခေါ်ဆိုမှုများကို ပြုလုပ်နိုင်မည်မဟုတ်ပါ။ SIM ကတ်ကို ဖြုတ်ပြီး ပြန်ထည့်ကြည့်ပါ။ ဤပြဿနာ ဆက်ရှိနေပါက သင့် SIM ကတ်ကို LG U+ ဆိုင်တွင် အသစ်လဲရန် လိုနိုင်သည်။</string>
     <string name="sim_off_noti_message">SIM အားလုံးကို ပိတ်ထားသည့်အခါ သင်သည် ဖုန်းခေါ်ခြင်း၊ မက်ဆေ့ချ်များပို့ခြင်း (သို့) ဒေတာသုံးခြင်းကို လုပ်၍မရပါ။ SIM များကို ဖွင့်ရန် ဤနေရာကိုနှိပ်ပါ။</string>
     <string name="sim_off_noti_title">SIM အားလုံးကို ပိတ်ထားသည်</string>
     <string name="sim_off_toast_message">သင်ထည့်သွင်းထားသော SIM ကတ်ကို ပိတ်ထားသည်။ ၎င်းကို သုံးရန် သတ်မှတ်ချက်များ > ချိတ်ဆက်မှုများ > SIM မန်နေဂျာသို့ သွားပြီးနောက် ၎င်းကို ဖွင့်ပါ။</string>
     <string name="sim_recognize_error_message_kt">သင့် SIM ကတ်ကို အသိအမှတ်မပြုခဲ့ပါ။ SIM ကတ်ကို ဖြုတ်ပြီး ပြန်ထည့်ကြည့်ပါ။ ဤပြဿနာ ဆက်ရှိနေပါက သင့် SIM ကတ်ကို အသစ်လဲရန် လိုနိုင်သည်။ အကူအညီရယူရန် KT စတိုးသို့ သွားပါ (သို့) KT ဖောက်သည်ဝန်ဆောင်မှုသို့ 1588-0010 မှတစ်ဆင့် ဆက်သွယ်ပါ။</string>
-    <string name="sim_recognize_error_message_lgt">သင့် SIM ကတ်ကို အသိအမှတ်မပြုခဲ့ပါ။ SIM ကတ်ကို ဖြုတ်ပြီး ပြန်ထည့်ကြည့်ပါ။ ဤပြဿနာ ဆက်ရှိနေပါက သင့် SIM ကတ်ကို အသစ်လဲရန် လိုနိုင်သည်။ အကူအညီရယူရန် LG U+ စတိုးသို့ သွားပါ (သို့) LG U+ ဖောက်သည်ဝန်ဆောင်မှုသို့ 1544-0010 မှတစ်ဆင့် ဆက်သွယ်ပါ။</string>
+    <string name="sim_recognize_error_message_lgt">သင့် SIM ကတ်ကို မသိရှိပါ။ SIM ကတ်ကို ဖြုတ်ပြီး ပြန်ထည့်ကြည့်ပါ။ ဤပြဿနာ ဆက်ရှိနေပါက သင့် SIM ကတ်ကို LG U+ ဆိုင်တွင် အသစ်လဲရန် လိုနိုင်သည်။</string>
     <string name="sim_recognize_error_message_skt">SIM ကတ်ကို ဖတ်၍ မရပါ။ အချို့သော အက်ပ်များနှင့် လုပ်ဆောင်ချက်များ အလုပ်လုပ်မည်မဟုတ်ပါ။ သင့် SIM ကတ်ကို ဖယ်ရှားပြီး ပြန်ထည့်သွင်းပြီးနောက် သင့်ဖုန်းကို ပြန်လည်စတင်ပါ။ ၎င်းက ပြဿနာကို မရှင်းနိုင်ပါက သင့်ဖုန်းနှင့် SIM ကတ်ကို သုံးစွဲသူ ဝန်ဆောင်မှုဌာနသို့ ယူသွားပါ။</string>
     <string name="sim_recognize_error_message_skt_tablet">SIM ကတ်ကို ဖတ်၍ မရပါ။ အချို့သော အက်ပ်များနှင့် လုပ်ဆောင်ချက်များ အလုပ်လုပ်မည်မဟုတ်ပါ။ သင့် SIM ကတ်ကို ဖယ်ရှားပြီး ပြန်ထည့်သွင်းပြီးနောက် သင့်တက်ဘလက်ကို ပြန်လည်စတင်ပါ။ ၎င်းက ပြဿနာကို မရှင်းနိုင်ပါက သင့်တက်ဘလက်နှင့် SIM ကတ်ကို သုံးစွဲသူ ဝန်ဆောင်မှုဌာနသို့ ယူသွားပါ။</string>
     <string name="sim_recognize_error_title_lgt">USIM ကတ်ကို မမှတ်မိပါ</string>
@@ -1151,10 +1119,8 @@
     <string name="sim_removed_message_hotswap_us_tablet">Wi-Fi ကွန်ရက်သို့ ချိတ်ဆက်ပါ (သို့) မိုဘိုင်းဒေတာကို သုံးရန် SIM ကတ် ထည့်သွင်းပါ။</string>
     <string name="sim_removed_title_hotswap">SIM ကဒ် ထည့်သွင်းမထားပါ</string>
     <string name="sim_removed_title_hotswap_us_tablet">SIM ကတ် ထည့်သွင်းပါ</string>
+    <string name="smart_tip_action_click_hint_text">ပိတ်ပါ</string>
     <string name="smartclip_restrict">လွယ်ကူ ကလစ် သုံးခြင်းကို လုံခြုံရေး ပေါ်လစီက တားဆီးထားသည်။</string>
-    <string name="sms_short_code_remember_undo_instruction">ဆက်တင်များ > အက်ပ်များ သို့သွား၍ ဤအရာကို နောက်မှ ပြောင်းနိုင်သည်</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">၎င်းကို သတ်မှတ်ချက်များ > အက်ပ်များ > နောက်ထပ် ရွေးစရာများခလုတ် > အထူးဝင်ခွင့် > ပရီမီယံ စာသားမက်ဆေ့ချ်ဝန်ဆောင်မှု အသုံးပြုရန်သို့ သွားခြင်းဖြင့် ပြောင်းနိုင်သည်</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">“လုံးဝ ခွင့်မပြုပါနှင့်” ကို နှိပ်လျှင်၊ စာသားမက်ဆေ့ချ်များပို့ခွင့်ပြုချက်ကို ဤအက်ပ်အတွက် ခွင့်ပြုထားသည့်တိုင်အောင် ဤအက်ပ်သည် မက်ဆေ့ချ်များကို နောက်ခံထဲကနေ ပို့နိုင်မည်မဟုတ်ပါ။</string>
     <string name="ss_do_not_show_again_us">ထပ်မပြရပါ</string>
     <string name="sss_translate">ဘာသာပြန်ပါ</string>
     <string name="ssu_lock_body_vzw">ဝမ်းနည်းပါတယ်၊ သင့်ကိရိယာကို အခြား ဆက်သွယ်ရေးကုမ္ပဏီ၏ ကွန်ရက်တွင် ယခု ဖွင့်၍ မရနိုင်ပါ။ အကူအညီ ရယူရန်အတွက် %1$s (သို့) %2$s (ကြိုတင်ငွေပေးချေမှု အစီအစဉ်များ) တွင် Verizon ကို ဆက်သွယ်ပါ</string>
@@ -1187,7 +1153,6 @@
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">မိုဘိုင်း ဟော့စပေါ့</string>
     <string name="title_dialog_check_rotate_or_not">ဖန်သားပြင် အော်တိုလှည့်ခြင်းကို ပိတ်မလား?</string>
-    <string name="title_uds">ပိုမိုဒေတာချွေတာရေး အနေအထား</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">သင့်ဖုန်းကို စီစဉ်သတ်မှတ်နေစဉ် Bixby ကို သုံး၍ မရပါ။</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">သင့်တက်ဘလက်ကို စီစဉ်သတ်မှတ်နေစဉ် Bixby ကို သုံး၍ မရပါ။</string>
     <string name="toast_warning_pattern_lock">ပက်တန်သော့ကို ယူနီဗာဆယ် ခလုတ်ဖြင့် အသုံးမပြုနိုင်ပါ။ အရင်ဆုံး မတူညီသော သော့အမျိုးအစားသို့ ပြောင်းပါ။</string>
@@ -1227,9 +1192,13 @@
     <string name="unknown_install_blocked_esm_title">အမျိုးအမည်မသိ အက်ပ်ကို ပိတ်ပင်ထားသည်</string>
     <string name="unknown_install_dlg_desc">ဤအက်ပ်ကို အတည်ပြုထားသော စတိုးမှ ဒေါင်းလုဒ်လုပ်ထားခြင်း မဟုတ်ပါ။ ဤအက်ပ်ကို ထည့်သွင်းခြင်းဖြင့် သင်၏လုံခြုံရေးနှင့် သီးသန့်ဖြစ်မှုအတွက် အန္တရာယ်ရှိနိုင်သည်။ အက်ပ်သည် သင်၏ကိုယ်ရေးအချက်အလက်ကို စုဆောင်းနိုင်သည် သို့မဟုတ် သင့်ဒေတာကို ဆုံးရှုံးစေနိုင်သည်။</string>
     <string name="unknown_install_dlg_desc2">ဤအက်ပ်သည် နောက်ဆုံးထုတ် လုံခြုံရေးဝန်ဆောင်မှုများကို ပံ့ပိုးမပေးပါ။ ဤအက်ပ်ကို ထည့်သွင်းခြင်းဖြင့် ဖော်ပြပါ လုံခြုံရေးအန္တရာယ်များ ဖြစ်စေနိုင်သည် :</string>
+    <string name="unknown_install_dlg_desc_global_phone">ဤအက်ပ် ထည့်သွင်းမှု ဖိုင်သည် လုံခြုံမှု မရှိနိုင်ပါ။ ၎င်းသည် ပြောထားသလို အက်ပ် ဟုတ်ချင်မှဟုတ်မည်။ သင့်ဖုန်းနှင့် ကိုယ်ရေးသီးသန့်ဒေတာကို ကာကွယ်ရန် ၎င်းအစား သင် ယုံကြည်ရသည့် အက်ပ်စတိုးတစ်ခုမှ အက်ပ်ကို ထည့်သွင်းပါ။</string>
+    <string name="unknown_install_dlg_desc_global_tablet">ဤအက်ပ် ထည့်သွင်းမှု ဖိုင်သည် လုံခြုံမှု မရှိနိုင်ပါ။ ၎င်းသည် ပြောထားသလို အက်ပ် ဟုတ်ချင်မှဟုတ်မည်။ သင့်တက်ဘလက်နှင့် ကိုယ်ရေးသီးသန့်ဒေတာကို ကာကွယ်ရန် ၎င်းအစား သင် ယုံကြည်ရသည့် အက်ပ်စတိုးတစ်ခုမှ အက်ပ်ကို ထည့်သွင်းပါ။</string>
     <string name="unknown_install_dlg_desc_phishing_phone">ဤအက်ပ်သည် အနှောင့်အယှက်ပေးနေသည်ဟု မသင်္ကာရပြီး သင့်ဖုန်းနှင့် ဒေတာကို အန္တရာယ်ဖြစ်စေနိုင်သည်။ ဤအက်ပ် ထည့်သွင်းခြင်းကို မထောက်ခံပါ။</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">ဤအက်ပ်သည် အနှောင့်အယှက်ပေးနေသည်ဟု မသင်္ကာရပြီး သင့်တက်ဘလက်နှင့် ဒေတာကို အန္တရာယ်ဖြစ်စေနိုင်သည်။ ဤအက်ပ် ထည့်သွင်းခြင်းကို မထောက်ခံပါ။</string>
-    <string name="unknown_install_dlg_general_title">ဤအက်ပ်သည် မသိသော ရင်းမြစ်တစ်ခုမှ ဖြစ်သည်</string>
+    <string name="unknown_install_dlg_desc_phone">ဤအက်ပ်သည် တရားဝင်ခွင့်ပြုထားသော အက်ပ်စတိုးတစ်ခုမှ မဟုတ်ပါ။ သင့်ဖုန်းနှင့် ကိုယ်ရေးသီးသန့် အချက်အလက်ကို ကာကွယ်ရန် အက်ပ်ကို Play Store (သို့) Galaxy Store ကဲ့သို့ တရားဝင်ခွင့်ပြုထားသော စတိုးတစ်ခုမှ ထည့်သွင်းပါ။</string>
+    <string name="unknown_install_dlg_desc_tablet">ဤအက်ပ်သည် တရားဝင်ခွင့်ပြုထားသော အက်ပ်စတိုးတစ်ခုမှ မဟုတ်ပါ။ သင့်တက်ဘလက်နှင့် ကိုယ်ရေးသီးသန့် အချက်အလက်ကို ကာကွယ်ရန် အက်ပ်ကို Play Store (သို့) Galaxy Store ကဲ့သို့ တရားဝင်ခွင့်ပြုထားသော စတိုးတစ်ခုမှ ထည့်သွင်းပါ။</string>
+    <string name="unknown_install_dlg_general_title">ဤအက်ပ် ထည့်သွင်းခြင်းကို မထောက်ခံပါ</string>
     <string name="unknown_install_dlg_negative_button">မထည့်သွင်းပါနှင့်</string>
     <string name="unknown_install_dlg_perm_desc1">အက်ပ်သည် သင်လက်ခံရရှိသော စာမက်ဆေ့ချ်များမှ အတည်ပြုကုဒ်များကို ကြားဖြတ်ရယူနိုင်သည်။</string>
     <string name="unknown_install_dlg_perm_desc2">အထွက် ဖုန်းခေါ်မှုများကို သင်မသိဘဲ အခြားဖုန်းနံပါတ်တစ်ခုသို့ တစ်ဆင့်ပြန်ညွှန်နိုင်သည်။</string>
@@ -1250,7 +1219,7 @@
     <string name="usb_abnormal_reset_title">USB ချိတ်ဆက်မှု မတည်ငြိမ်ပါ</string>
     <string name="usb_abnormal_reset_toast">USB ချိတ်ဆက်မှု မတည်ငြိမ်ပါ။ ကေဘယ်ကြိုး ပလတ်ဖြုတ်ပြီ ပလတ်ပြန်တပ်ပါ၊ (သို့) အခြားကေဘယ်ကြိုးဖြင့် ကြိုးစားကြည့်ပါ။</string>
     <string name="usb_accessory_notification_title">USB တွဲဖက်ပစ္စည်း တစ်ခုသို့ ချိတ်ဆက်ထားသည်</string>
-    <string name="usb_bad_removal_message">အန္တရာယ်ရှိလျက်ဖြင့် USB သိုလှောင်ခန်းကိရိယာကို ဖယ်ရှားခဲ့သည်။ မမျှော်လင့်ဘဲ သင့်တက်ဘလက် ပြန်လည်စတင်ခြင်းကို တားဆီးရန် မသိမ်းရသေးသည့် ဒေတာများကို သိမ်းပြီး ယခု ပြန်လည်စတင်ပါ။</string>
+    <string name="usb_bad_removal_message">အန္တရာယ်ရှိလျက်ဖြင့် USB သိုလှောင်ခန်းကိရိယာကို ဖယ်ရှားခဲ့သည်။ မမျှော်လင့်ဘဲ သင့်ဖုန်း ပြန်လည်စတင်ခြင်းကို တားဆီးရန် မသိမ်းရသေးသည့် ဒေတာများကို သိမ်းပြီး ယခု ပြန်လည်စတင်ပါ။</string>
     <string name="usb_blocked_by_emergency_mode">အရေးပေါ်အနေအထားတွင် အချို့သော USB လုပ်ဆောင်ချက်များကို မသုံးနိုင်ပါ။</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">အမြင့်ဆုံး ပါဝါချွေတာရေး အနေအထားဖွင့်ထားစဉ် ချိတ်ဆက်ထားသည့် USB ကိရိယာနှင့်ဆက်နွယ်သည့် လုပ်ဆောင်ချက်များကို အသုံးပြု၍ မရနိုင်ပါ။</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">ပါဝါ အများဆုံး ချွေတာရေး အနေအထားကို ဖွင့်ထားစဉ် USB လုပ်ဆောင်ချက်အချို့ကို ကန့်သတ်ထားပါမည်။</string>
@@ -1259,18 +1228,20 @@
     <string name="usb_camera_connected_notification_title">မီဒီယာကိရိယာ ချိတ်ဆက်ထားသည်</string>
     <string name="usb_camera_disconnected_notification_title">မီဒီယာ ကိရိယာ ချိတ်ဆက်မှုဖြုတ်ထားသည်</string>
     <string name="usb_cd_installer_notification_title">ဆော့ဖ်ဝဲ အပ်ဒိတ်</string>
-    <string name="usb_charing_only_notification_title">ချိတ်ဆက်ထားသည်</string>
+    <string name="usb_charing_only_notification_title">USB ဖြင့် အားသွင်းခြင်း</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">အလိုအလျောက် ပိတ်ပင်စနစ်ကို အမြင့်ဆုံးကန့်သတ်ချက်များဖြင့် ဖွင့်ထားသည်။</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB ချိတ်ဆက်မှုကို ပိတ်ဆို့ထားသည်</string>
     <string name="usb_debugging_only_notification_title">ချွတ်ယွင်းချက် ရှာဖွေရန်သာ</string>
     <string name="usb_host_Unknown_device_connected_notification_title">မသိသော USB ကိရိယာ ချိတ်ဆက်ထားသည်။</string>
     <string name="usb_host_cable_connected_notification_title">USB ချိတ်ဆက်ကိရိယာ ချိတ်ဆက်ထားသည်။</string>
     <string name="usb_host_cable_disconnected_notification_title">USB ချိတ်ဆက်ကိရိယာ ဖြုတ်ထားသည်။</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">ဤ ကိရိယာသို့ ဝင်မရပါ။ ချိတ်ဆက်ထားသော ကိရိယာမှာ ပြင်ပ ပါဝါ အကူ လိုသည်။</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">ပါဝါ မြင့်သော USB ကိရိယာ ချိတ်ဆက်ထားသည်။</string>
-    <string name="usb_host_resource_exceed_message">သင့်တက်ဘလက်၏ USB ထိန်းချုပ်ကိရိယာတွင် ဤကိရိယာကို ချိတ်ဆက်ရန် ရင်းမြစ် အလုံအလောက် မရှိပါ။ ကိရိယာကို ချိတ်ဆက်မှုဖြုတ်ပြီး ပြန်ချိတ်ဆက်ကြည့်ပါ။</string>
+    <string name="usb_host_resource_exceed_message">သင့်ဖုန်း၏ USB ထိန်းချုပ်ကိရိယာတွင် ဤကိရိယာကို ချိတ်ဆက်ရန် ရင်းမြစ် အလုံအလောက် မရှိပါ။ ကိရိယာကို ချိတ်ဆက်မှုဖြုတ်ပြီး ပြန်ချိတ်ဆက်ကြည့်ပါ။</string>
     <string name="usb_host_resource_exceed_title">USB ထိန်းချုပ်ကိရိယာ အရင်းအမြစ်များ မလုံလောက်ပါ</string>
-    <string name="usb_hub_depth_exceed_message">သင့်တက်ဘလက်တွင် USB ဟဘ် ချိတ်ဆက်မှု အများဆုံး ၅ ခုကိုသာ တစ်ပြိုင်တည်း လုပ်ဆောင်နိုင်သည်။</string>
+    <string name="usb_hub_depth_exceed_message">သင့်ဖုန်းတွင် USB ဟဘ် ချိတ်ဆက်မှု အများဆုံး ၅ ခုကိုသာ တစ်ပြိုင်တည်း လုပ်ဆောင်နိုင်သည်။</string>
     <string name="usb_hub_depth_exceed_title">အများဆုံး USB ဟဘ် ချိတ်ဆက်မှုများ</string>
-    <string name="usb_hub_power_exceed_message">သင့်တက်ဘလက်သည် ဤ USB ကိရိယာအတွက် ပါဝါ အလုံအလောက် ပံ့ပိုးမပေးနိုင်ပါ။ ကိရိယာကို သင့်တက်ဘလက်နှင့် မချိတ်ဆက်မီ ကိုယ်တိုင်အားသွင်းနိုင်သော USB ဟဘ်နှင့် ချိတ်ဆက်ပါ။</string>
+    <string name="usb_hub_power_exceed_message">သင့်ဖုန်းသည် ဤ USB ကိရိယာအတွက် ပါဝါအလုံအလောက် ပံ့ပိုးမပေးနိုင်ပါ။ ကိရိယာကို သင့်ဖုန်းနှင့် မချိတ်ဆက်မီ ကိုယ်တိုင် အားသွင်းနိုင်သော USB ဟဘ်တစ်ခုနှင့် ချိတ်ဆက်ပါ။</string>
     <string name="usb_increase_battery_usage">USB ချိတ်ဆက်မှုသည် ဘက်ထရီ ပိုမို ကုန်စေနိုင်သည်။</string>
     <string name="usb_keyboard_connected_notification_title">ကီးဘုတ် ချိတ်ဆက်ထားသည်</string>
     <string name="usb_keyboard_disconnected_notification_title">ကီးဘုတ် ချိတ်ဆက်မှု ဖြတ်ထားသည်</string>
@@ -1300,8 +1271,9 @@
     <string name="usb_storage_stop_title">USB သိမ်းဆည်းရာနေရာ သုံးနေပါသည်။</string>
     <string name="usb_storage_title">USB ချိပ်ဆက်ပြီး။</string>
     <string name="usb_type_c_supply_power_notification_title">USB ဖြင့် အားသွင်းပြီး ချိတ်ဆက်ထားသည့် စက်များ</string>
-    <string name="usb_unblock_by_screen_unlock">ချိတ်ဆက်ထားသော USB ကိရိယာကို သုံးရန် သင့်တက်ဘလက်ကို သော့ဖွင့်ပါ။</string>
-    <string name="usb_unsupport_accessory_message">ဤ USB ကိရိယာကို သင့်တက်ဘလက်က ပံ့ပိုးပေးမထားပါ။</string>
+    <string name="usb_unblock_by_screen_unlock">ချိတ်ဆက်ထားသော USB ကိရိယာကို သုံးရန် သင့်ဖုန်းကို သော့ဖွင့်ပါ။</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USB ကိရိယာကို အသုံးပြုရန် သင့်ဖုန်းကို သော့ဖွင့်ပြီး USB ကိရိယာနှင့် ပြန်ချိတ်ဆက်ပါ။</string>
+    <string name="usb_unsupport_accessory_message">ဤ USB ကိရိယာကို သင့်ဖုန်းက ပံ့ပိုးပေးမထားပါ။</string>
     <string name="usb_unsupport_accessory_title">USB ကိရိယာကို သုံး၍မရပါ</string>
     <string name="usb_unsupported_device">ချိတ်ဆက်ထားသော USB ကိရိယာကို ပံ့ပိုးပေးမထားပါ။</string>
     <string name="usb_unsupported_device_title">ကိရိယာကို ပံ့ပိုးမထားပါ</string>
@@ -1319,19 +1291,19 @@
     <string name="usb_water_dialg_method_2_desc_2">သင်သည် ပန်ကာ (သို့) အခြောက်ခံစက် (လေအေးသာလျှင်) ကို အပေါက်ဘက်သို့ လှည့်ထားခြင်းဖြင့် ပိုမိုမြန်ဆန်စွာ အခြောက်ခံနိုင်သည်။</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် အစိုဓာတ် (သို့) ပြင်ပပစ္စည်းကို ကျွန်ုပ်တို့ ရှာဖွေတွေ့ရှိထားသည်။
 
-သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် ဖုန် (သို့) အမှိုက်ကဲ့သို့ ပြင်ပပစ္စည်းတစ်ခုခု ရှိ၊ မရှိ စစ်ဆေးပါ။ သင့်တက်ဘလက် မပျက်စီးစေရန် အားသွင်းပေါက်ကို သန့်ရှင်းပြီး အစိုဓာတ်ပျောက်မသွားမချင်း မည်သည့်အရာကိုမျှ ပလတ်မထိုးပါနှင့်။
+သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် ဖုန် (သို့) အမှိုက်ကဲ့သို့ ပြင်ပပစ္စည်းတစ်ခုခု ရှိ၊ မရှိ စစ်ဆေးပါ။ သင့်ဖုန်းမပျက်စီးစေရန် အားသွင်းပေါက်ကို သန့်ရှင်းပြီး အစိုဓာတ်ပျောက်မသွားမချင်း မည်သည့်အရာကိုမျှ ပလတ်မထိုးပါနှင့်။
 
 အပေါက် ခြောက်သွေ့စေရန် အစိုဓာတ်မှန်သမျှကို ခါထုတ်ပြီး ခြောက်သွားသည်အထိ စောင့်ရမည်ဖြစ်ကာ ၎င်းသည် နာရီပေါင်းများစွာ ကြာနိုင်ပါသည်။ ပန်ကာ (သို့) အခြောက်ခံစက် (လေအေးသာလျှင်) ကို အပေါက်ဘက်သို့ လှည့်ထားပြီး အခြောက်မြန်အောင် လုပ်နိုင်ပါသည်။"</string>
     <string name="usb_water_dialg_positive_button">အိုကေ</string>
-    <string name="usb_water_dialg_support_wireless_charging">"သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် အစိုဓာတ် (သို့) ပြင်ပပစ္စည်းကို တွေ့ရှိထားသည်။
+    <string name="usb_water_dialg_support_wireless_charging">"သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် အစိုဓာတ် (သို့) ပြင်ပပစ္စည်းကို ကျွန်ုပ်တို့ ရှာဖွေတွေ့ရှိထားသည်။
 
-အားသွင်းပေါက်/USB ပေါက်တွင် ဖုန် (သို့) အမှိုက်ကဲ့သို့ ပြင်ပပစ္စည်းတစ်ခုခု ရှိ၊ မရှိ စစ်ဆေးပါ။ သင့်တက်ဘလက် မပျက်စီးစေရန် အားသွင်းပေါက်ကို သန့်ရှင်းအောင် မလုပ်ခင်နှင့် အစိုဓာတ် မပျောက်ခင် ဘာကိုမျှ မထည့်သွင်းပါနှင့်။
+သင်၏ အားသွင်းပေါက်/USB အပေါက်တွင် ဖုန် (သို့) အမှိုက်ကဲ့သို့ ပြင်ပပစ္စည်းတစ်ခုခု ရှိ၊ မရှိ စစ်ဆေးပါ။ သင့်ဖုန်းမပျက်စီးစေရန် အားသွင်းပေါက်ကို သန့်ရှင်းပြီး အစိုဓာတ်ပျောက်မသွားမချင်း မည်သည့်အရာကိုမျှ ပလတ်မထိုးပါနှင့်။
 
-အပေါက် ခြောက်သွေ့စေရန် အစိုဓာတ်များကို ခါထုတ်ပြီး ခြောက်သွားသည်အထိ စောင့်ရမည်ဖြစ်ကာ ၎င်းသည် နာရီအနည်းငယ် ကြာနိုင်ပါသည်။ ပန်ကာ (သို့) အခြောက်ခံစက် (လေအေးသာလျှင်) ကို အပေါက်ဘက်သို့ လှည့်ထားပြီး အခြောက်မြန်အောင် လုပ်နိုင်ပါသည်။
+အပေါက် ခြောက်သွေ့စေရန် အစိုဓာတ်မှန်သမျှကို ခါထုတ်ပြီး ခြောက်သွားသည်အထိ စောင့်ရမည်ဖြစ်ကာ ၎င်းသည် နာရီပေါင်းများစွာ ကြာနိုင်ပါသည်။ ပန်ကာ (သို့) အခြောက်ခံစက် (လေအေးသာလျှင်) ကို အပေါက်ဘက်သို့ လှည့်ထားပြီး အခြောက်မြန်အောင် လုပ်နိုင်ပါသည်။
 
-ထိုအချိန်တွင် သင့်တက်ဘလက်ကို ကြိုးမဲ့ အားသွင်းနိုင်သည်။"</string>
+ထိုအချိန်တွင် သင့်ဖုန်းကို ကြိုးမဲ့ အားသွင်းနိုင်သည်။"</string>
     <string name="usb_water_notification_content">သင်၏ အားသွင်း/USB ပေါက်ထဲတွင် ရေငွေ့ (သို့) ပြင်ပပစ္စည်းများ ရှိနေသည်။ အားမသွင်းမီ စစ်ဆေးပါ။</string>
-    <string name="usb_water_notification_message">သင့်အားသွင်းကိရိယာ/USB အပေါက်ထဲ၌ ရေငွေ့ ရှာတွေ့သည်။ သင့်တက်ဘလက်ကို အားမသွင်းမီ ၎င်းသည်ခြောက်သွေ့နေကြောင်း သေချာအောင်ပြုလုပ်ပါ။ ၎င်းကို လုံးဝခြောက်သွေ့အောင်လုပ်ရန် အချိန်အနည်းငယ်ယူပါလိမ့်မည်။</string>
+    <string name="usb_water_notification_message">သင့်အားသွင်းကိရိယာ/USB အပေါက်ထဲ၌ ရေငွေ့ ရှာတွေ့သည်။ သင့်ဖုန်းကို အားမသွင်းမီ ၎င်းသည်ခြောက်သွေ့နေကြောင်း သေချာအောင်ပြုလုပ်ပါ။ ၎င်းကို လုံးဝခြောက်သွေ့အောင်လုပ်ရန် အချိန်အနည်းငယ်ယူပါလိမ့်မည်။</string>
     <string name="usb_water_notification_message_button">အသေးစိတ်အချက်များ</string>
     <string name="usb_water_notification_title">အားသွင်းကိရိယာ/USB ပေါက်ကို စစ်ဆေးပါ</string>
     <string name="usbhostStorage_restrict">USB အိမ်ရှင် သိုလှောင်ခန်း သုံးခြင်းကို လုံခြုံရေး ပေါ်လစီက ကန့်သတ်သည်။</string>
@@ -1344,6 +1316,8 @@
     <string name="vpn_allowOnlySecureConnection">VPN အကြောင်းအချက် စိတ်မချရပါ</string>
     <string name="vpn_error_text">VPN သို့ ပြန်ဆက်သွယ်ခြင်း ကြိုးစာရန် နှိပ်ပါ။</string>
     <string name="vpn_error_title">VPN အဆက်အသွယ် အမှား</string>
+    <string name="vpn_fail_text_long">%s နှင့် ချိတ်ဆက်၍ မရပါ။ ဤ VPN ကို စီမံခန့်ခွဲရန် နှိပ်ပါ။</string>
+    <string name="vpn_fail_title">VPN နှင့် ချိတ်ဆက်မထားပါ</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">တက်ဘလက် အေးသွားစေရန် အက်ပ်များကို ပိတ်ခြင်း</string>
     <string name="vzw_cooldown_mode_ok">အိုကေ</string>
@@ -1406,6 +1380,7 @@
     <string name="wifi_network_available_detailed">စကားဝှက်မခံထားသော Wi-Fi ကွန်ရက်ကို အသုံးပြုနိုင်သည်။</string>
     <string name="wifi_networks_available">Wi-Fi ကွန်ယက်များ ရနိုင်ပါသည်</string>
     <string name="wifi_networks_available_detailed">စကားဝှက်မခံထားသော Wi-Fi ကွန်ရက်များကို အသုံးပြုနိုင်သည်။</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">သင့် WLAN ချိတ်ဆက်မှုက နှေးကွေးနေ (သို့) မတည်ငြိမ်သောကြောင့် %s အက်ပ်က မိုဘိုင်း ဒေတာကို အသုံးပြုနေသည်။</string>
     <string name="wifi_notification_switch_wifi_detail">Wi-Fi ကွန်ရက်က မတည်ငြိမ်သောကြောင့် သင့်ဖုန်းကို မိုဘိုင်းဒေတာသို့ ပြောင်းထားပါသည်။</string>
     <string name="wifi_notification_switch_wifi_title">မိုဘိုင်းဒေတာသို့ ကူးပြောင်းထားသည်</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">အရေးပေါ် သတိပေးချက်များ</string>
@@ -1437,9 +1412,5 @@
     <string name="work_profile_on_message">ယင်းက အလုပ် အက်ပ်များ၊ အသိပေးချက်များ၊ ဒေတာနှင့် အခြား အလုပ်ပရိုဖိုင် လုပ်ဆောင်ချက်များကို သင့်အား ဝင်သုံးခွင့် ပြုပါလိမ့်မည်။</string>
     <string name="work_profile_on_title">အလုပ်ပရိုဖိုင်ကို ဖွင့်မလား?</string>
     <string name="work_profile_restricted">အလိုလို ပိတ်ပင်စနစ်ကို အမြင့်ဆုံးကန့်သတ်ချက်များဖြင့် ဖွင့်ထားသည်။ သင့်လုံခြုံရေးကို ကာကွယ်ရန် အလုပ်ပရိုဖိုင်များကို ဖန်တီး၍မရပါ။</string>
-    <string name="work_profile_telephony_paused_text">သင်သည် သင့်အလုပ်အက်ပ်များကို ယာယီတန့်ထားသည်။ သင်သည် ၎င်းတို့မှ ဖုန်းခေါ်ဆိုမှုများ (သို့) စာတိုမက်ဆေ့များကို ရရှိမည်မဟုတ်ပါ။</string>
-    <string name="work_profile_telephony_paused_title">ဖုန်းခေါ်ဆိုမှုများနှင့် မက်ဆေ့ချ်များကို ပိတ်ထားသည်</string>
-    <string name="work_profile_telephony_paused_turn_on_button">အလုပ်ပရိုဖိုင်ကို ဖွင့်မလား?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">၎င်းကို ကျွန်ုပ် မပိတ်မချင်း</string>
 </resources>

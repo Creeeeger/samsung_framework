@@ -44,7 +44,7 @@
     <string name="ColrMmi">Ограничение идентификатора подключенной линии</string>
     <string name="CwMmi">Ожидание вызова</string>
     <string name="DndMmi">Не беспокоить</string>
-    <string name="EmergencyCallWarningSummary">Экстренные вызовы по Wi‑Fi недоступны.</string>
+    <string name="EmergencyCallWarningSummary">Для экстренных вызовов нужна мобильная сеть.</string>
     <string name="EmergencyCallWarningTitle">Экстренные вызовы недоступны</string>
     <string name="Midnight">Полночь</string>
     <string name="NetworkPreferenceSwitchSummary">Нажмите, чтобы выбрать другую сеть.</string>
@@ -255,7 +255,12 @@
     <string name="accessibility_corner_action_type_zoom_in">Увеличение</string>
     <string name="accessibility_corner_action_type_zoom_out">Уменьшение</string>
     <string name="accessibility_dialog_button_allow">Разрешить</string>
+    <string name="accessibility_dialog_button_allow_samsung">Разрешить</string>
     <string name="accessibility_dialog_button_deny">Отклонить</string>
+    <string name="accessibility_dialog_button_deny_samsung">Отклонить</string>
+    <string name="accessibility_dialog_button_uninstall">Удалить</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Удалить</string>
+    <string name="accessibility_dialog_touch_filtered_warning">Невозможно принять ваш ответ, поскольку запрос разрешения скрыт другим приложением.</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Быстро нажмите клавиши питания и увеличения громкости, чтобы включить или выключить следующие функции:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Быстро нажмите боковую кнопку и кнопку увеличения громкости, чтобы включить или отключить следующие функции:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Быстро нажмите клавиши питания и увеличения громкости, чтобы включить или выключить функцию %s.</string>
@@ -269,11 +274,14 @@
     <string name="accessibility_edit_shortcut_menu_button_title">Выберите функции, которые будут запускаться с помощью кнопки специальных возможностей</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">Выберите функции, которые будут запускаться с помощью кнопки регулировки громкости</string>
     <string name="accessibility_enable_service_title">Предоставить сервису \"%1$s\" полный контроль над устройством?</string>
-    <string name="accessibility_freeform_caption">Строка субтитров в приложении \"%1$s\".</string>
     <string name="accessibility_gesture_3finger_instructional_text">Для переключения между функциями проведите по экрану снизу вверх тремя пальцами и задержите их.</string>
     <string name="accessibility_gesture_3finger_prompt_text">Выберите функцию, которая будет запускаться с помощью жеста (провести по экрану снизу вверх тремя пальцами):</string>
     <string name="accessibility_gesture_instructional_text">Для переключения между функциями проведите по экрану снизу вверх двумя пальцами и задержите их.</string>
     <string name="accessibility_gesture_prompt_text">Выберите функцию, которая будет запускаться с помощью жеста (провести по экрану снизу вверх двумя пальцами):</string>
+    <string name="accessibility_label_clone_profile">Клонированный</string>
+    <string name="accessibility_label_communal_profile">Совместный</string>
+    <string name="accessibility_label_managed_profile">Рабочий профиль</string>
+    <string name="accessibility_label_private_profile">Частное пространство</string>
     <string name="accessibility_magnification_chooser_text">Увеличение</string>
     <string name="accessibility_select_different_function">Другую функцию можно выбрать в меню “Настройки” > “Специальные возможности” > “Дополнительные настройки”.</string>
     <string name="accessibility_select_shortcut_menu_title">Выберите, какую функцию использовать:</string>
@@ -342,7 +350,7 @@
     <string name="action_bar_home_description">Перейти на главную</string>
     <string name="action_bar_home_description_format">%1$s, %2$s</string>
     <string name="action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
-    <string name="action_bar_up_description">Перейти вверх</string>
+    <string name="action_bar_up_description">Переход вверх</string>
     <string name="action_menu_overflow_description">Другие параметры</string>
     <string name="action_mode_done">Готово</string>
     <string name="activity_chooser_view_dialog_title_default">Выберите</string>
@@ -382,19 +390,25 @@
     <string name="alert_windows_notification_turn_off_action">Отключить</string>
     <string name="allow">Разрешить</string>
     <string name="allow_settings_changes">Политика безопасности запрещает изменять параметры.</string>
+    <string name="alternative_face_setup_notification_content">Когда устройство не распознает ваш отпечаток пальца, используйте фейсконтроль. Например, это пригодится, когда палец мокрый.</string>
+    <string name="alternative_fp_setup_notification_content">Когда устройство не распознает ваше лицо, используйте разблокировку по отпечатку пальца. Например, это пригодится при плохом освещении.</string>
+    <string name="alternative_unlock_setup_notification_title">Попробуйте другой способ разблокировки</string>
     <string name="alwaysUse">По умолчанию для этого действия</string>
+    <string name="always_allow">Разрешать всегда</string>
     <string name="android_preparing_apk">Подготовка приложения \"%1$s\"...</string>
-    <string name="android_start_title">Запуск планшета…</string>
+    <string name="android_start_title">Запуск телефона…</string>
     <string name="android_system_label">Система Android</string>
     <string name="android_upgrading_complete">Окончание загрузки...</string>
     <string name="android_upgrading_notification_title">Завершение обновления системы…</string>
     <string name="android_upgrading_starting_apps">Запуск приложений.</string>
-    <string name="android_upgrading_title">Обновление планшета…</string>
+    <string name="android_upgrading_title">Обновление телефона…</string>
     <string name="anr_activity_application">Приложение \"%2$s\" не отвечает</string>
     <string name="anr_activity_process">Приложение \"%1$s\" не отвечает</string>
     <string name="anr_application_process">Приложение \"%1$s\" не отвечает</string>
     <string name="anr_process">Приложение \"%1$s не отвечает</string>
     <string name="anr_title" />
+    <string name="app_block_button_open">Открыть</string>
+    <string name="app_block_content">“%1$s” хочет открыть приложение “%2$s”.</string>
     <string name="app_blocked_message">Приложение \"%1$s\" сейчас недоступно.</string>
     <string name="app_blocked_title">Приложение недоступно</string>
     <string name="app_category_accessibility">Специальные возможности</string>
@@ -423,42 +437,31 @@
     <string name="app_restricted_message_concentration_mode">Приложение %s заблокировано в режиме концентрации. Обратитесь к своему ИТ-администратору за дополнительной информацией.</string>
     <string name="app_running_notification_text">Нажмите, чтобы получить дополнительные данные или выключить приложение.</string>
     <string name="app_running_notification_title">Приложение \"%1$s\" выполняется</string>
-    <string name="app_streaming_blocked_message">Эта функция пока недоступна на устройстве %1$s. Используйте планшет.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Это приложение запрашивает дополнительные меры защиты. Используйте планшет.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Эта функция недоступна на устройстве %1$s. Используйте планшет.</string>
+    <string name="app_streaming_blocked_message">На устройстве %1$s эта функция пока недоступна. Используйте телефон.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Это приложение запрашивает дополнительные меры защиты. Используйте телефон.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">Это приложение запрашивает дополнительные разрешения, которые невозможно предоставить во время трансляции на устройство. Сначала откройте доступ на телефоне.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">На устройстве %1$s эта функция недоступна. Используйте телефон.</string>
     <string name="app_streaming_blocked_title">Недоступно: %1$s</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Камера недоступна</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Продолжите на телефоне</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Микрофон недоступен</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">Требуется разрешение</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">Запрос разрешений заблокирован</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Google Play недоступен</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Настройки планшета недоступны</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Настройки телефона недоступны</string>
     <string name="app_suspended_default_message">Приложение \"%1$s\" недоступно. Его работу ограничивает приложение \"%2$s\".</string>
     <string name="app_suspended_more_details">Подробнее</string>
     <string name="app_suspended_title">Приложение недоступно</string>
     <string name="app_suspended_unsuspend_message">Возобновить работу приложения</string>
     <string name="app_updating_message">Выполняется обновление “%s”. Повторите попытку позже.</string>
     <string name="app_upgrading_toast">Обновление приложения \"%1$s\"…</string>
-    <string name="appblock_block_subtitle1_phone">С целью защиты телефона и персональных данных невозможно установить это приложение, поскольку оно находится в списке потенциально вредоносных.</string>
-    <string name="appblock_block_subtitle1_tablet">С целью защиты планшета и персональных данных невозможно установить это приложение, поскольку оно находится в списке потенциально вредоносных.</string>
-    <string name="appblock_block_subtitle2">Невозможно установить это приложение, поскольку оно находится в списке вредоносных.</string>
-    <string name="appblock_block_text1">Это приложение из непроверенного источника. Для его работы необходимы конфиденциальные разрешения, которые позволят приложению украсть ваши персональные данные или вызвать их утечку.</string>
-    <string name="appblock_block_text2">"Вредоносные приложения могут использовать конфиденциальные разрешения для кражи ваших личных данных, выдачи себя за другого человека или доступа к вашим финансовым счетам.
-
-Легальные финансовые учреждения не требуют установки ZIP-файлов, APK-файлов или приложений файловых менеджеров.
-
-Всегда следите за тем, чтобы устанавливаемые приложения были из надежного источника."</string>
-    <string name="appblock_warn_subtitle">Это приложение может украсть ваши персональные данные или привести к их утечке.</string>
+    <string name="appblock_block_text_phone">Невозможно установить приложение, так как о нем было сообщено как о вредоносном или оно похоже на приложение, о котором сообщалось как о вредоносном. Это приложение может использоваться для таких мошеннических действий, как фишинг. Для защиты вашего телефона и данных это ограничение нельзя обойти.</string>
+    <string name="appblock_block_text_tablet">Невозможно установить приложение, так как о нем было сообщено как о вредоносном или оно похоже на приложение, о котором сообщалось как о вредоносном. Это приложение может использоваться для таких мошеннических действий, как фишинг. Для защиты вашего планшета и данных это ограничение нельзя обойти.</string>
+    <string name="appblock_link_text">Дополнительно</string>
     <string name="appblock_warn_text1">"Установка приложений из непроверенных источников может позволить приложениям собирать ваши персональные данные или отслеживать вашу активность.
 
 Устанавливать это приложение не рекомендуется.
 
 Если вы все же решили установить это приложение, внимательно изучите его Уведомление о конфиденциальности и убедитесь, что вы предоставляете ему только необходимые разрешения."</string>
-    <string name="appblock_warn_text2">"Вредоносные приложения часто пытаются получить вашу личную информацию, используя разрешения “Контакты”, SMS и “Фото”.
-
-Устанавливать это приложение не рекомендуется.
-
-Если вы все же решили установить это приложение, убедитесь, что оно получено из источника, которому вы доверяете, и будьте осторожны, предоставляя ему разрешения или доступ к вашим данным."</string>
     <string name="application_default_restrict">Администратор устройства установил другое приложение по умолчанию.</string>
     <string name="as_app_forced_to_restricted_bucket">Приложение \"%1$s\" помещено в категорию с ограниченным доступом.</string>
     <string name="auto_click_paused">Автоматическое нажатие приостановлено.</string>
@@ -490,6 +493,7 @@
     <string name="autofill_save_type_payment_card">платежная карта</string>
     <string name="autofill_save_type_username">имя пользователя</string>
     <string name="autofill_save_yes">Сохранить</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="autofill_update_title">Обновить в сервисе <b>%1$s</b>?</string>
     <string name="autofill_update_title_with_2types">Обновить данные (%1$s, %2$s) в сервисе <b>%3$s</b>?</string>
     <string name="autofill_update_title_with_3types">Обновить данные (%1$s, %2$s, %3$s) в сервисе <b>%4$s</b>?</string>
@@ -503,7 +507,7 @@
     <string name="badPuk">Введен неверный PUK-код.</string>
     <string name="badPuk2">Введен неправильный PUK2-код.</string>
     <string name="batt_cooldown_mode_ok">ОК</string>
-    <string name="battery_saver_charged_notification_summary">Планшет заряжен достаточно. Функции больше не ограничены.</string>
+    <string name="battery_saver_charged_notification_summary">Телефон заряжен достаточно. Функции больше не ограничены.</string>
     <string name="battery_saver_description">В режиме энергосбережения включается тёмная тема, ограничиваются или отключаются фоновые процессы, а также некоторые визуальные эффекты, часть функций и сетевых подключений.</string>
     <string name="battery_saver_description_with_learn_more">В режиме энергосбережения включается тёмная тема, ограничиваются или отключаются фоновые процессы, а также некоторые визуальные эффекты, часть функций и сетевых подключений.</string>
     <string name="battery_saver_notification_channel_name">Режим энергосбережения</string>
@@ -517,6 +521,7 @@
     <string name="biometric_error_generic">Ошибка аутентификации.</string>
     <string name="biometric_error_hw_unavailable">Биометрическое оборудование недоступно</string>
     <string name="biometric_error_user_canceled">Аутентификация отменена</string>
+    <string name="biometric_face_not_recognized">Лицо не распознано.</string>
     <string name="biometric_not_recognized">Не распознано</string>
     <string name="biometric_or_screen_lock_app_setting_name">Использовать биометрию или блокировку экрана</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">Чтобы продолжить, используйте биометрию или данные для разблокировки экрана.</string>
@@ -528,8 +533,6 @@
     <string name="bluetooth_airplane_mode_toast">Bluetooth будет работать в режиме полета.</string>
     <string name="bluetooth_avrcp_restrict">Политика безопасности запрещает управление звуком и видео через Bluetooth.</string>
     <string name="bluetooth_bpp_restrict">Политика безопасности запрещает печать через Bluetooth.</string>
-    <string name="bluetooth_china_popup_message">%1$s запрашивает разрешение на использование %2$s. Разрешить?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Политика безопасности запрещает передачу данных через Bluetooth.</string>
     <string name="bluetooth_desktop_restrict">Политика безопасности запрещает подключаться к рабочему столу через Bluetooth.</string>
     <string name="bluetooth_device_restrict">Политика безопасности запрещает связь с этим устройством Bluetooth.</string>
@@ -540,7 +543,6 @@
     <string name="bluetooth_outgoing_call_restrict">Политика безопасности запрещает выполнять исходящие вызовы через Bluetooth.</string>
     <string name="bluetooth_pairing_restrict">Политика безопасности запрещает связь устройств через Bluetooth.</string>
     <string name="bluetooth_pbap_restrict">Политика безопасности запрещает использование адресной книги Bluetooth.</string>
-    <string name="bluetooth_permission_request">Запрос на разрешение подключения Bluetooth</string>
     <string name="bluetooth_restrict">Политика безопасности запрещает использование Bluetooth.</string>
     <string name="bluetooth_sap_restrict">Политика безопасности запрещает доступ к SIM-карте через Bluetooth.</string>
     <string name="bluetooth_security_mode_disable">Политика безопасности запрещает использование Bluetooth.</string>
@@ -551,7 +553,7 @@
     <string name="browser_module">Интернет</string>
     <string name="bugreport_countdown">{count,plural, =1{Скриншот для отчета об ошибке будет сделан через # секунду.}one{Скриншот для отчета об ошибке будет сделан через # секунду.}few{Скриншот для отчета об ошибке будет сделан через # секунды.}many{Скриншот для отчета об ошибке будет сделан через # секунд.}other{Скриншот для отчета об ошибке будет сделан через # секунды.}}</string>
     <string name="bugreport_message">Информация о текущем состоянии вашего устройства будет собрана и отправлена по электронной почте. Подготовка отчета займет некоторое время.</string>
-    <string name="bugreport_option_full_summary">Выберите этот вариант, если устройство не реагирует на ваши действия или работает слишком медленно, а также если вы хотите включить все разделы отчета. Вы не сможете сделать скриншот или указать дополнительные сведения.</string>
+    <string name="bugreport_option_full_summary">Выберите этот вариант, если устройство не реагирует на ваши действия или работае\ufffd\ufffd слишком медленно, а также если вы хотите включить все разделы отчета. Вы не сможете сделать скриншот или указать дополнительные сведения.</string>
     <string name="bugreport_option_full_title">Подробный отчет</string>
     <string name="bugreport_option_interactive_summary">Рекомендуем этот вариант в большинстве случаев, чтобы отслеживать статус отчета, указывать дополнительные данные о проблеме и делать скриншоты. Некоторые разделы могут быть исключены, чтобы сократить время подготовки отчета.</string>
     <string name="bugreport_option_interactive_title">Интерактивный отчет</string>
@@ -652,11 +654,11 @@
     <string name="common_secure_boot_nwlock_notification_text">Данная SIM-карта не поддерживается.</string>
     <string name="common_secure_boot_nwlock_notification_title">Invalid SIM card inserted</string>
     <string name="concurrent_display_notification_active_content">%1$s использует оба экрана.</string>
-    <string name="concurrent_display_notification_active_title">Двойной экран включен</string>
-    <string name="concurrent_display_notification_name">Двойной экран</string>
+    <string name="concurrent_display_notification_active_title">Функция Dual Screen включена</string>
+    <string name="concurrent_display_notification_name">Dual Screen</string>
     <string name="concurrent_display_notification_power_save_content">Функция Dual Screen недоступна, так как включен режим энергосбережения. Вы можете отключить его в настройках.</string>
     <string name="concurrent_display_notification_power_save_title">Функция Dual Screen недоступна</string>
-    <string name="concurrent_display_notification_thermal_content">Двойной экран недоступен из-за перегрева телефона.</string>
+    <string name="concurrent_display_notification_thermal_content">Функция Dual Screen недоступна из-за перегрева телефона.</string>
     <string name="concurrent_display_notification_thermal_title">Устройство перегрелось</string>
     <string name="condition_provider_service_binding_label">Поставщик условий</string>
     <string name="conference_call">Конференц-связь</string>
@@ -665,12 +667,17 @@
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">ОК</string>
+    <string name="connected_display_thermally_unavailable_notification_content">Устройство слишком нагрелось и не может дублировать экран. Подождите, пока оно остынет.</string>
+    <string name="connected_display_unavailable_notification_content">Используйте другой кабель или повторите попытку.</string>
+    <string name="connected_display_unavailable_notification_title">Не удается дублировать экран</string>
     <string name="console_running_notification_message">Производительность устройства снижена. Чтобы отключить консоль, перейдите в загрузчик операционной системы.</string>
     <string name="console_running_notification_title">Консоль последовательного порта включена</string>
     <string name="constrained_status_bar_device_locked">Устройство заблокировано</string>
     <string name="contentServiceSync">Синхр.</string>
     <string name="contentServiceSyncNotificationTitle">Ошибка синхронизации</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">Вы попытались удалить слишком много элементов (%s).</string>
+    <string name="content_description_collapsed">Свернуто</string>
+    <string name="content_description_expanded">Развернуто</string>
     <string name="content_description_sliding_handle">Перетаскиваемый значок блокировки. Нажмите и удерживайте.</string>
     <string name="conversation_single_line_image_placeholder">Отправлено изображение</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -696,12 +703,10 @@
     <string name="data_saver_description">В режиме экономии трафика фоновая передача данных для некоторых приложений отключена. Приложение, которым вы пользуетесь, может получать и отправлять данные, но реже, чем обычно. Например, изображения могут не загружаться, пока вы не нажмете на них.</string>
     <string name="data_saver_enable_button">Включить</string>
     <string name="data_saver_enable_title">Включить экономию трафика?</string>
-    <string name="data_usage_disable_mobile">Отключить мобильное подключение для передачи данных?</string>
-    <string name="data_usage_enable_mobile_warning">За передачу данных может взиматься дополнительная плата в соответствии с тарифным планом. Продолжить?</string>
     <string name="data_usage_limit_body">Передача мобильных данных приостановлена до конца платежного периода.</string>
     <string name="data_usage_limit_snoozed_body">Вы превысили лимит на %s.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Лимит мобильных данных превышен</string>
-    <string name="data_usage_mobile_limit_title">Достигнуто ограничение трафика</string>
+    <string name="data_usage_mobile_limit_title">Достигнут лимит моб. трафика</string>
     <string name="data_usage_rapid_app_body">Приложение “%s” использовало больше данных, чем обычно.</string>
     <string name="data_usage_rapid_body">Приложения использовали больше данных, чем обычно.</string>
     <string name="data_usage_rapid_title">Высокое использование мобильных данных</string>
@@ -733,7 +738,7 @@
     <string name="decline">Отклонить</string>
     <string name="decline_remote_bugreport_action">ОТКЛОНИТЬ</string>
     <string name="default_audio_route_category_name">Система</string>
-    <string name="default_audio_route_name">Планшетный ПК</string>
+    <string name="default_audio_route_name">Телефон</string>
     <string name="default_audio_route_name_dock_speakers">Динамики док-станции</string>
     <string name="default_audio_route_name_external_device">Внешнее устройство</string>
     <string name="default_audio_route_name_headphones">Наушники</string>
@@ -751,11 +756,13 @@
     <string name="deprecated_target_sdk_message">Это приложение было разработано для более ранней версии Android. Оно не соответствует последним требованиям к обеспечению конфиденциальности и безопасности данных и может работать некорректно. Проверьте наличие обновлений или свяжитесь с разработчиком приложения.</string>
     <string name="description_target_unlock_tablet">Проведите по экрану, чтобы разблокировать устройство.</string>
     <string name="device_disabled">Устройство отключено. Обратитесь к ИТ-администратору</string>
+    <string name="device_info_not_available">Недостyпно.</string>
     <string name="device_ownership_relinquished">Администратор освободил устройство для личного использования</string>
     <string name="device_policy_manager_service">Сервис Device Policy Manager</string>
     <string name="device_state_notification_settings_button">Открыть настройки</string>
     <string name="device_state_notification_turn_off_button">Отключить</string>
     <string name="device_storage_monitor_notification_channel">Хранилище устройства</string>
+    <string name="device_unlock_notification_name">Разблокировка устройства</string>
     <string name="dex_cant_change_user_profile">Невозможно изменить профиль пользователя в режиме Samsung DeX.</string>
     <string name="dex_dialog_launch_toast">Запущенные приложения могут быть закрыты. Сохраните данные перед запуском или закрытием Samsung DeX.</string>
     <string name="dex_disconnected_from_device">DeX отключен от телевизора %s. Проверьте подключение к сети на телевизоре.</string>
@@ -764,9 +771,6 @@
     <string name="dex_launcher_mode_change">%s закрыто для переключения на Samsung DeX.</string>
     <string name="dex_mirroring_jit_msg">Для удобного просмотра при запуске Samsung DeX на планшете вы можете продублировать его экран на любом подключенном дисплее HDMI.</string>
     <string name="dex_mirroring_jit_title">Mirror DeX на большом экране</string>
-    <string name="dex_restart_app_dialog_button_positive">Перезапустить</string>
-    <string name="dex_restart_app_dialog_message">Это приложение уже запущено на другом экране. Чтобы открыть приложение на этом экране, перезапустите его. Прежде чем выполнить перезапуск, сохраните все важные данные.</string>
-    <string name="dex_restart_app_dialog_title">Перезапустить %s?</string>
     <string name="dex_restriction_blockerMessage">Политика безопасности запрещает использование Samsung DeX.</string>
     <string name="dex_restriction_ethernetOnly">Использование данных Wi-Fi, мобильных данных, а также устройства в качестве модема, в режиме DeX запрещено политикой безопасности. Для использования сетевых функций необходимо установить проводное подключение.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Из-за требований политики безопасности для выхода из Samsung DeX необходимо отключить внешнее устройство отображения.</string>
@@ -795,7 +799,6 @@
     <string name="disableupdate_application_restrict">Политика безопасности ограничивает обновление данного приложения.</string>
     <string name="dismiss_action">Закрыть</string>
     <string name="display_chooser_button_positive">Перезапустить</string>
-    <string name="display_chooser_dont_show_again">Больше не показывать</string>
     <string name="display_manager_built_in_display_name">Встроенный экран</string>
     <string name="display_manager_hdmi_display_name">Экран HDMI</string>
     <string name="display_manager_overlay_display_name">Наложение № %1$d</string>
@@ -817,6 +820,7 @@
     <string name="dpm_wifi_misc_network_insecure">Политика безопасности запрещает использование небезопасных сетей Wi-Fi.</string>
     <string name="dpm_wifi_misc_wifi_disabled">Политика безопасности ограничивает использование Wi-Fi.</string>
     <string name="dpm_wifi_user_profiles_denied">Политика безопасности запрещает добавлять сети Wi-Fi.</string>
+    <string name="dream_accessibility_action_click">закрыть</string>
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Невозможно использовать это приложение в режиме нескольких окон.</string>
     <string name="dream_preview_title">%1$s: предпросмотр</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Невозможно использовать эту функцию в режиме нескольких окон.</string>
@@ -845,11 +849,13 @@
     <string name="duration_years_shortest_future">через %d г.</string>
     <string name="dynamic_mode_notification_channel_name">Уведомление о батарее</string>
     <string name="dynamic_mode_notification_summary">Экономия заряда продлит время работы от батареи.</string>
+    <string name="dynamic_mode_notification_summary_v2">Это нужно, чтобы продлить время работы от батареи.</string>
     <string name="dynamic_mode_notification_title">Включен режим энергосбережения</string>
+    <string name="dynamic_mode_notification_title_v2">Включен режим энергосбережения</string>
     <string name="editTextMenuTitle">Операции с текстом</string>
     <string name="edit_accessibility_shortcut_menu_button">Изменить ярлыки</string>
     <string name="edit_contact_at_sim_restriction">Политика безопасности ограничивает редактирование контактов на SIM-карте.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Разрешенные устройства</string>
+    <string name="edm_policy_not_allow_open_wifiap">Политика безопасности ограничивает незащищенное подключение к точке доступа.</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
     <string name="elapsed_time_short_format_mm_ss">%1$02d:%2$02d</string>
     <string name="emailTypeCustom">Новый тип</string>
@@ -860,8 +866,10 @@
     <string name="emergency_call_dialog_number_for_display">Экстренная служба</string>
     <string name="emergency_calls_only">Только экстренные вызовы</string>
     <string name="enablePin">Произошла ошибка. Включите блокировку SIM-карты или карты R-UIM.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s хочет включить Изучение касанием. Вы сможете прослушивать или просматривать описание элементов, которых касаетесь, и управлять планшетом с помощью жестов.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s хочет включить Изучение касанием. Вы сможете прослушивать или просматривать описание элементов, которых касаетесь, и управлять телефоном с помощью жестов.</string>
     <string name="enable_explore_by_touch_warning_title">Включить Изучение касанием?</string>
+    <string name="error_handwriting_unsupported">Это поле не поддерживает рукописный ввод</string>
+    <string name="error_handwriting_unsupported_password">Поля для указания пароля не поддерживают рукописный ввод</string>
     <string name="error_message_change_not_allowed">Это действие запрещено администратором</string>
     <string name="error_message_title">Ошибка</string>
     <string name="ethernet_cable_connected_notification_message">Нажмите для настройки.</string>
@@ -924,7 +932,7 @@
     <string name="ext_media_unsupported_notification_message">Это устройство не поддерживает данную %s. Коснитесь для настройки в поддерживаемом формате.</string>
     <string name="ext_media_unsupported_notification_title">Неподдерж. %s</string>
     <string name="ext_storage_bad_removal_button">Начать сначала</string>
-    <string name="ext_storage_bad_removal_title">Перезапустите планшет</string>
+    <string name="ext_storage_bad_removal_title">Перезапустите телефон</string>
     <string name="extmedia_format_button_format">Формат</string>
     <string name="extmedia_format_message">Все данные будут удалены с карты.</string>
     <string name="extmedia_format_message_usbhost">Все файлы, сохраненные на USB-накопителе, будут удалены. Это действие невозможно отменить.</string>
@@ -946,7 +954,7 @@
     <string name="face_acquired_too_bright">Слишком светло. Сделайте освещение менее ярким.</string>
     <string name="face_acquired_too_close">Переместите телефон дальше от лица</string>
     <string name="face_acquired_too_dark">Недостаточно света</string>
-    <string name="face_acquired_too_different">Не удалось распознать лицо. Повторите попытку.</string>
+    <string name="face_acquired_too_different">Лицо не распознано. Повторите попытку.</string>
     <string name="face_acquired_too_far">Переместите телефон ближе к лицу</string>
     <string name="face_acquired_too_high">Переместите телефон выше</string>
     <string name="face_acquired_too_left">Переместите телефон правее</string>
@@ -979,8 +987,6 @@
     <string name="face_recalibrate_notification_name">Фейсконтроль</string>
     <string name="face_recalibrate_notification_title">Ошибка фейсконтроля</string>
     <string name="face_sensor_privacy_enabled">Чтобы использовать фейсконтроль, разрешите <b>доступ к камере</b>. Для этого перейдите в настройки и нажмите \"Конфиденциальность\".</string>
-    <string name="face_setup_notification_content">Вы сможете разблокировать телефон, просто посмотрев на него.</string>
-    <string name="face_setup_notification_title">Настройка фейсконтроля</string>
     <string name="faceunlock_multiple_failures">Все попытки войти с помощью фейсконтроля использованы</string>
     <string name="factory_reset_message">"Невозможно использовать приложение для администрирования. С устройства будут удалены все данные.
 
@@ -1006,30 +1012,31 @@
     <string name="fingerprint_acquired_imager_dirty">Очистите сканер отпечатков пальцев и повторите попытку.</string>
     <string name="fingerprint_acquired_imager_dirty_alt">Очистите сканер и повторите попытку.</string>
     <string name="fingerprint_acquired_immobile">Каждый раз немного меняйте положение пальца</string>
-    <string name="fingerprint_acquired_insufficient">Не удалось распознать отпечаток. Повторите попытку.</string>
+    <string name="fingerprint_acquired_insufficient">Отпечаток пальца не распознан. Повторите попытку.</string>
     <string name="fingerprint_acquired_partial">Плотно прижмите палец к сканеру</string>
     <string name="fingerprint_acquired_power_press">Вы нажали кнопку питания.</string>
     <string name="fingerprint_acquired_too_bright">Слишком светло.</string>
-    <string name="fingerprint_acquired_too_fast">Плотно прижмите палец к сканеру.</string>
+    <string name="fingerprint_acquired_too_fast">Плотно прижмите палец к сканеру</string>
     <string name="fingerprint_acquired_too_slow">Вы перемещали палец слишком медленно. Повторите попытку.</string>
     <string name="fingerprint_acquired_try_adjusting">Попробуйте изменить положение пальца.</string>
     <string name="fingerprint_app_setting_name">Использовать отпечаток пальца</string>
     <string name="fingerprint_authenticated">Отпечаток пальца проверен</string>
     <string name="fingerprint_dialog_default_subtitle">Чтобы продолжить, используйте цифровой отпечаток</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">Лицо не распознано. Используйте отпечаток.</string>
     <string name="fingerprint_error_bad_calibration">Невозможно использовать сканер отпечатков пальцев. Обратитесь в сервисный центр.</string>
-    <string name="fingerprint_error_canceled">Операция с отпечатком отменена.</string>
-    <string name="fingerprint_error_hw_not_available">Сканер недоступен</string>
-    <string name="fingerprint_error_hw_not_present">На этом устройстве нет сканера отпечатков пальцев.</string>
+    <string name="fingerprint_error_canceled">Операция с отпечатком пальца отменена.</string>
+    <string name="fingerprint_error_hw_not_available">Сканер отпечатков пальцев недоступен.</string>
+    <string name="fingerprint_error_hw_not_present">На этом устройстве нет сканера отпечатков пальцев</string>
     <string name="fingerprint_error_lockout">Слишком много попыток. Используйте другой способ разблокировки экрана.</string>
     <string name="fingerprint_error_lockout_permanent">Слишком много попыток. Используйте другой способ разблокировки экрана.</string>
-    <string name="fingerprint_error_no_fingerprints">Нет отсканированных отпечатков пальцев</string>
+    <string name="fingerprint_error_no_fingerprints">Отпечатки пальцев не добавлены.</string>
     <string name="fingerprint_error_no_space">Не удалось сохранить отпечаток.</string>
     <string name="fingerprint_error_not_match">Отпечаток не распознан.</string>
     <string name="fingerprint_error_power_pressed">Нажата кнопка питания.</string>
-    <string name="fingerprint_error_security_update_required">Сканер отпечатков пальцев временно отключен.</string>
+    <string name="fingerprint_error_security_update_required">Сканер временно отключен.</string>
     <string name="fingerprint_error_timeout">Время настройки отпечатка пальца истекло. Повторите попытку.</string>
     <string name="fingerprint_error_unable_to_process">Не удалось распознать отпечаток пальца. Повторите попытку.</string>
-    <string name="fingerprint_error_user_canceled">Операция с отпечатком пальца отменена пользователем.</string>
+    <string name="fingerprint_error_user_canceled">Пользователь отменил операцию с отпечатком пальца.</string>
     <string name="fingerprint_error_vendor_unknown">Произошла ошибка. Повторите попытку.</string>
     <string name="fingerprint_name_template">Отпечаток %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">Использовать отпечаток пальца или блокировку экрана</string>
@@ -1037,8 +1044,6 @@
     <string name="fingerprint_recalibrate_notification_content">Обратитесь в сервисный центр.</string>
     <string name="fingerprint_recalibrate_notification_name">Разблокировка по отпечатку пальца</string>
     <string name="fingerprint_recalibrate_notification_title">Невозможно использовать сканер отпечатков пальцев</string>
-    <string name="fingerprint_setup_notification_content">Нажмите, чтобы добавить отпечаток пальца.</string>
-    <string name="fingerprint_setup_notification_title">Настройте другие способы разблокировки</string>
     <string name="fingerprint_udfps_error_not_match">Отпечаток не распознан.</string>
     <string name="fingerprints">Отпечатки:</string>
     <string name="firmwarerecovery_restrict">Политика безопасности ограничивает восстановление прошивки.</string>
@@ -1068,7 +1073,7 @@
     <string name="fp_power_button_enrollment_message">"Вы нажали кнопку питания. Обычно это приводит к отключению экрана.
 
 При добавлении отпечатка пальца слегка прикоснитесь к кнопке."</string>
-    <string name="fp_power_button_enrollment_title">Для завершения нужно отключить экран</string>
+    <string name="fp_power_button_enrollment_title">Для завершения нужно отключить экран.</string>
     <string name="freeform_max_count_text">Максимальное количество приложений, которое можно открыть в виде всплывающих окон: %d.</string>
     <string name="function_lock">Клавиша Fn заблокирована.</string>
     <string name="function_unlock">Клавиша Fn разблокирована.</string>
@@ -1128,7 +1133,7 @@
     <string name="global_action_toggle_sealed_mode">Ограниченный режим</string>
     <string name="global_action_toggle_silent_mode">Режим без звука</string>
     <string name="global_action_voice_assist">Аудиоподсказки</string>
-    <string name="global_actions">Настройки планшетного ПК</string>
+    <string name="global_actions">Параметры телефона</string>
     <string name="global_actions_airplane_mode_off_status">Включить</string>
     <string name="global_actions_airplane_mode_on_status">Выключить</string>
     <string name="global_actions_toggle_airplane_mode">Режим полета</string>
@@ -1149,6 +1154,7 @@
     <string name="globalactions_unable_restart_msg_fmm">Невозможно перезапустить телефон, потому что он удаленно заблокирован с помощью функции “Поиск устройства”.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Невозможно перезапустить планшет, потому что он удаленно заблокирован с помощью функции “Поиск устройства”.</string>
     <string name="globalactions_unable_restart_msg_securelock">Невозможно перезапустить телефон, когда он заблокирован. Для выполнения перезапуска откройте чехол и разблокируйте телефон.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Невозможно перезапустить телефон, когда SIM-карта заблокирована.</string>
     <string name="gnss_service">Служба GNSS</string>
     <string name="gnss_time_update_service">Синхронизация времени с помощью ГНСС</string>
     <string name="gpsNotifMessage">Запрашивает %1$s (%2$s)</string>
@@ -1164,7 +1170,7 @@
     <string name="granularity_label_link">ссылка</string>
     <string name="granularity_label_word">слово</string>
     <string name="guest_name">Гость</string>
-    <string name="hardware">Виртуальная клавиатура</string>
+    <string name="hardware">Использовать экранную клавиатуру</string>
     <string name="hardware_key_restrict">Политика безопасности запрещает использование этого аппаратного ключа.</string>
     <string name="hardware_sec">Экранная клавиатура</string>
     <string name="harmful_app_warning_open_anyway">ОТКРЫТЬ</string>
@@ -1313,11 +1319,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Нажмите для ввода пароля&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Неверный PIN-код.</string>
     <string name="kg_enter_confirm_pin_hint">Введите PIN-код ещё раз</string>
-    <string name="kg_failed_attempts_almost_at_login">"Вы %1$d раз неверно указали графический ключ. После %2$d неверных попыток для разблокировки планшетного ПК потребуется войти в аккаунт Google.
+    <string name="kg_failed_attempts_almost_at_login">"Вы %1$d раз неверно указали графический ключ. После %2$d неверных попыток для разблокировки телефона потребуется войти в аккаунт Google.
 
 Повтор через %3$d сек."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Вы %1$d раз не смогли разблокировать планшетный ПК. После %2$d неверных попыток будут восстановлены заводские настройки, что приведет к удалению всех пользовательских данных.</string>
-    <string name="kg_failed_attempts_now_wiping">Вы %d раз не смогли разблокировать планшетный ПК. Будут восстановлены заводские настройки.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Вы %1$d раз не смогли разблокировать телефон. После %2$d неверных попыток будут восстановлены заводские настройки, что приведет к удалению всех пользовательских данных.</string>
+    <string name="kg_failed_attempts_now_wiping">Вы %d раз не смогли разблокировать телефон. Будут восстановлены заводские настройки.</string>
     <string name="kg_forgot_pattern_button_text">Забыли графический ключ?</string>
     <string name="kg_invalid_confirm_pin_hint">PIN-коды не совпадают</string>
     <string name="kg_invalid_puk">Введите правильный PUK-код. После нескольких неудачных попыток SIM-карта будет заблокирована.</string>
@@ -1405,11 +1411,11 @@
     <string name="lockscreen_carrier_default">Нет сигнала</string>
     <string name="lockscreen_carrier_noservice">(Нет сети)</string>
     <string name="lockscreen_emergency_call">Экстренный вызов</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Вы %1$d раз не смогли разблокировать планшетный ПК. После %2$d неверных попыток будут восстановлены заводские настройки, что приведет к удалению всех пользовательских данных.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Вы %1$d раз неверно указали графический ключ. После %2$d неверных попыток для разблокировки планшетного ПК потребуется войти в аккаунт Google. 
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Вы %1$d раз не смогли разблокировать телефон. После %2$d неверных попыток будут восстановлены заводские настройки, что приведет к удалению всех пользовательских данных.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Вы %1$d раз неверно указали графический ключ. После %2$d неверных попыток для разблокировки телефона потребуется войти в аккаунт Google. 
 
  Повтор через %3$d сек."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Вы %d раз не смогли разблокировать планшетный ПК. Будут восстановлены заводские настройки.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Вы %d раз не смогли разблокировать телефон. Будут восстановлены заводские настройки.</string>
     <string name="lockscreen_forgot_pattern_button_text">Забыли графический ключ?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Забыли имя пользователя или пароль?
 Перейдите на страницу "<b>google.com/accounts/recovery</b>.</string>
@@ -1425,7 +1431,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">Нажмите \"Меню\", чтобы разблокировать экран или вызвать службу экстренной помощи.</string>
     <string name="lockscreen_missing_sim_instructions">Добавьте SIM-карту.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM-карта отсутствует или не распознана. Добавьте SIM-карту.</string>
-    <string name="lockscreen_missing_sim_message">В планшете отсутствует SIM-карта.</string>
+    <string name="lockscreen_missing_sim_message">В телефоне отсутствует SIM-карта.</string>
     <string name="lockscreen_missing_sim_message_short">SIM-карта отсутствует</string>
     <string name="lockscreen_network_locked_message">Сеть заблокирована</string>
     <string name="lockscreen_password_wrong">Повторите попытку</string>
@@ -1465,7 +1471,7 @@
     <string name="low_internal_storage_view_text">Некоторые функции могут не работать</string>
     <string name="low_internal_storage_view_text_no_boot">Недостаточно свободного места для системы. Освободите не менее 250 МБ дискового пространства и перезапустите устройство.</string>
     <string name="low_internal_storage_view_title">Недостаточно памяти</string>
-    <string name="low_memory">Память планшетного ПК заполнена. Удалите какие-нибудь файлы, чтобы освободить место.</string>
+    <string name="low_memory">Память телефона заполнена. Удалите какие-нибудь файлы, чтобы освободить место.</string>
     <string name="ltb_kill_content_v2_phone">Работа приложения “%s” приводила к перегреву телефона, поэтому оно было закрыто. Вы можете открыть это приложение позже, когда телефон остынет.</string>
     <string name="ltb_kill_content_v2_tablet">Работа приложения “%s” приводила к перегреву планшета, поэтому оно было закрыто. Вы можете открыть это приложение позже, когда планшет остынет.</string>
     <string name="ltb_warning_button">Не закрывать</string>
@@ -1485,16 +1491,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Вам нужно будет разблокировать планшет для выключения режима обслуживания.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Информация о действиях, выполненных во время использования режима обслуживания, не будет сохраняться. Это касается загрузки данных, установки приложений или изменения настроек.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Блокировка экрана</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Перезапустить без создания журнала</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Создать журнал и перезапустить</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Чтобы включить режим обслуживания, телефон необходимо перезагрузить.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Сперва установите блокировку экрана.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Чтобы включить режим обслуживания, планшет необходимо перезагрузить.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Чтобы помочь нашему сотруднику определить проблемы с телефоном, перед запуском режима “Техобслуживание” советуем создать системный журнал.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Чтобы сотруднику службы поддержки было проще обнаружить проблемы с телефоном, перед запуском режима обслуживания советуем создать системный журнал.
 
-В журнале отображаются последние запущенные приложения и ошибки. Журнал не содержит персональных данных, и его можно использовать только для обнаружения проблем. Обычно создание журнала занимает около 2 минут."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Чтобы помочь нашему сотруднику определить проблемы с планшетом, перед запуском режима “Техобслуживание” советуем создать системный журнал.
+В журнале содержится только информация, необходимая для ремонта телефона, например сведения об использованных приложениях, последних ошибках, заблокированных номерах телефонов и объеме файлового хранилища. Журнал будет использоваться только для диагностики и анализа проблем. Обычно создание журнала занимает около 2 минут."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Чтобы сотруднику службы поддержки было проще обнаружить проблемы с планшетом, перед запуском режима обслуживания советуем создать системный журнал.
 
-В журнале отображаются последние запущенные приложения и ошибки. Журнал не содержит персональных данных, и его можно использовать только для обнаружения проблем. Обычно создание журнала занимает около 2 минут."</string>
+В журнале содержится только информация, необходимая для ремонта планшета, например сведения об использованных приложениях, последних ошибках, заблокированных номерах телефонов и объеме файлового хранилища. Журнал будет использоваться только для диагностики и анализа проблем. Обычно создание журнала занимает около 2 минут."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Анализ хранилища</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Внутреннее хранилище телефона почти заполнено. Если место закончится, некоторые приложения и функции могут работать некорректно. Попробуйте удалить ненужные файлы или приложения. После удаления не забудьте очистить корзину.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Внутреннее хранилище планшета почти заполнено. Если место закончится, некоторые приложения и функции могут работать некорректно. Попробуйте удалить ненужные файлы или приложения. После удаления не забудьте очистить корзину.</string>
@@ -1516,10 +1522,17 @@
     <string name="maintenance_mode_outro_label">Выход из режима обслуживания</string>
     <string name="maintenance_mode_outro_textview_message_phone">Чтобы отключить режим обслуживания, разблокируйте телефон. После этого все вернется к тому состоянию, в котором было до включения режима обслуживания. Изменения, внесенные в режиме обслуживания, такие как загруженные данные, установленные приложения или изменения настроек, не сохраняются.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Чтобы отключить режим обслуживания, разблокируйте планшет. После этого все вернется к тому состоянию, в котором было до включения режима обслуживания. Изменения, внесенные в режиме обслуживания, такие как загруженные данные, установленные приложения или изменения настроек, не сохраняются.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Невозможно использовать режим обслуживания, если включена функция “%s”.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Невозможно включить режим обслуживания при включенном режиме энергосбережения с ограничением работы приложений и главного экрана.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Режим обслуживания не поддерживается на телефоне.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Режим обслуживания не поддерживается на планшете.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s может использовать только владелец устройства.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Остановить копирование данных и включить режим обслуживания?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Чтобы включить режим обслуживания, завершите или отмените незавершенный процесс резервного копирования.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Чтобы включить режим обслуживания, остановите активный процесс резервного копирования.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Чтобы включить режим обслуживания, остановите восстановление данных из резервной копии.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Приложение администратора устройства</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Создание файла журнала…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Обычно это занимает около 2 минут. После создания журнала телефон перезапустится в режиме “Техобслуживание” и вы сможете безопасно передать его в сервис.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Обычно это занимает около 2 минут. После создания журнала планшет перезапустится в режиме “Техобслуживание” и вы сможете безопасно передать его в сервис.</string>
@@ -1532,7 +1545,7 @@
     <string name="manage_apps">Управление приложениями</string>
     <string name="managed_profile_app_label">Открыть %1$s в рабочем профиле</string>
     <string name="managed_profile_label">Перейти в рабочий профиль</string>
-    <string name="managed_profile_label_badge">Рабочий %1$s</string>
+    <string name="managed_profile_label_badge">%1$s (рабочий профиль)</string>
     <string name="managed_profile_label_badge_2">Задача 2: %1$s</string>
     <string name="managed_profile_label_badge_3">Задача 3: %1$s</string>
     <string name="matches_found">{count,plural, =1{# совпадение}one{# совпадение из {total}}few{# совпадения из {total}}many{# совпадений из {total}}other{# совпадения из {total}}}</string>
@@ -1669,6 +1682,7 @@
     <string name="menu_shift_shortcut_label">Shift +</string>
     <string name="menu_space_shortcut_label">пробел</string>
     <string name="menu_sym_shortcut_label">Sym +</string>
+    <string name="message_on_crash">Заблокировано функцией “Автоблокировка”</string>
     <string name="mic_access_off_toast">Микрофон заблокирован.</string>
     <string name="mic_access_on_toast">Микрофон доступен.</string>
     <string name="microphone_restrict">Политика безопасности запрещает использование микрофона.</string>
@@ -1691,15 +1705,17 @@
     <string name="mime_type_spreadsheet_ext">Таблица %1$s</string>
     <string name="mime_type_video">Видео</string>
     <string name="mime_type_video_ext">Видео %1$s</string>
-    <string name="miniresolver_call">Вызов</string>
-    <string name="miniresolver_call_in_work">Совершить вызов из рабочего приложения?</string>
-    <string name="miniresolver_call_information">Ваша организация разрешает только вызовы из рабочих приложений.</string>
+    <string name="miniresolver_call">Позвонить</string>
+    <string name="miniresolver_call_in_work">Позвонить из рабочего приложения?</string>
+    <string name="miniresolver_call_information">В вашей организации разрешено звонить только из рабочих приложений.</string>
     <string name="miniresolver_open_in_personal">Открыть в личном приложении \"%s\"?</string>
     <string name="miniresolver_open_in_work">Открыть в рабочем приложении \"%s\"?</string>
     <string name="miniresolver_open_work">Открыть рабочее приложение \"%s\"?</string>
-    <string name="miniresolver_sms_information">Ваша организация разрешает только отправку текстовых сообщений из рабочих приложений.</string>
+    <string name="miniresolver_private_space_messages_information">Вы можете отправлять SMS только из личного приложения \"Сообщения\".</string>
+    <string name="miniresolver_private_space_phone_information">Вы можете звонить только из личного приложения \"Телефон\". Совершенные из него вызовы будут сохранены в личном журнале звонков.</string>
+    <string name="miniresolver_sms_information">В вашей организации разрешено отправлять сообщения только из рабочих приложений.</string>
     <string name="miniresolver_switch">Перейти</string>
-    <string name="miniresolver_switch_to_work">Переключиться на приложение для работы?</string>
+    <string name="miniresolver_switch_to_work">Перейти в рабочее приложение?</string>
     <string name="miniresolver_use_personal_browser">Использовать личный браузер</string>
     <string name="miniresolver_use_work_browser">Использовать рабочий браузер</string>
     <string name="minute">мин.</string>
@@ -1733,30 +1749,6 @@
     <string name="month_day_year" formatted="false">%-e %B %Y г.</string>
     <string name="more_apps">Еще приложения</string>
     <string name="more_item_label">Ещё</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">Услуга %s не поддерживается. Обратитесь в службу поддержки клиентов.</string>
-    <string name="mptcp_message_address_type_not_supported">Плохое подключение %s. Выполняется подключение к доступной сети…</string>
-    <string name="mptcp_message_busy_ntime_wait">Плохое подключение %s. Выполняется подключение к доступной сети…</string>
-    <string name="mptcp_message_cmd_not_supported">Сеть %s временно недоступна. Подключение к доступной сети…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">Плохое подключение %s. Выполняется подключение к доступной сети…</string>
-    <string name="mptcp_message_connection_refused">Плохое подключение %s. Выполняется подключение к доступной сети…</string>
-    <string name="mptcp_message_data_usage_limit">Достигнут лимит использования трафика. Чтобы изменить лимит использования трафика, перейдите в “Настройки”.</string>
-    <string name="mptcp_message_host_unreachable">Плохое подключение %s. Выполняется подключение к доступной сети…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Невозможно включить %s. Устройство не подключено к сети LTE.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Невозможно включить %s в международном роуминге.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Невозможно включить %s. Включена мобильная точка доступа или USB-модем.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Невозможно включить %s, когда включен Wi-Fi Direct.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Невозможно включить %s. Включен автономный режим.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Невозможно включить %s. Мобильные данные отключены.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Нет ответа от поставщика услуг.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Невозможно включить %1$s. Ваш интернет-пакет не поддерживает услугу %2$s, или не получен ответ от сервера %3$s.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Не удалось отправить запрос на активацию %s. Повторное подключение через доступные сети…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Невозможно включить %s. Вставлена некорректная SIM-карта.</string>
-    <string name="mptcp_message_network_unreachable">Плохое подключение %s. Выполняется подключение к доступной сети…</string>
-    <string name="mptcp_message_non_mptcp_plan">Невозможно включить Giga Multi-Path. Функция не поддерживается по условиям тарифного плана.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s отключено из-за перегрева устройства. Загрузка через мобильную сеть…</string>
-    <string name="mptcp_message_server_error">Плохое подключение %s. Выполняется подключение к доступной сети…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Невозможно включить %s. Перегрев устройства. Подождите, пока устройство охладится, и попробуйте снова.</string>
-    <string name="mptcp_message_ttl_expired">Сеть %s временно недоступна. Подключение к доступной сети…</string>
     <string name="mte_override_notification_message">Это может ухудшить стабильность работы и производительность. Чтобы отключить функцию, перезагрузите устройство. Если она была включена с помощью параметра arm64.memtag.bootctl, предварительно укажите значение none.</string>
     <string name="mte_override_notification_title">Включена экспериментальная функция MTE</string>
     <string name="multi_user_capability_restrict">Политика безопасности запрещает использование устройства несколькими пользователями.</string>
@@ -1777,18 +1769,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Звук воспроизводится через аудиоустройство Bluetooth. Коснитесь здесь, чтобы выключить его</string>
     <string name="multisound_sound_via_headphone">Звук из %s воспроизводится в наушниках. Коснитесь здесь, чтобы отключить его.</string>
     <string name="multisound_sound_via_headphone_multiselection">Звук воспроизводится через наушники. Коснитесь здесь, чтобы выключить его.</string>
-    <string name="multisound_sound_via_phone_speaker">Звук из %s воспроизводится на динамике планшета. Коснитесь здесь, чтобы отключить его.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Звук воспроизводится через динамик планшета. Коснитесь здесь, чтобы выключить его.</string>
+    <string name="multisound_sound_via_phone_speaker">Звук из %s воспроизводится на динамике телефона. Коснитесь здесь, чтобы отключить его.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Звук воспроизводится через динамик телефона. Коснитесь здесь, чтобы выключить его.</string>
     <string name="multisound_sound_via_usb_audio">Звук из %s воспроизводится на аудиоустройстве USB. Коснитесь здесь, чтобы отключить его.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Звук воспроизводится через аудиоустройство USB. Коснитесь здесь, чтобы выключить его.</string>
     <string name="multisound_title">Раздельный вывод звука</string>
     <string name="multisound_turn_off_multisound">Выключить</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Приложение %s не работает в Samsung DeX. Попробуйте запустить его в режиме планшета.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Приложение %s не работает в Samsung DeX. Оно предназначено для главного экрана планшета.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Некоторые игры работают только на сенсорных экранах. Если в Samsung DeX не работают элементы управления мышью, запустите игру в режиме планшета.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Приложение %s не работает в Samsung DeX. Попробуйте запустить его в режиме телефона.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Приложение %s не работает в Samsung DeX. Оно предназначено для главного экрана телефона.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Некоторые игры работают только на сенсорных экранах. Если в Samsung DeX не работают элементы управления мышью, запустите игру в режиме телефона.</string>
     <string name="music_recognition_manager_service">Сервис управления распознаванием музыки</string>
     <string name="muted_by">%1$s приглушает некоторые звуки.</string>
-    <string name="my_device">Этот планшет</string>
+    <string name="my_device">Этот телефон</string>
     <string name="nas_upgrade_notification_content">Быстрые ответы и действия теперь включены в улучшенные уведомления. Адаптивные уведомления для Android больше не поддерживаются.</string>
     <string name="nas_upgrade_notification_disable_action">Отключить</string>
     <string name="nas_upgrade_notification_enable_action">ОК</string>
@@ -1828,7 +1820,6 @@
     <string name="nosim_limited_service">Ограниченное обслуживание</string>
     <string name="not_checked">не отмечено</string>
     <string name="not_selected">не выбрано</string>
-    <string name="not_support_ai_key">Кнопка ИИ еще не поддерживается для вашего планшета. Скоро будет выпущено обновление.</string>
     <string name="notification_action_check_bg_apps">Проверить активные приложения</string>
     <string name="notification_alerted_content_description">Отправлено оповещение</string>
     <string name="notification_app_name_settings">Настройки</string>
@@ -1847,6 +1838,7 @@
     <string name="notification_channel_developer_important">Важные сообщения от разработчика</string>
     <string name="notification_channel_device_admin">Уведомления от вашего администратора</string>
     <string name="notification_channel_dex_policy">Политика Samsung DeX</string>
+    <string name="notification_channel_display">Экран</string>
     <string name="notification_channel_do_not_disturb">Не беспокоить</string>
     <string name="notification_channel_emergency_callback">Режим экстренных обратных вызовов</string>
     <string name="notification_channel_foreground_service">Приложения, расходующие заряд</string>
@@ -1889,7 +1881,7 @@
     <string name="notification_work_profile_content_description">Рабочий профиль</string>
     <string name="now_string_shortest">Сейчас</string>
     <string name="ntfs_usb_storage_readonly_mount_message">Это хранилище доступно только для чтения, поскольку имеет формат NTFS.</string>
-    <string name="ntfs_usb_storage_readonly_mount_title">Добавлен USB только для чтения</string>
+    <string name="ntfs_usb_storage_readonly_mount_title">Добавлен USB-накоп. только для чтения</string>
     <string name="number_picker_decrement_button">Уменьшить</string>
     <string name="number_picker_increment_button">Увеличить</string>
     <string name="number_picker_increment_scroll_action">Проведите вверх, чтобы увеличить значение, и вниз, чтобы уменьшить его.</string>
@@ -1909,7 +1901,8 @@
     <string name="overheat_warning_title_v2_tablet">Перегрев планшета</string>
     <string name="owner_name">Владелец</string>
     <string name="package_deleted_device_owner">Удалено администратором</string>
-    <string name="package_installed_device_owner">Установлено администратором</string>
+    <string name="package_installed_device_owner">"Установлено администратором.
+Чтобы посмотреть предоставленные разрешения, перейдите в настройки."</string>
     <string name="package_module">Пакет</string>
     <string name="package_night_mode_dialog_got_it">Понятно</string>
     <string name="package_night_mode_dialog_message">Приложение “%s” работает в режиме затемнения, чтобы экономить заряд аккумулятора. Переключиться на светлую тему можно в разделе Labs меню “Настройки”.</string>
@@ -1932,7 +1925,9 @@
     <string name="permdesc_accessCoarseLocation">Приложение сможет получать сведения о вашем приблизительном местоположении, только когда используется. Для этого на устройстве должна быть включена геолокация.</string>
     <string name="permdesc_accessDrmCertificates">Приложение сможет синхронизировать и использовать сертификаты DRM (разрешение актуально только для специальных приложений).</string>
     <string name="permdesc_accessFineLocation">Приложение сможет получать сведения о вашем точном местоположении, только когда используется. Для этого на устройстве должна быть включена геолокация. Учтите, что при этом заряд батареи может расходоваться быстрее.</string>
+    <string name="permdesc_accessHiddenProfile">Приложение сможет получать доступ к скрытым профилям.</string>
     <string name="permdesc_accessImsCallService">Позволяет приложению совершать звонки с помощью службы IMS без вашего вмешательства.</string>
+    <string name="permdesc_accessLastKnownCellId">Приложение сможет получать доступ к последнему известному идентификатору вышки мобильной связи, предоставленному системами телефонии.</string>
     <string name="permdesc_accessLocationExtraCommands">Доступ к дополнительным командам управления источниками геоданных и вмешательство в работу системы GPS или других источников геоданных.</string>
     <string name="permdesc_accessNetworkConditions">Приложение сможет использовать данные о состоянии сети. Это разрешение обычно используется только специальными приложениями.</string>
     <string name="permdesc_accessNetworkState">Приложение сможет просматривать информацию о сетевых подключениях, например о том, какие сети доступны и к каким из них вы подключены.</string>
@@ -1953,21 +1948,22 @@
     <string name="permdesc_bindNotificationListenerService">Приложение сможет подключаться к базовому интерфейсу службы просмотра уведомлений. Это разрешение не используется обычными приложениями.</string>
     <string name="permdesc_bind_connection_service">Доступ к службам телефонии для совершения и приема вызовов.</string>
     <string name="permdesc_bind_incall_service">Управление экраном во время разговора.</string>
-    <string name="permdesc_bluetooth">Приложение сможет просматривать конфигурацию Bluetooth на планшетном ПК, а также запрашивать и подтверждать соединение с другими устройствами.</string>
-    <string name="permdesc_bluetoothAdmin">Приложение сможет настраивать параметры локального планшетного ПК с поддержкой Bluetooth, а также обнаруживать удаленные устройства и устанавливать соединение с ними.</string>
+    <string name="permdesc_bluetooth">Приложение сможет просматривать конфигурацию Bluetooth на телефоне, а также запрашивать и подтверждать соединение с другими устройствами.</string>
+    <string name="permdesc_bluetoothAdmin">Приложение сможет настраивать параметры локального телефона с поддержкой Bluetooth, а также обнаруживать удаленные устройства и устанавливать соединение с ними.</string>
     <string name="permdesc_bluetooth_advertise">Приложение сможет передавать рекламу на устройства Bluetooth поблизости.</string>
     <string name="permdesc_bluetooth_connect">У приложения будет доступ к подключенным устройствам Bluetooth.</string>
     <string name="permdesc_bluetooth_scan">Приложение сможет находить устройства Bluetooth поблизости и подключаться к ним.</string>
     <string name="permdesc_bodySensors">Когда приложение используется, это разрешение предоставляет ему доступ к данным нательных датчиков (например, пульсу, температуре, уровню кислорода в крови).</string>
     <string name="permdesc_bodySensors_background">Когда приложение работает в фоновом режиме, это разрешение предоставляет ему доступ к данным нательных датчиков (например, пульсу, температуре, уровню кислорода в крови).</string>
-    <string name="permdesc_broadcastSticky">Приложение сможет делать несрочные рассылки, которые не удаляются после их отправки. Злоупотребление этими рассылками может замедлить работу планшетного ПК или сделать ее нестабильной из-за чрезмерного использования памяти.</string>
+    <string name="permdesc_broadcastSticky">Приложение сможет делать несрочные рассылки, которые не удаляются после их отправки. Злоупотребление этими рассылками может замедлить работу телефона или сделать ее нестабильной из-за чрезмерного использования памяти.</string>
     <string name="permdesc_callCompanionApp">Приложение сможет управлять текущими вызовами на устройстве, а также получит доступ к сведениям о них, в том числе к номерам телефонов и статусам звонков.</string>
     <string name="permdesc_callPhone">Разрешает приложению совершать вызовы без вашего участия. Это может привести к непредвиденным расходам или незапланированным звонкам. Обратите внимание, что приложению не предоставляется разрешение на звонки в экстренные службы. Из-за вредоносных приложений, которые совершают платные звонки без вашего подтверждения или используют коды оператора, чтобы входящие вызовы автоматически переадресовывались на другой номер, у вас могут списываться средства.</string>
     <string name="permdesc_camera">Когда приложение используется, оно может делать фотографии и снимать видео с помощью камеры.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">У этого приложения есть доступ к камере на правах консольного системного пользователя.</string>
     <string name="permdesc_cameraOpenCloseListener">Это приложение сможет получать обратные вызовы при открытии (с указанием открывающего приложения) и закрытии любых камер.</string>
     <string name="permdesc_changeNetworkState">Приложение сможет изменять состояние подключения к сети.</string>
     <string name="permdesc_changeTetherState">Приложение сможет включать и выключать режим модема.</string>
-    <string name="permdesc_changeWifiMulticastState">Приложение сможет получать пакеты, отправленные всем устройствам в сети Wi-Fi (не только вашему планшетному ПК) в многоадресной рассылке. При этом расходуется больше энергии, чем в одноадресном режиме.</string>
+    <string name="permdesc_changeWifiMulticastState">Приложение сможет получать пакеты, отправленные всем устройствам в сети Wi-Fi (не только вашему телефону) в многоадресной рассылке. При этом расходуется больше энергии, чем в одноадресном режиме.</string>
     <string name="permdesc_changeWifiState">Приложение сможет подключаться к точкам доступа Wi-Fi и отключаться от них, а также изменять конфигурацию сетей Wi-Fi на устройстве.</string>
     <string name="permdesc_changeWimaxState">Приложение сможет подключать устройство к сетям WiMAX и отключать его от них.</string>
     <string name="permdesc_companionProfileWatch">Сопутствующее приложение сможет управлять часами.</string>
@@ -1990,6 +1986,7 @@
     <string name="permdesc_foregroundServiceHealth">Разрешить приложению использовать активные службы с типом health</string>
     <string name="permdesc_foregroundServiceLocation">Разрешить приложению использовать активные службы с типом location</string>
     <string name="permdesc_foregroundServiceMediaPlayback">Разрешить приложению использовать активные службы с типом mediaPlayback</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">Приложение сможет использовать активные службы с типом mediaProcessing.</string>
     <string name="permdesc_foregroundServiceMediaProjection">Разрешить приложению использовать активные службы с типом mediaProjection</string>
     <string name="permdesc_foregroundServiceMicrophone">Разрешить приложению использовать активные службы с типом microphone</string>
     <string name="permdesc_foregroundServicePhoneCall">Разрешить приложению использовать активные службы с типом phoneCall</string>
@@ -2088,13 +2085,14 @@
     <string name="permdesc_mdmVpn">Создание, изменение и удаление параметров и профилей VPN</string>
     <string name="permdesc_mdmWifi">Создание, изменение и удаление профилей Wi-Fi.</string>
     <string name="permdesc_mediaLocation">Приложение получит доступ к геоданным в вашей медиаколлекции.</string>
-    <string name="permdesc_modifyAudioSettings">Приложение сможет изменять системные настройки звука, например уровень громкости и активный динамик.</string>
+    <string name="permdesc_modifyAudioSettings">Приложение сможет изменять си\ufffd\ufffdтемные настройки звука, например уровень громкости и активный динамик.</string>
     <string name="permdesc_modifyNetworkAccounting">Приложение сможет изменять порядок расчета использования сетевых ресурсов различными программами. Это разрешение не используется обычными приложениями.</string>
     <string name="permdesc_mountUnmountEncryptfsStorage">Подключение и отключение API зашифрованного хранилища.</string>
     <string name="permdesc_mount_format_filesystems">Позволяет приложению форматировать съемный накопитель.</string>
     <string name="permdesc_mount_unmount_filesystems">Позволяет приложению подключать и отключать файловую систему съемного носителя.</string>
     <string name="permdesc_nearby_wifi_devices">Приложение сможет передавать данные на устройства Wi‑Fi рядом, подключаться к ним и определять их примерное местоположение.</string>
     <string name="permdesc_nfc">Приложение сможет обмениваться данными с NFC-метками, картами и устройствами считывания, используя NFC.</string>
+    <string name="permdesc_nfcTransactionEvent">Позволяет приложению получать информацию о транзакциях, обрабатываемых в защитном элементе.</string>
     <string name="permdesc_observeCompanionDevicePresence">Сопутствующее приложение сможет находить связанные с ним устройства, где бы они ни находились.</string>
     <string name="permdesc_persistentActivity">Приложение сможет постоянно хранить свои компоненты в памяти. Это может уменьшить объем памяти, доступный другим приложениям, и замедлить работу устройства.</string>
     <string name="permdesc_postNotification">Приложение сможет показывать уведомления.</string>
@@ -2102,10 +2100,10 @@
     <string name="permdesc_processOutgoingCalls">Приложение сможет видеть набранный номер во время исходящего вызова и при необходимости перенаправлять вызов или завершать его.</string>
     <string name="permdesc_queryAllPackages">Приложение сможет просматривать все установленные пакеты.</string>
     <string name="permdesc_readBasicPhoneState">Приложение получит доступ к основным функциям телефонии на устройстве.</string>
-    <string name="permdesc_readCalendar">Приложение может считывать, отправлять и сохранять информацию о мероприятиях в календаре планшета.</string>
+    <string name="permdesc_readCalendar">Приложение может считывать, отправлять и сохранять информацию о мероприятиях в календаре телефона.</string>
     <string name="permdesc_readCallLog">Приложение может считывать данные журнала звонков.</string>
     <string name="permdesc_readCellBroadcasts">Приложение получит доступ к сообщениям широковещательных SMS-служб, которые в некоторых странах используются для информирования населения об экстренных ситуациях. Вредоносные программы могут помешать работе устройства, на которое поступают такие сообщения.</string>
-    <string name="permdesc_readContacts">Приложение сможет считывать данные о контактах, сохраненных на вашем планшете. Кроме того, у приложения будет доступ к аккаунтам на планшете, в которых есть контакты. В их число могут входить аккаунты, созданные приложениями, которые вы установили. Получив возможность сохранять данные контактов, вредоносные программы смогут передавать их без вашего ведома.</string>
+    <string name="permdesc_readContacts">Приложение сможет считывать данные о контактах, сохраненных на вашем телефоне. Кроме того, у приложения будет доступ к аккаунтам на телефоне, в которых есть контакты. В их число могут входить аккаунты, созданные приложениями, которые вы установили. Получив возможность сохранять данные контактов, вредоносные программы смогут передавать их без вашего ведома.</string>
     <string name="permdesc_readInstallSessions">Чтение данных текущих сеансов установки пакетов.</string>
     <string name="permdesc_readMediaAudio">Приложение сможет считывать аудиофайлы из общего хранилища.</string>
     <string name="permdesc_readMediaImages">Приложение сможет считывать изображения из общего хранилища.</string>
@@ -2113,11 +2111,11 @@
     <string name="permdesc_readNetworkUsageHistory">Приложение сможет считывать сохраненную историю использования определенных сетей и приложений.</string>
     <string name="permdesc_readPhoneNumbers">Разрешает приложению доступ к телефонным номерам устройства.</string>
     <string name="permdesc_readPhoneState">Приложение получит доступ к функциям телефона на устройстве. Кроме того, оно сможет определять номера телефонов и серийные номера моделей, состояние активности вызова, а также удаленные номера, с которыми установлено соединение.</string>
-    <string name="permdesc_readSms">Приложение может считывать SMS-сообщения на планшете.</string>
+    <string name="permdesc_readSms">Приложение может считывать SMS-сообщения на телефоне.</string>
     <string name="permdesc_readSyncSettings">Приложение сможет просматривать настройки синхронизации аккаунта, например определять, включена ли синхронизация для приложения \"Контакты\".</string>
     <string name="permdesc_readSyncStats">Приложение сможет просматривать статистику синхронизации аккаунта, в том числе историю событий и объем синхронизированных данных.</string>
     <string name="permdesc_readVisualUserSelect">Приложение сможет считывать указанные вами изображения и видеофайлы из общего хранилища.</string>
-    <string name="permdesc_receiveBootCompleted">Приложение сможет запускаться после начальной загрузки системы. Это может привести к увеличению времени включения планшетного ПК и уменьшить его быстродействие в связи с постоянной работой приложения.</string>
+    <string name="permdesc_receiveBootCompleted">Приложение сможет запускаться после начальной загрузки системы. Это может привести к увеличению времени включения телефона и уменьшить его быстродействие в связи с постоянной работой приложения.</string>
     <string name="permdesc_receiveMms">Приложение сможет получать и обрабатывать MMS. Это значит, что оно сможет отслеживать и удалять отправленные на ваше устройство сообщения, не показывая их.</string>
     <string name="permdesc_receiveSms">Приложение сможет получать и обрабатывать SMS. Это значит, что оно сможет отслеживать и удалять отправленные на ваше устройство сообщения, не показывая их.</string>
     <string name="permdesc_receiveWapPush">Приложение сможет получать и обрабатывать WAP-сообщения. Это значит, что оно сможет отслеживать и удалять отправленные на ваше устройство сообщения, не показывая их.</string>
@@ -2153,7 +2151,7 @@
     <string name="permdesc_subscribedFeedsRead">Приложение сможет получать сведения о синхронизируемых в настоящее время фидах.</string>
     <string name="permdesc_systemAlertWindow">Приложение может открываться поверх других окон. Это может влиять на работу с другими приложениями.</string>
     <string name="permdesc_systemCamera">Это привилегированное или системное приложение может в любое время делать фотографии и записывать видео с помощью камеры. Для этого приложению также требуется разрешение android.permission.CAMERA.</string>
-    <string name="permdesc_transmitIr">Приложение сможет использовать инфракрасный передатчик планшетного ПК.</string>
+    <string name="permdesc_transmitIr">Приложение сможет использовать инфракрасный передатчик телефона.</string>
     <string name="permdesc_turnScreenOn">Приложение сможет включать экран.</string>
     <string name="permdesc_ucsPlugin">Работа с плагинами сторонних хранилищ учетных данных.</string>
     <string name="permdesc_uninstall_shortcut">Приложение сможет удалять ярлыки с главного экрана без вмешательства пользователя.</string>
@@ -2167,12 +2165,13 @@
     <string name="permdesc_vibrate">Приложение сможет контролировать вибросигналы.</string>
     <string name="permdesc_vibrator_state">Приложение сможет получать доступ к состоянию виброотклика.</string>
     <string name="permdesc_videoWrite">Приложение сможет вносить изменения в вашу видеоколлекцию.</string>
-    <string name="permdesc_wakeLock">Приложение сможет запрещать перевод планшетного ПК в спящий режим.</string>
-    <string name="permdesc_writeCalendar">Приложение может добавлять, удалять или изменять мероприятия в календаре на планшете. Оно также может отправлять сообщения от имени владельцев календаря, а также изменять мероприятия без ведома владельца.</string>
-    <string name="permdesc_writeCallLog">Приложение сможет вносить изменения в список вызовов планшетного ПК и данные о входящих и исходящих звонках. Вредоносные приложения смогут воспользоваться этим для удаления или изменения информации о звонках.</string>
-    <string name="permdesc_writeContacts">Приложение сможет изменять сведения о контактах, сохраненных на вашем планшете. Это разрешение позволяет приложениям удалять данные о контактах.</string>
+    <string name="permdesc_wakeLock">Приложение сможет запрещать перевод телефона в спящий режим.</string>
+    <string name="permdesc_writeCalendar">Приложение может добавлять, удалять или изменять мероприятия в календаре на телефоне. Оно также может отправлять сообщения от имени владельцев календаря, а также изменять мероприятия без ведома владельца.</string>
+    <string name="permdesc_writeCallLog">Приложение сможет вносить изменения в список вызовов телефона и данные о входящих и исходящих звонках. Вредоносные приложения смогут воспользоваться этим для удаления или изменения информации о звонках.</string>
+    <string name="permdesc_writeContacts">Приложение сможет изменять сведения о контактах, сохраненных на вашем телефоне. Это разрешение позволяет приложениям удалять данные о контактах.</string>
     <string name="permdesc_writeSettings">"Приложение сможет изменять настройки системы. Вредоносные программы смогут  повредить конфигурацию системы."</string>
     <string name="permdesc_writeSyncSettings">Приложение сможет изменять настройки синхронизации аккаунта. Например, с помощью этого разрешения можно включить в аккаунте синхронизацию контактов.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">Приложение сможет обновлять статусы проверки защищенных сквозным шифрованием и принадлежащих другим приложениям ключей контактов.</string>
     <string name="permgroupdesc_activityRecognition">доступ к данным о физической активности</string>
     <string name="permgroupdesc_calendar">доступ к календарю</string>
     <string name="permgroupdesc_calllog">чтение и запись телефонных звонков</string>
@@ -2214,7 +2213,9 @@
     <string name="permlab_accessCoarseLocation">Доступ к приблизительному местоположению только в активном режиме</string>
     <string name="permlab_accessDrmCertificates">Доступ к сертификатам DRM</string>
     <string name="permlab_accessFineLocation">Доступ к точному местоположению только в фоновом режиме</string>
+    <string name="permlab_accessHiddenProfile">Доступ к скрытым профилям</string>
     <string name="permlab_accessImsCallService">совершение звонков с помощью службы IMS</string>
+    <string name="permlab_accessLastKnownCellId">Доступ к последнему известному идентификатору вышки мобильной связи</string>
     <string name="permlab_accessLocationExtraCommands">Доступ к дополнительным командам управления источниками геоданных</string>
     <string name="permlab_accessNetworkConditions">Использование данных о состоянии сети</string>
     <string name="permlab_accessNetworkState">Просмотр сетевых подключений</string>
@@ -2246,6 +2247,7 @@
     <string name="permlab_callCompanionApp">Управление вызовами через систему</string>
     <string name="permlab_callPhone">Осуществление телефонных вызовов</string>
     <string name="permlab_camera">Фото- и видеосъемка</string>
+    <string name="permlab_cameraHeadlessSystemUser">Разрешить приложению или сервису доступ к камере на правах консольного системного пользователя</string>
     <string name="permlab_cameraOpenCloseListener">Разрешить приложению или сервису получать обратные вызовы при открытии и закрытии камер</string>
     <string name="permlab_changeNetworkState">Изменение сетевых настроек</string>
     <string name="permlab_changeTetherState">Изменение подключения к компьютеру</string>
@@ -2273,6 +2275,7 @@
     <string name="permlab_foregroundServiceHealth">запускать активные службы с типом health</string>
     <string name="permlab_foregroundServiceLocation">запускать активные службы с типом location</string>
     <string name="permlab_foregroundServiceMediaPlayback">запускать активные службы с типом mediaPlayback</string>
+    <string name="permlab_foregroundServiceMediaProcessing">запускать активные службы с типом mediaProcessing</string>
     <string name="permlab_foregroundServiceMediaProjection">запускать активные службы с типом mediaProjection</string>
     <string name="permlab_foregroundServiceMicrophone">запускать активные службы с типом microphone</string>
     <string name="permlab_foregroundServicePhoneCall">запускать активные службы с типом phoneCall</string>
@@ -2373,6 +2376,7 @@
     <string name="permlab_mount_unmount_filesystems">Доступ к файловой системе SD-карты</string>
     <string name="permlab_nearby_wifi_devices">Взаимодействие с устройствами Wi‑Fi поблизости</string>
     <string name="permlab_nfc">Управление NFC-модулем</string>
+    <string name="permlab_nfcTransactionEvent">Транзакции, обрабатываемые в защитном элементе</string>
     <string name="permlab_observeCompanionDevicePresence">Обнаружение связанных устройств</string>
     <string name="permlab_persistentActivity">Поддержание приложения в рабочем режиме</string>
     <string name="permlab_postNotification">показ уведомлений</string>
@@ -2451,6 +2455,7 @@
     <string name="permlab_writeContacts">Изменение контактов</string>
     <string name="permlab_writeSettings">Изменение настроек системы</string>
     <string name="permlab_writeSyncSettings">Включение/выключение синхронизации</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">обновление статусов проверки защищенных сквозным шифрованием и принадлежащих другим приложениям ключей контактов</string>
     <string name="perms_description_app">Источник: %1$s.</string>
     <string name="perms_new_perm_prefix">&lt;font fgcolor=#ff33b5e5 size=12>НОВОЕ: &lt;/font></string>
     <string name="personal_apps_suspended_turn_profile_on">Включить</string>
@@ -2487,7 +2492,7 @@
     <string name="policydesc_allow_desktopsync">Запрет на синхронизацию с компьютером.</string>
     <string name="policydesc_allow_internetsharing">Запрет на использование мобильной точки доступа.</string>
     <string name="policydesc_allow_irda">Запрет на использование ИК-связи IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Запрет на использование в планшете протоколов электронной почты POP и IMAP.</string>
+    <string name="policydesc_allow_popimapemail">Запрет на использование в телефоне протоколов электронной почты POP и IMAP.</string>
     <string name="policydesc_allow_storagecard">Запрет на использование SD-карт.</string>
     <string name="policydesc_allow_textmessaging">Запрет на обмен текстовыми и мультимедийными сообщениями.</string>
     <string name="policydesc_allow_thirdParty">Это приложение может препятствовать выполнению сторонних приложений.</string>
@@ -2505,10 +2510,10 @@
     <string name="policydesc_setGlobalProxy">Настроить глобальный прокси-сервер устройства, который будет использоваться при активной политике. Это может сделать только владелец устройства.</string>
     <string name="policydesc_unsigned_app">Это приложение может препятствовать выполнению приложений из неизвестных источников.</string>
     <string name="policydesc_unsigned_pkg">Это приложение может препятствовать установке приложений из неизвестных источников.</string>
-    <string name="policydesc_watchLogin">Отслеживает попытки ввода пароля при разблокировке экрана и блокирует планшетный ПК или удаляет с него все данные, если было сделано слишком много таких попыток.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Отслеживать неверно введенные пароли при разблокировке экрана и блокировать планшет или удалять с него все данные, если сделано слишком много неудачных попыток.</string>
-    <string name="policydesc_wipeData">Удалять все данные на планшетном ПК без предупреждения путем сброса настроек.</string>
-    <string name="policydesc_wipeData_secondaryUser">Удалить данные этого пользователя с планшета без предупреждения.</string>
+    <string name="policydesc_watchLogin">Отслеживать попытки ввода пароля при разблокировке экрана и блокировать телефон или удалять с него все данные, если было сделано слишком много таких попыток.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Отслеживать неверно введенные пароли при разблокировке экрана и блокировать телефон или удалять с него все данные, если сделано слишком много неудачных попыток.</string>
+    <string name="policydesc_wipeData">Удалять все данные на телефоне без предупреждения путем сброса настроек.</string>
+    <string name="policydesc_wipeData_secondaryUser">Удалить данные этого пользователя с телефона без предупреждения.</string>
     <string name="policylab_allow_bluetoothmode">Отключить Bluetooth</string>
     <string name="policylab_allow_browser">Отключить Интернет</string>
     <string name="policylab_allow_camera">Отключать камеры</string>
@@ -2542,7 +2547,7 @@
     <string name="postalTypeHome">Домашний</string>
     <string name="postalTypeOther">Другой</string>
     <string name="postalTypeWork">Рабочий</string>
-    <string name="power_dialog">Настройки планшетного ПК</string>
+    <string name="power_dialog">Параметры телефона</string>
     <string name="power_off">Выключение</string>
     <string name="prepend_shortcut_label">Меню+</string>
     <string name="preposition_for_date">%s</string>
@@ -2554,6 +2559,8 @@
     <string name="print_service_installed_title">Служба %s установлена</string>
     <string name="printing_disabled_by">Функция печати отключена приложением \"%s\"</string>
     <string name="private_dns_broken_detailed">Доступа к частному DNS-серверу нет.</string>
+    <string name="private_profile_label_badge">%1$s (частный профиль)</string>
+    <string name="private_space_set_up_screen_lock_message">Чтобы использовать частное пространство, настройте блокировку экрана на этом устройстве.</string>
     <string name="profile_encrypted_detail">Рабочий профиль заблокирован</string>
     <string name="profile_encrypted_detail_workspace_premium">Приложение %s заблокировано</string>
     <string name="profile_encrypted_detail_workspace_prime">Рабочий профиль заблокирован</string>
@@ -2563,6 +2570,13 @@
     <string name="profile_encrypted_message_workspace_prime">Чтобы получать уведомления о рабочих приложениях, разблокируйте рабочий профиль.</string>
     <string name="profile_encrypted_title">Некоторые функции могут не работать</string>
     <string name="profile_encrypted_title_secure_folder">Папка Knox заблокирована.</string>
+    <string name="profile_label_clone">Клон</string>
+    <string name="profile_label_communal">Совместный</string>
+    <string name="profile_label_private">Личный</string>
+    <string name="profile_label_test">Тестовый</string>
+    <string name="profile_label_work">Рабочий</string>
+    <string name="profile_label_work_2">Рабочий 2</string>
+    <string name="profile_label_work_3">Рабочий 3</string>
     <string name="profile_restarting_message_premium">В случае блокировки %1$s вы будете получать только часть уведомлений от рабочих приложений. Коснитесь здесь для разблокировки %2$s.</string>
     <string name="profile_restarting_message_prime">В случае блокировки рабочего профиля вы будете получать только часть уведомлений от рабочих приложений. Коснитесь здесь для разблокировки рабочего профиля.</string>
     <string name="profile_restarting_title_premium">Приложение “%s” заблокировано</string>
@@ -2588,9 +2602,11 @@
     <string name="recent_tasks_title">Недавние</string>
     <string name="recording_fail">Невозможно использовать микрофон в %1$s, если он уже используется в %2$s.</string>
     <string name="recording_popup">Приложение %s использует микрофон.</string>
-    <string name="recording_popup_device">Планшет</string>
+    <string name="recording_popup_device">Телефон</string>
     <string name="recording_popup_with_bluetooth">Приложение “%s” использует Bluetooth-микрофон.</string>
     <string name="recording_popup_with_device">Приложение “%1$s” использует микрофон устройства (%2$s).</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">Конфиденциальная информация в уведомлении скрыта</string>
     <string name="redo">Вернуть</string>
     <string name="reduce_bright_colors_feature_name">"Макс.
 затемнение"</string>
@@ -2722,6 +2738,29 @@
     <string name="samsung_global_action_restart">Перезагрузить</string>
     <string name="samsung_keyboard_settings">Параметры клавиатуры Samsung</string>
     <string name="sanitized_content_text_sf">Содержимое скрыто</string>
+    <string name="satellite_notification_how_it_works">Узнать принцип работы</string>
+    <string name="satellite_notification_manual_summary">Отправляйте и получайте сообщения без подключения к мобильной сети или Wi-Fi.</string>
+    <string name="satellite_notification_manual_title">Включить спутниковый обмен сообщениями?</string>
+    <string name="satellite_notification_open_message">Открыть Сообщения</string>
+    <string name="satellite_notification_summary">Вы можете отправлять и получать сообщения без доступа к мобильной сети или Wi-Fi.</string>
+    <string name="satellite_notification_title">Автоматически подключено к системам спутниковой связи</string>
+    <string name="scCellularNetworkSecuritySummary">Шифрование, уведомления о незашифрованных сетях</string>
+    <string name="scCellularNetworkSecurityTitle">Безопасность мобильной сети</string>
+    <string name="scIdentifierDisclosureIssueSummary">"В %1$s, когда вы использовали SIM-карту \"%2$s\", сетью поблизости от вас был записан уникальный идентификатор вашего устройства (IMSI или IMEI).
+
+Это значит, что было зарегистрировано ваше местоположение, действия или личность. Это распространенная практика, однако она может вызывать беспокойство у тех, кто заботится о своей конфиденциальности."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">В %1$s, когда вы использовали SIM-карту \"%2$s\", сетью поблизости от вас был записан уникальный идентификатор вашего устройства (IMSI или IMEI).</string>
+    <string name="scIdentifierDisclosureIssueTitle">Получен доступ к идентификатору устройства</string>
+    <string name="scNullCipherIssueActionGotIt">ОК</string>
+    <string name="scNullCipherIssueActionLearnMore">Подробнее</string>
+    <string name="scNullCipherIssueActionSettings">Настройки безопасности мобильной сети</string>
+    <string name="scNullCipherIssueEncryptedSummary">Теперь подключение SIM-карты (%1$s) лучше защищено.</string>
+    <string name="scNullCipherIssueEncryptedTitle">Подключено к зашифрованной сети %1$s</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"Сейчас звонки, сообщения и данные более уязвимы при использовании SIM-карты (%1$s).
+
+Когда соединение будет снова зашифровано, вы получите ещё одно уведомление."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">Сейчас звонки, сообщения и данные более уязвимы при использовании SIM-карты (%1$s).</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">Подключено к незашифрованной сети</string>
     <string name="scan_text">Извлечь текст</string>
     <string name="screen_compat_mode_hint">Включить эту функцию можно в меню \"Настройки > Приложения > Загруженные\".</string>
     <string name="screen_compat_mode_scale">Масштаб</string>
@@ -2732,16 +2771,17 @@
     <string name="screen_lock">Блокировка экрана</string>
     <string name="screen_lock_app_setting_name">Использовать блокировку экрана</string>
     <string name="screen_lock_dialog_default_subtitle">Чтобы продолжить, разблокируйте экран.</string>
+    <string name="screen_not_shared_sensitive_content">Содержимое приложения исключено из демонстрации экрана в целях безопасности.</string>
     <string name="screencapture_restrict">Политика безопасности запрещает создание снимков экрана.</string>
     <string name="screenshot_edit">Изменить</string>
     <string name="sd_card_unavailable_message">Вы не можете использовать SD-карту, потому что при ее установке использовался другой профиль пользователя.</string>
     <string name="sd_card_unavailable_title">SD-карта недоступна</string>
-    <string name="sdcard_bad_removal_message">SD-карта была извлечена небезопасным способом. Чтобы избежать неожиданного перезапуска планшета, сохраните все данные и перезапустите его вручную.</string>
+    <string name="sdcard_bad_removal_message">SD-карта была извлечена небезопасным способом. Чтобы избежать неожиданного перезапуска телефона, сохраните все данные и перезапустите его вручную.</string>
     <string name="sdcard_batch_decrypt_noti_content">Расшифровать карту памяти SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Расшифровка карты памяти SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Перед использованием зашифрованной карты памяти SD ее нужно расшифровать. Расшифровка может занять не менее часа. Зарядите батарею и не отключайте устройство от сети до завершения расшифровки. При прерывании этого процесса могут быть частично или полностью потеряны данные.</string>
     <string name="sdcard_decrypt_err_notification">Возникла ошибка расшифровки карты памяти SD.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Некоторые файлы на SD-карте были зашифрованы другим устройством. Их невозможно использовать на этом планшете.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Некоторые файлы на SD-карте были зашифрованы другим устройством. Их невозможно использовать на этом телефоне.</string>
     <string name="sdcard_decrypt_notification">Карта памяти SD расшифрована.</string>
     <string name="sdcard_decrypt_title_notification">Расшифровка карты памяти SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Расшифровка SD-карты…</string>
@@ -2765,14 +2805,6 @@
     <string name="searchview_description_submit">Отправить запрос</string>
     <string name="searchview_description_voice">Голосовой поиск</string>
     <string name="sec_bluetooth_airplane_mode_toast">Функция Bluetooth не будет отключаться при переходе в автономный режим.</string>
-    <string name="sec_immersive_cling_button_ok">ОК</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Это приложение отображается в полноэкранном режиме. Жесты для навигации показаны в строке состояния. Для перехода проведите по экрану еще раз, пока видна строка состояния.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Это приложение работает в полноэкранном режиме. Кнопки “Домой”, “Назад” и “Последние” скрыты, чтобы не отвлекать вас и чтобы вы случайно не вышли из приложения.
-
-Даже если вы измените ориентацию экрана, кнопки всегда будут расположены рядом с разъемом для зарядки. Чтобы снова отобразить кнопки, проведите пальцем от края экрана к центру, как показано стрелкой."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Это приложение работает в полноэкранном режиме. Кнопки “Домой”, “Назад” и “Последние” скрыты, чтобы не отвлекать вас и чтобы вы случайно не вышли из приложения.
-
-Чтобы снова отобразить кнопки, проведите вверх от нижней части экрана, как показано стрелкой."</string>
     <string name="sec_monotype_default">По умолчанию</string>
     <string name="sec_ringtone_category_brand_sound">Звук Samsung</string>
     <string name="sec_ringtone_category_calm">Спокойная</string>
@@ -2782,6 +2814,10 @@
     <string name="sec_ringtone_category_open_theme">Стандартные настройки текущей темы</string>
     <string name="sec_ringtone_category_retro">Ретро</string>
     <string name="sec_ringtone_silent">Без звука</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Отмена</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Чтобы подключиться к спутнику, выберите опцию “Автоматически” для поставщиков услуг сети.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Включить</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Включить автоматический выбор сети?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Предоставьте доступ к микрофону, чтобы говорить.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">%s запрашивает доступ к камере.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">%s запрашивает доступ к микрофону.</string>
@@ -2890,6 +2926,8 @@
     <string name="sem_face_error_already_in_use_by_VT">Невозможно использовать распознавание лица во время видеовызовов.</string>
     <string name="sem_face_error_camera_access_off">Невозможно использовать распознавание лица из-за отсутствия доступа к камере</string>
     <string name="sem_face_error_camera_fail">Не удалось открыть приложение “Камера”. Повторите попытку.</string>
+    <string name="sem_face_error_lockout">Слишком много неудачных попыток. Подтверждение личности с помощью биометрических данных сейчас недоступно.</string>
+    <string name="sem_face_error_lockout_permanent">Слишком много неудачных попыток. Подтверждение личности с помощью биометрических данных сейчас недоступно.</string>
     <string name="sem_face_error_ppp_timeout">С момента подтверждения личности прошло много времени. Вам потребуется выполнить процедуру регистрации лица снова.</string>
     <string name="sem_face_error_too_dark">Слишком темно для распознавания лица</string>
     <string name="sem_face_error_too_dark_to_enroll">Слишком темно. Включите свет или перейдите в более освещенное место.</string>
@@ -2905,13 +2943,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">Для сканирования отпечатка пальца необходимо переместить кончик S Pen дальше от экрана.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Для использования отпечатков пальцев выберите защищенный тип блокировки экрана (рисунок разблокировки, PIN-код или пароль).</string>
+    <string name="sem_fingerprint_error_lockout">Слишком много неудачных попыток. Подтверждение личности с помощью биометрических данных сейчас недоступно.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Слишком много неудачных попыток. Подтверждение личности с помощью биометрических данных сейчас недоступно.</string>
     <string name="sem_fingerprint_error_onehand_mode">Невозможно использовать датчик отпечатков пальцев в режиме управления одной рукой.</string>
     <string name="sem_fingerprint_error_smart_view">Невозможно отсканировать отпечаток пальца во время использования %s.</string>
+    <string name="sem_fingerprint_error_system_failure">Датчик отпечатков пальцев не отвечает. Повторите попытку позже. Если проблема не исчезнет, перезапустите телефон.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Данные об отпечатках пальцев повреждены. Добавьте отпечатки пальцев повторно.</string>
     <string name="sem_fingerprint_error_wireless_charger">Чтобы использовать отпечаток пальца, отключите беспроводное зарядное устройство</string>
     <string name="sem_fingerprint_name_template">Отпечаток пальца %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Позже</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Не сейчас</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Удалить и зарегистрировать</string>
+    <string name="sem_fingerprint_register_dialog_message">В последнем обновлении ПО улучшена работа функции распознавания отпечатков пальцев. Вы не сможете использовать ее, пока не удалите отпечатки и не зарегистрируете их повторно.</string>
     <string name="sem_fingerprint_register_dialog_title">Регистрация отпечатков повторно</string>
     <string name="sem_fingerprint_result_failed">Совпадения не обнаружены.</string>
     <string name="sem_fingerprint_result_retry">Повторите попытку.</string>
@@ -2931,7 +2974,7 @@
     <string name="sem_resolver_button_always_accessibility">Всегда использовать выбранное приложение</string>
     <string name="sem_resolver_button_just_once_accessibility">Использовать выбранное приложение один раз</string>
     <string name="sem_resolver_choose_what_to_do">Выбор действий</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Чтобы изменить настройки стандартных приложений, перейдите в меню “Настройки” > “Приложения” > “Выбрать стандартные приложения”.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Чтобы изменить приложение по умолчанию для открытия файлов этого типа, перейдите в меню “Настройки” > “Приложения”, выберите текущее приложение по умолчанию и нажмите “Использовать по умолчанию” > “Сбросить значения по умолчанию”.</string>
     <string name="sem_resolver_icon_content_description">Сведения</string>
     <string name="sem_resolver_personal_tab_accessibility">Личное</string>
     <string name="sem_resolver_share_live_default_text">Мгновенная отправка пользователям поблизости. Здесь появятся пользователи, чьи устройства доступны для обнаружения.</string>
@@ -2947,9 +2990,9 @@
     <string name="sending">Отправка...</string>
     <string name="sensor_notification_service">Сервис для обработки уведомлений от датчиков</string>
     <string name="sensor_privacy_notification_channel_label">Конфиденциальность датчиков</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Доступ к камере отключен у всех приложений</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Включить</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Доступ к микрофону откл. у всех приложений</string>
+    <string name="sensor_privacy_start_use_camera_notification_content_title">Разблокируйте камеру устройства</string>
+    <string name="sensor_privacy_start_use_dialog_turn_on_button">Разблокировать</string>
+    <string name="sensor_privacy_start_use_mic_notification_content_title">Разблокируйте микрофон устройства</string>
     <string name="sensor_privacy_start_use_notification_content_text">Для приложения <b>%s</b> и всех приложений и сервисов.</string>
     <string name="serial_number">Серийный номер:</string>
     <string name="serviceClassData">Данные</string>
@@ -2974,6 +3017,9 @@
     <string name="serviceRegistered">Регистрация пройдена успешно.</string>
     <string name="serviceisDisabled">Служба отключена.</string>
     <string name="serviceisEnabled">Служба включена.</string>
+    <string name="set_up_screen_lock_action_label">Настроить блокировку экрана</string>
+    <string name="set_up_screen_lock_title">Настройте блокировку экрана</string>
+    <string name="settings">Настройки</string>
     <string name="sf_quick_switch_not_supported">В этом случае функция “Быстрое переключение” не поддерживается.</string>
     <string name="sf_quick_switch_securefolder_view">Переключено на раздел “%s”.</string>
     <string name="sha1_fingerprint">Отпечаток SHA-1:</string>
@@ -2997,12 +3043,14 @@
     <string name="show_ime">Не скрывать экранную клавиатуру, когда включена физическая</string>
     <string name="show_keyboard_button">Отображение кнопки “Клавиатура”</string>
     <string name="show_keyboard_button_description">Отображение значка %s на навигационной панели.</string>
+    <string name="showing_esc_dialog">Можно настроить клавишу Esc так, чтобы она выполняла функции кнопки “Назад”.</string>
     <string name="showing_touch_sensitivity_noti_action">Включить</string>
     <string name="showing_touch_sensitivity_noti_text">Включите функцию “Чувствительность касаний” при работе с чехлами Privacy Screen и Notepaper Screen, чтобы улучшить отклик экрана на прикосновения.</string>
     <string name="showing_touch_sensitivity_noti_title">Повысить чувствительность</string>
-    <string name="shutdown_confirm">Планшетный ПК будет отключен.</string>
+    <string name="shutdown_confirm">Телефон будет выключен.</string>
     <string name="shutdown_confirm_question">Завершить работу?</string>
     <string name="shutdown_progress">Выключение...</string>
+    <string name="side_key_double_press_archived_app">Приложение архивировано. Выберите другое приложение.</string>
     <string name="side_key_double_press_deleted_app">Приложение удалено. Выберите другое приложение.</string>
     <string name="side_key_double_press_disabled_app">Приложение “%s” отключено. Выберите другое приложение.</string>
     <string name="signature_identity_toast">%s подписано</string>
@@ -3015,18 +3063,20 @@
     <string name="sim_added_message">Перезагрузите устройство для доступа к мобильной сети.</string>
     <string name="sim_added_title">SIM-карта добавлена</string>
     <string name="sim_check_old_sim_message">Если SIM-карта старая или повреждена, с подключением к сети могут возникать проблемы. Обратитесь к поставщику услуг или посетите его магазин, чтобы узнать, нужно ли вам заменить SIM-карту.</string>
+    <string name="sim_check_old_sim_message_skt">Если SIM-карта старая или повреждена, с подключением к сети могут возникать проблемы. Обратитесь к поставщику услуг или посетите его магазин, чтобы узнать, нужно ли вам заменить SIM-карту.</string>
     <string name="sim_check_old_sim_title">Возможно, SIM-карту нужно заменить</string>
+    <string name="sim_check_old_sim_title_skt">Возможно, SIM-карту необходимо заменить</string>
     <string name="sim_count_mismatched_ds_to_ss">Режим SIM-карты переключен с двух SIM-карт на одну. Для применения этого режима устройство перезапустится после сброса настроек до заводских значений по умолчанию.</string>
     <string name="sim_count_mismatched_ss_to_ds">Режим SIM-карты переключен с одной SIM-карты на две. Для применения этого режима устройство перезапустится после сброса настроек до заводских значений по умолчанию.</string>
     <string name="sim_count_mismatched_title">Режим SIM-карты переключен</string>
     <string name="sim_done_button">Готово</string>
-    <string name="sim_imsreg_error_message_lgt">Телефон будет невозможно использовать для совершения голосовых вызовов, так как он не распознает SIM-карту. Извлеките SIM-карту и вставьте ее снова. Если проблема не исчезнет, возможно, потребуется заменить SIM-карту. Для получения помощи посетите магазин LG U+ или обратитесь в службу поддержки клиентов по телефону 1544-0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Вы не сможете совершать голосовые вызовы, так как планшету не удалось распознать SIM-карту. Попробуйте извлечь SIM-карту и вставить ее снова. Если проблема не исчезнет, то, возможно, придется заменить SIM-карту. Чтобы получить помощь, посетите магазин LG U+ или свяжитесь со службой поддержки клиентов LG U+ по номеру 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">Телефон будет невозможно использовать для совершения голосовых вызовов, так как он не распознает SIM-карту. Извлеките SIM-карту и вставьте ее снова. Если проблема не исчезнет, возможно вам потребуется заменить SIM-карту в магазине LG U+.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Планшет будет невозможно использовать для совершения голосовых вызовов, так как он не распознает SIM-карту. Извлеките SIM-карту и вставьте ее снова. Если проблема не исчезнет, возможно вам потребуется заменить SIM-карту в магазине LG U+.</string>
     <string name="sim_off_noti_message">Если выключены все SIM-карты, вы не можете совершать вызовы, отправлять сообщения или использовать данные. Коснитесь здесь, чтобы включить SIM-карты.</string>
     <string name="sim_off_noti_title">Все SIM-карты выключены</string>
     <string name="sim_off_toast_message">Вставленная SIM-карта отключена. Чтобы ее включить, перейдите в меню “Настройки” > “Подключения” > “Диспетчер SIM-карт”.</string>
     <string name="sim_recognize_error_message_kt">SIM-карта не распознана. Извлеките SIM-карту и вставьте ее снова. Если проблема не исчезнет, возможно, потребуется заменить SIM-карту. Для получения помощи посетите магазин KT или свяжитесь со службой поддержки клиентов KT по телефону 1588-0010.</string>
-    <string name="sim_recognize_error_message_lgt">SIM-карта не распознана. Извлеките SIM-карту и вставьте ее снова. Если проблема не исчезнет, то, возможно, потребуется заменить SIM-карту. Для получения помощи посетите магазин LG U+ или свяжитесь со службой поддержки клиентов по телефону 1544-0010.</string>
+    <string name="sim_recognize_error_message_lgt">SIM-карта не распознана. Извлеките SIM-карту и вставьте ее снова. Если проблема не исчезнет, то возможно потребуется заменить SIM-карту в магазине LG U+.</string>
     <string name="sim_recognize_error_message_skt">Невозможно считать SIM-карту. Некоторые функции и приложения могут не работать. Выньте и установите SIM-карту, а затем перезапустите телефон. Если проблема не исчезнет, обратитесь в центр обслуживания с телефоном и SIM-картой.</string>
     <string name="sim_recognize_error_message_skt_tablet">Невозможно считать SIM-карту. Некоторые функции и приложения могут не работать. Выньте и установите SIM-карту, а затем перезапустите планшет. Если проблема не исчезнет, обратитесь в центр обслуживания с планшетом и SIM-картой.</string>
     <string name="sim_recognize_error_title_lgt">Сбой распознавания USIM-карты</string>
@@ -3046,6 +3096,7 @@
     <string name="skip_button_label">Пропустить</string>
     <string name="slice_more_content">+ %1$d</string>
     <string name="slices_permission_request">Приложение \"%1$s\" запрашивает разрешение на показ фрагментов приложения \"%2$s\".</string>
+    <string name="smart_tip_action_click_hint_text">Закрыть</string>
     <string name="smartclip_restrict">Политика безопасности запрещает использование простой обрезки.</string>
     <string name="sms_control_message"><b>%1$s</b> отправляет большое количество SMS. Разрешить приложению и дальше отправлять сообщения?</string>
     <string name="sms_control_no">Запретить</string>
@@ -3059,9 +3110,7 @@
     <string name="sms_short_code_confirm_never_allow">Не разрешать</string>
     <string name="sms_short_code_details">Со счета вашего мобильного телефона <b>могут быть списаны средства</b>.</string>
     <string name="sms_short_code_remember_choice">Запомнить выбор</string>
-    <string name="sms_short_code_remember_undo_instruction">Позже можно изменить эту настройку в меню \"Параметры\" > \"Приложения\"</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Этот выбор можно изменить в меню “Настройки” > “Приложения” > “Дополнительные параметры” > “Специальный доступ” > “Использовать премиум-услуги отправки SMS”.</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Если вы коснетесь кнопки ВСЕГДА ЗАПРЕЩАТЬ, это приложение не сможет отправлять сообщения в фоновом режиме, даже если получит разрешение на отправку SMS.</string>
+    <string name="sms_short_code_remember_undo_instruction">Это можно изменить позже в разделе настроек \"Приложения\".</string>
     <string name="smv_application">Приложение \"%1$s\" (процесс: %2$s) нарушило собственную политику StrictMode.</string>
     <string name="smv_process">Процесс %1$s нарушил собственную политику StrictMode.</string>
     <string name="splash_screen_view_branding_description">Образ бренда приложения</string>
@@ -3146,7 +3195,6 @@
     <string name="time_picker_radial_mode_description">Чтобы ввести время, перейдите в режим часов.</string>
     <string name="time_picker_text_input_mode_description">Чтобы ввести время, перейдите в режим ввода текста.</string>
     <string name="title_dialog_check_rotate_or_not">Отключить автоматический поворот экрана?</string>
-    <string name="title_uds">Режим максимальной экономии трафика</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Невозможно использовать Bixby во время настройки телефона.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Невозможно использовать Bixby во время настройки планшета.</string>
     <string name="toast_warning_pattern_lock">Невозможно использовать блокировку с помощью рисунка вместе с универсальным переключателем. Измените тип блокировки.</string>
@@ -3176,13 +3224,14 @@
     <string name="ucm_smartcard_is_encrypting_phone">Кодирование телефона смарт-картой…</string>
     <string name="ui_translation_accessibility_translated_text">Сообщение \"%1$s\" переведено.</string>
     <string name="ui_translation_accessibility_translation_finished">Сообщение переведено на %2$s. Язык оригинала: %1$s.</string>
+    <string name="unarchival_session_app_label">Обработка…</string>
     <string name="undo">Отменить</string>
     <string name="unknown_install_activity_warning_title">Потенциально вредоносное приложение</string>
     <string name="unknown_install_blocked_dlg_desc">Невозможно установить это приложение, так как оно может быть вредоносным.</string>
     <string name="unknown_install_blocked_dlg_title">Заблокировано опасное приложение</string>
-    <string name="unknown_install_blocked_esm_desc_phone">"Чтобы обеспечить безопасность телефона и данных, приложение “Автоматический блокировщик” предотвращает установку неизвестных приложений. Вы можете устанавливать приложения только из авторизованных источников, таких как Play Store или Galaxy Store.
+    <string name="unknown_install_blocked_esm_desc_phone">"Чтобы обеспечить безопасность телефона и данных, приложение “Автоблокировщик” предотвращает установку неизвестных приложений. Вы можете устанавливать приложения только из авторизованных источников, таких как Play Store или Galaxy Store.
 
-Чтобы отключить защиту, перейдите в меню “Настройки” > “Безопасность и конфиденциальность” > “Автоматический блокировщик”."</string>
+Чтобы отключить защиту, перейдите в меню “Настройки” > “Безопасность и конфиденциальность” > “Автоблокировщик”."</string>
     <string name="unknown_install_blocked_esm_desc_phone_china">"Чтобы обеспечить безопасность телефона и данных, приложение “Автоматический блокировщик” предотвращает установку неизвестных приложений. Вы можете устанавливать приложения только из авторизованных источников, таких как Galaxy Store.
 
 Чтобы отключить эту защиту, перейдите в меню “Настройки” > “Безопасность и конфиденциальность” > “Автоматический блокировщик”."</string>
@@ -3195,9 +3244,13 @@
     <string name="unknown_install_blocked_esm_title">Заблокировано неизвестное приложение</string>
     <string name="unknown_install_dlg_desc">Это приложение загружено не из проверенного магазина. Установка этого приложения может представлять угрозу безопасности и конфиденциальности ваших данных. Приложение может собирать ваши личные сведения или вызвать потерю данных.</string>
     <string name="unknown_install_dlg_desc2">Это приложение не поддерживает последние функции безопасности. Его установка может привести к возникновению следующих угроз для безопасности:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Этот установочный файл может быть опасным. Возможно при его запуске будет установлено совершенно другое приложение. С целью защиты телефона и личных данных установите необходимое приложение из доверенного магазина приложений.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Этот установочный файл может быть опасным. Возможно при его запуске будет установлено совершенно другое приложение. С целью защиты планшета и личных данных установите необходимое приложение из доверенного магазина приложений.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Есть риск, что это приложение является вредоносным и может угрожать безопасности данных на телефоне. Не рекомендуем устанавливать это приложение.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Есть риск, что это приложение является вредоносным и может угрожать безопасности данных на планшете. Не рекомендуем устанавливать это приложение.</string>
-    <string name="unknown_install_dlg_general_title">Это приложение из неизвестного источника</string>
+    <string name="unknown_install_dlg_desc_phone">Это приложение не из авторизованного магазина приложений. Чтобы защитить телефон и личную информацию, устанавливайте приложения из авторизованных магазинов, таких как Play Store или Galaxy Store.</string>
+    <string name="unknown_install_dlg_desc_tablet">Это приложение не из авторизованного магазина приложений. Чтобы защитить свой планшет и личную информацию, устанавливайте приложения из авторизованных магазинов, таких как Play Store или Galaxy Store.</string>
+    <string name="unknown_install_dlg_general_title">Не рекомендуется устанавливать это приложение</string>
     <string name="unknown_install_dlg_negative_button">Не устанавливать</string>
     <string name="unknown_install_dlg_perm_desc1">Приложение может перехватывать коды проверки из получаемых вами текстовых сообщений.</string>
     <string name="unknown_install_dlg_perm_desc2">Исходящие вызовы могут перенаправляться на другой номер телефона без вашего ведома.</string>
@@ -3227,7 +3280,7 @@
     <string name="usb_abnormal_reset_title">Подключение по USB нестабильно</string>
     <string name="usb_abnormal_reset_toast">Подключение через USB нестабильно. Отсоедините кабель, а затем снова подсоедините его или попробуйте использовать другой кабель.</string>
     <string name="usb_accessory_notification_title">Подключено к USB-аксессуару</string>
-    <string name="usb_bad_removal_message">USB-накопитель был извлечен небезопасным способом. Чтобы избежать неожиданного перезапуска планшета, сохраните все данные и перезапустите его вручную.</string>
+    <string name="usb_bad_removal_message">USB-накопитель был извлечен небезопасным способом. Чтобы избежать неожиданного перезапуска телефона, сохраните все данные и перезапустите его вручную.</string>
     <string name="usb_blocked_by_emergency_mode">Некоторые функции USB недоступны в экстренном режиме.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Невозможно использовать функции, связанные с подключенным USB-устройством, пока включен режим максимального энергосбережения.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">В режиме максимального энергосбережения функции USB могут быть ограничены.</string>
@@ -3237,7 +3290,9 @@
     <string name="usb_camera_disconnected_notification_title">Мультимедийное устройство отключено</string>
     <string name="usb_cd_installer_notification_title">Обновление ПО</string>
     <string name="usb_charging_notification_title">Зарядка устройства через USB</string>
-    <string name="usb_charing_only_notification_title">Подключено</string>
+    <string name="usb_charing_only_notification_title">Зарядка по USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Функция “Автоблокировка” включена с максимальными ограничениями.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB-подключение заблокировано</string>
     <string name="usb_contaminant_detected_message">USB-порт был автоматически отключен. Нажмите, чтобы узнать подробности.</string>
     <string name="usb_contaminant_detected_title">В USB-порт попала вода или грязь</string>
     <string name="usb_contaminant_not_detected_message">Вода или грязь внутри не обнаружена.</string>
@@ -3249,11 +3304,11 @@
     <string name="usb_host_cable_disconnected_notification_title">USB-кабель отключен.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Невозможно получить доступ к данному устройству. Для подключенного устройства требуется внешний источник питания.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Подключено мощное USB-устройство.</string>
-    <string name="usb_host_resource_exceed_message">У USB-контроллера планшета недостаточно мощности для подключения этого устройства. Отключите устройство и снова подключите его.</string>
+    <string name="usb_host_resource_exceed_message">У USB-контроллера телефона недостаточно мощности для подключения этого устройства. Отключите устройство и снова подключите его.</string>
     <string name="usb_host_resource_exceed_title">Недостаточно мощности USB-контроллера</string>
-    <string name="usb_hub_depth_exceed_message">Планшет поддерживает 5 одновременных USB-подключений к хабу.</string>
+    <string name="usb_hub_depth_exceed_message">Телефон поддерживает 5 одновременных USB-подключений к хабу.</string>
     <string name="usb_hub_depth_exceed_title">Максимум USB-подключений к хабу</string>
-    <string name="usb_hub_power_exceed_message">Планшет не может обеспечить достаточное электропитание для этого USB-устройства. Подключите устройство к автономному USB-хабу перед подключением к планшету.</string>
+    <string name="usb_hub_power_exceed_message">Телефон не может обеспечить достаточное электропитание для этого USB-устройства. Подключите устройство к автономному USB-хабу перед подключением к телефону.</string>
     <string name="usb_increase_battery_usage">Использование подключения по USB может увеличить расход заряда.</string>
     <string name="usb_keyboard_connected_notification_title">Клавиатура подключена</string>
     <string name="usb_keyboard_disconnected_notification_title">Клавиатура отключена</string>
@@ -3296,8 +3351,9 @@
     <string name="usb_ums_connected_notification_message_usbhost">USB-носитель неожиданно извлечен.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Съемный USB-носитель подключен</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB-носитель безопасно извлечен.</string>
-    <string name="usb_unblock_by_screen_unlock">Разблокируйте планшет, чтобы использовать подключенное USB-устройство.</string>
-    <string name="usb_unsupport_accessory_message">Планшет не поддерживает это USB-устройство.</string>
+    <string name="usb_unblock_by_screen_unlock">Разблокируйте телефон, чтобы использовать подключенное USB-устройство.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">Для использования USB-устройства разблокируйте телефон и переподключите USB-устройство.</string>
+    <string name="usb_unsupport_accessory_message">Телефон не поддерживает это USB-устройство.</string>
     <string name="usb_unsupport_accessory_title">USB-устр. не поддерживается</string>
     <string name="usb_unsupported_audio_accessory_message">Подсоединенное устройство несовместимо с этим телефоном. Нажмите, чтобы узнать подробности.</string>
     <string name="usb_unsupported_audio_accessory_title">Обнаружено аналоговое аудиоустройство</string>
@@ -3318,19 +3374,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Вы можете ускорить высыхание, направив вентилятор или фен (допускается только холодный воздух) в разъем.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"В порте зарядки/USB-порте обнаружена влага или посторонние предметы.
 
-Проверьте порт на наличие посторонних частиц, например пыли или мусора. Чтобы предотвратить повреждение планшета, не подключайте к нему никаких устройств, пока порт зарядки не очищен и влага не устранена.
+Проверьте порт на наличие посторонних частиц, например пыли или мусора. Чтобы предотвратить повреждение телефона, не подключайте к нему никаких устройств, пока порт зарядки не очищен и влага не устранена.
 
 Чтобы высушить порт, вытряхните влагу и подождите, пока он высохнет. Это может занять несколько часов. Чтобы ускорить высыхание, используйте вентилятор или фен (только в режиме холодного воздуха)."</string>
     <string name="usb_water_dialg_positive_button">ОК</string>
     <string name="usb_water_dialg_support_wireless_charging">"В порте зарядки/USB-порте обнаружена влага или посторонние предметы.
 
-Проверьте порт зарядки/USB-порт на наличие посторонних предметов, например пыли или грязи. Чтобы предотвратить повреждение планшета, не подключайте к нему никаких устройств, пока порт зарядки не очищен и влага не устранена.
+Проверьте порт на наличие посторонних частиц, например пыли или мусора. Чтобы предотвратить повреждение телефона, не подключайте к нему никаких устройств, пока порт зарядки не очищен и влага не устранена.
 
 Чтобы высушить порт, вытряхните влагу и подождите, пока он высохнет. Это может занять несколько часов. Чтобы ускорить высыхание, используйте вентилятор или фен (только в режиме холодного воздуха).
 
-Тем временем, вы можете воспользоваться функцией беспроводной зарядки планшета."</string>
+Пока телефон сохнет, вы можете воспользоваться функцией беспроводной зарядки."</string>
     <string name="usb_water_notification_content">На зарядный или USB-порт попала жидкость или сторонний предмет. Осмотрите его перед зарядкой.</string>
-    <string name="usb_water_notification_message">На зарядном порте/USB-порте обнаружена влага. Этот порт должен быть абсолютно сухим, прежде чем можно будет заряжать планшет. Высыхание жидкости, попавшей на порт, может занять некоторое время.</string>
+    <string name="usb_water_notification_message">На зарядном порте/USB-порте обнаружена влага. Этот порт должен быть абсолютно сухим, прежде чем можно будет заряжать телефон. Высыхание жидкости, попавшей на порт, может занять некоторое время.</string>
     <string name="usb_water_notification_message_button">Подробности</string>
     <string name="usb_water_notification_title">Проверка USB-порта</string>
     <string name="usbhostStorage_restrict">Политика безопасности запрещает использование USB-накопителя.</string>
@@ -3348,7 +3404,7 @@
     <string name="user_switched">Выбран аккаунт пользователя %1$s.</string>
     <string name="user_switching_message">Смена профиля на \"%1$s\"…</string>
     <string name="validity_period">Срок действия:</string>
-    <string name="vdm_camera_access_denied">У устройства \"%1$s\" нет доступа к камере планшета.</string>
+    <string name="vdm_camera_access_denied">У устройства %1$s нет доступа к камере телефона.</string>
     <string name="vdm_pip_blocked">Нельзя запустить режим \"Картинка в картинке\" во время потоковой передачи</string>
     <string name="vdm_secure_window">Этот контент недоступен во время трансляции. Используйте телефон.</string>
     <string name="view_and_control_notification_content">%s может просматривать и контролировать то, что отображается на вашем экране. Нажмите здесь, чтобы узнать больше.</string>
@@ -3373,6 +3429,8 @@
     <string name="vpn_allowOnlySecureConnection">Небезопасный профиль VPN</string>
     <string name="vpn_error_text">Нажмите для повторного подключения к VPN.</string>
     <string name="vpn_error_title">Ошибка VPN-подключения</string>
+    <string name="vpn_fail_text_long">Сбой подключения к устройству “%s”. Коснитесь, чтобы изменить настройки VPN.</string>
+    <string name="vpn_fail_title">VPN не подключено</string>
     <string name="vpn_lockdown_config">Изменить настройки сети или VPN</string>
     <string name="vpn_lockdown_connected">Подключено</string>
     <string name="vpn_lockdown_connecting">Подключение…</string>
@@ -3499,6 +3557,7 @@
     <string name="wifi_networks_available_detailed">Доступны открытые сети Wi-Fi.</string>
     <string name="wifi_no_internet">Сеть \"%1$s\" не подключена к Интернету</string>
     <string name="wifi_no_internet_detailed">Нажмите, чтобы показать варианты.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s использует мобильные данные, так как подключение по WLAN медленное или нестабильное.</string>
     <string name="wifi_notification_switch_wifi_detail">Из-за нестабильности соединения сети Wi-Fi телефон переключился на использование мобильных данных.</string>
     <string name="wifi_notification_switch_wifi_title">Переключено в режим моб. передачи данных</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Экстренные уведомления</string>
@@ -3540,9 +3599,9 @@
     <string name="work_profile_on_message">Вы получите доступ к рабочим приложениям, уведомлениям, данным и другим функциям рабочего профиля.</string>
     <string name="work_profile_on_title">Включить рабочий профиль?</string>
     <string name="work_profile_restricted">Автоматический блокировщик включен с максимальными ограничениями. В целях безопасности невозможно создавать рабочие профили.</string>
-    <string name="work_profile_telephony_paused_text">Рабочие приложения приостановлены. Вы не будете принимать от них телефонные вызовы и текстовые сообщения.</string>
-    <string name="work_profile_telephony_paused_title">Вызовы и сообщения отключены</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Включить рабочий профиль?</string>
+    <string name="work_profile_telephony_paused_text">Рабочие приложения приостановлены. Вы не сможете получать вызовы и текстовые сообщения.</string>
+    <string name="work_profile_telephony_paused_title">Звонки и сообщения отключены</string>
+    <string name="work_profile_telephony_paused_turn_on_button">Возобновить</string>
     <string name="workspace_title">Workspace</string>
     <string name="write_fail_reason_cancelled">Печать отменена</string>
     <string name="write_fail_reason_cannot_write">Ошибка записи</string>
@@ -3563,9 +3622,15 @@
     <string name="zen_mode_duration_minutes_summary">{count,plural, =1{На 1 минуту (до {formattedTime})}one{На # минуту (до {formattedTime})}few{На # минуты (до {formattedTime})}many{На # минут (до {formattedTime})}other{На # минуты (до {formattedTime})}}</string>
     <string name="zen_mode_duration_minutes_summary_short">{count,plural, =1{На 1 мин. (до {formattedTime})}one{На # мин. (до {formattedTime})}few{На # мин. (до {formattedTime})}many{На # мин. (до {formattedTime})}other{На # мин. (до {formattedTime})}}</string>
     <string name="zen_mode_feature_name">Не беспокоить</string>
-    <string name="zen_mode_forever">До отключения вручную</string>
+    <string name="zen_mode_forever">Пока вы не отключите</string>
     <string name="zen_mode_forever_dnd">Пока вы не отключите режим \"Не беспокоить\"</string>
+    <string name="zen_mode_implicit_activated">Включено</string>
+    <string name="zen_mode_implicit_deactivated">Отключено</string>
+    <string name="zen_mode_implicit_trigger_description">Под управлением приложения \"%1$s\"</string>
     <string name="zen_mode_rule_name_combination">%1$s / %2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">Любой календарь</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s – %2$s</string>
     <string name="zen_mode_until">До %1$s</string>
     <string name="zen_mode_until_next_day">До %1$s</string>
     <string name="zen_upgrade_notification_content">Нажмите, чтобы проверить настройки.</string>

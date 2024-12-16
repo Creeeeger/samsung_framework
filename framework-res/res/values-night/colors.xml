@@ -34,12 +34,13 @@
     <color name="maintenance_mode_text_color_main">@color/sem_edit_text_color_dark</color>
     <color name="maintenance_mode_text_color_sub">@color/sem_edit_text_hint_color_dark</color>
     <color name="navbar_light_theme_color">#ff010102</color>
-    <color name="notification_action_divider_color">#40eaeaeb</color>
+    <color name="notification_action_divider_color">#40ffffff</color>
     <color name="notification_action_ripple_color">#33ffffff</color>
     <color name="notification_default_color_current">@color/notification_default_color_dark</color>
     <color name="notification_primary_text_color_current">@color/notification_primary_text_color_dark</color>
     <color name="notification_secondary_text_color_current">@color/notification_secondary_text_color_dark</color>
     <color name="notification_snooze_background_color">#14fafafa</color>
+    <color name="overview_background">@color/transparent</color>
     <color name="personal_apps_suspension_notification_color">#ff8ab4f8</color>
     <color name="sem_chooser_back_button_color">#fffafafa</color>
     <color name="sem_chooser_blur_dim_color">#a6666666</color>
@@ -86,6 +87,7 @@
     <color name="tw_chooser_primary_text_color_light">#fffafafa</color>
     <color name="tw_chooser_ripple_material">#33ffffff</color>
     <color name="tw_navigation_bar_color">#ff010102</color>
+    <color name="tw_searchview_result_title_text_color_material">#ffeaeaeb</color>
     <color name="tw_tab_background_color">#ff010101</color>
     <color name="tw_tab_selected_color">#fffafafa</color>
     <color name="tw_tab_selected_text_color">#fffafafa</color>

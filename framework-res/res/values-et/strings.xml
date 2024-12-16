@@ -43,7 +43,7 @@
     <string name="ColrMmi">Ühendatud liini ID piiramine</string>
     <string name="CwMmi">Koputus</string>
     <string name="DndMmi">Mitte häirida</string>
-    <string name="EmergencyCallWarningSummary">WiFi kaudu ei saa hädaabikõnesid teha</string>
+    <string name="EmergencyCallWarningSummary">Hädaabikõnede jaoks on vajalik mobiilsidevõrk</string>
     <string name="EmergencyCallWarningTitle">Hädaabikõned pole saadaval</string>
     <string name="Midnight">Kesköö</string>
     <string name="NetworkPreferenceSwitchSummary">Proovige eelistatud võrku vahetada. Puudutage muutmiseks.</string>
@@ -174,14 +174,19 @@
     <string name="accessibility_button_prompt_text">Valige, millist funktsiooni kasutada, kui vajutate juurdepääsetavuse nuppu:</string>
     <string name="accessibility_dialog_button_allow">Luba</string>
     <string name="accessibility_dialog_button_deny">Keela</string>
+    <string name="accessibility_dialog_button_uninstall">Desinstalli</string>
+    <string name="accessibility_dialog_touch_filtered_warning">Rakendus varjab loataotlust, nii et teie vastust ei saa kinnitada.</string>
     <string name="accessibility_edit_shortcut_menu_button_title">Valige funktsioonid, mida juurdepääsetavuse nupuga kasutada</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">Valige helitugevuse nupu otsetee funktsioonid</string>
     <string name="accessibility_enable_service_title">Kas anda teenusele %1$s teie seadme üle täielik kontroll?</string>
-    <string name="accessibility_freeform_caption">Rakenduse %1$s pealkirjariba.</string>
     <string name="accessibility_gesture_3finger_instructional_text">Funktsioonide vahel vahetamiseks pühkige kolme sõrmega üles ja hoidke.</string>
     <string name="accessibility_gesture_3finger_prompt_text">Valige, millist funktsiooni juurdepääsetavuse liigutusega (kolme sõrmega ekraanikuval alt üles pühkimine) kasutada:</string>
     <string name="accessibility_gesture_instructional_text">Funktsioonide vahel vahetamiseks pühkige kahe sõrmega üles ja hoidke.</string>
     <string name="accessibility_gesture_prompt_text">Valige, millist funktsiooni juurdepääsetavuse liigutusega (kahe sõrmega ekraanikuval alt üles pühkimine) kasutada:</string>
+    <string name="accessibility_label_clone_profile">Kloon</string>
+    <string name="accessibility_label_communal_profile">Ühine</string>
+    <string name="accessibility_label_managed_profile">Tööprofiil</string>
+    <string name="accessibility_label_private_profile">Privaatne ruum</string>
     <string name="accessibility_magnification_chooser_text">Suurendus</string>
     <string name="accessibility_select_shortcut_menu_title">Puudutage funktsiooni, et selle kasutamist alustada.</string>
     <string name="accessibility_service_action_perform_description">See saab jälgida teie suhtlust rakenduse või riistvaraanduriga ja teie eest rakendustega suhelda.</string>
@@ -267,14 +272,17 @@ Selle otsetee saab asendada muu otseteega jaotises Seaded > Juurdepääsetavus."
     <string name="alert_windows_notification_title">%s kuvat. teiste rakenduste peal</string>
     <string name="alert_windows_notification_turn_off_action">Lülita välja</string>
     <string name="allow">Luba</string>
+    <string name="alternative_face_setup_notification_content">Kasutage näoga avamist, kui teie sõrmejälge ei tuvastata, näiteks kui sõrmed on märjad</string>
+    <string name="alternative_fp_setup_notification_content">Kasutage sõrmejäljega avamist, kui teie nägu ei tuvastata, näiteks kui pole piisavalt valgust</string>
+    <string name="alternative_unlock_setup_notification_title">Proovige avamiseks teist viisi</string>
     <string name="alwaysUse">Kasuta vaikimisi selleks toiminguks.</string>
     <string name="android_preparing_apk">Rakenduse %1$s ettevalmistamine.</string>
-    <string name="android_start_title">Tahvelarvuti käivitub …</string>
+    <string name="android_start_title">Telefon käivitub …</string>
     <string name="android_system_label">Android-süsteem</string>
     <string name="android_upgrading_complete">Käivitamise lõpuleviimine.</string>
     <string name="android_upgrading_notification_title">Süsteemivärskenduse lõpuleviimine …</string>
     <string name="android_upgrading_starting_apps">Rakenduste käivitamine.</string>
-    <string name="android_upgrading_title">Tahvelarvutit värskendatakse …</string>
+    <string name="android_upgrading_title">Telefoni värskendatakse …</string>
     <string name="anr_activity_application">Rakendus %2$s ei reageeri</string>
     <string name="anr_activity_process">Rakendus %1$s ei reageeri</string>
     <string name="anr_application_process">Rakendus %1$s ei reageeri</string>
@@ -295,16 +303,17 @@ Selle otsetee saab asendada muu otseteega jaotises Seaded > Juurdepääsetavus."
     <string name="app_not_found">Selle toimingu käsitlemiseks ei leitud ühtegi rakendust</string>
     <string name="app_running_notification_text">Puudutage lisateabe saamiseks või rakenduse peatamiseks.</string>
     <string name="app_running_notification_title">%1$s töötab</string>
-    <string name="app_streaming_blocked_message">Sellele ei pääse praegu teie seadmega (%1$s) juurde. Proovige juurde pääseda oma tahvelarvutiga.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">See rakendus nõuab lisaturvalisust. Proovige juurde pääseda oma tahvelarvutis.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Sellele ei pääse teie seadmes %1$s juurde. Proovige juurde pääseda oma tahvelarvutis.</string>
+    <string name="app_streaming_blocked_message">Sellele ei pääse praegu teie seadmega (%1$s) juurde. Proovige juurde pääseda oma telefoniga.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">See rakendus nõuab lisaturvalisust. Proovige juurde pääseda oma telefonis.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">See rakendus taotleb lisalube, kuid lube ei saa voogesituse seansis anda. Kõigepealt andke luba oma telefonile.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Sellele ei pääse teie seadmes %1$s juurde. Proovige juurde pääseda oma telefonis.</string>
     <string name="app_streaming_blocked_title">%1$s ei ole saadaval</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kaamera pole saadaval</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Jätkake telefonis</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofon pole saadaval</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">Vaja on luba</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">Loataotlus peideti</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play pood ei ole saadaval</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Tahvelarvuti seaded pole saadaval</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Telefoni seaded pole saadaval</string>
     <string name="app_suspended_default_message">%1$s pole praegu saadaval. Seda haldab rakendus %2$s.</string>
     <string name="app_suspended_more_details">Lisateave</string>
     <string name="app_suspended_title">Rakendus pole saadaval</string>
@@ -344,13 +353,15 @@ Selle otsetee saab asendada muu otseteega jaotises Seaded > Juurdepääsetavus."
     <string name="back_button_label">Tagasi</string>
     <string name="badPin">Sisestatud vana PIN-kood pole õige.</string>
     <string name="badPuk">Sisestatud PUK-kood pole õige.</string>
-    <string name="battery_saver_charged_notification_summary">Tahvelarvuti on piisavalt laetud. Funktsioonid ei ole enam piiratud.</string>
+    <string name="battery_saver_charged_notification_summary">Telefon on piisavalt laetud. Funktsioonid ei ole enam piiratud.</string>
     <string name="battery_saver_description">Akusäästja lülitab sisse tumeda teema ja lülitab välja taustategevused, mõned visuaalsed efektid, teatud funktsioonid ja võrguühendused või piirab neid.</string>
     <string name="battery_saver_description_with_learn_more">Akusäästja lülitab sisse tumeda teema ja lülitab välja taustategevused, mõned visuaalsed efektid, teatud funktsioonid ja võrguühendused või piirab neid.</string>
     <string name="battery_saver_notification_channel_name">Akusäästja</string>
     <string name="battery_saver_off_notification_title">Akusäästja on välja lülitatud</string>
     <string name="beforeOneMonthDurationPast">Varem kui 1 kuu tagasi</string>
     <string name="biometric_app_setting_name">Biomeetria kasutamine</string>
+    <string name="biometric_dangling_notification_action_not_now">Mitte praegu</string>
+    <string name="biometric_dangling_notification_action_set_up">Seadista</string>
     <string name="biometric_dialog_default_subtitle">Jätkamiseks kasutage biomeetriat</string>
     <string name="biometric_dialog_default_title">Kinnitage oma isik</string>
     <string name="biometric_error_canceled">Autentimine tühistati</string>
@@ -358,6 +369,7 @@ Selle otsetee saab asendada muu otseteega jaotises Seaded > Juurdepääsetavus."
     <string name="biometric_error_generic">Viga autentimisel</string>
     <string name="biometric_error_hw_unavailable">Biomeetriline riistvara ei ole saadaval</string>
     <string name="biometric_error_user_canceled">Autentimine tühistati</string>
+    <string name="biometric_face_not_recognized">Nägu ei tuvastatud</string>
     <string name="biometric_not_recognized">Ei tuvastatud</string>
     <string name="biometric_or_screen_lock_app_setting_name">Biomeetria või ekraaniluku kasutamine</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">Jätkamiseks kasutage oma biomeetrilisi andmeid või ekraanilukku</string>
@@ -420,11 +432,11 @@ Selle otsetee saab asendada muu otseteega jaotises Seaded > Juurdepääsetavus."
     <string name="color_inversion_feature_name">Värvide ümberpööramine</string>
     <string name="common_name">Pärisnimi:</string>
     <string name="concurrent_display_notification_active_content">%1$s kasutab sisu kuvamiseks mõlemat ekraani</string>
-    <string name="concurrent_display_notification_active_title">Kahe ekraani režiim on sisse lülitatud</string>
-    <string name="concurrent_display_notification_name">Kahe ekraani režiim</string>
-    <string name="concurrent_display_notification_power_save_content">Kahe ekraani režiim ei ole saadaval, kuna akusäästja on sisse lülitatud. Saate selle seadetes välja lülitada.</string>
-    <string name="concurrent_display_notification_power_save_title">Kahe ekraani režiim ei ole saadaval</string>
-    <string name="concurrent_display_notification_thermal_content">Kahe ekraani režiim pole saadaval, kuna teie telefon läheb liiga kuumaks</string>
+    <string name="concurrent_display_notification_active_title">Dual Screeni režiim on sisse lülitatud</string>
+    <string name="concurrent_display_notification_name">Dual Screen</string>
+    <string name="concurrent_display_notification_power_save_content">Dual Screeni režiim ei ole saadaval, kuna akusäästja on sisse lülitatud. Saate selle seadetes välja lülitada.</string>
+    <string name="concurrent_display_notification_power_save_title">Dual Screeni režiim ei ole saadaval</string>
+    <string name="concurrent_display_notification_thermal_content">Dual Screeni režiim pole saadaval, kuna teie telefon läheb liiga kuumaks</string>
     <string name="concurrent_display_notification_thermal_title">Seade on liiga kuum</string>
     <string name="condition_provider_service_binding_label">Tingimuse pakkuja</string>
     <string name="conference_call">Konverentskõne</string>
@@ -433,11 +445,16 @@ Selle otsetee saab asendada muu otseteega jaotises Seaded > Juurdepääsetavus."
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">OK</string>
+    <string name="connected_display_thermally_unavailable_notification_content">Teie seade on liiga kuum ja ei saa ekraanile peegeldada enne, kui see jahtub</string>
+    <string name="connected_display_unavailable_notification_content">Kasutage teist kaablit ja proovige uuesti</string>
+    <string name="connected_display_unavailable_notification_title">Ei saa ekraanile peegeldada</string>
     <string name="console_running_notification_message">See mõjutab toimivust. Keelamiseks kontrollige käivituslaadurit.</string>
     <string name="console_running_notification_title">Seeriakonsool on lubatud</string>
     <string name="contentServiceSync">Sünkroonimine</string>
     <string name="contentServiceSyncNotificationTitle">Ei saa sünkroonida</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">Üritati kustutada liiga palju üksusi %s.</string>
+    <string name="content_description_collapsed">Ahendatud</string>
+    <string name="content_description_expanded">Laiendatud</string>
     <string name="content_description_sliding_handle">Libistamispide. Puudutage ja hoidke all.</string>
     <string name="conversation_single_line_image_placeholder">saatis kujutise</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -486,7 +503,7 @@ Kõrvaklappide helitugevus on olnud soovitatavast suurem ja see võib kahjustada
     <string name="decline">Keeldu</string>
     <string name="decline_remote_bugreport_action">KEELDU</string>
     <string name="default_audio_route_category_name">Süsteem</string>
-    <string name="default_audio_route_name">Tahvelarvuti</string>
+    <string name="default_audio_route_name">Telefon</string>
     <string name="default_audio_route_name_dock_speakers">Doki kõlarid</string>
     <string name="default_audio_route_name_external_device">Väline seade</string>
     <string name="default_audio_route_name_headphones">Kõrvaklapid</string>
@@ -508,6 +525,7 @@ Kõrvaklappide helitugevus on olnud soovitatavast suurem ja see võib kahjustada
     <string name="device_state_notification_settings_button">Ava seaded</string>
     <string name="device_state_notification_turn_off_button">Lülita välja</string>
     <string name="device_storage_monitor_notification_channel">Seadme salvestusruum</string>
+    <string name="device_unlock_notification_name">Seadme avamine</string>
     <string name="dial_number_using">"Vali number
  kasutades numbrit %s"</string>
     <string name="disable_accessibility_shortcut">Lülita otsetee välja</string>
@@ -525,6 +543,7 @@ Kõrvaklappide helitugevus on olnud soovitatavast suurem ja see võib kahjustada
     <string name="dlg_ok">OK</string>
     <string name="done_accessibility_shortcut_menu_button">Valmis</string>
     <string name="done_label">Valmis</string>
+    <string name="dream_accessibility_action_click">loobu</string>
     <string name="dream_preview_title">Eelvaade, %1$s</string>
     <string name="dump_heap_notification">Protsess %1$s ületas mälupiirangu</string>
     <string name="dump_heap_notification_detail">Mälutõmmis salvestati. Puudutage jagamiseks.</string>
@@ -551,7 +570,9 @@ Kõrvaklappide helitugevus on olnud soovitatavast suurem ja see võib kahjustada
     <string name="duration_years_shortest_future">%d a pärast</string>
     <string name="dynamic_mode_notification_channel_name">Rutiinirežiimi teabe märguanne</string>
     <string name="dynamic_mode_notification_summary">Aku tööea pikendamiseks vähendatakse akukasutust</string>
+    <string name="dynamic_mode_notification_summary_v2">Akusäästja on sisse lülitatud, et pikendada aku tööiga</string>
     <string name="dynamic_mode_notification_title">Akusäästja lülitati sisse</string>
+    <string name="dynamic_mode_notification_title_v2">Akusäästja on sisse lülitatud</string>
     <string name="editTextMenuTitle">Tekstitoimingud</string>
     <string name="edit_accessibility_shortcut_menu_button">Muuda otseteid</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
@@ -564,8 +585,10 @@ Kõrvaklappide helitugevus on olnud soovitatavast suurem ja see võib kahjustada
     <string name="emergency_call_dialog_number_for_display">Hädaabinumber</string>
     <string name="emergency_calls_only">Ainult hädaabikõned</string>
     <string name="enablePin">Ebaõnnestus, SIM-i/RUIM-i lukustuse lubamine.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s soovib lubada puudutusega uurimise. Kui puudutusega uurimine on sisse lülitatud, kuulete või näete kirjeldusi asjade kohta, mis on teie sõrme all, või saate suhelda tahvelarvutiga liigutuste abil.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s soovib lubada puudutusega uurimise. Kui puudutusega uurimine on sisse lülitatud, kuulete või näete kirjeldusi asjade kohta, mis on teie sõrme all, või saate suhelda telefoniga liigutuste abil.</string>
     <string name="enable_explore_by_touch_warning_title">Kas lubada puudutusega uurimine?</string>
+    <string name="error_handwriting_unsupported">Käsitsi kirjutamine ei ole sellel väljal toetatud</string>
+    <string name="error_handwriting_unsupported_password">Käsitsi kirjutamine ei ole parooliväljadel toetatud</string>
     <string name="error_message_change_not_allowed">Administraator on selle muudatuse keelanud</string>
     <string name="error_message_title">Viga</string>
     <string name="etws_primary_default_message_earthquake">Jääge rahulikuks ja otsige lähedusest peavarju.</string>
@@ -646,7 +669,7 @@ Kõrvaklappide helitugevus on olnud soovitatavast suurem ja see võib kahjustada
     <string name="face_acquired_too_bright">Liiga ere. Proovige hämaramat valgust.</string>
     <string name="face_acquired_too_close">Liigutage telefoni kaugemale</string>
     <string name="face_acquired_too_dark">Pole piisavalt valgust</string>
-    <string name="face_acquired_too_different">Nägu ei õnnestu tuvastada. Proovige uuesti.</string>
+    <string name="face_acquired_too_different">Nägu ei tuvastatud. Proovige uuesti.</string>
     <string name="face_acquired_too_far">Liigutage telefoni lähemale</string>
     <string name="face_acquired_too_high">Liigutage telefoni kõrgemale</string>
     <string name="face_acquired_too_left">Liigutage telefoni paremale</string>
@@ -657,6 +680,8 @@ Kõrvaklappide helitugevus on olnud soovitatavast suurem ja see võib kahjustada
     <string name="face_app_setting_name">Näoga avamise kasutamine</string>
     <string name="face_authenticated_confirmation_required">Nägu on autenditud, vajutage käsku Kinnita</string>
     <string name="face_authenticated_no_confirmation_required">Nägu on autenditud</string>
+    <string name="face_dangling_notification_msg">Teie näomudelit ei saa enam tuvastada. Seadistage näoga avamine uuesti.</string>
+    <string name="face_dangling_notification_title">Seadistage näoga avamine uuesti</string>
     <string name="face_dialog_default_subtitle">Jätkamiseks kasutage oma nägu</string>
     <string name="face_error_canceled">Näotuvastuse toiming tühistati.</string>
     <string name="face_error_hw_not_available">Nägu ei saa kinnitada. Riistvara pole saadaval.</string>
@@ -679,8 +704,6 @@ Kõrvaklappide helitugevus on olnud soovitatavast suurem ja see võib kahjustada
     <string name="face_recalibrate_notification_name">Näoga avamine</string>
     <string name="face_recalibrate_notification_title">Probleem funktsiooniga Näoga avamine</string>
     <string name="face_sensor_privacy_enabled">Näoga avamise kasutamiseks lülitage menüüs Seaded > Privaatsus sisse <b>juurdepääs kaamerale</b>.</string>
-    <string name="face_setup_notification_content">Avage telefon seda vaadates</string>
-    <string name="face_setup_notification_title">Näoga avamise seadistamine</string>
     <string name="faceunlock_multiple_failures">Maksimaalne näoga avamise katsete arv on ületatud</string>
     <string name="factory_reset_message">"Administraatori rakendust ei saa kasutada. Teie seade tühjendatakse nüüd.
 
@@ -705,7 +728,7 @@ Kui teil on küsimusi, võtke ühendust organisatsiooni administraatoriga."</str
     <string name="fingerprint_acquired_imager_dirty">Puhastage sõrmejäljeandur ja proovige uuesti</string>
     <string name="fingerprint_acquired_imager_dirty_alt">Puhastage andur ja proovige uuesti</string>
     <string name="fingerprint_acquired_immobile">Muutke iga kord pisut oma sõrme asendit</string>
-    <string name="fingerprint_acquired_insufficient">Sõrmejälge ei õnnestu tuvastada. Proovige uuesti.</string>
+    <string name="fingerprint_acquired_insufficient">Sõrmejälge ei tuvastatud. Proovige uuesti.</string>
     <string name="fingerprint_acquired_partial">Vajutage kindlalt andurile</string>
     <string name="fingerprint_acquired_power_press">Tuvastati toitenupu vajutamine</string>
     <string name="fingerprint_acquired_too_bright">Liiga ere</string>
@@ -714,21 +737,27 @@ Kui teil on küsimusi, võtke ühendust organisatsiooni administraatoriga."</str
     <string name="fingerprint_acquired_try_adjusting">Proovige kohandada</string>
     <string name="fingerprint_app_setting_name">Sõrmejälje kasutamine</string>
     <string name="fingerprint_authenticated">Sõrmejälg autenditi</string>
+    <string name="fingerprint_dangling_notification_msg_1">Sõrmejälge %s ei saa enam tuvastada.</string>
+    <string name="fingerprint_dangling_notification_msg_2">Sõrmejälgi %1$s ja %2$s ei saa enam tuvastada.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_1">Sõrmejälge %s ei saa enam tuvastada. Seadistage sõrmejäljega avamine uuesti.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_2">Sõrmejälgi %1$s ja %2$s ei saa enam tuvastada. Seadistage sõrmejäljega avamine uuesti.</string>
+    <string name="fingerprint_dangling_notification_title">Seadistage sõrmejäljega avamine uuesti</string>
     <string name="fingerprint_dialog_default_subtitle">Jätkamiseks kasutage sõrmejälge</string>
-    <string name="fingerprint_error_bad_calibration">Sõrmejäljeandurit ei saa kasutada. Külastage remonditeenuse pakkujat</string>
-    <string name="fingerprint_error_canceled">Sõrmejälje toiming tühistati.</string>
-    <string name="fingerprint_error_hw_not_available">Sõrmejälje riistvara pole saadaval.</string>
-    <string name="fingerprint_error_hw_not_present">Selles seadmes pole sõrmejäljeandurit.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">Nägu ei tuvastatud. Kasutage sõrmejälge.</string>
+    <string name="fingerprint_error_bad_calibration">Sõrmejäljeandurit ei saa kasutada. Külastage remonditeenuse pakkujat.</string>
+    <string name="fingerprint_error_canceled">Sõrmejälje toiming tühistati</string>
+    <string name="fingerprint_error_hw_not_available">Sõrmejälje riistvara pole saadaval</string>
+    <string name="fingerprint_error_hw_not_present">Selles seadmes pole sõrmejäljeandurit</string>
     <string name="fingerprint_error_lockout">Liiga palju katseid. Kasutage selle asemel ekraanilukku.</string>
     <string name="fingerprint_error_lockout_permanent">Liiga palju katseid. Kasutage selle asemel ekraanilukku.</string>
-    <string name="fingerprint_error_no_fingerprints">Ühtegi sõrmejälge pole registreeritud.</string>
+    <string name="fingerprint_error_no_fingerprints">Ühtegi sõrmejälge pole registreeritud</string>
     <string name="fingerprint_error_no_space">Sõrmejälge ei saa seadistada</string>
     <string name="fingerprint_error_not_match">Sõrmejälge ei tuvastatud</string>
     <string name="fingerprint_error_power_pressed">Vajutati toitenuppu</string>
-    <string name="fingerprint_error_security_update_required">Andur on ajutiselt keelatud.</string>
+    <string name="fingerprint_error_security_update_required">Andur on ajutiselt keelatud</string>
     <string name="fingerprint_error_timeout">Sõrmejälje seadistamine aegus. Proovige uuesti.</string>
     <string name="fingerprint_error_unable_to_process">Sõrmejälge ei õnnestu töödelda. Proovige uuesti.</string>
-    <string name="fingerprint_error_user_canceled">Kasutaja tühistas sõrmejälje kasutamise.</string>
+    <string name="fingerprint_error_user_canceled">Kasutaja tühistas sõrmejälje kasutamise</string>
     <string name="fingerprint_error_vendor_unknown">Midagi läks valesti. Proovige uuesti.</string>
     <string name="fingerprint_name_template">Sõrmejälg %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">Sõrmejälje või ekraaniluku kasutamine</string>
@@ -736,8 +765,6 @@ Kui teil on küsimusi, võtke ühendust organisatsiooni administraatoriga."</str
     <string name="fingerprint_recalibrate_notification_content">Külastage remonditeenuse pakkujat.</string>
     <string name="fingerprint_recalibrate_notification_name">Sõrmejäljega avamine</string>
     <string name="fingerprint_recalibrate_notification_title">Sõrmejäljeandurit ei saa kasutada</string>
-    <string name="fingerprint_setup_notification_content">Puudutage sõrmejälje lisamiseks</string>
-    <string name="fingerprint_setup_notification_title">Seadistage rohkem viise avamiseks</string>
     <string name="fingerprint_udfps_error_not_match">Sõrmejälge ei tuvastatud</string>
     <string name="fingerprints">Sõrmejäljed:</string>
     <string name="floating_toolbar_close_overflow_description">Ületäite sulgemine</string>
@@ -779,7 +806,7 @@ Puudutage õrnalt ja seadistage oma sõrmejälg."</string>
     <string name="global_action_silent_mode_on_status">Heli on VÄLJAS</string>
     <string name="global_action_toggle_silent_mode">Hääletu režiim</string>
     <string name="global_action_voice_assist">Häälabi</string>
-    <string name="global_actions">Tahvelarvuti valikud</string>
+    <string name="global_actions">Telefonivalikud</string>
     <string name="global_actions_airplane_mode_off_status">Lennurežiim on VÄLJAS</string>
     <string name="global_actions_airplane_mode_on_status">Lennurežiim on SEES</string>
     <string name="global_actions_toggle_airplane_mode">Lennukirežiim</string>
@@ -798,7 +825,7 @@ Puudutage õrnalt ja seadistage oma sõrmejälg."</string>
     <string name="granularity_label_link">link</string>
     <string name="granularity_label_word">sõna</string>
     <string name="guest_name">Külaline</string>
-    <string name="hardware">Virtuaalse klaviatuuri kuvam.</string>
+    <string name="hardware">Kasuta ekraaniklaviatuuri</string>
     <string name="harmful_app_warning_open_anyway">AVA IKKA</string>
     <string name="harmful_app_warning_title">Tuvastati kahjulik rakendus</string>
     <string name="harmful_app_warning_uninstall">DESINSTALLI</string>
@@ -846,7 +873,7 @@ Puudutage õrnalt ja seadistage oma sõrmejälg."</string>
     <string name="ime_action_search">Otsing</string>
     <string name="ime_action_send">Saada</string>
     <string name="imei">IMEI</string>
-    <string name="immersive_cling_description">Väljumiseks pühkige ülevalt alla.</string>
+    <string name="immersive_cling_description">Väljumiseks pühkige ekraanikuva ülaosast alla</string>
     <string name="immersive_cling_positive">Selge</string>
     <string name="immersive_cling_title">Kuvamine täisekraanil</string>
     <string name="importance_from_person">See on tähtis osalevate inimeste tõttu.</string>
@@ -920,11 +947,11 @@ Kas soovite kindlasti sellelt lehelt lahkuda?"</string>
     <string name="keyguard_password_entry_touch_hint"><font size="17">Puudut. parooli sisestamiseks</font></string>
     <string name="keyguard_password_wrong_pin_code">Vale PIN-kood.</string>
     <string name="kg_enter_confirm_pin_hint">Kinnitage soovitud PIN-kood</string>
-    <string name="kg_failed_attempts_almost_at_login">"Joonistasite oma avamismustri %1$d korda valesti. Pärast veel %2$d ebaõnnestunud katset palutakse teil tahvelarvuti avada meilikontoga.
+    <string name="kg_failed_attempts_almost_at_login">"Joonistasite oma avamismustri %1$d korda valesti. Pärast veel %2$d ebaõnnestunud katset palutakse teil telefon avada meilikontoga.
 
  Proovige uuesti %3$d sekundi pärast."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Olete üritanud %1$d korda tahvelarvutit valesti avada. Pärast veel %2$d ebaõnnestunud katset lähtestatakse tahvelarvuti tehase vaikeseadetele ja kõik kasutajaandmed lähevad kaotsi.</string>
-    <string name="kg_failed_attempts_now_wiping">Olete püüdnud tahvelarvutit %d korda valesti avada. Tahvelarvuti lähtestatakse nüüd tehase vaikeseadetele.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Olete üritanud %1$d korda telefoni valesti avada. Pärast veel %2$d ebaõnnestunud katset lähtestatakse telefon tehase vaikeseadetele ja kõik kasutajaandmed lähevad kaotsi.</string>
+    <string name="kg_failed_attempts_now_wiping">Olete püüdnud telefoni %d korda valesti avada. Telefon lähtestatakse nüüd tehase vaikeseadetele.</string>
     <string name="kg_forgot_pattern_button_text">Unustasin mustri</string>
     <string name="kg_invalid_confirm_pin_hint">PIN-koodid ei ole vastavuses</string>
     <string name="kg_invalid_puk">Sisestage uuesti õige PUK-kood. Korduvkatsete korral keelatakse SIM jäädavalt.</string>
@@ -989,11 +1016,11 @@ Proovige %2$d sekundi pärast uuesti."</string>
     <string name="lockscreen_access_pattern_start">Mustri koostamisega on alustatud</string>
     <string name="lockscreen_carrier_default">Teenus puudub</string>
     <string name="lockscreen_emergency_call">Hädaabi</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Olete üritanud %1$d korda tahvelarvutit valesti avada. Pärast veel %2$d edutut katset lähtestatakse tahvelarvuti tehase vaikeseadetele ja kõik kasutajaandmed lähevad kaotsi.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Joonistasite oma avamismustri %1$d korda valesti. Pärast veel %2$d ebaõnnestunud katset palutakse teil tahvelarvuti avada Google'i sisselogimisega.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Olete üritanud %1$d korda telefoni valesti avada. Pärast veel %2$d ebaõnnestunud katset lähtestatakse telefon tehase vaikeseadetele ja kõik kasutajaandmed lähevad kaotsi.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Joonistasite oma avamismustri %1$d korda valesti. Pärast veel %2$d ebaõnnestunud katset palutakse teil telefon avada Google'i sisselogimisega.
 
  Proovige %3$d sekundi pärast uuesti."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Olete püüdnud tahvelarvutit %d korda valesti avada. Tahvelarvuti lähtestatakse nüüd tehase vaikeseadetele.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Olete püüdnud telefoni %d korda valesti avada. Telefon lähtestatakse nüüd tehase vaikeseadetele.</string>
     <string name="lockscreen_forgot_pattern_button_text">Kas unustasite mustri?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Kas unustasite oma kasutajanime või parooli?
 Külastage aadressi "<b>google.com/accounts/recovery</b>.</string>
@@ -1009,7 +1036,7 @@ Külastage aadressi "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Vajutage avamiseks või hädaabikõne tegemiseks menüünuppu</string>
     <string name="lockscreen_missing_sim_instructions">Lisage SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM puudub või pole loetav. Lisage SIM.</string>
-    <string name="lockscreen_missing_sim_message">Tahvelarvutis pole SIM-i.</string>
+    <string name="lockscreen_missing_sim_message">Telefonis pole SIM-i.</string>
     <string name="lockscreen_missing_sim_message_short">SIM-i pole</string>
     <string name="lockscreen_network_locked_message">Võrk suletud</string>
     <string name="lockscreen_password_wrong">Proovige uuesti</string>
@@ -1049,7 +1076,7 @@ Proovige %2$d sekundi pärast uuesti."</string>
     <string name="low_internal_storage_view_text">Mõned süsteemifunktsioonid ei pruugi töötada</string>
     <string name="low_internal_storage_view_text_no_boot">Süsteemis pole piisavalt talletusruumi. Veenduge, et seadmes oleks 250 MB vaba ruumi, ja käivitage seade uuesti.</string>
     <string name="low_internal_storage_view_title">Talletusruum saab täis</string>
-    <string name="low_memory">Tahvelarvuti mäluruum on täis. Ruumi vabastamiseks kustutage mõned failid.</string>
+    <string name="low_memory">Telefonimälu on täis. Ruumi vabastamiseks kustutage mõned failid.</string>
     <string name="managed_profile_app_label">Lülita %1$s tööprofiilile</string>
     <string name="managed_profile_label">Lülitu tööprofiilile</string>
     <string name="managed_profile_label_badge">Töö %1$s</string>
@@ -1207,6 +1234,8 @@ Proovige %2$d sekundi pärast uuesti."</string>
     <string name="miniresolver_open_in_personal">Kas avada isiklikus rakenduses %s?</string>
     <string name="miniresolver_open_in_work">Kas avada töörakenduses %s?</string>
     <string name="miniresolver_open_work">Kas avada töörakendus %s?</string>
+    <string name="miniresolver_private_space_messages_information">Saate saata SMS-sõnumeid ainult oma isiklikust rakendusest Messages.</string>
+    <string name="miniresolver_private_space_phone_information">Saate helistada ainult oma isiklikust rakendusest Telefon. Isikliku rakendusesega Telefon tehtud kõned lisatakse teie isiklikku kõneajalukku.</string>
     <string name="miniresolver_sms_information">Teie organisatsioon lubab sõnumeid saata ainult töörakendustest.</string>
     <string name="miniresolver_switch">Lülitu</string>
     <string name="miniresolver_switch_to_work">Kas lülituda töörakendusele?</string>
@@ -1285,6 +1314,7 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="notification_channel_developer">Arendaja sõnumid</string>
     <string name="notification_channel_developer_important">Olulised arendajasõnumid</string>
     <string name="notification_channel_device_admin">Teie IT-administraatori teatised</string>
+    <string name="notification_channel_display">Ekraan</string>
     <string name="notification_channel_do_not_disturb">Mitte segada</string>
     <string name="notification_channel_emergency_callback">Hädaolukorra tagasihelistusrežiim</string>
     <string name="notification_channel_foreground_service">Rakendused kasutavad akutoidet</string>
@@ -1306,6 +1336,7 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="notification_channel_voice_mail">Kõnepostisõnumid</string>
     <string name="notification_channel_vpn">VPN-i olek</string>
     <string name="notification_channel_wfc">WiFi-kõned</string>
+    <string name="notification_compact_heads_up_reply">Vasta</string>
     <string name="notification_content_abusive_bg_apps">Rakendus %1$s töötab taustal. Puudutage akukasutuse haldamiseks.</string>
     <string name="notification_content_long_running_fgs">%1$s võib aku tööiga mõjutada. Puudutage aktiivsete rakenduste ülevaatamiseks.</string>
     <string name="notification_feedback_indicator">Andke tagasisidet</string>
@@ -1342,7 +1373,8 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="other_networks_no_internet">Võrgul puudub Interneti-ühendus</string>
     <string name="owner_name">Omanik</string>
     <string name="package_deleted_device_owner">Administraator on selle kustutanud</string>
-    <string name="package_installed_device_owner">Administraator on selle installinud</string>
+    <string name="package_installed_device_owner">"Installis teie administraator.
+Antud õiguste vaatamiseks avage seaded"</string>
     <string name="package_updated_device_owner">Administraator on seda värskendanud</string>
     <string name="passwordIncorrect">Vale parool.</string>
     <string name="password_keyboard_label_alpha_key">ABC</string>
@@ -1359,7 +1391,9 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="permdesc_accessCoarseLocation">See rakendus saab rakenduse kasutamise ajal asukohateenuste kaudu teada teie ligikaudse asukoha. Selleks et rakendus saaks asukohateavet, peavad asukohateenused olema seadmes sisse lülitatud.</string>
     <string name="permdesc_accessDrmCertificates">Lubab rakendusel ette valmistada ja kasutada DRM-i sertifikaate. Tavarakenduste puhul ei tohiks see vajalik olla.</string>
     <string name="permdesc_accessFineLocation">See rakendus saab rakenduse kasutamise ajal asukohateenuste kaudu teada teie täpse asukoha. Selleks et rakendus saaks asukohateavet, peavad asukohateenused olema seadmes sisse lülitatud. See võib suurendada akukasutust.</string>
+    <string name="permdesc_accessHiddenProfile">Võimaldab rakendusel peidetud profiilidele juurde pääseda.</string>
     <string name="permdesc_accessImsCallService">Võimaldab rakendusel kasutada IMS-teenust kõnede tegemiseks ilma, et peaksite sekkuma.</string>
+    <string name="permdesc_accessLastKnownCellId">Võimaldab rakendusel pääseda juurde viimasele teadaolevale telefoni teel saadud kärjetunnusele.</string>
     <string name="permdesc_accessLocationExtraCommands">Võimaldab rakendusel juurde pääseda asukohapakkuja erikäskudele. See võib lubada rakendusel mõjutada GPS-i või muude asukohaallikate tööd.</string>
     <string name="permdesc_accessNetworkConditions">Lubab rakendusel kuulata võrgutingimuste teavet. Ei ole kunagi vajalik tavaliste rakenduste puhul.</string>
     <string name="permdesc_accessNetworkState">Lubab rakendusel vaadata teavet võrguühenduste kohta, näiteks seda, millised võrgud on olemas ja ühendatud.</string>
@@ -1380,23 +1414,24 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="permdesc_bindNotificationListenerService">Võimaldab omanikul siduda märguannete kuulamisteenuse ülemise taseme kasutajaliidese. Seda ei tohiks tavarakenduste puhul kunagi vaja olla.</string>
     <string name="permdesc_bind_connection_service">Võimaldab rakendusel telefoniteenustega kõnede tegemiseks ja vastuvõtmiseks suhelda.</string>
     <string name="permdesc_bind_incall_service">Lubab rakendusel juhtida, millal ja kuidas kasutajale kuvatakse ekraan Kõne pooleli.</string>
-    <string name="permdesc_bluetooth">Võimaldab rakendusel vaadata tahvelarvuti Bluetooth-konfiguratsiooni ning luua ja heaks kiita ühendusi seotud seadmetega.</string>
-    <string name="permdesc_bluetoothAdmin">Võimaldab rakendusel seadistada kohalikku Bluetooth-tahvelarvutit ning leida ja siduda seda kaugseadmetega.</string>
+    <string name="permdesc_bluetooth">Võimaldab rakendusel vaadata telefoni Bluetooth-konfiguratsiooni ning luua ja heaks kiita ühendusi seotud seadmetega.</string>
+    <string name="permdesc_bluetoothAdmin">Võimaldab rakendusel seadistada kohalikku Bluetooth-telefoni ning leida ja siduda seda kaugseadmetega.</string>
     <string name="permdesc_bluetooth_advertise">Lubab rakendusel läheduses olevatele Bluetooth-seadmetele reklaamida</string>
     <string name="permdesc_bluetooth_connect">Lubab rakendusel luua ühenduse seotud Bluetooth-seadmetega</string>
     <string name="permdesc_bluetooth_scan">Lubab rakendusel avastada lähedalasuvaid Bluetooth-seadmeid ja nendega siduda</string>
     <string name="permdesc_bodySensors">Lubab rakendusel pääseda juurde kehaanduri andmetele, nagu pulss, temperatuur ja vere hapnikusisaldus, kui rakendust kasutatakse.</string>
     <string name="permdesc_bodySensors_background">Lubab rakendusel pääseda juurde kehaanduri andmetele, nagu pulss, temperatuur ja vere hapnikusisaldus, kui rakendus töötab taustal.</string>
-    <string name="permdesc_broadcastSticky">Võimaldab rakendusel saata püsivaid edastusi, mis jäävad pärast saate lõppemist alles. Ülemäärane kasutamine võib muuta tahvelarvuti aeglaseks või ebastabiilseks, põhjustades selle liiga suure mälukasutuse.</string>
+    <string name="permdesc_broadcastSticky">Võimaldab rakendusel saata püsivaid edastusi, mis jäävad pärast saate lõppemist alles. Ülemäärane kasutamine võib muuta telefoni aeglaseks või ebastabiilseks, põhjustades selle liiga suure mälukasutuse.</string>
     <string name="permdesc_callCompanionApp">Lubab rakendusel seadmes vaadata ja juhtida käimasolevaid kõnesid. See hõlmab sellist teavet nagu kõnede numbrid ja olek.</string>
     <string name="permdesc_callPhone">Võimaldab rakendusel telefoninumbritele helistada ilma teie sekkumiseta. See võib kaasa tuua ootamatuid tasusid või kõnesid. Pange tähele, et see ei luba rakendusel helistada hädaabinumbritele. Pahatahtlike rakenduste tõttu võib tekkida soovimatuid kulusid, kuna need võivad teha kõnesid ilma teie kinnituseta või valida operaatori koode, mille tõttu suunatakse sissetulevad kõned automaatselt teisele numbrile.</string>
     <string name="permdesc_camera">See rakendus saab kaameraga pildistada ja videoid salvestada siis, kui rakendus on kasutusel.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">Sellel rakendusel on kaamerale juurdepääs päiseta süsteemikasutajana.</string>
     <string name="permdesc_cameraOpenCloseListener">See rakendus saab mis tahes kaameraseadme avamisel (vastava rakendusega) või sulgemisel tagasikutseid vastu võtta.</string>
     <string name="permdesc_changeNetworkState">Võimaldab rakendusel muuta võrguühenduvuse olekut.</string>
     <string name="permdesc_changeTetherState">Võimaldab rakendusel muuta jagatud võrgu ühenduvuse olekut.</string>
-    <string name="permdesc_changeWifiMulticastState">Võimaldab rakendusel vastu võtta pakette, mis on saadetud kõikidele WiFi-võrguga ühendatud seadmetele, mis kasutavad multiedastuse aadresse, mitte ainult teie tahvelarvutit. See võtab rohkem energiat kui mittemultiedastuse režiim.</string>
+    <string name="permdesc_changeWifiMulticastState">Võimaldab rakendusel vastu võtta pakette, mis on saadetud kõikidele WiFi-võrguga ühendatud seadmetele, mis kasutavad multiedastuse aadresse, mitte ainult teie telefoni. See võtab rohkem energiat kui mittemultiedastuse režiim.</string>
     <string name="permdesc_changeWifiState">Võimaldab rakendusel luua ja katkestada ühenduse WiFi-pääsupunktidega ning teha muudatusi seadme konfiguratsioonis WiFi-võrkudesse.</string>
-    <string name="permdesc_changeWimaxState">Võimaldab rakendusel luua ja katkestada tahvelarvuti ühenduse WiMAX-i võrkudega.</string>
+    <string name="permdesc_changeWimaxState">Võimaldab rakendusel luua ja katkestada telefoni ühenduse WiMAX-i võrkudega.</string>
     <string name="permdesc_companionProfileWatch">Lubab kaasrakendusel kellasid hallata.</string>
     <string name="permdesc_connection_manager">Lubab rakendusel hallata telekommunikatsiooni ühendusi.</string>
     <string name="permdesc_control_incall_experience">Lubab rakendusel pakkuda kasutuskogemust funktsiooni Kõne pooleli kasutamisel.</string>
@@ -1415,6 +1450,7 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="permdesc_foregroundServiceHealth">Lubab rakendusel kasutada esiplaanil olevaid teenuseid, mille tüüp on „health“.</string>
     <string name="permdesc_foregroundServiceLocation">Lubab rakendusel kasutada esiplaanil olevaid teenuseid, mille tüüp on „location“.</string>
     <string name="permdesc_foregroundServiceMediaPlayback">Lubab rakendusel kasutada esiplaanil olevaid teenuseid, mille tüüp on „mediaPlayback“.</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">Lubab rakendusel kasutada esiplaanil olevaid teenuseid, mille tüüp on „mediaProcessing“.</string>
     <string name="permdesc_foregroundServiceMediaProjection">Lubab rakendusel kasutada esiplaanil olevaid teenuseid, mille tüüp on „mediaProjection“.</string>
     <string name="permdesc_foregroundServiceMicrophone">Lubab rakendusel kasutada esiplaanil olevaid teenuseid, mille tüüp on „microphone“.</string>
     <string name="permdesc_foregroundServicePhoneCall">Lubab rakendusel kasutada esiplaanil olevaid teenuseid, mille tüüp on „phoneCall“.</string>
@@ -1422,7 +1458,7 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="permdesc_foregroundServiceSpecialUse">Lubab rakendusel kasutada esiplaanil olevaid teenuseid, mille tüüp on „specialUse“.</string>
     <string name="permdesc_foregroundServiceSystemExempted">Lubab rakendusel kasutada esiplaanil olevaid teenuseid, mille tüüp on „systemExempted“.</string>
     <string name="permdesc_fullScreenIntent">Lubab rakendusel märguandeid lukustatud seadmes täisekraantegevustena kuvada</string>
-    <string name="permdesc_getAccounts">Võimaldab rakendusel hankida tahvelarvutile teadaolevaid kontoloendeid. See võib hõlmata mis tahes kontosid, mille on loonud teie installitud rakendused.</string>
+    <string name="permdesc_getAccounts">Võimaldab rakendusel hankida telefonile teadaolevaid kontoloendeid. See võib hõlmata mis tahes kontosid, mille on loonud teie installitud rakendused.</string>
     <string name="permdesc_getPackageSize">Võimaldab rakendusel tuua oma koodi, andmed ja vahemälu suurused</string>
     <string name="permdesc_getTasks">Võimaldab rakendusel tuua teavet praegu ja hiljuti käitatud ülesannete kohta. See võib lubada rakendusel avastada teavet selle kohta, milliseid rakendusi seadmes kasutatakse.</string>
     <string name="permdesc_handoverStatus">Lubab rakendusel saada teavet praeguste Android Beami ülekannete kohta</string>
@@ -1444,17 +1480,18 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="permdesc_mount_unmount_filesystems">Lubab rakendusel irdmälu kasutamiseks failisüsteeme ühendada ja lahti ühendada.</string>
     <string name="permdesc_nearby_wifi_devices">Lubab rakendusel läheduses olevatele WiFi-seadmetele reklaamida, nendega ühenduse luua ja määrata nende suhteline asend</string>
     <string name="permdesc_nfc">Võimaldab rakendusel suhelda lähiväljaside (NFC) märgendite, kaartide ja lugeritega.</string>
+    <string name="permdesc_nfcTransactionEvent">Võimaldab rakendusel võtta vastu teavet tehingute kohta, mis toimuvad turvaelemendi abil.</string>
     <string name="permdesc_observeCompanionDevicePresence">Lubab kaasrakendusel jälgida kaasseadme kohalolekut, kui seadmed on läheduses või eemal.</string>
-    <string name="permdesc_persistentActivity">Võimaldab rakendusel muuta oma osi mälus püsivaks. See võib piirata teistele (tahvelarvutit aeglasemaks muutvatele) rakendustele saadaolevat mälu.</string>
+    <string name="permdesc_persistentActivity">Võimaldab rakendusel muuta oma osi mälus püsivaks. See võib piirata teistele (telefoni aeglasemaks muutvatele) rakendustele saadaolevat mälu.</string>
     <string name="permdesc_postNotification">Lubab rakendusel märguandeid kuvada</string>
     <string name="permdesc_preferredPaymentInfo">Võimaldab rakendusel hankida eelistatud NFC-makseteenuse teavet (nt registreeritud abi ja marsruudi sihtkoht).</string>
     <string name="permdesc_processOutgoingCalls">Lubab rakendusel näha, mis number valitakse väljahelistamisel, ning laseb suunata kõne teisele numbrile või selle üldse katkestada.</string>
     <string name="permdesc_queryAllPackages">Võimaldab rakendusel näha kõiki installitud pakette.</string>
     <string name="permdesc_readBasicPhoneState">Võimaldab rakendusel pääseda juurde seadme peamistele telefonifunktsioonidele.</string>
-    <string name="permdesc_readCalendar">See rakendus saab kõiki teie tahvelarvutisse salvestatud kalendrisündmusi lugeda ja teie kalendriandmeid jagada või salvestada.</string>
+    <string name="permdesc_readCalendar">See rakendus saab kõiki teie telefoni salvestatud kalendrisündmusi lugeda ja teie kalendriandmeid jagada või salvestada.</string>
     <string name="permdesc_readCallLog">See rakendus saab teie kõneajalugu lugeda.</string>
     <string name="permdesc_readCellBroadcasts">Võimaldab rakendusel lugeda seadme vastu võetud mobiilsidesõnumeid. Mobiilsidemärguandeid edastatakse mõnes asukohas eriolukorrast teavitamiseks. Pahatahtlikud rakendused võivad segada seadme toimivust või tööd eriolukorra sõnumi vastuvõtmisel.</string>
-    <string name="permdesc_readContacts">Lubab rakendusel lugeda tahvelarvutisse salvestatud kontaktide andmeid. Rakendustel on ka juurdepääs teie tahvelarvutis olevatele kontodele, millel on loodud kontakte. See võib hõlmata kontosid, mille lõid teie installitud rakendused. See luba võimaldab rakendustel salvestada teie kontaktandmeid ja pahatahtlikud rakendused võivad teie teadmata kontaktandmeid jagada.</string>
+    <string name="permdesc_readContacts">Lubab rakendusel lugeda telefoni salvestatud kontaktide andmeid. Rakendustel on ka juurdepääs teie telefonis olevatele kontodele, millel on loodud kontakte. See võib hõlmata kontosid, mille lõid teie installitud rakendused. See luba võimaldab rakendustel salvestada teie kontaktandmeid ja pahatahtlikud rakendused võivad teie teadmata kontaktandmeid jagada.</string>
     <string name="permdesc_readInstallSessions">Lubab rakendusel lugeda installiseansse. See võimaldab näha aktiivse paketi installimise üksikasju.</string>
     <string name="permdesc_readMediaAudio">Võimaldab rakendusel lugeda teie jagatud salvestusruumis olevaid helifaile.</string>
     <string name="permdesc_readMediaImages">Võimaldab rakendusel lugeda teie jagatud salvestusruumis olevaid pildifaile.</string>
@@ -1462,11 +1499,11 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="permdesc_readNetworkUsageHistory">Võimaldab rakendusel lugeda võrgukasutuse ajalugu teatud võrkude ja rakenduste puhul.</string>
     <string name="permdesc_readPhoneNumbers">Rakendusel lubatakse juurde pääseda seadme telefoninumbritele.</string>
     <string name="permdesc_readPhoneState">Annab rakendusele juurdepääsu seadme telefonifunktsioonidele. See luba võimaldab rakendusel määrata telefoninumbri ja seadme ID-d ning kontrollida, kas kõne on aktiivne ja kaugnumber on kõne kaudu telefoniga ühendatud.</string>
-    <string name="permdesc_readSms">See rakendus saab kõiki teie tahvelarvutisse salvestatud SMS-e (tekstsõnumeid) lugeda.</string>
+    <string name="permdesc_readSms">See rakendus saab kõiki teie telefoni salvestatud SMS-e (tekstsõnumeid) lugeda.</string>
     <string name="permdesc_readSyncSettings">Võimaldab rakendusel lugeda konto sünkroonimisseadeid. Näiteks võib see määrata, kas rakendus Inimesed on kontoga sünkroonitud.</string>
     <string name="permdesc_readSyncStats">Võimaldab rakendusel lugeda konto sünkroonimisstatistikat, sh sünkroonimissündmuste ajalugu ja sünkroonitud andmete hulka.</string>
     <string name="permdesc_readVisualUserSelect">Võimaldab rakendusel lugeda teie jagatud salvestusruumis olevaid valitud pildi- ja videofaile.</string>
-    <string name="permdesc_receiveBootCompleted">Võimaldab rakendusel käivituda ise kohe, kui süsteem on käivitunud. See võib tahvelarvuti käivitamist aeglustada ja lubab rakendusel muuta tahvelarvuti ka üldiselt aeglasemaks, kuna töötab pidevalt.</string>
+    <string name="permdesc_receiveBootCompleted">Võimaldab rakendusel käivituda ise kohe, kui süsteem on käivitunud. See võib telefoni käivitamist aeglustada ja lubab rakendusel muuta telefoni ka üldiselt aeglasemaks, kuna töötab pidevalt.</string>
     <string name="permdesc_receiveMms">Võimaldab rakendusel vastu võtta ja töödelda multimeediumsõnumeid. See tähendab, et rakendus võib jälgida või kustutada teie seadmele saadetud sõnumeid neid teile näitamata.</string>
     <string name="permdesc_receiveSms">Võimaldab rakendusel vastu võtta ja töödelda SMS-sõnumeid. See tähendab, et rakendus võib jälgida või kustutada teie seadmele saadetud sõnumeid neid teile näitamata.</string>
     <string name="permdesc_receiveWapPush">Võimaldab rakendusel vastu võtta ja töödelda WAP-sõnumeid. See luba hõlmab võimet jälgida või kustutada teile saadetud sõnumeid neid teile näitamata.</string>
@@ -1488,7 +1525,7 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="permdesc_sendSms">Võimaldab rakendusel saata SMS-sõnumeid. See võib kaasa tuua ootamatuid tasusid. Pahatahtlikud rakendused võivad teile tekitada kulusid, saates sõnumeid teie kinnituseta.</string>
     <string name="permdesc_setAlarm">Võimaldab rakendusel seada installitud äratuskellarakenduses äratuse. Mõned äratuskellarakendused ei pruugi seda funktsiooni juurutada.</string>
     <string name="permdesc_setInputCalibration">Lubab rakendusel muuta puuteekraani kalibreerimisparameetreid. Ei tohiks kunagi olla vajalik tavaliste rakenduste puhul.</string>
-    <string name="permdesc_setTimeZone">Võimaldab rakendusel muuta tahvelarvuti ajavööndit.</string>
+    <string name="permdesc_setTimeZone">Võimaldab rakendusel muuta telefoni ajavööndit.</string>
     <string name="permdesc_setWallpaper">Võimaldab rakendusel määrata süsteemi taustapildi.</string>
     <string name="permdesc_setWallpaperHints">Võimaldab rakendusel määrata süsteemi taustapildi suuruse vihjeid.</string>
     <string name="permdesc_sim_communication">Lubab rakendusel saata käske SIM-kaardile. See on väga ohtlik.</string>
@@ -1501,7 +1538,7 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="permdesc_subscribedFeedsRead">Võimaldab rakendusel saada üksikasju praegu sünkroonitavate voogude kohta.</string>
     <string name="permdesc_systemAlertWindow">See rakendus võidakse kuvada teiste rakenduste või muude ekraani osade peal. See võib häirida tavapärast rakenduste kasutust ja muuta seda, kuidas teisi rakendusi kuvatakse.</string>
     <string name="permdesc_systemCamera">See privileegidega või süsteemirakendus saab süsteemi kaameraga alati pilte ja videoid jäädvustada. Rakendusel peab olema ka luba android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Lubab rakendusel kasutada tahvelarvuti infrapunasaatjat.</string>
+    <string name="permdesc_transmitIr">Lubab rakendusel kasutada telefoni infrapunasaatjat.</string>
     <string name="permdesc_turnScreenOn">Lubab rakendusel ekraani sisse lülitada.</string>
     <string name="permdesc_uninstall_shortcut">Lubab rakendusel eemaldada avakuva otseteid ilma kasutaja sekkumiseta.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">Võimaldab hoidjal värskendada varem installitud rakendust ilma kasutaja toiminguta</string>
@@ -1514,12 +1551,13 @@ Täiustatud märguanded pääsevad juurde märguande sisule, sh isiklikule teabe
     <string name="permdesc_vibrate">Võimaldab rakendusel juhtida vibreerimist.</string>
     <string name="permdesc_vibrator_state">Võimaldab rakendusel juurde pääseda vibreerimise olekule.</string>
     <string name="permdesc_videoWrite">Võimaldab rakendusel muuta teie videokogu.</string>
-    <string name="permdesc_wakeLock">Võimaldab rakendusel vältida tahvelarvuti uinumist.</string>
-    <string name="permdesc_writeCalendar">See rakendus võib teie tahvelarvutisse kalendrisündmusi lisada, neid eemaldada või muuta. See rakendus võib saata sõnumeid, mis näivad pärinevat kalendri omanikelt, või muuta sündmusi ilma omanikke teavitamata.</string>
-    <string name="permdesc_writeCallLog">Lubab rakendusel muuta tahvelarvuti kõnelogi, sh sissetulevate ja väljaminevate kõnede andmeid. Pahatahtlikud rakendused võivad kasutada seda kõnelogi kustutamiseks või muutmiseks.</string>
-    <string name="permdesc_writeContacts">Lubab rakendusel muuta tahvelarvutisse salvestatud kontaktide andmeid. See luba võimaldab rakendustel kontaktandmeid kustutada.</string>
+    <string name="permdesc_wakeLock">Võimaldab rakendusel vältida telefoni uinumist.</string>
+    <string name="permdesc_writeCalendar">See rakendus võib teie telefoni kalendrisündmusi lisada, neid eemaldada või muuta. See rakendus võib saata sõnumeid, mis näivad pärinevat kalendri omanikelt, või muuta sündmusi ilma omanikke teavitamata.</string>
+    <string name="permdesc_writeCallLog">Lubab rakendusel muuta telefoni kõnelogi, sh sissetulevate ja väljaminevate kõnede andmeid. Pahatahtlikud rakendused võivad kasutada seda kõnelogi kustutamiseks või muutmiseks.</string>
+    <string name="permdesc_writeContacts">Lubab rakendusel muuta telefoni salvestatud kontaktide andmeid. See luba võimaldab rakendustel kontaktandmeid kustutada.</string>
     <string name="permdesc_writeSettings">Võimaldab rakendusel muuta süsteemiseadete andmeid. Pahatahtlikud rakendused võivad rikkuda teie süsteemi konfiguratsiooni.</string>
     <string name="permdesc_writeSyncSettings">Võimaldab rakendusel muuta konto sünkroonimisseadeid. Näiteks saab seda kasutada, et lubada rakenduse Inimesed sünkroonimine kontoga.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">Võimaldab rakendusel värskendada teiste rakenduste E2EE-kontaktvõtmete kinnitamisolekuid</string>
     <string name="permgroupdesc_activityRecognition">juurdepääs teie füüsilisele tegevusele</string>
     <string name="permgroupdesc_calendar">juurdepääs kalendrile</string>
     <string name="permgroupdesc_calllog">telefoni kõnelogi lugemine ja kirjutamine</string>
@@ -1560,7 +1598,9 @@ kontole %s."</string>
     <string name="permlab_accessCoarseLocation">juurdepääs ligikaudsele asukohale ainult esiplaanil</string>
     <string name="permlab_accessDrmCertificates">juurdepääs DRM-i sertifikaatidele</string>
     <string name="permlab_accessFineLocation">juurdepääs täpsele asukohale ainult esiplaanil</string>
+    <string name="permlab_accessHiddenProfile">Juurdepääs peidetud profiilidele</string>
     <string name="permlab_accessImsCallService">juurdepääs IMS-kõneteenusele</string>
+    <string name="permlab_accessLastKnownCellId">Juurdepääs viimasele teadaolevale kärjetunnusele.</string>
     <string name="permlab_accessLocationExtraCommands">juurdepääs asukohapakkuja lisakäskudele</string>
     <string name="permlab_accessNetworkConditions">võrgutingimuste teabe kuulamine</string>
     <string name="permlab_accessNetworkState">vaadake võrguühendusi</string>
@@ -1592,6 +1632,7 @@ kontole %s."</string>
     <string name="permlab_callCompanionApp">süsteemi kaudu kõnede vaatamine ja juhtimine.</string>
     <string name="permlab_callPhone">helista otse telefoninumbritele</string>
     <string name="permlab_camera">piltide ja videote tegemine</string>
+    <string name="permlab_cameraHeadlessSystemUser">Lubage rakendusel või teenusel pääseda kaamerale juurde päiseta süsteemikasutajana.</string>
     <string name="permlab_cameraOpenCloseListener">Lubab rakendusel või teenusel kaameraseadmete avamise või sulgemise kohta tagasikutseid vastu võtta.</string>
     <string name="permlab_changeNetworkState">muuda võrguühenduvust</string>
     <string name="permlab_changeTetherState">Jagatud ühenduvuse muutmine</string>
@@ -1616,6 +1657,7 @@ kontole %s."</string>
     <string name="permlab_foregroundServiceHealth">sellise esiplaanil oleva teenuse käitamine, mille tüüp on „health“</string>
     <string name="permlab_foregroundServiceLocation">sellise esiplaanil oleva teenuse käitamine, mille tüüp on „location“</string>
     <string name="permlab_foregroundServiceMediaPlayback">sellise esiplaanil oleva teenuse käitamine, mille tüüp on „mediaPlayback“</string>
+    <string name="permlab_foregroundServiceMediaProcessing">sellise esiplaanil oleva teenuse käitamine, mille tüüp on „mediaProcessing“</string>
     <string name="permlab_foregroundServiceMediaProjection">sellise esiplaanil oleva teenuse käitamine, mille tüüp on „mediaProjection“</string>
     <string name="permlab_foregroundServiceMicrophone">sellise esiplaanil oleva teenuse käitamine, mille tüüp on „microphone“</string>
     <string name="permlab_foregroundServicePhoneCall">sellise esiplaanil oleva teenuse käitamine, mille tüüp on „phoneCall“</string>
@@ -1645,6 +1687,7 @@ kontole %s."</string>
     <string name="permlab_mount_unmount_filesystems">Juurdepääs SD-kaardi failisüsteemile</string>
     <string name="permlab_nearby_wifi_devices">Läheduses olevate WiFi-seadmetega suhtlemine</string>
     <string name="permlab_nfc">lähiväljaside juhtimine</string>
+    <string name="permlab_nfcTransactionEvent">Turvaelemendiga tehingu sündmus</string>
     <string name="permlab_observeCompanionDevicePresence">Kaasseadme kohaloleku tuvastamine</string>
     <string name="permlab_persistentActivity">Rakenduste pidev töös hoidmine</string>
     <string name="permlab_postNotification">märguannete kuvamine</string>
@@ -1714,12 +1757,13 @@ kontole %s."</string>
     <string name="permlab_uwb_ranging">Määrata lähedalasuvate ülilairibaühendust kasutavate seadmete suhtelise kauguse üksteisest.</string>
     <string name="permlab_vibrate">juhtige vibreerimist</string>
     <string name="permlab_videoWrite">Muuta teie videokogu</string>
-    <string name="permlab_wakeLock">tahvelarvuti uinumise vältimine</string>
+    <string name="permlab_wakeLock">väldi telefoni uinumist</string>
     <string name="permlab_writeCalendar">kalendrisündmuste lisamine või muutmine ja külalistele omanike teadmata meili saatmine</string>
     <string name="permlab_writeCallLog">kõnelogi kirjutamine</string>
     <string name="permlab_writeContacts">muutke oma kontakte</string>
     <string name="permlab_writeSettings">muutke süsteemi seadeid</string>
     <string name="permlab_writeSyncSettings">lülitage sünkroonimine sisse ja välja</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">teiste rakenduste E2EE-kontaktvõtmete kinnitamisolekute värskendamine</string>
     <string name="perms_description_app">Teenusepakkuja: %1$s.</string>
     <string name="perms_new_perm_prefix"><font fgcolor="#ff33b5e5" size="12">UUS: </font></string>
     <string name="personal_apps_suspended_turn_profile_on">Lülita sisse</string>
@@ -1757,10 +1801,10 @@ kontole %s."</string>
     <string name="policydesc_limitPassword">Juhitakse ekraaniluku paroolide ja PIN-koodide pikkusi ning lubatud tähemärkide seadeid.</string>
     <string name="policydesc_resetPassword">Muutke ekraanilukku.</string>
     <string name="policydesc_setGlobalProxy">Määratakse kasutatava seadme üldine puhverserver, kui reegel on lubatud. Üldise puhverserveri saab määrata ainult seadme omanik.</string>
-    <string name="policydesc_watchLogin">Jälgib ekraani avamisel valesti sisestatud paroolide arvu ja lukustab tahvelarvuti või kustutab kõik selle andmed, kui vale parool sisestatakse liiga palju kordi.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Jälgitakse ekraani avamisel sisestatud valede paroolide arvu ja lukustatakse tahvelarvuti või kustutatakse kõik selle kasutaja andmed, kui vale parool sisestatakse liiga palju kordi.</string>
-    <string name="policydesc_wipeData">Kustutage tahvelarvuti andmed hoiatamata, lähtestades arvuti tehaseandmetele.</string>
-    <string name="policydesc_wipeData_secondaryUser">Kustutatakse selle kasutaja andmed sellest tahvelarvutist ilma hoiatamata.</string>
+    <string name="policydesc_watchLogin">Jälgib ekraani avamisel valesti sisestatud paroolide arvu ja lukustab telefoni või kustutab kõik selle andmed, kui vale parool sisestatakse liiga palju kordi.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Jälgitakse ekraani avamisel sisestatud valede paroolide arvu ja lukustatakse telefon või kustutatakse kõik selle kasutaja andmed, kui vale parool sisestatakse liiga palju kordi.</string>
+    <string name="policydesc_wipeData">Kustutab telefoniandmed hoiatuseta, lähtestades telefoni tehaseseadetele.</string>
+    <string name="policydesc_wipeData_secondaryUser">Kustutatakse selle kasutaja andmed sellest telefonist ilma hoiatamata.</string>
     <string name="policylab_disableCamera">Keela kaamerad</string>
     <string name="policylab_disableKeyguardFeatures">Ekraaniluku mõne funktsiooni keelamine</string>
     <string name="policylab_encryptedStorage">Salvestamise krüpt. määramine</string>
@@ -1777,7 +1821,7 @@ kontole %s."</string>
     <string name="postalTypeHome">Kodune aadress</string>
     <string name="postalTypeOther">Muu</string>
     <string name="postalTypeWork">Töökoha aadress</string>
-    <string name="power_dialog">Tahvelarvuti valikud</string>
+    <string name="power_dialog">Telefonivalikud</string>
     <string name="power_off">Lülita välja</string>
     <string name="prepend_shortcut_label">Menüü+</string>
     <string name="preposition_for_date">kuupäeval %s</string>
@@ -1787,9 +1831,21 @@ kontole %s."</string>
     <string name="print_service_installed_title">Teenus %s on installitud</string>
     <string name="printing_disabled_by">Rakendus %s on printimise keelanud.</string>
     <string name="private_dns_broken_detailed">Privaatsele DNS-serverile ei pääse juurde</string>
+    <string name="private_profile_label_badge">Privaatne %1$s</string>
+    <string name="private_space_biometric_prompt_title">Privaatne ruum</string>
+    <string name="private_space_deleted_by_admin">Privaatne ruum on eemaldatud</string>
+    <string name="private_space_deleted_by_admin_details">Teie organisatsioon ei luba selles hallatud seadmes kasutada privaatseid ruume.</string>
+    <string name="private_space_set_up_screen_lock_message">Seadistage oma privaatse ruumi jaoks seadmele ekraanilukk</string>
     <string name="profile_encrypted_detail">Tööprofiil on lukustatud</string>
     <string name="profile_encrypted_message">Puudut. tööprofiili avamiseks</string>
     <string name="profile_encrypted_title">Mõned funkts. võivad olla piiratud</string>
+    <string name="profile_label_clone">Kloon</string>
+    <string name="profile_label_communal">Jagatud</string>
+    <string name="profile_label_private">Privaatne</string>
+    <string name="profile_label_test">Test</string>
+    <string name="profile_label_work">Töö</string>
+    <string name="profile_label_work_2">Töö 2</string>
+    <string name="profile_label_work_3">Töö 3</string>
     <string name="progress_erasing">Jagatud salvestusruumi tühjendamine …</string>
     <string name="progress_erasing_usbhost">USB-mälu vormindamine…</string>
     <string name="progress_unmounting">SD-kaardi ühenduse katkestamine…</string>
@@ -1807,6 +1863,8 @@ kontole %s."</string>
     <string name="reboot_to_update_reboot">Taaskäivitamine ...</string>
     <string name="reboot_to_update_title">Androidi süsteemivärskendus</string>
     <string name="recent_tasks_title">Hiljutised</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">Märguande delikaatne sisu peideti</string>
     <string name="redo">Tee uuesti</string>
     <string name="reduce_bright_colors_feature_name">Eriti tume</string>
     <string name="region_picker_section_all">Kõik piirkonnad</string>
@@ -1884,12 +1942,36 @@ kontole %s."</string>
     <string name="safe_media_volume_warning">"Kas suurendada helitugevuse taset üle soovitatud taseme?
 
 Pikaajaline valju helitugevusega kuulamine võib kuulmist kahjustada."</string>
+    <string name="satellite_notification_how_it_works">Tööpõhimõtted</string>
+    <string name="satellite_notification_manual_summary">Sõnumite saatmine ja vastuvõtmine ilma mobiilside- või WiFi-võrguta</string>
+    <string name="satellite_notification_manual_title">Kas soovite kasutada satelliidipõhist sõnumsidet?</string>
+    <string name="satellite_notification_open_message">Ava rakendus Messages</string>
+    <string name="satellite_notification_summary">Teil on võimalik sõnumeid saata ja vastu võtta ilma mobiilside- ja WiFi-võrguta</string>
+    <string name="satellite_notification_title">Satelliidiga loodi automaatselt ühendus</string>
+    <string name="scCellularNetworkSecuritySummary">Krüpteerimine, märguanded krüpteerimata võrkude kohta</string>
+    <string name="scCellularNetworkSecurityTitle">Mobiilsidevõrgu turve</string>
+    <string name="scIdentifierDisclosureIssueSummary">"Kell %1$s salvestas lähedal olev võrk võrgu %2$s SIM-i kasutamise ajal teie seadme kordumatu ID (IMSI või IMEI).
+
+See tähendab, et teie asukoht, tegevus või isik salvestati. See on levinud tava, kuid võib osutada probleemiks inimeste jaoks, kellele on privaatsus eriti oluline."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">Kell %1$s salvestas lähedal olev võrk võrgu %2$s SIM-i kasutamise ajal teie seadme kordumatu ID (IMSI või IMEI)</string>
+    <string name="scIdentifierDisclosureIssueTitle">Seadme ID-le on juurde pääsetud</string>
+    <string name="scNullCipherIssueActionGotIt">Selge</string>
+    <string name="scNullCipherIssueActionLearnMore">Lisateave</string>
+    <string name="scNullCipherIssueActionSettings">Mobiilsidevõrgu turvaseaded</string>
+    <string name="scNullCipherIssueEncryptedSummary">Võrgu %1$s SIM-i ühendus on nüüd turvalisem</string>
+    <string name="scNullCipherIssueEncryptedTitle">Ühendatud krüpteeritud võrguga %1$s</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"Võrgu %1$s SIM-i kasutamisel on teie kõned, sõnumid ja andmed praegu haavatavamad.
+
+Kui teie ühendus on taas krüpteeritud, saate veel ühe märguande."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">Võrgu %1$s SIM-i kasutamisel on teie kõned, sõnumid ja andmed praegu haavatavamad</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">Ühendatud krüpteerimata võrguga</string>
     <string name="screen_compat_mode_hint">Lubage see uuesti valikutes Süsteemiseaded > Rakendused > Allalaaditud.</string>
     <string name="screen_compat_mode_scale">Mõõtkava</string>
     <string name="screen_compat_mode_show">Kuva alati</string>
     <string name="screen_lock">Ekraanilukk</string>
     <string name="screen_lock_app_setting_name">Ekraaniluku kasutamine</string>
     <string name="screen_lock_dialog_default_subtitle">Jätkamiseks sisestage oma ekraanilukk</string>
+    <string name="screen_not_shared_sensitive_content">Rakenduse sisu on ekraani jagamisel turvalisuse huvides peidetud</string>
     <string name="screenshot_edit">Muuda</string>
     <string name="search_hint">Otsimine …</string>
     <string name="search_language_hint">Sisestage keele nimi</string>
@@ -1933,6 +2015,8 @@ Pikaajaline valju helitugevusega kuulamine võib kuulmist kahjustada."</string>
     <string name="serviceErased">Kustutamine oli edukas.</string>
     <string name="serviceNotProvisioned">Teenus pole ette valmistatud.</string>
     <string name="serviceRegistered">Registreerimine õnnestus.</string>
+    <string name="set_up_screen_lock_action_label">Seadistage ekraanilukk</string>
+    <string name="set_up_screen_lock_title">Seadistage ekraanilukk</string>
     <string name="sha1_fingerprint">SHA-1 sõrmejälg:</string>
     <string name="sha256_fingerprint">SHA-256 sõrmejälg:</string>
     <string name="share">Jaga</string>
@@ -1949,7 +2033,7 @@ Pikaajaline valju helitugevusega kuulamine võib kuulmist kahjustada."</string>
     <string name="shortcut_restore_unknown_issue">Otseteed ei õnnestunud taastada</string>
     <string name="shortcut_restored_on_lower_version">Rakendus viidi üle vanemale versioonile või see ei ühildu selle otseteega</string>
     <string name="show_ime">Hoia seda ekraanil, kui füüsiline klaviatuur on aktiivne</string>
-    <string name="shutdown_confirm">Teie tahvelarvuti lülitub välja.</string>
+    <string name="shutdown_confirm">Teie telefon lülitub välja.</string>
     <string name="shutdown_confirm_question">Kas soovite välja lülitada?</string>
     <string name="shutdown_progress">Väljalülitamine ...</string>
     <string name="silent_mode">Hääletu režiim</string>
@@ -2047,6 +2131,7 @@ Pikaajaline valju helitugevusega kuulamine võib kuulmist kahjustada."</string>
     <string name="twilight_service">Teenus Twilight</string>
     <string name="ui_translation_accessibility_translated_text">Sõnum „%1$s” on tõlgitud.</string>
     <string name="ui_translation_accessibility_translation_finished">Sõnum on tõlgitud %1$s keelest %2$s keelde.</string>
+    <string name="unarchival_session_app_label">Ootel …</string>
     <string name="undo">Võta tagasi</string>
     <string name="unpin_specific_target">Vabasta %1$s</string>
     <string name="unpin_target">Vabasta</string>
@@ -2121,7 +2206,7 @@ Pikaajaline valju helitugevusega kuulamine võib kuulmist kahjustada."</string>
     <string name="user_switched">Praegune kasutaja %1$s.</string>
     <string name="user_switching_message">Üleminek kasutajale %1$s ...</string>
     <string name="validity_period">Kehtivus:</string>
-    <string name="vdm_camera_access_denied">Teie seadmest %1$s ei pääse tahvelarvuti kaamerale juurde</string>
+    <string name="vdm_camera_access_denied">Teie seadmest %1$s ei pääse telefoni kaamerale juurde.</string>
     <string name="vdm_pip_blocked">Voogesitamise ajal ei saa pilt pildis funktsiooni kasutada</string>
     <string name="vdm_secure_window">Sellele ei pääse voogesituse ajal juurde. Proovige juurde pääseda oma telefonis.</string>
     <string name="view_and_control_notification_content">%s saab vaadata ja hallata teie ekraanikuva. Puudutage ülevaatamiseks.</string>
@@ -2240,7 +2325,13 @@ Kas soovite selle sulgeda?"</string>
     <string name="zen_mode_feature_name">Mitte segada</string>
     <string name="zen_mode_forever">Kuni välja lülitate</string>
     <string name="zen_mode_forever_dnd">Kuni lülitate välja valiku Mitte segada</string>
+    <string name="zen_mode_implicit_activated">Sees</string>
+    <string name="zen_mode_implicit_deactivated">Väljas</string>
+    <string name="zen_mode_implicit_trigger_description">Haldab %1$s</string>
     <string name="zen_mode_rule_name_combination">%1$s / %2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">Mis tahes kalender</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s–%2$s</string>
     <string name="zen_mode_until">Kuni %1$s</string>
     <string name="zen_mode_until_next_day">Kuni %1$s</string>
     <string name="zen_upgrade_notification_content">Puudutage, et kontrollida, mis on blokeeritud.</string>

@@ -44,7 +44,7 @@
     <string name="ColrMmi">සම්බන්ධ කළ Line ID සීමා කිරීම්</string>
     <string name="CwMmi">ඇමතුම් රැඳීම</string>
     <string name="DndMmi">බාධා නොකරන්න</string>
-    <string name="EmergencyCallWarningSummary">Wi-Fi හරහා හදිසි ඇමතුම් ලබා ගත නොහැකිය</string>
+    <string name="EmergencyCallWarningSummary">හදිසි ඇමතුම් සඳහා ජංගම ජාලයක් අවශ්‍ය වේ</string>
     <string name="EmergencyCallWarningTitle">හදිසි ඇමතුම් ලබා ගත නොහැකිය</string>
     <string name="Midnight">මධ්‍යම රාත්‍රිය</string>
     <string name="NetworkPreferenceSwitchSummary">කැමති ජාලය වෙනස් කිරීමට උත්සාහ කරන්න. වෙනස් කිරීමට තට්ටු කරන්න.</string>
@@ -255,7 +255,12 @@
     <string name="accessibility_corner_action_type_zoom_in">විශාලනය</string>
     <string name="accessibility_corner_action_type_zoom_out">කුඩා කරන්න</string>
     <string name="accessibility_dialog_button_allow">ඉඩ දෙන්න</string>
+    <string name="accessibility_dialog_button_allow_samsung">ඉඩ දෙන්න</string>
     <string name="accessibility_dialog_button_deny">ප්‍රතික්‍ෂේප කරන්න</string>
+    <string name="accessibility_dialog_button_deny_samsung">ප්‍රතික්.</string>
+    <string name="accessibility_dialog_button_uninstall">අස්ථාපනය කරන්න</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">අස්ථාපනය</string>
+    <string name="accessibility_dialog_touch_filtered_warning">යෙදුමක් අවසර ඉල්ලීම අඳුරු කරන බැවින්, ඔබේ ප්‍රතිචාරය සත්‍යාපනය කළ නොහැක.</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">බල සහ හඬ වැඩි කිරීමේ යතුරු ඉක්මනින් එබීමෙන් පහත ක්‍රියාදාමයන් ක්‍රියාත්මක හෝ ක්‍රියාවිරහිත වනු ඇත:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">පැති සහ හඬ වැඩි කිරීමේ බොත්තම් ඉක්මනින් එබීමෙන් පහත ක්‍රියාදාමයන් ක්‍රියාත්මක හෝ ක්‍රියාවිරහිත වනු ඇත:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">බල සහ හඬ වැඩි කිරීමේ යතුරු ඉක්මනින් එබීමෙන් %s ක්‍රියාත්මක හෝ ක්‍රියාවිරහිත වනු ඇත.</string>
@@ -269,11 +274,14 @@
     <string name="accessibility_edit_shortcut_menu_button_title">ප්‍රවේශ්‍යතා බොත්තම සමග භාවිත කිරීමට විශේෂාංග තෝරා ගන්න</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">හඬ පරිමා යතුරු කෙටිමග සමග භාවිත කිරීමට විශේෂාංග තෝරා ගන්න</string>
     <string name="accessibility_enable_service_title">%1$s හට ඔබේ උපාංගයේ සම්පූර්ණ පාලනය තබා ගැනීමට ඉඩ දෙන්නද?</string>
-    <string name="accessibility_freeform_caption">%1$s හි සිරස්තල තීරුව.</string>
     <string name="accessibility_gesture_3finger_instructional_text">විශේෂාංග අතර මාරු වීමට, ඇඟිලි තුනකින් ඉහළට ස්වයිප් කර අල්ලාගෙන සිටින්න.</string>
     <string name="accessibility_gesture_3finger_prompt_text">ප්‍රවේශ්‍යතා ඉංගිතය සමඟ භාවිතයට විශේෂාංගයක් තෝරා ගන්න (ඇඟිලි තුනකින් තිරයේ පහළ සිට ඉහළට ස්වයිප් කරන්න):</string>
     <string name="accessibility_gesture_instructional_text">විශේෂාංග අතර මාරු වීමට, ඇඟිලි දෙකකින් ඉහළට ස්වයිප් කර අල්ලාගෙන සිටින්න.</string>
     <string name="accessibility_gesture_prompt_text">ප්‍රවේශ්‍යතා ඉංගිතය සමඟ භාවිතයට විශේෂාංගයක් තෝරා ගන්න (ඇඟිලි දෙකකින් තිරයේ පහළ සිට ඉහළට ස්වයිප් කරන්න):</string>
+    <string name="accessibility_label_clone_profile">ක්ලෝන කරන්න</string>
+    <string name="accessibility_label_communal_profile">වාර්ගික</string>
+    <string name="accessibility_label_managed_profile">කාර්යාල පැතිකඩ</string>
+    <string name="accessibility_label_private_profile">රහසිගත අවකාශය</string>
     <string name="accessibility_magnification_chooser_text">විශාලනය</string>
     <string name="accessibility_select_different_function">ඔබට සැකසුම් > ප්‍රවේශ්‍යතාවය > උසස් සැකසුම් තුළ වෙනස් ක්‍රියාදාමයක් තේරිය හැක.</string>
     <string name="accessibility_select_shortcut_menu_title">එය භාවිත කිරීම ආරම්භ කිරීමට විශේෂාංගයක් තට්ටු කරන්න:</string>
@@ -342,7 +350,7 @@
     <string name="action_bar_home_description">මුල් පිටුවට සංචාලනය කරන්න</string>
     <string name="action_bar_home_description_format">%1$s, %2$s</string>
     <string name="action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
-    <string name="action_bar_up_description">ඉහලට සංචාලනය කරන්න</string>
+    <string name="action_bar_up_description">ඉහලට යන්න</string>
     <string name="action_menu_overflow_description">තවත් විකල්ප</string>
     <string name="action_mode_done">හරි</string>
     <string name="activity_chooser_view_dialog_title_default">ක්‍රියාකාරකම තෝරන්න</string>
@@ -382,19 +390,25 @@
     <string name="alert_windows_notification_turn_off_action">ක්‍රියාවිරහිත කරන්න</string>
     <string name="allow">අවසර දෙන්න</string>
     <string name="allow_settings_changes">ආරක්ෂණ ප්‍රතිපත්තිය මගින් සැකසුම් වෙනස් කිරීම වළක්වයි.</string>
+    <string name="alternative_face_setup_notification_content">ඔබේ ඇඟිලි තෙත් වූ විට වැනි ඔබේ ඇඟිලි සලකුණ හඳුනා නොගත් විට මුහුණෙන් අගුළු හැරීම භාවිත කරන්න</string>
+    <string name="alternative_fp_setup_notification_content">ප්‍රමාණවත් ආලෝකයක් නොමැති විට වැනි ඔබේ මුහුණ හඳුනා නොගත් විට ඇඟිලි සලකුණු අගුළු හැරීම භාවිත කරන්න</string>
+    <string name="alternative_unlock_setup_notification_title">අගුළු ඇරීමට වෙනත් ක්‍රමයක් උත්සාහ කරන්න</string>
     <string name="alwaysUse">මෙම ක්‍රියාව සඳහා සුපුරුද්දෙන් භාවිත කරන්න.</string>
+    <string name="always_allow">සැම විට ඉඩ දෙන්න</string>
     <string name="android_preparing_apk">%1$s සූදානම් කරමින්.</string>
-    <string name="android_start_title">ටැබ්ලට් පරිගණකය ආරම්භ කරමින්…</string>
+    <string name="android_start_title">දුරකථනය ආරම්භ කරමින්…</string>
     <string name="android_system_label">Android පද්ධතිය</string>
     <string name="android_upgrading_complete">ඇරඹුම අවසාන කරමින්.</string>
     <string name="android_upgrading_notification_title">පද්ධති යාවත්කාලීනය අවසන් කරමින්…</string>
     <string name="android_upgrading_starting_apps">යෙදුම් ආරම්භ කරමින්.</string>
-    <string name="android_upgrading_title">ටැබ්ලට් පරිගණකය යාවත්කාලීන කරමින්...</string>
+    <string name="android_upgrading_title">දුරකථනය යාවත්කාලීන කරමින්...</string>
     <string name="anr_activity_application">%2$s ප්‍රතිචාර නොදක්වයි</string>
     <string name="anr_activity_process">%1$s ප්‍රතිචාර නොදක්වයි</string>
     <string name="anr_application_process">%1$s ප්‍රතිචාර නොදක්වයි</string>
     <string name="anr_process">ක්‍රියාවලිය %1$s ප්‍රතිචාර නොදක්වයි</string>
     <string name="anr_title" />
+    <string name="app_block_button_open">විවෘත කරන්න</string>
+    <string name="app_block_content">%1$s හට %2$s යෙදුම විවෘත කිරීමට අවශ්‍යයි.</string>
     <string name="app_blocked_message">%1$s මේ දැන් ලබා ගත නොහැකිය.</string>
     <string name="app_blocked_title">යෙදුම ලබා ගත නොහැකිය</string>
     <string name="app_category_accessibility">ප්‍රවේශ්‍යතාව</string>
@@ -423,42 +437,31 @@
     <string name="app_restricted_message_concentration_mode">%s ඒකාග්‍රතා ප්‍රකාරය අතරතුර අවහිර කර ඇත. තව දැන ගැනීමට ඔබේ IT පරිපාලක අමතන්න.</string>
     <string name="app_running_notification_text">වැඩිපුර තොරතුරු හෝ යෙදුම නැවැත්වීම සඳහා තට්ටු කරන්න.</string>
     <string name="app_running_notification_title">%1$s ධාවනය වේ</string>
-    <string name="app_streaming_blocked_message">මේ අවස්ථාවේදී මෙයට ඔබගේ %1$s හි ප්‍රවේශ විය නොහැකිය. ඒ වෙනුවට ඔබගේ ටැබ්ලටයෙහි උත්සාහ කරන්න.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">මෙම යෙදුම අමතර ආරක්ෂාවක් ඉල්ලා සිටී. ඒ වෙනුවට ඔබගේ ටැබ්ලටයෙහි උත්සාහ කරන්න.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">මෙයට ඔබේ %1$s මත ප්‍රවේශ විය නොහැක. ඒ වෙනුවට ඔබේ ටැබ්ලටයෙහි උත්සාහ කරන්න.</string>
+    <string name="app_streaming_blocked_message">මේ අවස්ථාවේදී මෙයට ඔබගේ %1$s හි ප්‍රවේශ විය නොහැකිය. ඒ වෙනුවට ඔබගේ දුරකථනයෙහි උත්සාහ කරන්න.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">මෙම යෙදුම අමතර ආරක්ෂාවක් ඉල්ලා සිටී. ඒ වෙනුවට ඔබගේ දුරකථනයෙහි උත්සාහ කරන්න.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">මෙම යෙදුම අතිරේක අවසර ඉල්ලා සිටින නමුත්, ප්‍රවාහ සැසියක අවසර ලබා දිය නොහැක. පළමුව ඔබේ දුරකථනයෙන් අවසරය ලබා දෙන්න.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">මෙයට ඔබේ %1$s මත ප්‍රවේශ විය නොහැක. ඒ වෙනුවට ඔබේ දුරකථනයෙහි උත්සාහ කරන්න.</string>
     <string name="app_streaming_blocked_title">%1$s නොතිබේ</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">කැමරාව ලබා ගත නොහැකිය</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">දුරකථනයෙන් දිගටම කර ගෙන යන්න</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">මයික්‍රෆෝනය ලබා ගත නොහැකිය</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">අවසරය අවශ්‍යයි</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">අවසර ඉල්ලීම වළක්වා ඇත</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store නොමැත</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">ටැබ්ලට් සැකසීම් ලබා ගත නොහැකිය</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">දුරකථන සැකසීම් ලබා ගත නොහැකිය</string>
     <string name="app_suspended_default_message">%1$s මේ අවස්ථාවේදී ලබා ගත නොහැකිය. මෙය %2$s මගින් කළමනාකරණය කෙරේ.</string>
     <string name="app_suspended_more_details">තව දැන ගන්න</string>
     <string name="app_suspended_title">යෙදුම නොතිබේ</string>
     <string name="app_suspended_unsuspend_message">යෙදුම විරාම කිරීම ඉවත් කරන්න</string>
     <string name="app_updating_message">%s යාවත්කාල වෙමින් පවතී. පසුව නැවත උත්සාහ කරන්න.</string>
     <string name="app_upgrading_toast">%1$s උත්ශ්‍රේණි කරමින්…</string>
-    <string name="appblock_block_subtitle1_phone">ඔබේ දුරකථනය සහ පුද්ගලික දත්ත ආරක්ෂා කිරීම සඳහා, මෙම යෙදුම අනිෂ්ට යැයි සැක කරන නිසා එය ස්ථාපනය කළ නොහැක.</string>
-    <string name="appblock_block_subtitle1_tablet">ඔබේ ටැබ්ලටය සහ පුද්ගලික දත්ත ආරක්ෂා කිරීම සඳහා, මෙම යෙදුම අනිෂ්ට යැයි සැක කරන නිසා එය ස්ථාපනය කළ නොහැක.</string>
-    <string name="appblock_block_subtitle2">මෙම යෙදුම අනිෂ්ට ලෙස වාර්තා කර ඇති නිසා ස්ථාපනය කළ නොහැක.</string>
-    <string name="appblock_block_text1">මෙම යෙදුම සත්‍යාපිත මූලාශ්‍රයකින් නොවන අතර ඔබේ පුද්ගලික දත්ත සොරකම් කිරීමට හෝ පිට කිරීමට භාවිතා කළ හැකි සංවේදී අවසරයන් අවශ්‍ය වේ.</string>
-    <string name="appblock_block_text2">"අනිෂ්ට යෙදුම් ඔබේ පුද්ගලික දත්ත සොරකම් කිරීමට, ඔබේ අනන්‍යතාවය අනුකරණය කිරීමට, හෝ ඔබේ මූල්‍ය ගිණුම් වෙත ප්‍රවේශ වීමට සංවේදී අවසර භාවිතා කිරීමට හැක.
-
-නීත්‍යානුකූල මූල්‍ය ආයතන වලට ZIP ගොනු, APK ගොනු, හෝ ගොනු කළමනාකරු යෙදුම් ස්ථාපනය කිරීම අවශ්‍ය නොවේ.
-
-ඔබ ස්ථාපනය කරන යෙදුම් විශ්වාසදායක මූලාශ්‍රයකින් බව සැමවිට සහතික කර ගන්න."</string>
-    <string name="appblock_warn_subtitle">මෙම යෙදුම ඔබේ පුද්ගලික තොරතුරු සොරකම් කිරීමට හෝ පිට කිරීමට ඉඩ ඇත.</string>
+    <string name="appblock_block_text_phone">මෙම යෙදුම අනිෂ්ට ලෙස වාර්තා කර ඇති නිසා හෝ අනිෂ්ට ලෙස වාර්තා කර ඇති යෙදුමකට සමාන නිසා ස්ථාපනය කළ නොහැක. මෙම යෙදුම තතුබෑම් වැනි අපරාධ සඳහා භාවිතා කිරීමට ඉඩ ඇත. ඔබේ දුරකථනය සහ දත්ත සුරක්ෂිතව තබා ගැනීමට, මෙම සීමාව මඟ හැරිය නොහැක.</string>
+    <string name="appblock_block_text_tablet">මෙම යෙදුම අනිෂ්ට ලෙස වාර්තා කර ඇති නිසා හෝ අනිෂ්ට ලෙස වාර්තා කර ඇති යෙදුමකට සමාන නිසා ස්ථාපනය කළ නොහැක. මෙම යෙදුම තතුබෑම් වැනි අපරාධ සඳහා භාවිතා කිරීමට ඉඩ ඇත. ඔබේ ටැබ්ලටය සහ දත්ත සුරක්ෂිතව තබා ගැනීමට, මෙම සීමාව මඟ හැරිය නොහැක.</string>
+    <string name="appblock_link_text">වැඩිදුර දැනගන්න</string>
     <string name="appblock_warn_text1">"සත්‍යාපනය නොකළ මූලාශ්‍ර වෙතින් යෙදුම් ස්ථාපනය කිරීමෙන් යෙදුම් වලට ඔබේ පුද්ගලික තොරතුරු රැස් කිරීමට හෝ ඔබේ ක්‍රියාකාරකම් නිරීක්ෂණය කිරීමට ඉඩ ලබා දෙයි.
 
 මෙම යෙදුම ස්ථාපනය කිරීම නිර්දේශ නොකරයි.
 
 ඔබ එය කෙසේ හෝ ස්ථාපනය කිරීමට තෝරා ගන්නේ නම්, යෙදුමේ රහස්‍යතා නිවේදනය ප්‍රවේශමෙන් සමාලෝචනය කර ඔබ අවශ්‍ය අවසර පමණක් ඉඩ දෙන බවට වග බලා ගන්න."</string>
-    <string name="appblock_warn_text2">"අනිෂ්ට යෙදුම් බොහෝ විට සබඳතා, SMS, සහ ඡායාරූප අවසර භාවිතයෙන් ඔබේ පුද්ගලික තොරතුරු ලබා ගැනීමට උත්සාහ කරයි.
-
-මෙම යෙදුම ස්ථාපනය කිරීම නිර්දේශ නොකරයි.
-
-ඔබ මෙම යෙදුම කෙසේ හෝ ස්ථාපනය කිරීමට තෝරා ගන්නේ නම්, එය ඔබ විශ්වාස කරන මූලාශ්‍රයකින් පැමිණෙන බවට වග බලා ගන්න සහ ඔබේ දත්ත වලට අවසර හෝ වෙනත් ප්‍රවේශයට ඉඩ දීම ගැන සැලකිලිමත් වන්න."</string>
     <string name="application_default_restrict">උපාංගයේ පරිපාලක විසින් වෙනත් යෙදුමක් පෙරනිමි ලෙස පිහිටුවා ඇත.</string>
     <string name="as_app_forced_to_restricted_bucket">%1$s අවහිර කළ බාල්දියට දමා ඇත</string>
     <string name="auto_click_paused">ස්වයං ක්ලික් කිරීම විරාම කෙරිණි.</string>
@@ -490,9 +493,10 @@
     <string name="autofill_save_type_payment_card">ගෙවීම් කාඩ්පත</string>
     <string name="autofill_save_type_username">පරිශීලක නාමය</string>
     <string name="autofill_save_yes">සුරකින්න</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="autofill_update_title"><b>%1$s</b> තුළ යාවත්කාලීන කරන්නද?</string>
     <string name="autofill_update_title_with_2types"><b>%3$s</b> තුළ %1$s සහ %2$s යාවත්කාලීන කරන්නද?</string>
-    <string name="autofill_update_title_with_3types"><b>%4$s</b> තුළ යාවත්කාලීන කරන්නද?: %1$s, %2$s, සහ %3$s ?</string>
+    <string name="autofill_update_title_with_3types"><b>%4$s</b>: %1$s, %2$s, සහ %3$s තුළ මෙම අයිතම යාවත්කාලීන කරන්න ද?</string>
     <string name="autofill_update_title_with_type"><b>%2$s</b> තුළ %1$s යාවත්කාලීන කරන්නද?</string>
     <string name="autofill_update_yes">යාවත්කාලීන කරන්න</string>
     <string name="autofill_window_title">%1$s සමගින් ස්වයං පුරවන්න</string>
@@ -503,7 +507,7 @@
     <string name="badPuk">ඔබ ටයිප් කරන ලද PUK එක වැරදියි.</string>
     <string name="badPuk2">ඔබ ඇතුළු කළ PUK2 වැරදිය.</string>
     <string name="batt_cooldown_mode_ok">හරි</string>
-    <string name="battery_saver_charged_notification_summary">ටැබ්ලට් පරිගණකයට ප්‍රමාණවත් ආරෝපණයක් තිබේ. විශේෂාංග තවදුරටත් සීමා කර නැත.</string>
+    <string name="battery_saver_charged_notification_summary">දුරකථනයට ප්‍රමාණවත් ආරෝපණයක් තිබේ. විශේෂාංග තවදුරටත් සීමා කර නැත.</string>
     <string name="battery_saver_description">බැටරි සුරැකුම අඳුරු තේමාව ක්‍රියාත්මක කර පසුබිම් ක්‍රියාකාරකම්, සමහර දෘශ්‍ය ප්‍රයෝග, යම් විශේෂාංග සහ සමහර ජාල සම්බන්ධතා සීමා හෝ ක්‍රියාවිරහිත කරයි.</string>
     <string name="battery_saver_description_with_learn_more">බැටරි සුරැකුම අඳුරු තේමාව ක්‍රියාත්මක කර පසුබිම් ක්‍රියාකාරකම්, සමහර දෘශ්‍ය ප්‍රයෝග, යම් විශේෂාංග සහ සමහර ජාල සම්බන්ධතා සීමා හෝ ක්‍රියාවිරහිත කරයි.</string>
     <string name="battery_saver_notification_channel_name">බැටරි සුරැකුම</string>
@@ -517,6 +521,7 @@
     <string name="biometric_error_generic">සත්‍යාපනය කිරීමේ දෝෂයකි</string>
     <string name="biometric_error_hw_unavailable">ජීවමිතික දෘඪාංග ලබා ගත නොහැකිය</string>
     <string name="biometric_error_user_canceled">සත්‍යාපනය අවලංගු කළා</string>
+    <string name="biometric_face_not_recognized">මුහුණ හඳුනා නොගන්නා ලදි</string>
     <string name="biometric_not_recognized">හඳුනා නොගන්නා ලදී</string>
     <string name="biometric_or_screen_lock_app_setting_name">ජෛවමිතික හෝ තිර අගුල භාවිත කරන්න</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">ඉදිරියට යාමට ඔබගේ ජෛවමිතික හෝ තිර අගුල භාවිත කරන්න</string>
@@ -528,8 +533,6 @@
     <string name="bluetooth_airplane_mode_toast">බ්ලූටූත් ගුවන් යානා ප්‍රකාරය තුළ ක්‍රියාත්මකව පවතිනු ඇත</string>
     <string name="bluetooth_avrcp_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් බ්ලූටූත් ශ්‍රව්‍ය/දෘශ්‍ය පාලනය වළක්වයි.</string>
     <string name="bluetooth_bpp_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් බ්ලූටූත් ඔස්සේ මුද්‍රණය කිරීම වළක්වයි.</string>
-    <string name="bluetooth_china_popup_message">%1$s විසින් %2$s භාවිතයට අවසරය ඉල්ලා සිටී. ඉඩ දෙනවා ද?</string>
-    <string name="bluetooth_china_popup_title">බ්ලූටූත්</string>
     <string name="bluetooth_data_transfer_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් බ්ලූටූත් ඔස්සේ දත්ත සම්ප්‍රේෂණය වළක්වයි.</string>
     <string name="bluetooth_desktop_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් බ්ලූටූත් හරහා ඔබේ වැඩතලයට සම්බන්ධ වීම වළක්වයි.</string>
     <string name="bluetooth_device_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් මෙම බ්ලූටූත් උපාංගය හා යුගලනය වළක්වයි.</string>
@@ -540,7 +543,6 @@
     <string name="bluetooth_outgoing_call_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් බ්ලූටූත් ඔස්සේ පිටතට ඇමතුම් ලබාගැනීම වළක්වයි.</string>
     <string name="bluetooth_pairing_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් බ්ලූටූත් යුගලනය වළක්වයි.</string>
     <string name="bluetooth_pbap_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් බ්ලූටූත් ලිපින පොත භාවිතා කිරීම වළක්වයි.</string>
-    <string name="bluetooth_permission_request">බ්ලූටුත් බලතල ඉල්ලීම</string>
     <string name="bluetooth_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් බ්ලූටූත් භාවිතය වළක්වයි.</string>
     <string name="bluetooth_sap_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් බ්ලූටූත් හරහා ඔබේ SIM පත වෙත ප්‍රවේශ වීම වළක්වයි.</string>
     <string name="bluetooth_security_mode_disable">ආරක්ෂණ ප්‍රතිපත්තිය මගින් බ්ලූටූත් භාවිතය වළක්වයි.</string>
@@ -579,7 +581,7 @@
     <string name="capability_desc_canRequestFilterKeyEvents">ණයවරපත් අංක සහ මුරපද වැනි පුද්ගලික දත්ත ඇතුළත් වේ.</string>
     <string name="capability_desc_canRequestTouchExploration">තට්ටු කළ අයිතම හඬ නගා කියවනු ඇති අතර ඉංගිති භාවිතයෙන් තිරය ගවේෂණය කිරීමට හැකිය.</string>
     <string name="capability_desc_canRetrieveWindowContent">ඔබ අන්තර්ක්‍රියාකාරී වන කවුළුවේ අන්තර්ගතය පරීක්ෂා කරන්න.</string>
-    <string name="capability_desc_canTakeScreenshot">සංදර්ශකයේ තිර රුවක් ගැනීමට හැකිය.</string>
+    <string name="capability_desc_canTakeScreenshot">සංදර්ශකයේ තිර රුව\ufffd\ufffd\ufffd් ගැනීමට හැකිය.</string>
     <string name="capability_title_canCaptureFingerprintGestures">ඇඟිලි සලකුණු ඉංගිත</string>
     <string name="capability_title_canControlMagnification">සංදර්ශනයේ විශාලනය පාලනය කරන්න</string>
     <string name="capability_title_canPerformGestures">අභින සිදු කරන්න</string>
@@ -652,11 +654,11 @@
     <string name="common_secure_boot_nwlock_notification_text">මෙම SIM කාඩ්පත සහාය නොදක්වයි.</string>
     <string name="common_secure_boot_nwlock_notification_title">Invalid SIM card inserted</string>
     <string name="concurrent_display_notification_active_content">අන්තර්ගතය පෙන්වීමට %1$s සංදර්ශන දෙකම භාවිත කරයි</string>
-    <string name="concurrent_display_notification_active_title">ද්විත්ව තිරය සක්‍රීයයි</string>
-    <string name="concurrent_display_notification_name">ද්විත්ව තිරය</string>
+    <string name="concurrent_display_notification_active_title">Dual Screen සක්‍රීයයි</string>
+    <string name="concurrent_display_notification_name">Dual Screen</string>
     <string name="concurrent_display_notification_power_save_content">බැටරි සුරැකුම ක්‍රියාත්මක නිසා Dual Screen නොමැත. ඔබට මෙය සැකසීම් තුළ ක්‍රියාවිරහිත කළ හැක.</string>
     <string name="concurrent_display_notification_power_save_title">Dual Screen නොමැත</string>
-    <string name="concurrent_display_notification_thermal_content">ඔබේ දුරකථනය ඉතා උණුසුම් නිසා ද්විත්ව තිරය ලබා ගත නොහැක</string>
+    <string name="concurrent_display_notification_thermal_content">ඔබේ දුරකථනය ඉතා උණුසුම් නිසා Dual Screen ලබා ගත නොහැක</string>
     <string name="concurrent_display_notification_thermal_title">උපාංගය ඉතා උණුසුම් වේ</string>
     <string name="condition_provider_service_binding_label">තත්ත්වය සපයන්නා</string>
     <string name="conference_call">සම්මන්ත්‍රණ ඇමතුම</string>
@@ -665,12 +667,17 @@
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">හරි</string>
+    <string name="connected_display_thermally_unavailable_notification_content">ඔබේ උපාංගය ඉතා උණුසුම් වන අතර එය සිසිල් වන තෙක් සංදර්ශකය වෙත පිළිබිඹු කළ නොහැක</string>
+    <string name="connected_display_unavailable_notification_content">වෙනස් කේබලයක් භාවිතා කර නැවත උත්සාහ කරන්න</string>
+    <string name="connected_display_unavailable_notification_title">සංදර්ශකයට දර්පණය කළ නොහැක</string>
     <string name="console_running_notification_message">කාර්ය සාධනය බලපෑමට ලක් වී ඇත. අබල කිරීමට, ආරම්භකය පරීක්ෂා කරන්න.</string>
     <string name="console_running_notification_title">අනුක්‍රමික කොන්සෝලය සබලයි</string>
     <string name="constrained_status_bar_device_locked">උපාංගයට අගුලු දමා තිබේ</string>
     <string name="contentServiceSync">සමමුහුර්ත කිරීම</string>
     <string name="contentServiceSyncNotificationTitle">සමමුහුර්ත කළ නොහැකිය</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">ඉතා වැඩි %s මැකීමට උත්සාහ කරන ලදී.</string>
+    <string name="content_description_collapsed">හකුළන ලදි</string>
+    <string name="content_description_expanded">දිග හරින ලදි</string>
     <string name="content_description_sliding_handle">සර්පණ හැඩලය. ස්පර්ශ කර රඳවා සිටීම.</string>
     <string name="conversation_single_line_image_placeholder">රූපයක් එව්වා</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -696,12 +703,10 @@
     <string name="data_saver_description">දත්ත භාවිතය අඩු කිරීමට උදවු වීමට, දත්ත සුරැකුම සමහර යෙදුම් පසුබිමින් දත්ත යැවීම සහ ලබා ගැනීම වළක්වයි. ඔබ දැනට භාවිත කරන යෙදුමකට දත්ත වෙත පිවිසීමට හැකිය, නමුත් එසේ කරන්නේ කලාතුරකින් විය හැකිය. මෙයින් අදහස් වන්නේ, උදාහරණයක් ලෙස, එම රූප ඔබ ඒවාට තට්ටු කරන තෙක් සංදර්ශනය නොවන බවය.</string>
     <string name="data_saver_enable_button">ක්‍රියාත්මක කරන්න</string>
     <string name="data_saver_enable_title">දත්ත සුරැකුම ක්‍රියාත්මක කරන්නද?</string>
-    <string name="data_usage_disable_mobile">ජංගම දත්ත සම්බන්ධතාව විසන්ධි කරන්නද?</string>
-    <string name="data_usage_enable_mobile_warning">පැකට් දත්ත හරහා සම්බන්ධ වීමෙන් අතිරේක ගාස්තු දැරීමට සිදු වනු ඇත. පවත්වාගෙන යන්නද?</string>
     <string name="data_usage_limit_body">ඔබේ බිල්පත් චක්‍රය අවසන් වන තුරු ජංගම දත්ත විරාමයි.</string>
     <string name="data_usage_limit_snoozed_body">ඔබේ සැකසූ සීමාවට වඩා %s ක් ඉක්මවා ඇත</string>
     <string name="data_usage_mobile_limit_snoozed_title">ඔබේ ජංගම දත්ත සීමාව ඉක්මවයි</string>
-    <string name="data_usage_mobile_limit_title">ජංගම දත්ත සීමාවට ළඟා විය</string>
+    <string name="data_usage_mobile_limit_title">ජංගම දත්ත සීමාවට ළඟාවී ඇත</string>
     <string name="data_usage_rapid_app_body">%s වෙනදාට වඩා වැඩි දත්ත ප්‍රමාණයක් භාවිතා කර ඇත.</string>
     <string name="data_usage_rapid_body">ඔබේ යෙදුම් වෙනදාට වඩා දත්ත භාවිතා කර ඇත.</string>
     <string name="data_usage_rapid_title">ඉහළ ජංගම දත්ත පරිභෝජනය</string>
@@ -731,7 +736,7 @@
     <string name="decline">ප්‍රතික්ෂේප කරන්න</string>
     <string name="decline_remote_bugreport_action">ප්‍රතික්ෂේප කරන්න</string>
     <string name="default_audio_route_category_name">පද්ධතිය</string>
-    <string name="default_audio_route_name">ටැබ්ලට්ය</string>
+    <string name="default_audio_route_name">දුරකථනය</string>
     <string name="default_audio_route_name_dock_speakers">නාදක ඩොක් කරන්න</string>
     <string name="default_audio_route_name_external_device">බාහිර උපාංගය</string>
     <string name="default_audio_route_name_headphones">ඉස් බණු</string>
@@ -749,11 +754,13 @@
     <string name="deprecated_target_sdk_message">මෙම යෙදුම Android හි පැරණි අනුවාදයක් සඳහා තනා ඇත. එය නිසි ලෙස ක්‍රියා නොකරන අතර නවතම ආරක්ෂාව සහ රහස්‍යතා ආරක්‍ෂාව ඇතුළත් නොවේ. යාවත්කාලීනයක් සඳහා පරීක්ෂා කරන්න, නැතහොත් යෙදුමේ සංවර්ධකයා සම්බන්ධ කර ගන්න.</string>
     <string name="description_target_unlock_tablet">අගුළු ඇරීමට ස්වයිප් කරන්න.</string>
     <string name="device_disabled">උපාංගය අක්‍රියයි. IT පරිපාලක අමතන්න.</string>
+    <string name="device_info_not_available">නොපවතී.</string>
     <string name="device_ownership_relinquished">පරිපාලක පුද්ගලික භාවිතය සඳහා උපාංගය අත්හැර දමන ලදී</string>
     <string name="device_policy_manager_service">උපාංග ප්‍රතිපත්ති කළමනාකරු සේවය</string>
     <string name="device_state_notification_settings_button">සැකසීම් වෙත යන්න</string>
     <string name="device_state_notification_turn_off_button">අක්‍රිය කරන්න</string>
     <string name="device_storage_monitor_notification_channel">උපාංග ගබඩාව</string>
+    <string name="device_unlock_notification_name">උපාංගය අගුළු හැරීම</string>
     <string name="dex_cant_change_user_profile">Samsung DeX ප්‍රකාරය තුළ සිටින අතරේ පරිශීලක පැතිකඩ වෙනස් කළ නොහැක.</string>
     <string name="dex_dialog_launch_toast">විවෘත යෙදුම් වැසෙනු ඇත. Samsung DeX ඇරඹීමට හෝ එයින් පිටවීමට පෙර ඔබේ දත්ත සුරකින්න.</string>
     <string name="dex_disconnected_from_device">DeX %s වෙතින් විසන්ධි විය. ඔබේ TV හි ජාල සබැඳුම පරීක්ෂා කරන්න.</string>
@@ -762,9 +769,6 @@
     <string name="dex_launcher_mode_change">Samsung DeX වෙත මාරු වීමට %s වැසිණි.</string>
     <string name="dex_mirroring_jit_msg">ඔබ ඔබේ ටැබ්ලටයෙහි Samsung DeX ධාවනය කරන විට, ඔබට විශාල දසුනක් සඳහා ඕනෑම HDMI සම්බන්ධිත සංදර්ශකයක තිරය දර්පණය කළ හැක.</string>
     <string name="dex_mirroring_jit_title">විශාල තිරයක් මත DeX දර්පණය</string>
-    <string name="dex_restart_app_dialog_button_positive">යළි අරඹන්න</string>
-    <string name="dex_restart_app_dialog_message">මෙම යෙදුම දැනටමත් වෙනත් සංදර්ශකයක ධාවනය වේ. එය මෙතැන විවෘත කිරීමට, යෙදුම යළි ඇරඹීමට අවශ්‍යයි. ඔබ එය යළි ඇරඹීමට පෙර ඕනෑම වැදගත් දෙයක් සුරකින්න.</string>
-    <string name="dex_restart_app_dialog_title">%s යළි අරඹන්න ද?</string>
     <string name="dex_restriction_blockerMessage">ආරක්ෂක ප්‍රතිපත්තිය මගින් Samsung DeX භාවිතය වළක්වයි.</string>
     <string name="dex_restriction_ethernetOnly">ආරක්ෂක ප්‍රතිපත්තිය Wi-Fi දත්ත, ජංගම දත්ත, සහ DeX තුළ ටෙදරින් භාවිතය වළක්වයි. ජාල විශේෂාංග සඳහා රැහැන්ගත සබැඳුමක් අවශ්‍යයි.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">ආරක්ෂක ප්‍රතිපත්තිය හේතුවෙන්, Samsung DeX වෙතින් පිට වීමට බාහිර සංදර්ශකය විසන්ධි කරන්න.</string>
@@ -793,7 +797,6 @@
     <string name="disableupdate_application_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් මෙම යෙදුම යාවත්කාල කිරීම වළකාලයි.</string>
     <string name="dismiss_action">ඉවත ලන්න</string>
     <string name="display_chooser_button_positive">යළි අරඹන්න</string>
-    <string name="display_chooser_dont_show_again">නැවත නොපෙන්වන්න</string>
     <string name="display_manager_built_in_display_name">තිළැලි තිරය</string>
     <string name="display_manager_hdmi_display_name">HDMI තිරය</string>
     <string name="display_manager_overlay_display_name">උඩැතිරිය #%1$d</string>
@@ -815,6 +818,7 @@
     <string name="dpm_wifi_misc_network_insecure">ආරක්ෂණ ප්‍රතිපත්තිය මගින් අනාරක්ෂිත Wi-Fi ජාල භාවිතය වළක්වයි.</string>
     <string name="dpm_wifi_misc_wifi_disabled">Wi-Fi භාවිතා කිරීම ආරක්ෂණ ප්‍රතිපත්තිය වළකයි.</string>
     <string name="dpm_wifi_user_profiles_denied">ආරක්ෂණ ප්‍රතිපත්තිය මගින් Wi-Fi ජාල එක් කිරීම වළක්වයි.</string>
+    <string name="dream_accessibility_action_click">ඉවත ලන්න</string>
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">බහු කවුළු දසුනෙහි මෙම යෙදුම භාවිතා කළ නොහැක.</string>
     <string name="dream_preview_title">පෙරදසුන, %1$s</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">බහු කවුළු දසුනෙහි මෙම විශේෂාංගය භාවිතා කළ නොහැක.</string>
@@ -843,11 +847,13 @@
     <string name="duration_years_shortest_future">ව%dකින්</string>
     <string name="dynamic_mode_notification_channel_name">දිනචරියා ප්‍රකාර තතු දැනුම්දීම</string>
     <string name="dynamic_mode_notification_summary">බැටරි ආයු කාලය දිගු කිරීම සඳහා බැටරි භාවිතය අඩු කිරීම</string>
+    <string name="dynamic_mode_notification_summary_v2">බැටරි ආයු කාලය දීර්ඝ කිරීමට බැටරි සුරැකුම ක්‍රියාත්මක කර ඇත</string>
     <string name="dynamic_mode_notification_title">බැටරි සුරැකුම ක්‍රියාත්මකයි</string>
+    <string name="dynamic_mode_notification_title_v2">බැටරි සුරැකුම ක්‍රියාත්මකයි</string>
     <string name="editTextMenuTitle">පෙළ ක්‍රියාවන්</string>
     <string name="edit_accessibility_shortcut_menu_button">කෙටිමං සංස්කරණ කරන්න</string>
     <string name="edit_contact_at_sim_restriction">ආරක්ෂණ ප්‍රතිපත්තිය මගින් SIM කාඩ්පත් සබඳතා සංස්කරණය වළකාලයි.</string>
-    <string name="edm_policy_not_allow_open_wifiap">ඉඩදුන් උපාංග</string>
+    <string name="edm_policy_not_allow_open_wifiap">ආරක්ෂක ප්‍රතිපත්තිය මඟින් ප්‍රවේශ ස්ථානය සඳහා අනාර්ක්‍ෂිත ටෙදරින් භාවිතා කිරීම සීමා කරයි.</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
     <string name="elapsed_time_short_format_mm_ss">%1$02d:%2$02d</string>
     <string name="emailTypeCustom">අභිරුචි</string>
@@ -858,8 +864,10 @@
     <string name="emergency_call_dialog_number_for_display">හදිසි ඇමතුම් අංකය</string>
     <string name="emergency_calls_only">හදිසි ඇමතුම් පමණි</string>
     <string name="enablePin">අසාර්ථකයි, SIM/RUIM අඟුල සබල කරන්න.</string>
-    <string name="enable_explore_by_touch_warning_message">ස්පර්ශය වෙතින් ගවේෂණය සක්‍රිය කිරීමට %1$s ට අවශ්‍යය. ස්පර්ශය වෙතින් ගවේෂණය සක්‍රිය විට, ඔබගේ ඇඟිලිවලට පහළ විස්තර ඇසිය හෝ බැලිය හැක හෝ ටැබ්ලටය සමග අන්තර් ක්‍රියාකාරී වීමට ඉංගිති සිදු කළ හැක.</string>
+    <string name="enable_explore_by_touch_warning_message">ස්පර්ශය වෙතින් ගවේෂණය සක්‍රිය කිරීමට %1$s ට අවශ්‍යයි. ස්පර්ශය වෙතින් ගවේෂණය සක්‍රිය විට, ඔබගේ ඇඟිලිවලට පහළ විස්තර ඇසිය හෝ බැලිය හැක හෝ දුරකථනය සමග අන්තර් ක්‍රියාකාරී වීමට ඉංගිති සිදු කළ හැක.</string>
     <string name="enable_explore_by_touch_warning_title">ස්පර්ශ කිරීමෙන් ගවේෂණය සබල කරන්න ද?</string>
+    <string name="error_handwriting_unsupported">මෙම ක්ෂේත්‍රය අත් අකුරු සඳහා සහය නොදක්වයි</string>
+    <string name="error_handwriting_unsupported_password">මුරපද ක්ෂේත්‍ර අත් අකුරු සඳහා සහය නොදක්වයි</string>
     <string name="error_message_change_not_allowed">ඔබගේ පරිපාලක විසින් මෙම වෙනස් කිරීමට ඉඩ නොදේ</string>
     <string name="error_message_title">දෝෂය</string>
     <string name="ethernet_cable_connected_notification_message">සැකසීමට තට්ටු කරන්න.</string>
@@ -922,7 +930,7 @@
     <string name="ext_media_unsupported_notification_message">මෙම උපාංගය මෙම %s හට සහාය නොදක්වයි. සහාය දක්වන ආකෘතියකින් පිහිටුවීමට තට්ටු කරන්න.</string>
     <string name="ext_media_unsupported_notification_title">සහාය නොදක්වන %s</string>
     <string name="ext_storage_bad_removal_button">යළි අරඹන්න</string>
-    <string name="ext_storage_bad_removal_title">ඔබේ ටැබ්ලටය යළි අරඹන්න</string>
+    <string name="ext_storage_bad_removal_title">ඔබේ දුරකථනය යළි අරඹන්න</string>
     <string name="extmedia_format_button_format">ආකෘතිය</string>
     <string name="extmedia_format_message">ඔබට SD කාඩ්පත හැඩතල ගැන්විය යුතු බවට සහතිකද? ඔබගේ කාඩ්පතේ ඇති සියලු දත්ත අහිමි වනු ඇත.</string>
     <string name="extmedia_format_message_usbhost">USB ගබඩාවේ තැම්පත්ව ඇති සියලු ගොනු මැකෙනු ඇත. මෙම ක්‍රියාව නැවත ආපස්සට හැරවිය නොහැක.</string>
@@ -944,7 +952,7 @@
     <string name="face_acquired_too_bright">දීප්තිය වැඩියි. තවත් මඳ ආලෝකය උත්සාහ කරන්න.</string>
     <string name="face_acquired_too_close">දුරකථනය තවත් ඈතට ගෙන යන්න</string>
     <string name="face_acquired_too_dark">ප්‍රමාණවත් ආලෝකයක් නැත</string>
-    <string name="face_acquired_too_different">මුහුණ හඳුනා ගත නොහැකිය. නැවත උත්සාහ කරන්න.</string>
+    <string name="face_acquired_too_different">මුහුණ හඳුනා නොගැනිණි. නැවත උත්සාහ කරන්න.</string>
     <string name="face_acquired_too_far">දුරකථනය තවත් සමීපයට ගෙන එන්න</string>
     <string name="face_acquired_too_high">දුරකථනය තවත් ඉහළට ගෙන යන්න</string>
     <string name="face_acquired_too_left">දුරකථනය ඔබගේ දකුණු පසට ගෙන යන්න</string>
@@ -977,8 +985,6 @@
     <string name="face_recalibrate_notification_name">මුහුණෙන් අගුළු හැරීම</string>
     <string name="face_recalibrate_notification_title">මුහුණෙන් අගුලු හැරීම සම්බන්ධව ගැටලුවකි</string>
     <string name="face_sensor_privacy_enabled">මුහුණෙන් අගුලු හැරීම භාවිත කිරීමට, සැකසීම් > පෞද්ගලිකත්වය තුළ <b>කැමරා ප්‍රවේශය</b> ක්‍රියාත්මක කරන්න</string>
-    <string name="face_setup_notification_content">ඔබගේ දුරකථනය දෙස බැලීමෙන් එහි අගුලු හරින්න</string>
-    <string name="face_setup_notification_title">මුහුණෙන් අගුළු හැරීම පිහිටුවන්න</string>
     <string name="faceunlock_multiple_failures">මුහුණෙන් අගුළු හැරීමේ උපරිම ප්‍රයන්තයන් ගණන ඉක්මවා ඇත</string>
     <string name="factory_reset_message">"පරිපාලක යෙදුම භාවිතා කළ නොහැකිය. ඔබේ උපාංගය දැන් මකා දමනු ඇත.
 
@@ -1004,7 +1010,7 @@
     <string name="fingerprint_acquired_imager_dirty">ඇඟිලි සලකුණු සංවේදකය පිරිසිදු කර නැවත උත්සාහ කරන්න</string>
     <string name="fingerprint_acquired_imager_dirty_alt">සංවේදකය පිරිසිදු කර නැවත උත්සාහ කරන්න</string>
     <string name="fingerprint_acquired_immobile">එක් එක් අවස්ථාවේ ඔබගේ ඇඟිල්ලේ පිහිටීම මදක් වෙනස් කරන්න</string>
-    <string name="fingerprint_acquired_insufficient">ඇඟිලි සලකුණ හඳුනා ගත නොහැක. නැවත උත්සාහ කරන්න.</string>
+    <string name="fingerprint_acquired_insufficient">ඇඟිලි සලකුණ හඳුනා නොගැනිණි. නැවත උත්සාහ කරන්න.</string>
     <string name="fingerprint_acquired_partial">සංවේදකය මත තදින් ඔබන්න</string>
     <string name="fingerprint_acquired_power_press">බල එබීම අනාවරණය විය</string>
     <string name="fingerprint_acquired_too_bright">දීප්තිය වැඩියි</string>
@@ -1014,20 +1020,21 @@
     <string name="fingerprint_app_setting_name">ඇඟිලි සලකුණ භාවිත කරන්න</string>
     <string name="fingerprint_authenticated">ඇඟිලි සලකුණ සත්‍යාපනය කරන ලදී</string>
     <string name="fingerprint_dialog_default_subtitle">ඉදිරියට යාමට ඔබගේ ඇඟිලි සලකුණ භාවිත කරන්න</string>
-    <string name="fingerprint_error_bad_calibration">ඇඟිලි සලකුණු සංවේදකය භාවිත කළ නොහැකිය. අළුත්වැඩියා සැපයුම්කරුවෙකු බලන්න</string>
-    <string name="fingerprint_error_canceled">ඇඟිලි සලකුණු මෙහෙයුම අවලංගු කරන ලදී.</string>
-    <string name="fingerprint_error_hw_not_available">ඇඟිලි සලකුණු දෘඪාංගය ලද නොහැකිය.</string>
-    <string name="fingerprint_error_hw_not_present">මෙම උපාංගයේ ඇඟිලි සලකුණු සංවේදකයක් නොමැත.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">මුහුණ හඳුනා නොගැනිණි. ඒ වෙනුවට ඇඟිලි සලකුණ භාවිත කරන්න.</string>
+    <string name="fingerprint_error_bad_calibration">ඇඟිලි සලකුණු සංවේදකය භාවිත කළ නොහැක. අලුත්වැඩියා සැපයුම්කරුවෙකු වෙත පැමිණෙන්න.</string>
+    <string name="fingerprint_error_canceled">ඇඟිලි සලකුණු මෙහෙයුම අවලංගු කරන ලදි</string>
+    <string name="fingerprint_error_hw_not_available">ඇඟිලි සලකුණු දෘඪාංගය ලද නොහැක</string>
+    <string name="fingerprint_error_hw_not_present">මෙම උපාංගයේ ඇඟිලි සලකුණු සංවේදකයක් නොමැත</string>
     <string name="fingerprint_error_lockout">උත්සාහ ගණන ඉතා වැඩියි. ඒ වෙනුවට තිර අගුල භාවිත කරන්න.</string>
     <string name="fingerprint_error_lockout_permanent">උත්සාහ ගණන ඉතා වැඩියි. ඒ වෙනුවට තිර අගුල භාවිත කරන්න.</string>
-    <string name="fingerprint_error_no_fingerprints">ඇඟිලි සලකුණු ඇතුළත් කර නොමැත.</string>
+    <string name="fingerprint_error_no_fingerprints">ඇඟිලි සලකුණු ඇතුළත් කර නොමැත</string>
     <string name="fingerprint_error_no_space">ඇඟිලි සලකුණ පිහිටුවිය නොහැකිය</string>
     <string name="fingerprint_error_not_match">ඇඟිලි සලකුණ හඳුනා නොගන්නා ලදි</string>
     <string name="fingerprint_error_power_pressed">බල බොත්තම ඔබා ඇත</string>
-    <string name="fingerprint_error_security_update_required">සංවේදකය තාවකාලිකව අබල කර ඇත.</string>
+    <string name="fingerprint_error_security_update_required">සංවේදකය තාවකාලිකව අබල කර ඇත</string>
     <string name="fingerprint_error_timeout">ඇඟිලි සලකුණු පිහිටුවීම කාලය නිමා විය. නැවත උත්සාහ කරන්න.</string>
     <string name="fingerprint_error_unable_to_process">ඇඟිලි සලකුණ සැකසීමට නොහැක. නැවත උත්සාහ කරන්න.</string>
-    <string name="fingerprint_error_user_canceled">පරිශීලක විසින් ඇඟිලි සලකුණු මෙහෙයුම අවසන් කරන ලදී.</string>
+    <string name="fingerprint_error_user_canceled">පරිශීලක විසින් ඇඟිලි සලකුණු මෙහෙයුම අවසන් කරන ලදි</string>
     <string name="fingerprint_error_vendor_unknown">යම් දෙයක් වැරදිණි. නැවත උත්සාහ කරන්න.</string>
     <string name="fingerprint_name_template">ඇඟිලි %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">ඇඟිලි සලකුණ හෝ තිර අගුල භාවිත කරන්න</string>
@@ -1035,8 +1042,6 @@
     <string name="fingerprint_recalibrate_notification_content">අළුත්වැඩියා සැපයුම්කරුවෙකු බලන්න.</string>
     <string name="fingerprint_recalibrate_notification_name">ඇඟිලි සලකුණු අගුළු හැරීම</string>
     <string name="fingerprint_recalibrate_notification_title">ඇඟිලි සලකුණු සංවේදකය භාවිත කළ නොහැකිය</string>
-    <string name="fingerprint_setup_notification_content">ඇඟිලි සලකුණක් එක් කිරීමට තට්ටු කරන්න</string>
-    <string name="fingerprint_setup_notification_title">අගුලු හැරීමට තවත් ක්‍රම සකසන්න</string>
     <string name="fingerprint_udfps_error_not_match">ඇඟිලි සලකුණ හඳුනා නොගන්නා ලදි</string>
     <string name="fingerprints">ඇඟිලි සලකුණු:</string>
     <string name="firmwarerecovery_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් ස්ථීරාංග ප්‍රතිසාධන සීමා කරයි.</string>
@@ -1126,7 +1131,7 @@
     <string name="global_action_toggle_sealed_mode">තදබද ප්‍රකාරය</string>
     <string name="global_action_toggle_silent_mode">නිහඬ ආකාරය</string>
     <string name="global_action_voice_assist">හඬ සහායක</string>
-    <string name="global_actions">ටැබ්ලට් විකල්ප</string>
+    <string name="global_actions">දුරකථන විකල්ප</string>
     <string name="global_actions_airplane_mode_off_status">අහස්යානා අකාරය අක්‍රියයි</string>
     <string name="global_actions_airplane_mode_on_status">අහස්යානා ආකාරය සක්‍රීයයි.</string>
     <string name="global_actions_toggle_airplane_mode">අහස්යානා ආකාරය</string>
@@ -1147,6 +1152,7 @@
     <string name="globalactions_unable_restart_msg_fmm">දුරකථනය මගේ ජංගමය සොයා ගන්න මගින් දුරස්ථව අගුළු දමා ඇති නිසා යළි ඇරඹිය නොහැක.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">ටැබ්ලටය මගේ ජංගමය සොයා ගන්න මගින් දුරස්ථව අගුළු දමා ඇති නිසා යළි ඇරඹිය නොහැක.</string>
     <string name="globalactions_unable_restart_msg_securelock">අගුළු දැමූ අතරේ දුරකථනය යළි ඇරඹිය නොහැක. දුරකථනය යළි ඇරඹීමට කවරය විවෘත කර අගුළු හරින්න.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">SIM කාඩ්පත අගුළු දැමූ අතරේ දුරකථනය යළි ඇරඹිය නොහැක.</string>
     <string name="gnss_service">GNSS සේවාව</string>
     <string name="gnss_time_update_service">GNSS වේලා යාවත්කාලීන සේවාව</string>
     <string name="gpsNotifMessage">%1$s (%2$s) විසින් ඉල්ලන ලද</string>
@@ -1162,7 +1168,7 @@
     <string name="granularity_label_link">සබැඳිය</string>
     <string name="granularity_label_word">වචනය</string>
     <string name="guest_name">ආගන්තුක</string>
-    <string name="hardware">අතථ්‍ය යතුරු පුවරුව පෙන්වන්න</string>
+    <string name="hardware">තිරය මත යතුරු පුවරුව භාවිතය</string>
     <string name="hardware_key_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් මෙම දෘඪාංග යතුර භාවිතය වළක්වයි.</string>
     <string name="hardware_sec">තිරය-මත යතුරු පුවරුව</string>
     <string name="harmful_app_warning_open_anyway">කෙසේ වුවත් විවෘත කරන්න</string>
@@ -1311,11 +1317,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>මුරපදය ටයිප් කිරීමට තට්ටු කරන්න&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">වැරදි PIN කේතයකි.</string>
     <string name="kg_enter_confirm_pin_hint">අපේක්ෂිත PIN කේතය ස්ථිර කරන්න</string>
-    <string name="kg_failed_attempts_almost_at_login">"ඔබ අගුළු ඇරිමේ රටාව %1$d වතාවක් වැරදියට ඇඳ ඇත. තවත් අසාර්ථක උත්සාහ %2$d කින් පසුව, ඊ-තැපැල් ගිණුම භාවිතා කරමින් ඔබගේ ටැබ්ලටයේ අගුළු ඇරීමට ඔබට පවසනු ඇත.
+    <string name="kg_failed_attempts_almost_at_login">"ඔබ වැරදියට %1$d වතාවක් ඔබගේ අගුළු හැරීමේ රටාව ඇඳ ඇත. අසාර්ථක උත්සහ කිරීම් %2$d න් පසුව, ඔබගේ ඊ-තැපැල් ලිපිනය භාවිතයෙන් ඔබගේ දුරකථනය අගුළු හැරීමට ඔබගෙන් අසයි.
 
- නැවත තත්පර %3$d කින් උත්සාහ කරන්න."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">ඔබ ටැබ්ලටය අගුළු හැරීමට වැරදියට අවස්ථා %1$d ක් උත්සාහ කර ඇත. අවස්ථා %2$d ක් අසාර්ථකව උත්සහ කිරීමකින් පසුව, කර්මාන්ත ශාලා මුල් තත්වයට නැවත පත් වන අතර සියලු පරිශීලක දත්ත නැති වෙයි.</string>
-    <string name="kg_failed_attempts_now_wiping">ටැබ්ලටයේ අගුළු ඇරීමට ඔබ වැරදි ප්‍රයත්න %d වාරයක් ගෙන ඇත. දැන් ටැබ්ලටය කර්මාන්ත ශාලා සුපුරුද්ද වෙත යළි පිහිටුවීම කෙරේ.</string>
+ තත්පර %3$d න් පසුව නැවත උත්සහ කරන්න."</string>
+    <string name="kg_failed_attempts_almost_at_wipe">ඔබ දුරකථනය අගුළු ඇරීමට වාර %1$d කදී වැරදී ප්‍රයත්නයන් ගෙන තිබේ. තවත් අසාර්ථක ප්‍රයත්න %2$d කින් පසුව, දුරකථනය කර්මාන්ත ශාලාවේ සුපුරුද්දට යළි පිහිටුවන අතර සියලුම පරිශීලක දත්ත නැති වී යයි.</string>
+    <string name="kg_failed_attempts_now_wiping">ඔබ දුරකථනය අගුළු ඇරීමට වාර %d කදී වැරදී ප්‍රයන්තයන් ගෙන තිබේ. දැන් දුරකථනය කර්මාන්තශාලා සුපුරුද්දට පිහිටුවනු ලබයි.</string>
     <string name="kg_forgot_pattern_button_text">රටාව අමතකයි</string>
     <string name="kg_invalid_confirm_pin_hint">PIN කේත ගැලපී නැත</string>
     <string name="kg_invalid_puk">නිවැරදි PUK කේතය නැවත ඇතුලත් කරන්න. නැවත නැවත උත්සාහ කිරීමෙන් SIM එක ස්ථිරවම අබල කරයි.</string>
@@ -1403,11 +1409,11 @@
     <string name="lockscreen_carrier_default">සේවාව නැත</string>
     <string name="lockscreen_carrier_noservice">(සේවාවක් නොමැත).</string>
     <string name="lockscreen_emergency_call">හදිසි</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">ඔබ ටැබ්ලටය අගුළු හැරීමට වැරදියට අවස්ථා %1$d ක් උත්සාහ කර ඇත. අවස්ථා %2$d ක් අසාර්ථකව උත්සහ කිරීමකින් පසුව, ටැබ්ලටය කර්මාන්ත ශාලා මුල් තත්වයට නැවත පත් වන අතර සියලු පරිශීලක දත්ත නැති වෙයි.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"ඔබ වැරදියට %1$d වතාවක් ඔබගේ අගුළු හැරීමේ රටාව ඇඳ ඇත. අසාර්ථක උත්සහ කිරීම් %2$d න් පසුව, ඔබගේ Google පුරනය වීම් භාවිතයෙන් ඔබගේ ටැබ්ලටය අගුළු හැරීමට ඔබගෙන් අසයි.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">ඔබ දුරකථනය අගුළු ඇරීමට වාර %1$d කදී වැරදී ප්‍රයත්නයන් ගෙන තිබේ. තවත් අසාර්ථක ප්‍රයත්න %2$d කින් පසුව, දුරකථනය කර්මාන්තශාලාවේ පෙරනිමියට යළි පිහිටුවන අතර සියලුම පරිශීලක දත්ත නැති වී යයි.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"ඔබ වැරදියට %1$d වතාවක් ඔබගේ අගුළු හැරීමේ රටාව ඇඳ ඇත. අසාර්ථක උත්සහ කිරීම් %2$d න් පසුව, ඔබගේ Google පුරනය වීම භාවිතය\ufffd\ufffd\ufffdන් ඔබගේ දුරකථනය අගුළු හැරීමට ඔබගෙන් අසනු ඇත.
 
  තත්පර %3$d පසුව නැවත උත්සහ කරන්න."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">ටැබ්ලටයේ අගුළු ඇරීමට ඔබ වැරදි ප්‍රයත්න %d වාරයක් ගෙන ඇත. දැන් ටැබ්ලටය කර්මාන්තශාලා සුපුරුද්ද වෙත යළි පිහිටුවීම කෙරේ.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">ඔබ දුරකථනය අගුළු ඇරීමට වාර %d කදී වැරදී ප්‍රයත්නයන් ගෙන තිබේ. දැන් දුරකථනය කර්මාන්තශාලා පෙරනිමියට පිහිටුවනු ලබයි.</string>
     <string name="lockscreen_forgot_pattern_button_text">රටාව අමතකද?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"ඔබගේ පරිශීලක නාමය හෝ මුරපදය අමතකද?
  "<b>google.com/accounts/recovery</b> වෙත යන්න.</string>
@@ -1423,7 +1429,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">අගුළු හැරීමට මෙනුව ඔබන්න හෝ හදිසි ඇමතුම ලබාගන්න.</string>
     <string name="lockscreen_missing_sim_instructions">SIM එකක් එක් කරන්න.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM අස්ථානගතයි හෝ කියවිය නොහැක. SIM එකක් එක් කරන්න.</string>
-    <string name="lockscreen_missing_sim_message">ටැබ්ලටයේ SIM නැත.</string>
+    <string name="lockscreen_missing_sim_message">දුරකථනයේ SIM නැත.</string>
     <string name="lockscreen_missing_sim_message_short">SIM නැත</string>
     <string name="lockscreen_network_locked_message">ජාලය අගුළු දමා ඇත</string>
     <string name="lockscreen_password_wrong">නැවත උත්සාහ කරන්න</string>
@@ -1463,7 +1469,7 @@
     <string name="low_internal_storage_view_text">සමහර පද්ධති කාර්යයන් ක්‍රියා නොකරනු ඇත</string>
     <string name="low_internal_storage_view_text_no_boot">පද්ධතිය සඳහා ප්‍රමාණවත් ඉඩ නොමැත. ඔබට 250MB නිදහස් ඉඩක් තිබෙන ඔබට තිබෙන බව සහතික කරගෙන නැවත උත්සාහ කරන්න.</string>
     <string name="low_internal_storage_view_title">ආචයනය ඉඩ ප්‍රමාණය අඩු වී ඇත</string>
-    <string name="low_memory">ටැබ්ලට් ආචයනය පිරි ඇත. ඉඩ නිදහස් කිරීමට සමහර ගොනු මකන්න.</string>
+    <string name="low_memory">දුරකථන ආචයනය පිරී ඇත. ඉඩ නිදහස් කිරීමට සමහර ගොනු මකන්න.</string>
     <string name="ltb_kill_content_v2_phone">%s ඔබේ දුරකථනය අධිකව රත් වීමට හේතු වූ නිසා වැසිණි. ඔබට ඔබේ දුරකථනය සිසිල් වීමෙන් පසුව එය පසුව නැවත විවෘත කළ හැක.</string>
     <string name="ltb_kill_content_v2_tablet">%s ඔබේ ටැබ්ලටය අධිකව රත් වීමට හේතු වූ නිසා වැසිණි. ඔබට ඔබේ ටැබ්ලටය සිසිල් වීමෙන් පසුව එය පසුව නැවත විවෘත කළ හැක.</string>
     <string name="ltb_warning_button">වැසීම නොකරන්න</string>
@@ -1483,16 +1489,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">නඩත්තු ප්‍රකාරය ක්‍රියාවිරහිත කිරීම සඳහා ඔබට ඔබේ ටැබ්ලටය අගුළු හැරීමට අවශ්‍ය වනු ඇත.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">නඩත්තු ප්‍රකාරය ක්‍රියාත්මකව පවතින අතරේ, බාගත් දත්ත, යෙදුම් ස්ථාපනයන්, හෝ සැකසුම් වෙනස් කිරීම් වැනි, කිසිවක් සුරැකෙන්නේ නැත.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">තිර අගුල සකසන්න</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">ලොගය තැනීමෙන් තොරව යළි අරඹන්න</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">ලොගය තනා යළි අරඹන්න</string>
     <string name="maintenance_mode_intro_dialog_message_phone">නඩත්තු ප්‍රකාරය ක්‍රියාත්මක කිරීම සඳහා ඔබේ දුරකථනය යළි ඇරඹීමට අවශ්‍ය වේ.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">පළමුව තිර අගුලක් සකසන්න.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">නඩත්තු ප්‍රකාරය ක්‍රියාත්මක කිරීම සඳහා ඔබේ ටැබ්ලටය යළි ඇරඹීමට අවශ්‍ය වේ.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"අපගේ සහාය කාර්ය මණ්ඩලයට ඔබේ දුරකථනය සමග ඇති ඕනෑම ගැටලුවක් විශ්ලේෂණය කිරීමට උපකාර කිරීම සඳහා, නඩත්තු කිරීමේ ප්‍රකාරය ඇරඹීමට පෙර පද්ධති ලොගයක් තැනීමට අපි නිර්දේශ කරමු.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"අපගේ සහාය කාර්ය මණ්ඩලයට ඔබේ දුරකථනය සමඟ ඇති ඕනෑම ගැටලුවක් දෝෂ නිර්ණය සහ විශ්ලේෂණය කිරීමට උපකාර කිරීමට, නඩත්තු ප්‍රකාරය ආරම්භ කිරීමට පෙර පද්ධති ලොගයක් තැනීමට අපි නිර්දේශ කරමු.
 
-ලොගය භාවිතා කළ යෙදුම් සහ මෑත දී සිදු වූ කිසියම් දෝෂයක් පෙන්වන නමුත්, අනෙකුත් පුද්ගලික තොරතුරු කිසිවක් ඇතුළත් නොවේ. ලොගය භාවිතා කරනුයේ ගැටලු විශ්ලේෂණය කිරීමට මිස වෙනත් කිසිදු අරමුණක් සඳහා නොවේ. ලොගය තැනීමට සාමාන්‍යයෙන් විනාඩි 2ක් පමණ ගත වේ."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"අපගේ සහාය කාර්ය මණ්ඩලයට ඔබේ ටැබ්ලටය සමග ඇති ඕනෑම ගැටලුවක් විශ්ලේෂණය කිරීමට උපකාර කිරීම සඳහා, නඩත්තු කිරීමේ ප්‍රකාරය ඇරඹීමට පෙර පද්ධති ලොගයක් තැනීමට අපි නිර්දේශ කරමු.
+ලොගයට ඇතුළත් වන්නේ භාවිතා කළ යෙදුම්, මෑතක දී සිදු වූ දෝෂ, අවහිර කළ දුරකථන අංක, සහ ගොනු ගබඩා ධාරිතාව වැනි, ඔබේ දුරකථනය අලුත්වැඩියා කිරීමට අත්‍යවශ්‍ය තොරතුරු පමණි. ලොගය භාවිතා කරනුයේ ගැටලු දෝෂ නිර්ණය කර විශ්ලේෂණය කිරීමට මිස වෙනත් කිසිදු අරමුණක් සඳහා නොවේ. ලොගය තැනීමට සාමාන්‍යයෙන් විනාඩි 2ක් පමණ ගත වේ."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"අපගේ සහාය කාර්ය මණ්ඩලයට ඔබේ ටැබ්ලටය සමඟ ඇති ඕනෑම ගැටලුවක් දෝෂ නිර්ණය සහ විශ්ලේෂණය කිරීමට උපකාර කිරීමට, නඩත්තු ප්‍රකාරය ආරම්භ කිරීමට පෙර පද්ධති ලොගයක් තැනීමට අපි නිර්දේශ කරමු.
 
-ලොගය භාවිතා කළ යෙදුම් සහ මෑත දී සිදු වූ කිසියම් දෝෂයක් පෙන්වන නමුත්, අනෙකුත් පුද්ගලික තොරතුරු කිසිවක් ඇතුළත් නොවේ. ලොගය භාවිතා කරනුයේ ගැටලු විශ්ලේෂණය කිරීමට මිස වෙනත් කිසිදු අරමුණක් සඳහා නොවේ. ලොගය තැනීමට සාමාන්‍යයෙන් විනාඩි 2ක් පමණ ගත වේ."</string>
+ලොගයට ඇතුළත් වන්නේ භාවිතා කළ යෙදුම්, මෑතක දී සිදු වූ දෝෂ, අවහිර කළ දුරකථන අංක, සහ ගොනු ගබඩා ධාරිතාව වැනි, ඔබේ ටැබ්ලටය අලුත්වැඩියා කිරීමට අත්‍යවශ්‍ය තොරතුරු පමණි. ලොගය භාවිතා කරනුයේ ගැටලු දෝෂ නිර්ණය කර විශ්ලේෂණය කිරීමට මිස වෙනත් කිසිදු අරමුණක් සඳහා නොවේ. ලොගය තැනීමට සාමාන්‍යයෙන් විනාඩි 2ක් පමණ ගත වේ."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">ගබඩාව විශ්ලේෂණය</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">ඔබේ දුරකථනයේ අභ්‍යන්තර ගබඩාව සම්පූර්ණයෙන්ම පාහේ පිරී ඇත. ඔබට ගබඩා ඉඩ මදි වන්නේ නම්, සමහර යෙදුම් සහ විශේෂාංග නිවැරදිව ක්‍රියා කිරීම නතර විය හැක. ඔබට තවදුරටත් අවශ්‍ය නොවන සමහර ගොනු හෝ යෙදුම් මැකීමට උත්සාහ කරන්න. මකා දැමීමෙන් පසුව, කුණු කූඩය හිස් කිරීමට අමතක නොකරන්න.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">ඔබේ ටැබ්ලටයේ අභ්‍යන්තර ගබඩාව සම්පූර්ණයෙන්ම පාහේ පිරී ඇත. ඔබට ගබඩා ඉඩ මදි වන්නේ නම්, සමහර යෙදුම් සහ විශේෂාංග නිවැරදිව ක්‍රියා කිරීම නතර විය හැක. ඔබට තවදුරටත් අවශ්‍ය නොවන සමහර ගොනු හෝ යෙදුම් මැකීමට උත්සාහ කරන්න. මකා දැමීමෙන් පසුව, කුණු කූඩය හිස් කිරීමට අමතක නොකරන්න.</string>
@@ -1514,10 +1520,17 @@
     <string name="maintenance_mode_outro_label">නඩත්තු කිරීමේ ප්‍රකාරයෙන් පිටවීම</string>
     <string name="maintenance_mode_outro_textview_message_phone">නඩත්තු ප්‍රකාරය ක්‍රියාවිරහිත කිරීම සඳහා ඔබට ඔබේ දුරකථනය අගුළු හැරීමට අවශ්‍ය වනු ඇත. ඔබ එසේ කරන විට, නඩත්තු ප්‍රකාරය පළමුව ක්‍රියාත්මක කර ඇති විට සෑම දෙයක්ම තිබූ ආකාරයටම ආපසු යනු ඇත. බාගත් දත්ත, ස්ථාපිත යෙදුම්, හෝ සැකසුම් වෙනස්කම් වැනි, නඩත්තු ප්‍රකාරය ක්‍රියාත්මකව ඇති අතරේ සිදු කරන ලද වෙනස්කම්, සුරැකෙන්නේ නැත.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">නඩත්තු ප්‍රකාරය ක්‍රියාවිරහිත කිරීම සඳහා ඔබට ඔබේ ටැබ්ලටය අගුළු හැරීමට අවශ්‍ය වනු ඇත. ඔබ එසේ කරන විට, නඩත්තු ප්‍රකාරය පළමුව ක්‍රියාත්මක කර ඇති විට සෑම දෙයක්ම තිබූ ආකාරයටම ආපසු යනු ඇත. බාගත් දත්ත, ස්ථාපිත යෙදුම්, හෝ සැකසුම් වෙනස්කම් වැනි, නඩත්තු ප්‍රකාරය ක්‍රියාත්මකව ඇති අතරේ සිදු කරන ලද වෙනස්කම්, සුරැකෙන්නේ නැත.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">%s සක්‍රිය අතරේ නඩත්තු ප්‍රකාරය භාවිතා කළ නොහැක.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">සීමිත යෙදුම් සහ මුල් තිරය සමග බල සුරැකීම ක්‍රියාත්මක අතරේ නඩත්තු ප්‍රකාරය භාවිතා කළ නොහැක.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">නඩත්තු ප්‍රකාරයට මෙම දුරකථනයෙහි සහාය නොදක්වයි.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">නඩත්තු ප්‍රකාරයට මෙම ටැබ්ලටයෙහි සහාය නොදක්වයි.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s භාවිතා කළ හැක්කේ උපාංගයේ හිමිකරුට පමණි.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">ඔබේ දත්ත උපස්ථ කිරීම නවතා නඩත්තු ප්‍රකාරය ක්‍රියාත්මක කරන්න ද?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">නඩත්තු ප්‍රකාරය ක්‍රියාත්මක කිරීම සඳහා, ඔබට ඔබේ අසම්පූර්ණ උපස්ථය අවසන් කිරීමට හෝ මැකීමට අවශ්‍ය වේ.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">නඩත්තු ප්‍රකාරය ක්‍රියාත්මක කිරීම සඳහා, ඔබට ඔබේ දැනට පවතින උපස්ථය නැවැත්වීමට අවශ්‍ය වේ.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">නඩත්තු ප්‍රකාරය ක්‍රියාත්මක කිරීම සඳහා, ඔබට ඔබේ උපස්ථ දත්ත ප්‍රතිසාධනය කිරීම නැවැත්වීමට අවශ්‍ය වේ.</string>
+    <string name="maintenance_mode_toast_text_device_admin">උපාංග පරිපාලක යෙදුම</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">ලොගය තනමින්…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">මෙයට සාමාන්‍යයෙන් විනාඩි 2ක් පමණ ගත වේ. ලොගය තැනීමෙන් පසුව, ඔබේ දුරකථනය නඩත්තු කිරීමේ ප්‍රකාරයෙන් යළි ඇරඹෙනු ඇති අතර ඔබට නඩත්තුව සඳහා ඔබේ දුරකථනය සුරක්ෂිතව භාර දීමට හැක.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">මෙයට සාමාන්‍යයෙන් විනාඩි 2ක් පමණ ගත වේ. ලොගය තැනීමෙන් පසුව, ඔබේ ටැබ්ලටය නඩත්තු කිරීමේ ප්‍රකාරයෙන් යළි ඇරඹෙනු ඇති අතර ඔබට නඩත්තුව සඳහා ඔබේ ටැබ්ලටය සුරක්ෂිතව භාර දීමට හැක.</string>
@@ -1667,6 +1680,7 @@
     <string name="menu_shift_shortcut_label">Shift+</string>
     <string name="menu_space_shortcut_label">space</string>
     <string name="menu_sym_shortcut_label">Sym+</string>
+    <string name="message_on_crash">ස්වයං අවහිරකය මගින් අවහිර කර ඇත</string>
     <string name="mic_access_off_toast">මයික්‍රෆෝනය අවහිර කර ඇත</string>
     <string name="mic_access_on_toast">මයික්‍රෆෝනය තිබේ</string>
     <string name="microphone_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් මයික්‍රෆෝනය භාවිතය වළක්වයි.</string>
@@ -1689,15 +1703,17 @@
     <string name="mime_type_spreadsheet_ext">%1$s පැතුරුම්පත</string>
     <string name="mime_type_video">වීඩියෝව</string>
     <string name="mime_type_video_ext">%1$s වීඩියෝව</string>
-    <string name="miniresolver_call">ඇමතුම</string>
+    <string name="miniresolver_call">අමතන්න</string>
     <string name="miniresolver_call_in_work">කාර්යාල යෙදුමෙන් අමතන්න ද?</string>
-    <string name="miniresolver_call_information">ඔබේ සංවිධානය ඔබට වැඩ යෙදුම්වලින් ඇමතුම් ගැනීමට පමණක් ඉඩ දෙයි.</string>
+    <string name="miniresolver_call_information">ඔබේ සංවිධානය ඔබට කාර්යාල යෙදුම්වලින් ඇමතුම් කිරීමට පමණක් ඉඩ දෙයි</string>
     <string name="miniresolver_open_in_personal">පුද්ගලික %s තුළ විවෘත කරන්න ද?</string>
     <string name="miniresolver_open_in_work">කාර්යාල %s තුළ විවෘත කරන්න ද?</string>
     <string name="miniresolver_open_work">කාර්යාල %s විවෘත කරන්න ද?</string>
-    <string name="miniresolver_sms_information">ඔබේ සංවිධානය ඔබට වැඩ යෙදුම්වලින් පණිවිඩ යැවීමට පමණක් ඉඩ දෙයි.</string>
+    <string name="miniresolver_private_space_messages_information">ඔබට කෙටි පණුවඩ යැවිය හැක්කේ ඔබේ පුද්ගලික Messages යෙදුමින් පමණයි.</string>
+    <string name="miniresolver_private_space_phone_information">ඔබට දුරකථන ඇමතුම් ගත හැක්කේ ඔබේ පුද්ගලික Phone යෙදුමින් පමණයි. පුද්ගලික Phone මගින් කරන ලද ඇමතුම් ඔබේ පුද්ගලික ඇමතුම් ඉතිහාසයට එක් කරනු ලැබේ.</string>
+    <string name="miniresolver_sms_information">ඔබේ සංවිධානය ඔබට කාර්යාල යෙදුම්වලින් පණිවුඩ යැවීමට පමණක් ඉඩ දෙයි</string>
     <string name="miniresolver_switch">මාරු කරන්න</string>
-    <string name="miniresolver_switch_to_work">කාර්යාල යෙදුමට මාරු කරන්න ද?</string>
+    <string name="miniresolver_switch_to_work">කාර්යාල යෙදුම වෙත මාරු වන්නද?</string>
     <string name="miniresolver_use_personal_browser">පුද්ගලික බ්‍රව්සරය භාවිත කරන්න</string>
     <string name="miniresolver_use_work_browser">කාර්යාල බ්‍රව්සරය භාවිත කරන්න</string>
     <string name="minute">min</string>
@@ -1730,30 +1746,6 @@
     <string name="mock_location_reminder_title">ව්‍යාජ පිහිටීම ක්‍රියාත්මකයි</string>
     <string name="more_apps">තවත් යෙදුම්</string>
     <string name="more_item_label">තව</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s සේවාව සහාය නොදක්වයි. පාරිභෝගික සේවා අමතන්න.</string>
-    <string name="mptcp_message_address_type_not_supported">%s සබැඳුම දුර්වලයි. ඇති ජාලය ඔස්සේ යළි සබැඳෙමින්…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s සබැඳුම දුර්වලයි. ඇති ජාලය ඔස්සේ යළි සබැඳෙමින්…</string>
-    <string name="mptcp_message_cmd_not_supported">%s ජාලය තාවකාලිකව නොපවතී. ඇති ජාලය ඔස්සේ යළි සබැඳෙමින්…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s සබැඳුම දුර්වලයි. ඇති ජාලය ඔස්සේ යළි සබැඳෙමින්…</string>
-    <string name="mptcp_message_connection_refused">%s සබැඳුම දුර්වලයි. ඇති ජාලය ඔස්සේ යළි සබැඳෙමින්…</string>
-    <string name="mptcp_message_data_usage_limit">දත්ත පරිහරණ සීමාවට ළඟා විය. දත්ත පරිහරණ සීමාව වෙනස් කිරීමට, සැකසුම් වෙත යන්න.</string>
-    <string name="mptcp_message_host_unreachable">%s සබැඳුම දුර්වලයි. ඇති ජාලය ඔස්සේ යළි සබැඳෙමින්…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">%s සක්‍රිය කළ නොහැකිය. උපාංගය LTE ජාලය වෙත සබැඳී නැත.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">ජාත්‍යන්තරව රෝමිං වන අතරතුර %s සක්‍රිය කළ නොහැකිය.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">ජංගම හොට්ස්පොට් හෝ USB ටෙදරින් සක්‍රිය අතරතුර %s සක්‍රිය කළ නොහැකිය.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Wi-Fi Direct සක්‍රිය අතරතුර %s සක්‍රිය කළ නොහැකිය.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">පියාසර ප්‍රකාරය සක්‍රිය අතරතුර %s සක්‍රිය කළ නොහැකිය.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">ජංගම දත්ත ක්‍රියා විරහිත අතරතුර %s සක්‍රිය කළ නොහැකිය.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">සේවා සැපයුම්කරුගෙන් කිසිදු ප්‍රතිචාරයක් නොමැත.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">%1$s සක්‍රිය කළ නොහැකිය. %2$s ඔබේ අන්තර්ජාල පැකේජය සමග නොමැති හෝ %3$s සර්වරයෙන් කිසිදු ප්‍රතිචාරයක් ලැබී නැත.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">%s සක්‍රියන ඉල්ලුම යැවීමට අසමත් විය. ඇති ජාල ඔස්සේ යළි සබැඳෙමින්…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">%s සක්‍රිය කළ නොහැකිය. වැරදි SIM කාඩ්පතක් ඇතුළත් කර ඇත.</string>
-    <string name="mptcp_message_network_unreachable">%s සබැඳුම දුර්වලයි. ඇති ජාලය ඔස්සේ යළි සබැඳෙමින්…</string>
-    <string name="mptcp_message_non_mptcp_plan">Giga බහු-පෙත සක්‍රිය කළ නොහැකිය. දත්ත සැලස්ම මඟින් ක්‍රියාදාමයට සහාය නොදක්වයි.</string>
-    <string name="mptcp_message_operation_disabled_overheating">උපාංගය අධිකව රත් වීම වැළැක්වීමට %s අක්‍රිය කෙරිණි. ඒ වෙනුවට ජංගම ජාලය ඔස්සේ බාගනිමින්…</string>
-    <string name="mptcp_message_server_error">%s සබැඳුම දුර්වලයි. ඇති ජාලය ඔස්සේ යළි සබැඳෙමින්…</string>
-    <string name="mptcp_message_setting_disabled_overheating">%s සක්‍රිය කළ නොහැකිය. උපාංගය අධිකව රත් වේ. උපාංගය සිසිල් වන තුරු රැඳී සිට නැවත උත්සාහ කරන්න.</string>
-    <string name="mptcp_message_ttl_expired">%s ජාලය තාවකාලිකව නොපවතී. ඇති ජාලය ඔස්සේ යළි සබැඳෙමින්…</string>
     <string name="mte_override_notification_message">කාර්ය සාධනය සහ ස්ථාවරත්වය බලපෑමට ලක් විය හැකිය. අබල කිරීමට නැවත පණ ගන්වන්න. arm64.memtag.bootctl භාවිතයෙන් සබල කළහොත්, එය පෙර කිසිවකට නොසකසන්න.</string>
     <string name="mte_override_notification_title">අත්හදා බැලීමේ MTE සබලයි</string>
     <string name="multi_user_capability_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් ඔබේ උපාංගයෙහි බහු පරිශීලක ශක්‍යතාව වළක්වයි.</string>
@@ -1774,18 +1766,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">හඬ ඔබේ බ්ලූටූත් ශ්‍රව්‍ය උපාංගයෙහි වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න</string>
     <string name="multisound_sound_via_headphone">%s හඬ ඔබේ හෙඩ්ෆෝන් හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
     <string name="multisound_sound_via_headphone_multiselection">හඬ ඔබේ හෙඩ්ෆෝන් හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
-    <string name="multisound_sound_via_phone_speaker">%s හඬ ඔබේ ටැබ්ලටයේ ස්පීකරය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">හඬ ඔබේ ටැබ්ලටයේ ස්පීකරය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
+    <string name="multisound_sound_via_phone_speaker">%s හඬ ඔබේ දුරකථනයේ ස්පීකරය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">හඬ ඔබේ දුරකථනයේ ස්පීකරය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
     <string name="multisound_sound_via_usb_audio">%s හඬ ඔබේ USB ශ්‍රව්‍ය උපාංගය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">හඬ ඔබේ USB ශ්‍රව්‍ය උපාංගය හරහා වාදනය වේ. මෙය ක්‍රියා විරහිත කිරීමට මෙතැන තට්ටු කරන්න.</string>
     <string name="multisound_title">යෙදුම් සඳහා වෙනම හඬ</string>
     <string name="multisound_turn_off_multisound">ක්‍රියාවි. ක.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX තුළ ධාවනය කළ නොහැක. ටැබ්ලට ප්‍රකාරයෙන් ධාවනය කිරීමට උත්සාහ කරන්න.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX තුළ ධාවනය කළ නොහැක. එය ටැබ්ලට මුල් තිර සඳහා නිර්මාණය කර ඇත.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">සමහර ක්‍රීඩා ස්පර්ශ තිරවල පමණක් වැඩ කරයි. Samsung DeX තුළ මූසික පාලන වැඩ නොකරයි නම්, ඒ වෙනුවට ටැබ්ලට ප්‍රකාරයේ ක්‍රීඩා කිරීමට උත්සාහ කරන්න.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s Samsung DeX තුළ ධාවනය කළ නොහැක. දුරකථන ප්‍රකාරයෙන් ධාවනය කිරීමට උත්සාහ කරන්න.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s Samsung DeX තුළ ධාවනය කළ නොහැක. එය දුරකථන මුල් තිර සඳහා නිර්මාණය කර ඇත.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">සමහර ක්‍රීඩා ස්පර්ශ තිරවල පමණක් වැඩ කරයි. Samsung DeX තුළ මූසික පාලන වැඩ නොකරයි නම්, ඒ වෙනුවට දුරකථන ප්‍රකාරයේ ක්‍රීඩා කිරීමට උත්සාහ කරන්න.</string>
     <string name="music_recognition_manager_service">සංගීත හැඳුනුම් කළමනාකරු සේවාව</string>
     <string name="muted_by">%1$s සමහර ශබ්ද නිහඬ කරමින්</string>
-    <string name="my_device">මෙම ටැබ්ලටය</string>
+    <string name="my_device">මෙම දුරකථනය</string>
     <string name="nas_upgrade_notification_content">යෝජිත ක්‍රියා සහ පිළිතුරු දැන් වැඩි දියුණු කරන ලද දැනුම්දීම් මගින් සපයනු ලැබේ. Android අනුවර්තී දැනුම්දීම් තවදුරටත් සහාය නොදක්වයි.</string>
     <string name="nas_upgrade_notification_disable_action">ක්‍රියාවිරහිත කරන්න</string>
     <string name="nas_upgrade_notification_enable_action">හරි</string>
@@ -1825,10 +1817,9 @@
     <string name="nosim_limited_service">සීමිත සේවාව</string>
     <string name="not_checked">පරීක්ෂා කර නැත</string>
     <string name="not_selected">තෝරා නොමැත</string>
-    <string name="not_support_ai_key">AI යතුර ඔබේ ටැබ්ලටය සමඟ තවම ක්‍රියා නොකරයි. ඉක්මනින්ම යාවත්කාලීනයක් ලද හැකි වනු ඇත.</string>
     <string name="notification_action_check_bg_apps">සක්‍රිය යෙදුම් පරීක්ෂා කරන්න</string>
     <string name="notification_alerted_content_description">අනතුරු අඟවන ලදී</string>
-    <string name="notification_app_name_settings">සැකසුම්</string>
+    <string name="notification_app_name_settings">සැකසීම්</string>
     <string name="notification_app_name_system">පද්ධතිය</string>
     <string name="notification_appops_camera_active">කැමරාව</string>
     <string name="notification_appops_microphone_active">මයික්‍රෆෝනය</string>
@@ -1844,6 +1835,7 @@
     <string name="notification_channel_developer_important">වැදගත් සංවර්ධක පණිවුඩ</string>
     <string name="notification_channel_device_admin">ඔබේ තොරතුරු තාක්‍ෂණ පරිපාලක වෙතින් ඇඟවීම්</string>
     <string name="notification_channel_dex_policy">Samsung DeX ප්‍රතිපත්තිය</string>
+    <string name="notification_channel_display">සංදර්ශකය</string>
     <string name="notification_channel_do_not_disturb">බාධා නොකරන්න</string>
     <string name="notification_channel_emergency_callback">හදිසි අවස්ථා පසු ඇමතුම් ප්‍රකාරය</string>
     <string name="notification_channel_foreground_service">බැටරිය භාවිත කරන යෙදුම්</string>
@@ -1906,7 +1898,8 @@
     <string name="overheat_warning_title_v2_tablet">ටැබ්ලටය අධිකව රත් වේ</string>
     <string name="owner_name">හිමිකරු</string>
     <string name="package_deleted_device_owner">ඔබගේ පරිපාලක මඟින් මකා දමා ඇත</string>
-    <string name="package_installed_device_owner">ඔබගේ පරිපාලක මඟින් ස්ථාපනය කර ඇත</string>
+    <string name="package_installed_device_owner">"ඔබේ පරිපාලකයා විසින් ස්ථාපන කරනු ලබයි.
+දෙන ලද අවසර බැලීමට සැකසීම් වෙත යන්න"</string>
     <string name="package_module">පැකේජය</string>
     <string name="package_night_mode_dialog_got_it">තේරුණා</string>
     <string name="package_night_mode_dialog_message">බැටරිය සුරැකීම සඳහා %s අඳුරු ප්‍රකාරයේ ධාවනය වේ. ඔබට සැකසුම් Labs තුළ ආලෝක ප්‍රකාරයට මාරු විය හැක.</string>
@@ -1929,7 +1922,9 @@
     <string name="permdesc_accessCoarseLocation">යෙදුම භාවිතයේ පවතින අතරතුර ස්ථාන සේවා වෙතින් මෙම යෙදුමට ඔබේ ආසන්න ස්ථානය ලබා ගත හැකිය. යෙදුම සඳහා ස්ථානය ලබා ගැනීමට ඔබේ උපාංගය සඳහා ස්ථාන සේවා ක්‍රියාත්මක කළ යුතුය.</string>
     <string name="permdesc_accessDrmCertificates">"යෙදුමකට DRM  සහතික වෙන් කර භාවිතා කිරීමට ඉඩ දේ. සාමාන්‍ය යෙදුම් වලට කිසිදා අවශ්‍ය නොවේ."</string>
     <string name="permdesc_accessFineLocation">යෙදුම භාවිතයේ පවතින අතරතුර ස්ථාන සේවා වෙතින් මෙම යෙදුමට ඔබේ නිශ්චිත ස්ථානය ලබා ගත හැකිය. යෙදුම සඳහා ස්ථානය ලබා ගැනීමට ඔබේ උපාංගය සඳහා ස්ථාන සේවා ක්‍රියාත්මක කළ යුතුය. මෙය බැටරි භාවිතය වැඩි කළ හැකිය.</string>
+    <string name="permdesc_accessHiddenProfile">සැඟවුණු පැතිකඩ වෙත ප්‍රවේශ වීමට යෙදුමට ඉඩ දෙයි.</string>
     <string name="permdesc_accessImsCallService">"ඔබේ මැදිහත්වීමකින් තොරව ඇමතුම් සිදු කිරීමට  IMS සේවාව භාවිතයට යෙදුමට ඉඩ දෙන්න."</string>
+    <string name="permdesc_accessLastKnownCellId">දුරකථන මඟින් සපයන ලද අවසන් වරට දන්නා කොටුවේ අනන්‍යතාවට ප්‍රවේශ වීමට යෙදුමට අවසර දෙන්න.</string>
     <string name="permdesc_accessLocationExtraCommands">ස්ථානය සපයන අමතර අණ වලට ප්‍රවේශය කිරීමට යෙදුමට අවසර දෙන්න. GPS ක්‍රියාවන් හෝ වෙනත් ස්ථාන මූලාශ්‍ර සමඟ මැදිහත් වීමට මෙයින් යෙදුමට ඉඩ ලැබේ.</string>
     <string name="permdesc_accessNetworkConditions">යෙදුමකට ජාල තත්ව මත නිරීක්ෂණ වෙත ඇහුම්කන් දීමට අවසර දේ. සාමාන්‍ය යෙදුම් සඳහා කිසිදා අවශ්‍ය නොවේ.</string>
     <string name="permdesc_accessNetworkState">කුමන ජාල පවතින්නේ ද සහ සම්බන්ධිත ද ආදී ජාල සබඳතා ගැන තොරතුරු බැලීමට යෙදුමට අවසර දෙයි.</string>
@@ -1950,23 +1945,24 @@
     <string name="permdesc_bindNotificationListenerService">දැනුම්දීම් අසන්නාගේ සේවාවේ ඉහළ මට්ටමේ අතුරුමුහුණතට බැඳීමට දරන්නාට අවසර දේ. සාමාන්‍ය යෙදුම් සඳහා කිසිසේත් අවශ්‍ය නොවේ.</string>
     <string name="permdesc_bind_connection_service">ඇමතුම් ගැනීමට/ලැබීමට දුරකථන සේවාවන් සමඟ සම්බන්ධ වීමට යෙදුමට ඉඩ දෙන්න.</string>
     <string name="permdesc_bind_incall_service">ලැබෙන ඇමතුම් තිරය පරිශීලකයාට පෙනෙන්නේ කෙදිනද සහ කෙසේද යැයි පාලනය කිරීමට යෙදුමට අවසර දෙන්න.</string>
-    <string name="permdesc_bluetooth">ටැබ්ලටයේ බ්ලූටූත් වින්‍යාසය බැලිමට, සැකසීමට සහ යුගල කළ උපාංග සමඟ සම්බන්ධතාවන් පිළිගැනීමට යෙදුමට අවසර දෙන්න.</string>
-    <string name="permdesc_bluetoothAdmin">ස්ථානීය බ්ලූටූත් ටැබ්ලට්යක් සැකසීමට සහ වින්‍යාස කිරීමට සහ දුරස්ථ උපාංග සමග යුගළ කිරීමට යෙදුමට අවසර දෙන්න.</string>
+    <string name="permdesc_bluetooth">දුරකථනයේ බ්ලූටූත් වින්‍යාසය දැකීමට, යුගල උපාංග සමඟ සම්බන්ධතාවන් සැකසීමට සහ භාරගැනීමට යෙදුමට අවසර දෙයි.</string>
+    <string name="permdesc_bluetoothAdmin">දුරකථනයේ පෙදෙසි බ්ලූටූත් වින්‍යාස කිරීමට, සහ දුරස්ථ උපාංග ගවේෂණයට සහ යුගල වීමට යෙදුමට අවසර දෙයි.</string>
     <string name="permdesc_bluetooth_advertise">අවට ඇති බ්ලූටූත් උපාංගවලට වෙළඳ ප්‍රචාරණය කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_bluetooth_connect">යුගල කළ බ්ලූටූත් උපාංග සමඟ සම්බන්ධ වීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_bluetooth_scan">අව‍ට ඇති බ්ලූටූත් උපාංග සොයා ගැනීමට සහ යුගල කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_bodySensors">යෙදුම භාවිතයේ පවතින අතරතුර හෘද ස්පන්දන වේගය, උෂ්ණත්වය සහ රුධිර ඔක්සිජන් ප්‍රතිශතය වැනි ශරීර සංවේදක දත්ත වෙත ප්‍රවේශ වීමට යෙදුමට අවසර දෙයි.</string>
     <string name="permdesc_bodySensors_background">යෙදුම පසුබිමේ ඇති අතර හෘද ස්පන්දන වේගය, උෂ්ණත්වය සහ රුධිර ඔක්සිජන් ප්‍රතිශතය වැනි ශරීර සංවේදක දත්ත වෙත ප්‍රවේශ වීමට යෙදුමට අවසර දෙයි.</string>
-    <string name="permdesc_broadcastSticky">ප්‍රචාරණයට පසුවද පවතින, ප්‍රචාරණයන් යැවීමට යෙදුමට අවසර දෙන්න. වැඩිපුර මතකය භාවිතය හේතු කොට, අධික භාවිතය මඟින් ටැබ්ලටය පමා කිරීම හෝ අස්ථිර කළ හැක.</string>
+    <string name="permdesc_broadcastSticky">ප්‍රචාරණයට පසුවද පවතින, ප්‍රචාරණයන් යැවීමට යෙදුමට අවසර දෙන්න. වැඩිපුර මතකය භාවිතය හේතු කොට, අධික භාවිතය මඟින් දුරකථනය පමා කිරීම හෝ අස්ථිර කළ හැක.</string>
     <string name="permdesc_callCompanionApp">යෙදුමට උපාංගයෙහි පවතින ඇමතුම් බැලීමට සහ පාලනය කිරීමට ඉඩ දෙයි මෙහි ඇමතුම් සඳහා ඇමතුම් අංක සහ ඇමතුම්වල තත්ත්වය වැනි තොරතුරු ඇතුළත් වේ.</string>
     <string name="permdesc_callPhone">ඔබේ මැදිහත්වීමකින් තොරව දුරකථන අංක ඇමතීමට යෙදුමට ඉඩ දෙයි. මෙය අනපේක්ෂිත ගාස්තු හෝ ඇමතුම්වලට හේතු විය හැක. මෙය යෙදුමට හදිසි ඇමතුම් අංක ඇමතීමට ඉඩ නොදෙන බව සලකන්න. ඔබේ තහවුරු කිරීමකින් තොරව ඇමතුම් ලබා දීමෙන්, හෝ ලැබෙන ඇමතුම් ස්වයංක්‍රීයව වෙනත් අංකයකට යොමු කිරීමට හේතු වන වාහක කේත ඇමතීමෙන් අනිෂ්ට යෙදුම් ඔබේ මුදල් වැය කළ හැක.</string>
     <string name="permdesc_camera">මෙම යෙදුමට එය භාවිතයෙහි ඇති අතරතුර කැමරාව භාවිත කර පින්තූර ගැනීමට සහ වීඩියෝ පටිගත කිරීමට හැකිය.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">මෙම යෙදුමට හිස් රහිත පද්ධති පරිශීලක ලෙස කැමරාවට ප්‍රවේශ විය හැක.</string>
     <string name="permdesc_cameraOpenCloseListener">මෙම යෙදුමට ඕනෑම කැමරා උපාංගයක් විවෘත වෙමින් පවතින විට (කුමන යෙදුමකින්) හෝ වැසෙමින් පවතින විට පසු ඇමතුම් ලබා ගැනීමට හැකිය.</string>
     <string name="permdesc_changeNetworkState">ජාල සම්බන්ධතාවයේ තත්වය වෙනස් කිරීමට යෙදුමට අවසර දෙන්න.</string>
     <string name="permdesc_changeTetherState">ටෙදර් කළ ජාල සම්බන්ධතාවයේ තත්වය වෙනස් කිරීමට යෙදුමට අවසර දෙන්න.</string>
-    <string name="permdesc_changeWifiMulticastState">ඔබගේ ටැබ්ලටයට පමණක් නොව Wi-Fi ජාලයේ ඇති සියලුම උපාංගවලට යැවූ පැකැට්ටු බහු විකාශ ලිපින භාවිතයෙන් ලබාගැනීමට යෙදුමට අවසර දෙන්න. non-multicast ආකාරයට වඩා වැඩි බලයක් මෙහිදී භාවිතා වේ.</string>
+    <string name="permdesc_changeWifiMulticastState">ඔබගේ දුරකථනයට පමණක් නොව Wi-Fi ජාලයේ ඇති සියලුම යෙදුම්වලට යැවූ පැකැට්ටු බහුවාහක ලිපින භාවිතයෙන් ලබාගැනීමට යෙදුමට අවසර ලැබේ. බහුවාහක නැති ආකාරයට වඩා වැඩි බලයක් මෙහිදී භාවිතා වේ.</string>
     <string name="permdesc_changeWifiState">Wi-Fi ප්‍රවේශ ස්ථානයන් වෙත සම්බන්ධ වීමට සහ විසන්ධි වීමට සහ, Wi-Fi ජාල සඳහා උපාංගයේ වින්‍යාසයට වෙනස් කිරීමට යෙදුමට අවසර දෙන්න.</string>
-    <string name="permdesc_changeWimaxState">ටැබ්ලටය WiMAX ජාල වෙත සම්බන්ධ කිරීමට සහ විසන්ධි කිරීමට යෙදුමට අවසර දෙන්න.</string>
+    <string name="permdesc_changeWimaxState">WiMAX ජාලයන්ට දුරකථනය සම්බන්ධ කිරීමට සහ විසන්ධි කිරීමට යෙදුමට අවසර දෙන්න.</string>
     <string name="permdesc_companionProfileWatch">ඔරලෝසු කළමනාකරණය කිරීමට මිත්‍ර යෙදුමකට ඉඩ දෙයි.</string>
     <string name="permdesc_connection_manager">විදුලි සංදේශන සම්බන්ධතා කළමණාකරණය කිරීමට යෙදුමට ඉඩ දෙන්න.</string>
     <string name="permdesc_control_incall_experience">එන-ඇමතුම් පරිශීලක අත්දැකීම සැපයීමට යෙදුම් වෙත ඉඩ දෙන්න.</string>
@@ -1974,7 +1970,7 @@
     <string name="permdesc_custom_rubense_features">මෑත යතුර සඳහා අතිරේක ක්‍රියාදාමයන්ට ඉඩ දෙන්න.</string>
     <string name="permdesc_deliverCompanionMessages">වෙනත් උපාංග වෙත සහායක පණිවිඩ බෙදා හැරීමට සහායක යෙදුමකට ඉඩ දෙයි.</string>
     <string name="permdesc_detectScreenCapture">යෙදුම භාවිතා කරන අතරේ තිර රුවක් ගත් විට මෙම යෙදුමට දැනුම් දෙනු ලැබේ.</string>
-    <string name="permdesc_disableKeyguard">යතුරු අගුල සහ ඕනෑම සම්බන්ධිත මුරපද ආරක්ෂාවක් අබල කිරීමට යෙදුමට අවසර දෙන්න. මෙහි උදාහරණයක් වන්නේ පැමිණෙන ඇමතුමක් ලැබෙද්දී, දුරකථනය අක්‍රිය වන අතර ඇමතුම අවසාන වන විට යතුරු අගුල නැවත සක්‍රිය වෙයි.</string>
+    <string name="permdesc_disableKeyguard">යතුරු අගුල සහ ඕනෑම සම්බන්ධිත මුරපද ආරක්ෂාවක් අබල කිරීමට යෙදුමට අවසර දෙන්න. මෙහි උදාහරණයක් වන්නේ පැමිණෙන ඇමතුමක් ලැබෙද්\ufffd\ufffd\ufffdී, දුරකථනය අක්‍රිය වන අතර ඇමතුම අවසාන වන විට යතුරු අගුල නැවත සක්‍රිය වෙයි.</string>
     <string name="permdesc_enableCarMode">කාර් ආකාරය සබල කිරීමට යෙදුමට අවසර දෙන්න.</string>
     <string name="permdesc_enterpriseBilling">ව්‍යවසායී බිල් කිරීමේ ප්‍රතිපත්ති කළමනාකරණය කරන්න.</string>
     <string name="permdesc_exemptFromAudioRecordRestrictions">ඕඩියෝ පටිගත කිරීමට සීමා කිරීම්වලින් යෙදුම නිදහස් කරයි.</string>
@@ -1987,14 +1983,15 @@
     <string name="permdesc_foregroundServiceHealth">\"සෞඛ්‍යය\" වර්ගය සමග පෙරබිම් සේවා භාවිතා කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_foregroundServiceLocation">\"ස්ථානය\" වර්ගය සමග පෙරබිම් සේවා භාවිතා කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_foregroundServiceMediaPlayback">\"mediaPlayback\" වර්ගය සමග පෙරබිම් සේවා භාවිතා කිරීමට යෙදුමට ඉඩ දෙයි</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">\"mediaProcessing\" වර්ගය සමග පෙරබිම් සේවා භාවිතා කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_foregroundServiceMediaProjection">\"mediaProjection\" වර්ගය සමග පෙරබිම් සේවා භාවිතා කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_foregroundServiceMicrophone">\"මයික්‍රොෆෝනය\" වර්ගය සමග පෙරබිම් සේවා භාවිතා කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_foregroundServicePhoneCall">\"phoneCall\" වර්ගය සමග පෙරබිම් සේවා භාවිතා කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_foregroundServiceRemoteMessaging">\"remoteMessaging\" වර්ගය සමග පෙරබිම් සේවා භාවිතා කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_foregroundServiceSpecialUse">\"specialUse\" වර්ගය සමග පෙරබිම් සේවා භාවිතා කිරීමට යෙදුමට ඉඩ දෙයි</string>
-    <string name="permdesc_foregroundServiceSystemExempted">\"systemExempted\" වර්ගය සමග පෙරබිම් සේවා භාවිතා කිරීමට යෙදුමට ඉඩ දෙයි</string>
+    <string name="permdesc_foregroundServiceSystemExempted">\"systemExempted\" ව\ufffd\ufffd\ufffd්ගය සමග පෙරබිම් සේවා භාවිතා කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_fullScreenIntent">අගුලු දැමූ උපාංගයක පූර්ණ තිර ක්‍රියාකාරකම් ලෙස දැනුම්දීම් සංදර්ශනය කිරීමට යෙදුමට ඉඩ දෙයි</string>
-    <string name="permdesc_getAccounts">ටැබ්ලටය විසින් දන්නා ගිණුම් ලැයිස්තුවක් ලබාගැනීමට යෙදුමට අවසර දෙන්න. ඔබ ස්ථාපනය කොට ඇති යෙදුම් විසින් සාදා ඇති ගිණුම් මීට ඇතුළත් වේ.</string>
+    <string name="permdesc_getAccounts">දුරකථනය විසින් දන්නා ගිණුම් ලැයිස්තුවක් ලබාගැනීමට යෙදුමට අවසර දෙන්න. ඔබ ස්ථාපනය කොට ඇති යෙදුම් විසින් සාදා ඇති ගිණුම් මීට ඇතුළත් වේ.</string>
     <string name="permdesc_getAppList">ස්ථාපිත යෙදුම් ලැයිස්තුව කියවීමට යෙදුමකට ඉඩ දෙයි.</string>
     <string name="permdesc_getPackageSize">යෙදුමකට එහි කේතය, දත්ත සහ හැඹිලි ප්‍රමාණ ලබාගැනීමට අවසර දෙන්න.</string>
     <string name="permdesc_getTasks">දැනට සහ මෑත ක්‍රියාත්මක කාර්යයන් පිළිබඳ විස්තරාත්මක තොරතුරු සොයා ලබාගැනීමට යෙදුමට ඉඩ දෙන්න. මෙය කුමන යෙදුම් උපාංගයේ භාවිතා කරන්නේද යන තොරතුරු යෙදුම්වලට සොයා ගැනීමට ඉඩ දිය හැක.</string>
@@ -2092,17 +2089,18 @@
     <string name="permdesc_mount_unmount_filesystems">ඉවත් කළ හැකි ගබඩාවන්ට ගොනු පද්ධති සවි කිරීමට හෝ ගැලවීමට යෙදුමකට ඉඩ දෙයි.</string>
     <string name="permdesc_nearby_wifi_devices">වෙළඳ දැන්වීම් පළ කිරීමට, සම්බන්ධ වීමට සහ අවට ඇති Wi-Fi උපාංගවල සාපේක්ෂ පිහිටීම නිර්ණය කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_nfc">ආසන්න ක්ෂේත්‍ර සන්නිවේදන (NFC) ටැග්, පත්, සහ කියවන්නන් සමඟ සන්නිවේදනය කිරීමට යෙදුමට අවසර දෙන්න.</string>
+    <string name="permdesc_nfcTransactionEvent">සුරක්ෂිත මූලද්‍රව්‍යයක සිදු වන ගනුදෙනු පිළිබඳ තොරතුරු ලබා ගැනීමට යෙදුමට ඉඩ දෙයි.</string>
     <string name="permdesc_observeCompanionDevicePresence">උපාංග අවට හෝ දුරින් ඇති විට සහායක උපාංගයේ පැවැත්ම නිරීක්ෂණය කිරීමට සහායක යෙදුමකට ඉඩ දෙයි.</string>
-    <string name="permdesc_persistentActivity">"මතකයේ පවතින එහි කොටස් නොනැසී පැවතීමට යෙදුමට අවසර දෙන්න. වෙනත් යෙදුම් වලට මතකය සීමා කිරීමෙන් ටැබ්ලටය පමා කිරීම මගින්  මෙමගින් කළ හැක."</string>
+    <string name="permdesc_persistentActivity">යෙදුමට තම කොටස් මතකය තුල නොබිඳීව රඳා පවත්වාගෙන යාමට අවසර දෙන්න. මෙය දුරකථනය මන්දගාමී කරමින් අනෙකුත් උපාංගයන් සඳහා ඉතිරි මතකය සීමා කිරීමට හැක.</string>
     <string name="permdesc_postNotification">දැනුම්දීම් පෙන්වීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permdesc_preferredPaymentInfo">ලියාපදිංචි කළ ආධාර සහ ගමන් මාර්ග ගමනාන්ත වැනි කැමති nfc ගෙවීම් සේවා තොරතුරු ලබා ගැනීමට යෙදුමට ඉඩ දෙයි.</string>
     <string name="permdesc_processOutgoingCalls">ඇමතුම වෙනත් අංකයකට හරවා යැවීම හෝ ඇමතුම මුළුමනින්ම නැවත්වීම වැනි විකල්ප සමඟ පිටතට යන ඇමතුමකදී අංකනය කළ අංකය බැලීමට යෙදුමට ඉඩ දෙයි.</string>
     <string name="permdesc_queryAllPackages">ස්ථාපනය කර ඇති සියලු පැකේජ බැලීමට යෙදුමකට ඉඩ දෙයි.</string>
     <string name="permdesc_readBasicPhoneState">උපාංගයේ මූලික දුරකථන විශේෂාංග වෙත ප්‍රවේශ වීමට යෙදුමට ඉඩ දෙයි.</string>
-    <string name="permdesc_readCalendar">මෙම යෙදුමට ඔබගේ ටැබ්ලට් පරිගණකය මත ගබඩා වී ඇති සියලු දින දර්ශන කියවීමට සහ සහ ඔබගේ දින දර්ශන දත්ත බෙදා ගැනීමට සහ සුරැකීමට හැකිය.</string>
+    <string name="permdesc_readCalendar">මෙම යෙදුමට ඔබගේ දුරකථනය මත ගබඩා වී ඇති සියලු දින දර්ශන කියවීමට සහ සහ ඔබගේ දින දර්ශන දත්ත බෙදා ගැනීමට සහ සුරැකීමට හැකිය.</string>
     <string name="permdesc_readCallLog">මෙම යෙදුමට ඔබේ ඇමතුම් ඉතිහාසය කියවීමට හැකිය.</string>
     <string name="permdesc_readCellBroadcasts">ඔබගේ උපාංගයට ලැබුණු සෙල් විකාශන පණිවිඩ කියවීමට යෙදුමට අවසර දෙන්න. ඔබට හදිසි අවස්ථාවන් පිළිබඳ අනතුරු ඇඟවීමට සෙල් විකාශන පණිවිඩ ඇතැම් ස්ථානවල සිට යවනු ලබයි. හදිසි සෙල් විකාශන ලැබෙන අවස්ථාවකදී, අනිෂ්ට යෙදුම් මඟින් ඔබගේ උපාංගයට කාර්ය සාධනයට හෝ ක්‍රියකරණයට බාධා සිදුවිය හැක.</string>
-    <string name="permdesc_readContacts">ඔබගේ ටැබ්ලට් පරිගණකයේ ගබඩා කර ඇති ඔබගේ සම්බන්ධතා පිළිබඳ දත්ත කියවීමට යෙදුමට ඉඩ දෙයි. යෙදුම්වලට සම්බන්ධතා තැනූ ඔබගේ ටැබ්ලට් පරිගණකයේ ගිණුම්වලට ප්‍රවේශය ද ලැබෙනු ඇත. මෙයට ඔබ ස්ථාපනය කර ඇති යෙදුම් මගින් තැනූ ගිණුම් ඇතුළත් විය හැකිය. මෙම අවසරය යෙදුම්වලට ඔබගේ සම්බන්ධතා දත්ත සුරැකීමට ඉඩ දෙන අතර, අනිෂ්ට යෙදුම් ඔබගේ දැනුමෙන් තොරව සම්බන්ධතා දත්ත බෙදා ගත හැකිය.</string>
+    <string name="permdesc_readContacts">ඔබගේ දුරකථනයේ ගබඩා කර ඇති ඔබගේ සම්බන්ධතා පිළිබඳ දත්ත කියවීමට යෙදුමට ඉඩ දෙයි. යෙදුම්වලට සම්බන්ධතා තැනූ ඔබගේ දුරකථනයේ ගිණුම්වලට ප්‍රවේශය ද ලැබෙනු ඇත. මෙයට ඔබ ස්ථාපනය කර ඇති යෙදුම් මගින් තැනූ ගිණුම් ඇතුළත් විය හැකිය. මෙම අවසරය යෙදුම්වලට ඔබගේ සම්බන්ධතා දත්ත සුරැකීමට ඉඩ දෙන අතර, අනිෂ්ට යෙදුම් ඔබගේ දැනුමෙන් තොරව සම්බන්ධතා දත්ත බෙදා ගත හැකිය.</string>
     <string name="permdesc_readInstallSessions">ස්ථාපන සැසිය කියවීමට යෙදුමට ඉඩ දෙන්න. සක්‍රිය පැකේජ ස්ථාපනය පිළිබඳ විස්තර බැලීමට එයට මෙයින් ඉඩ දෙයි.</string>
     <string name="permdesc_readMediaAudio">ඔබගේ බෙදා ගත් ගබඩාවෙන් ශ්‍රව්‍ය ගොනු කියවීමට යෙදුමට ඉඩ දෙයි.</string>
     <string name="permdesc_readMediaImages">ඔබගේ බෙදා ගත් ගබඩාවෙන් රූප ගොනු කියවීමට යෙදුමට ඉඩ දෙයි.</string>
@@ -2110,11 +2108,11 @@
     <string name="permdesc_readNetworkUsageHistory">විශේෂිත ජාල සහ යෙදුම් සඳහා ඉතිහාසගත ජාල භාවිතය කියවීමට යෙදුමට අවසර දෙන්න.</string>
     <string name="permdesc_readPhoneNumbers">උපාංගයේ දුරකථන අංක වෙත ප්‍රවේශයට යෙදුමට ඉඩ දෙයි.</string>
     <string name="permdesc_readPhoneState">"උපාංගයේ දුරකථන විශේෂාංග වෙත ප්‍රවේශයට යෙදුමට ඉඩ දෙයි.  ඇමතුම සක්‍රිය වුවත්, සහ ඇමතුමකින් දුරස්ථ අංකය සම්බන්ධ වුවත් දුරකථන අංකය සහ උපාංග ID හඳුනා ගැනීමට මෙම අවසරය යෙදුමට ඉඩ දෙයි."</string>
-    <string name="permdesc_readSms">මෙම යෙදුමට ඔබගේ ටැබ්ලට් පරිගණකය මත ගබඩා වී ඇති සියලු SMS (පෙළ) පණිවිඩ කියවීමට හැකිය.</string>
+    <string name="permdesc_readSms">මෙම යෙදුමට ඔබගේ TV මත ගබඩා වී ඇති සියලු SMS (පෙළ) පණිවිඩ කියවීමට හැකිය.</string>
     <string name="permdesc_readSyncSettings">ගිණුම සඳහා සමමුහුර්ත සැකසීම් කියවීමට යෙදුමට අවසර දෙන්න. උදාහරණයක් ලෙස, ගිණුමක් සමඟ පුද්ගල යෙදුම සමමුහුර්ත දැයි මෙයට හඳුනා ගත හැක.</string>
     <string name="permdesc_readSyncStats">සමමුහුර්ත කිරීමේ සිදුවීම් ඉතිහාසය සහ කෙතරම් දත්ත සමමුහුර්ත වී ඇතිදැයි ඇතුලත් ගිණුම සඳහා සමමුහුර්ත කිරීමේ සංඛ්‍යාන කියවීමට යෙදුමට අවසර දෙන්න.</string>
     <string name="permdesc_readVisualUserSelect">ඔබේ බෙදා ගත් ආචයනයෙන් ඔබ තෝරන රූප සහ වීඩියෝ ගොනු කියවීමට යෙදුමට ඉඩ දෙයි.</string>
-    <string name="permdesc_receiveBootCompleted">පද්ධතිය ඇරඹුම අවසන් වූ වහාම යෙදුම ආරම්භ වීමට යෙදුමට අවසර දෙන්න. ටැබ්ලටය ආරම්භ කිරීමට මෙමඟින් පමා කළ හැකි අතර සැමවිටම ධාවනය වන නිසා සම්පූර්ණ ටැබ්ලටයම ප්‍රමාද කිරීමට යෙදුමට අවසර දෙයි.</string>
+    <string name="permdesc_receiveBootCompleted">පද්ධතිය ඇරඹුම අවසන් වූ වහාම යෙදුම ආරම්භ වීමට යෙදුමට අවසර දෙන්න. දුරකථනය ආරම්භ කිරීමට මෙමඟින් පමා කළ හැකි අතර සැමවිටම ධාවනය වන නිසා සම්පූර්ණ දුරකථනයේම ක්‍රියාකාරිත්වය ප්‍රමාද කිරීමට යෙදුමට අවසර දෙයි.</string>
     <string name="permdesc_receiveMms">MMS පණිවිඩ සොයා ලබාගැනීමට සහ ක්‍රියාත්මක කිරීමට යෙදුමට අවසර දෙන්න. යෙදුම නිරීක්ෂණය කරනු ලබන අතර ඔබට ලැබුන පණිවිඩ පෙන්වීමෙන් තොරවම මකා දැමිය හැකි බව මෙමඟින් අදහස් කරයි.</string>
     <string name="permdesc_receiveSms">SMS පණිවිඩ ලැබීමට සහ ක්‍රියාත්මක කිරීමට යෙදුමට අවසර දෙන්න. මෙහි තේරුම යෙදුමට ඔබගේ උපාංගයට ලැබෙන පණිවිඩ අධීක්ෂණය කිරීමට හැකිවීම වන අතර, ඒවා ඔබට නොපෙන්වා මකා දැමීමටද හැකි වීමයි.</string>
     <string name="permdesc_receiveWapPush">WAP පණිවිඩ ලැබීමට සහ ක්‍රියාවලි කිරීමට යෙදුමට අවසර දෙන්න. මෙම අවසරයෙහි ඔබව ඒවාට පෙන්වීමකින් තොරව ඔබට පණිවිඩ නිරීක්ෂණයට හෝ මැකීමට හැකියාව ඇතුළත් වේ.</string>
@@ -2136,7 +2134,7 @@
     <string name="permdesc_sendSms">SMS පණිවිඩ යැවීමට යෙදුමට අවසර දෙන්න. මෙමඟින් බලාපොරොත්තු නොවූ ප්‍රතිඵල අත් විය හැක. අනිෂ්ට යෙදුම් ඔබගේ තහවුරුවකින් තොරව පණිවිඩ යැවීම මඟින් ඔබගේ මුදල් වැය කල හැක.</string>
     <string name="permdesc_setAlarm">ස්ථාපනය කරන ලද සීනු ඔරලෝසු යෙදුමේ සීනුව සකස් කරන්නට යෙදුමට ඉඩ දෙන්න. ඇතැම් සීනු ඔරලෝසු යෙදුම් මෙම අංගය ක්‍රියාවට නංවා නොතිබීමට ඉඩ තිබේ.</string>
     <string name="permdesc_setInputCalibration">යෙදුම් වලට ස්පර්ශ තිරයේ ක්‍රමාංකන පරාමිති වෙනස් කිරීමට ඉඩ දේ. සාමාන්‍ය යෙදුම් වලට කිසිදා අවශ්‍ය නොවේ.</string>
-    <string name="permdesc_setTimeZone">ටැබ්ලටයේ කාල කලාපය වෙනස් කිරීමට යෙදුමට අවසර දෙන්න.</string>
+    <string name="permdesc_setTimeZone">දුරකථනයේ වේලා කලාපය වෙනස් කිරීමට උපාංගයට අවසර දෙන්න.</string>
     <string name="permdesc_setWallpaper">පද්ධති බිතුපත සැකසීමට යෙදුමට අවසර දෙන්න.</string>
     <string name="permdesc_setWallpaperHints">පද්ධති බිතුපතේ ප්‍රමාණ ඉඟි සකස් කිරීමට යෙදුමට අවසර දෙන්න.</string>
     <string name="permdesc_sim_communication">SIM වෙත විධාන ගෙන යාමට යෙදුමට අවසර දෙයි. මෙය ඉතා භයානක වේ.</string>
@@ -2150,7 +2148,7 @@
     <string name="permdesc_subscribedFeedsRead">වර්තමාන සමමුහුර්ත සංග්‍රහ ගැන විස්තර ලැබීමට යෙදුමට අවසර දෙන්න.</string>
     <string name="permdesc_systemAlertWindow">මෙම යෙදුම වෙනත් යෙදුම්වල හෝ තිරයේ වෙනත් කොටස්වලට ඉහළින් දිස් විය හැකිය. මෙය සාමාන්‍ය යෙදුම් භාවිතයට බාධා කළ හැකි අතර වෙනත් යෙදුම් දිස් වන ආකාරය වෙනස් කළ හැකිය.</string>
     <string name="permdesc_systemCamera">මෙම වරප්‍රසාද ලත් හෝ පද්ධති යෙදුමට ඕනෑම වේලාවක පද්ධති කැමරාව භාවිත කර පින්තූර ගැනීමට සහ වීඩියෝ පටිගත කිරීමට හැකිය. යෙදුම විසින් රඳවා තබා ගැනීමට android.permission.CAMERA ප්‍රවේශයද අවශ්‍ය වේ</string>
-    <string name="permdesc_transmitIr">ටැබ්ලටයේ අධෝරක්ත සම්ප්‍රේෂකය භාවිතයට යෙදුමට ඉඩ දෙන්න.</string>
+    <string name="permdesc_transmitIr">දුරකථනයේ අධෝරක්ත සම්ප්‍රේෂකය භාවිතයට යෙදුමට ඉඩ දෙන්න.</string>
     <string name="permdesc_turnScreenOn">තිරය ක්‍රියාත්මක කිරීමට යෙදුමට ඉඩ දෙයි.</string>
     <string name="permdesc_ucsPlugin">තෙවන පාර්ශවීය අක්තපත්‍ර ගබඩා ප්ලග්ඉන්ස් සමග වැඩ කරන්න.</string>
     <string name="permdesc_uninstall_shortcut">පරිශීලක මැදිහත්වීමෙන් තොරව මුල්තිර කෙටිමං එක් කිරීමට යෙදුමකට අවසර දෙයි.</string>
@@ -2164,12 +2162,13 @@
     <string name="permdesc_vibrate">කම්පකය පාලනයට යෙදුමට අවසර දෙන්න.</string>
     <string name="permdesc_vibrator_state">යෙදුමට කම්පන තත්ත්වයට ප්‍රවේශ වීමට ඉඩ දෙන්න.</string>
     <string name="permdesc_videoWrite">ඔබගේ වීඩියෝ එකතුව වෙනස් කිරීමට යෙදුමට ඉඩ දෙයි.</string>
-    <string name="permdesc_wakeLock">ටැබ්ලටය නින්දට යාමෙන් වැලැක්වීමට යෙදුමට අවසර දෙන්න.</string>
-    <string name="permdesc_writeCalendar">මෙම යෙදුමට ඔබේ ටැබ්ලට් පරිගණකය මත දින දර්ශන සිදුවීම් එක් කිරීමට, ඉවත් කිරීමට, හෝ වෙනස් කිරීමට හැකිය. මෙම යෙදුමට දින දර්ශන හිමිකරුවන් වෙතින් වන ඒවා ලෙස දිස් විය හැකි පණිවිඩ එවීමට, හෝ සිදුවීම්වල හිමිකරුවන්ට දැනුම් දීමෙන් තොරව ඒවා වෙනස් කිරීමට හැකිය.</string>
-    <string name="permdesc_writeCallLog">ලැබෙන ඇමතුම් සහ පිටවන ඇමතුම් දත්ත ඇතුළත්ව ඔබගේ ටැබ්ලටයේ ඇමතුම් ලොගය වෙනස් කිරීමට යෙදුමට අවසර දෙන්න. ඔබගේ ඇමතුම් ලොගය මැකීමට හෝ වෙනස් කිරීමට අනිෂ්ට යෙදුම් මෙය භාවිතා කෙරේ.</string>
-    <string name="permdesc_writeContacts">ඔබගේ ටැබ්ලට් පරිගණකයේ ගබඩා කර ඇති ඔබගේ සම්බන්ධතා පිළිබඳ දත්ත වෙනස් කිරීමට යෙදුමට ඉඩ දෙයි. මෙම අවසරය යෙදුම්වලට සම්බන්ධතා දත්ත මැකීමට ඉඩ දෙයි.</string>
+    <string name="permdesc_wakeLock">දුරකථනය නින්දට යාමෙන් වැලැක්වීමට යෙදුමට අවසර දෙන්න.</string>
+    <string name="permdesc_writeCalendar">මෙම යෙදුමට ඔබේ දුරකථනය මත දින දර්ශන සිදුවීම් එක් කිරීමට, ඉවත් කිරීමට, හෝ වෙනස් කිරීමට හැකිය. මෙම යෙදුමට දින දර්ශන හිමිකරුවන් වෙතින් වන ඒවා ලෙස දිස් විය හැකි පණිවිඩ එවීමට, හෝ සිදුවීම්වල හිමිකරුවන්ට දැනුම් දීමෙන් තොරව ඒවා වෙනස් කිරීමට හැකිය.</string>
+    <string name="permdesc_writeCallLog">පැමිණෙන සහ පිටවෙන ඇමතුම් දත්ත ඇතුළුව ඔබගේ දුරකථනයේ ඇමතුම් ලොගය වෙනස් කිරීමට යෙදුමට අවසර දෙන්න. ඔබගේ ඇමතුම් ලොගය මැකීමට හෝ වෙනස් කිරීමට අනිෂ්ට යෙදුම් මෙය භාවිත කල හැක.</string>
+    <string name="permdesc_writeContacts">ඔබගේ දුරකථනයේ ගබඩා කර ඇති ඔබගේ සම්බන්ධතා පිළිබඳ දත්ත වෙනස් කිරීමට යෙදුමට ඉඩ දෙයි. මෙම අවසරය යෙදුම්වලට සම්බන්ධතා දත්ත මැකීමට ඉඩ දෙයි.</string>
     <string name="permdesc_writeSettings">පද්ධති සැකසීම් දත්ත වෙනස් කිරීමට යෙදුමට අවසර දෙන්න. අනිෂ්ට යෙදුම් ඔබගේ පද්ධති වින්‍යාස දෝෂ ගැන්විය හැක.</string>
     <string name="permdesc_writeSyncSettings">ගිණුමක් සඳහා සමමුහුර්ත සැකසීම් විකරණය කිරීමට යෙදුමකට ඉඩ දෙයි. උදාහරණයක් ලෙස, ගිණුමක් සමඟ පුද්ගල යෙදුම සමමුහුර්ත කිරීම සබල කිරීමට මෙය භාවිත කළ හැක.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">වෙනත් යෙදුම් සතු E2EE සම්බන්ධතා යතුරුවල සත්‍යාපන තත්ත්වයන් යාවත්කාලීන කිරීමට යෙදුමට ඉඩ දෙයි</string>
     <string name="permgroupdesc_activityRecognition">ඔබේ ශාරීරික ක්‍රියාකාරකමට ප්‍රවේශ වන්න</string>
     <string name="permgroupdesc_calendar">ඔබේ දින දර්ශනයට පිවිසෙන්න</string>
     <string name="permgroupdesc_calllog">දුරකථන ඇමතුම් ලොගය කියවන්න සහ ලියන්න</string>
@@ -2211,7 +2210,9 @@
     <string name="permlab_accessCoarseLocation">පෙරබිම තුළ පමණක් ආසන්න ස්ථානයට ප්‍රවේශය</string>
     <string name="permlab_accessDrmCertificates">DRM සහතික ප්‍රවේශය</string>
     <string name="permlab_accessFineLocation">පෙරබිම තුළ පමණක් නිශ්චිත ස්ථානය වෙත පිවිසෙන්න</string>
+    <string name="permlab_accessHiddenProfile">සැඟවුණු පැතිකඩ වෙත ප්‍රවේශ වන්න</string>
     <string name="permlab_accessImsCallService">IMS ඇමතුම් සේවාවට පිවිසෙන්න</string>
+    <string name="permlab_accessLastKnownCellId">අවසන් වරට දන්නා කොටු අනන්‍යතාවට ප්‍රවේශ වන්න.</string>
     <string name="permlab_accessLocationExtraCommands">අමතර ස්ථාන සැපයුම්කරු විධාන වෙත ප්‍රවේශ වීම</string>
     <string name="permlab_accessNetworkConditions">ජාල තත්ව මත නිරීක්ෂණ වෙත ඇහුම්කන් දීම</string>
     <string name="permlab_accessNetworkState">ජාල සම්බන්ධතාවයන් බැලීම</string>
@@ -2243,6 +2244,7 @@
     <string name="permlab_callCompanionApp">පද්ධතිය හරහා ඇමතුම් බලන්න සහ පාලනය කරන්න.</string>
     <string name="permlab_callPhone">දුරකථන අංක වෙත ඍජුවම අමතන්න</string>
     <string name="permlab_camera">පින්තූර සහ වීඩියෝ ගන්න</string>
+    <string name="permlab_cameraHeadlessSystemUser">හිස් රහිත පද්ධති පරිශීලක ලෙස කැමරාවට ප්‍රවේශ වීමට යෙදුමකට හෝ සේවාවකට ඉඩ දෙන්න.</string>
     <string name="permlab_cameraOpenCloseListener">විවෘත වෙමින් හෝ වැසෙමින් පවතින කැමරා උපාංග පිළිබඳ පසු ඇමතුම් ලබා ගැනීමට යෙදුමකට හෝ සේවාවකට ඉඩ දෙන්න.</string>
     <string name="permlab_changeNetworkState">ජාල සම්බන්ධතාව වෙනස් කිරීම</string>
     <string name="permlab_changeTetherState">ටෙදර් කරන ලද සම්බන්ධතා වෙනස් කිරීම</string>
@@ -2270,6 +2272,7 @@
     <string name="permlab_foregroundServiceHealth">\"සෞඛ්‍යය\" වර්ගය සමග පෙරබිම් සේවාව ධාවනය කරන්න</string>
     <string name="permlab_foregroundServiceLocation">\"ස්ථානය\" වර්ගය සමග පෙරබිම් සේවාව ධාවනය කරන්න</string>
     <string name="permlab_foregroundServiceMediaPlayback">\"mediaPlayback\" වර්ගය සමග පෙරබිම් සේවාව ධාවනය කරන්න</string>
+    <string name="permlab_foregroundServiceMediaProcessing">\"mediaProcessing\" වර්ගය සමග පෙරබිම් සේවාව ධාවනය කරන්න</string>
     <string name="permlab_foregroundServiceMediaProjection">\"mediaProjection\" වර්ගය සමග පෙරබිම් සේවාව ධාවනය කරන්න</string>
     <string name="permlab_foregroundServiceMicrophone">\"මයික්‍රොෆෝනය\" වර්ගය සමග පෙරබිම් සේවාව ධාවනය කරන්න</string>
     <string name="permlab_foregroundServicePhoneCall">\"phoneCall\" වර්ගය සමග පෙරබිම් සේවාව ධාවනය කරන්න</string>
@@ -2370,6 +2373,7 @@
     <string name="permlab_mount_unmount_filesystems">SD කාඩ්පත් ගොනු පද්ධතිය ප්‍රවේශ කරන්න</string>
     <string name="permlab_nearby_wifi_devices">අවට Wi‑Fi උපාංග සමග අන්තර්ක්‍රියා කරන්න</string>
     <string name="permlab_nfc">ආසන්න ක්ෂේත්‍ර සන්නිවේදනය පාලනය කරන්න</string>
+    <string name="permlab_nfcTransactionEvent">සුරක්ෂිත මූලද්‍රව්‍ය ගනුදෙනු සිදුවීම</string>
     <string name="permlab_observeCompanionDevicePresence">සහායක උපාංගයේ පැවැත්ම නිරීක්ෂණය කරන්න</string>
     <string name="permlab_persistentActivity">යෙදුම සැමවිටම ධාවනය කරන්න</string>
     <string name="permlab_postNotification">දැනුම්දීම් පෙන්වන්න</string>
@@ -2442,12 +2446,13 @@
     <string name="permlab_uwb_ranging">අවට අල්ට්‍රා-වයිඩ්බෑන්ඩ් උපාංග අතර සාපේක්ෂ පිහිටීම නිර්ණය</string>
     <string name="permlab_vibrate">කම්පනය පාලනය කිරීම</string>
     <string name="permlab_videoWrite">ඔබේ වීඩියෝ එකතුව වෙනස් කරන්න</string>
-    <string name="permlab_wakeLock">ටැබ්ලටය නින්දෙන් වැළක්වීම</string>
+    <string name="permlab_wakeLock">දුරකථනය නින්දට යාමෙන් වළකන්න</string>
     <string name="permlab_writeCalendar">දින දර්ශන සිද්ධි එකතු කිරීම හෝ වෙනස් කිරීමක් සිදුකර හිමිකරුගේ දැනීමකින් තොරව අමුත්තන්ට ඊ-තැපෑලක් යවීම</string>
     <string name="permlab_writeCallLog">ඇමතුම් ලොගය ලිවීම</string>
     <string name="permlab_writeContacts">ඔබගේ සම්බන්ධතා වෙනස් කිරීම</string>
     <string name="permlab_writeSettings">පද්ධති සැකසීම් වෙනස් කිරීම</string>
     <string name="permlab_writeSyncSettings">සමමුහුර්ත කිරීම සක්‍රිය කරන්න සහ අක්‍රිය කරන්න</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">වෙනත් යෙදුම් සතු E2EE සම්බන්ධතා යතුරුවල සත්‍යාපන තත්ත්වයන් යාවත්කාලීන කරන්න</string>
     <string name="perms_description_app">%1$s විසින් සපයන ලදි.</string>
     <string name="perms_new_perm_prefix">&lt;font fgcolor=#ff33b5e5 size=12>අලුත්: &lt;/font></string>
     <string name="personal_apps_suspended_turn_profile_on">ක්‍රියාත්මක කරන්න</string>
@@ -2484,7 +2489,7 @@
     <string name="policydesc_allow_desktopsync">වැඩතල සමමුහුව භාවිතය වළක්වන්න.</string>
     <string name="policydesc_allow_internetsharing">ජංගම හොට්ස්පොට් භාවිතය වළක්වන්න.</string>
     <string name="policydesc_allow_irda">IrDA භාවිතය වළක්වන්න.</string>
-    <string name="policydesc_allow_popimapemail">ටැබ්ලටයේ POP සහ IMAP ඊමේල් භාවිතය වළක්වන්න.</string>
+    <string name="policydesc_allow_popimapemail">දුරකථනයෙන් POP සහ IMAP ඊමේල් භාවිතය වළක්වන්න.</string>
     <string name="policydesc_allow_storagecard">SD කාඩ්පත් භාවිතය වළක්වන්න.</string>
     <string name="policydesc_allow_textmessaging">පෙළ සහ බහුමාධ්‍ය පණිවිඩකරණය භාවිතය වළක්වන්න.</string>
     <string name="policydesc_allow_thirdParty">මෙම යෙදුමට තෙවන-පාර්ශ්ව යෙදුම් ධාවනය වීම වළක්වාලිය හැක.</string>
@@ -2502,10 +2507,10 @@
     <string name="policydesc_setGlobalProxy">ප්‍රතිපත්තිය සක්‍රිය අතරතුර ගෝලීය ප්‍රොක්සි භාවිත කිරීමට උපාංගය සකසන්න. උපාංග හිමිකරුට පමණක් ගෝලීය ප්‍රොක්සි සැකසිය හැකිය.</string>
     <string name="policydesc_unsigned_app">මෙම යෙදුමට හඳුනා නොගත් මූලාශ්‍ර මගින් යෙදුම් ධාවනය වීම වැළැක්වීමට හැකියාව ඇත.</string>
     <string name="policydesc_unsigned_pkg">මෙම යෙදුමට හඳුනා නොගත් මූලාශ්‍ර මගින් යෙදුම් ස්ථාපනය වීම වැළැක්වීමට හැකියාව ඇත.</string>
-    <string name="policydesc_watchLogin">තිරය අගුළු හැරීමේදී වැරදියට ටයිප් කළ මුරපද ගණන නිරීක්ෂණය කරන්න සහ ටැබ්ලටය අගුළු දමන්න හෝ වැරදි මුරපද බොහෝ ගණනක් ටයිප් කර ඇති නම් ටැබ්ලටයේ සියලු දත්ත මකන්න.</string>
-    <string name="policydesc_watchLogin_secondaryUser">තිරය අගුලු හරින විට වැරදියට මුරපදය ටයිප් කළ වාර ගණන නිරීක්ෂණය කර, ඉතා වැඩි වාර ගණනක් වැරදි මුරපද ටයිප් කළේ නම් ටැබ්ලටය අගුලු දමන්න නැතහොත් මෙම පරිශීලකයාගේ සියලු දත්ත මකන්න.</string>
-    <string name="policydesc_wipeData">කර්මාන්ත ශාලා දත්ත යළි පිහිටුවීමෙන් පසුව අනතුරු ඇඟවිමකින් තොරවම ටැබ්ලට් දත්ත මකා දමයි.</string>
-    <string name="policydesc_wipeData_secondaryUser">අනතුරු ඇඟවීමකින් තොරව මෙම ටැබ්ලටයෙහි මෙම පරිශීලකයාගේ දත්ත මැකීම.</string>
+    <string name="policydesc_watchLogin">තිරය අගුළු හැරීමේදී වැරදියට ටයිප් කළ මුරපද ගණන නිරීක්ෂණය කරන්න සහ දුරකථනය අගුළු දමන්න හෝ වැරදි මුරපද බොහෝ ගණනක් ටයිප් කර ඇති නම් දුරකථනයේ සියලු දත්ත මකන්න.</string>
+    <string name="policydesc_watchLogin_secondaryUser">තිරය අගුලු හරින විට වැරදියට මුරපදය ටයිප් කළ වාර ගණන නිරීක්ෂණය කර, ඉතා වැඩි වාර ගණනක් වැරදි මුරපද ටයිප් කළේ නම් දුරකථනය අගුලු දමන්න නැතහොත් මෙම පරිශීලකයාගේ සියලු දත්ත මකන්න.</string>
+    <string name="policydesc_wipeData">කර්මාන්ත ශාලා දත්ත යළි පිහිටුවීමෙන් පසුව අනතුරු ඇඟවිමකින් තොරවම දුරකථන දත්ත මකා දමයි.</string>
+    <string name="policydesc_wipeData_secondaryUser">අනතුරු ඇඟවීමකින් තොරව මෙම දුරකථනයෙහි මෙම පරිශීලකයාගේ දත්ත මැකීම.</string>
     <string name="policylab_allow_bluetoothmode">බ්ලුටුත් අක්‍රිය කරන්න</string>
     <string name="policylab_allow_browser">අන්තර්ජාලය අක්‍රිය කරන්න</string>
     <string name="policylab_allow_camera">කැමරා අක්‍රිය කරන්න</string>
@@ -2539,7 +2544,7 @@
     <string name="postalTypeHome">නිවස</string>
     <string name="postalTypeOther">වෙනත්</string>
     <string name="postalTypeWork">කාර්යාලය</string>
-    <string name="power_dialog">ටැබ්ලට විකල්ප</string>
+    <string name="power_dialog">දුරකථන විකල්පයන්</string>
     <string name="power_off">බල රහිත</string>
     <string name="prepend_shortcut_label">මෙනුව+</string>
     <string name="preposition_for_date">%s වන දා</string>
@@ -2551,6 +2556,8 @@
     <string name="print_service_installed_title">%s සේවාව ස්ථාපිතයි</string>
     <string name="printing_disabled_by">%s විසින් මුද්‍රණය කිරීම අබල කර ඇත.</string>
     <string name="private_dns_broken_detailed">පුද්ගලික DNS සේවාදායකයට ප්‍රවේශ වීමට නොහැකිය</string>
+    <string name="private_profile_label_badge">පෞද්ගලික %1$s</string>
+    <string name="private_space_set_up_screen_lock_message">ඔබේ රහසිගත අවකාශය භාවිතා කිරීමට, මෙම උපාංගයේ තිර අගුලක් සකසන්න</string>
     <string name="profile_encrypted_detail">කාර්යාල පැතිකඩ අගුලු දමා ඇත</string>
     <string name="profile_encrypted_detail_workspace_premium">%s අගුළු දමා ඇත</string>
     <string name="profile_encrypted_detail_workspace_prime">වැඩ පැතිකඩ අගුළු දැමිණි</string>
@@ -2560,6 +2567,13 @@
     <string name="profile_encrypted_message_workspace_prime">වැඩ යෙදුම් පිළිබඳ දැනුම්දීම් ලබා ගැනීමට ඔබේ වැඩ පැතිකඩ අගුළු හරින්න.</string>
     <string name="profile_encrypted_title">ඇතැම් ක්‍රියාකාරිත්ව සීමිත විය හැක</string>
     <string name="profile_encrypted_title_secure_folder">ආරක්ෂිත ෆෝල්ඩරය අගුලු දමා ඇත.</string>
+    <string name="profile_label_clone">ක්ලෝන කරන්න</string>
+    <string name="profile_label_communal">වාර්ගික</string>
+    <string name="profile_label_private">පෞද්ගලික</string>
+    <string name="profile_label_test">පරීක්ෂණය</string>
+    <string name="profile_label_work">කාර්යාලය</string>
+    <string name="profile_label_work_2">කාර්යාලය 2</string>
+    <string name="profile_label_work_3">කාර්යාලය 3</string>
     <string name="profile_restarting_message_premium">ඔබට %1$s අගුළු දමා ඇති අතරේ වැඩ යෙදුම්වලින් සියලු දැනුම්දීම් නොලැබෙනු ඇත. %2$s අගුළු හැරීමට මෙතැන තට්ටු කරන්න.</string>
     <string name="profile_restarting_message_prime">ඔබට ඔබේ වැඩ පැතිකඩ අගුළු දමා ඇති අතරේ වැඩ යෙදුම්වලින් සියලු දැනුම්දීම් නොලැබෙනු ඇත. ඔබේ වැඩ පැතිකඩ අගුළු හැරීමට මෙතැන තට්ටු කරන්න.</string>
     <string name="profile_restarting_title_premium">%s අගුළු දමා ඇත</string>
@@ -2585,9 +2599,11 @@
     <string name="recent_tasks_title">මෑත</string>
     <string name="recording_fail">%2$s තුළ භාවිතා වන අතරේ %1$s තුළ මයික්‍රෆෝනය භාවිතා කළ නොහැක.</string>
     <string name="recording_popup">%s මයික්‍රෆෝනය භාවිතා කරයි.</string>
-    <string name="recording_popup_device">ටැබ්ලටය</string>
+    <string name="recording_popup_device">දුරකථනය</string>
     <string name="recording_popup_with_bluetooth">%s බ්ලූටූත් මයික්‍රෆෝනය භාවිතා කරයි.</string>
     <string name="recording_popup_with_device">%1$s %2$sගේ මයික්‍රෆෝනය භාවිතා කරයි.</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">සංවේදී දැනුම්දීම් අන්තර්ගතය සැඟවී ඇත</string>
     <string name="redo">යළි කරන්න</string>
     <string name="reduce_bright_colors_feature_name">අමතර අඳුරු</string>
     <string name="region_picker_section_all">සියලු ප්‍රදේශ</string>
@@ -2718,6 +2734,29 @@
     <string name="samsung_global_action_restart">නැවත ආරම්භ කරන්න</string>
     <string name="samsung_keyboard_settings">සැම්සුං යතුරු පුවරු සැකසුම්</string>
     <string name="sanitized_content_text_sf">අන්තර්ගතය සැඟවිණි</string>
+    <string name="satellite_notification_how_it_works">එය ක්‍රියා කරන ආකාරය</string>
+    <string name="satellite_notification_manual_summary">ජංගම හෝ Wi-Fi ජාලයකින් තොරව පණිවිඩ යැවීම සහ ලැබීම</string>
+    <string name="satellite_notification_manual_title">චන්ද්‍රිකා පණිවිඩ යැවීම භාවිතා කරන්න ද?</string>
+    <string name="satellite_notification_open_message">Messages විවෘත කරන්න</string>
+    <string name="satellite_notification_summary">ඔබට ජංගම හෝ Wi-Fi ජාලයක් නොමැතිව පණිවිඩ යැවීමට සහ ලැබීමට හැක</string>
+    <string name="satellite_notification_title">චන්ද්‍රිකාවට ස්වයංක්‍රීයව සම්බන්ධ වේ</string>
+    <string name="scCellularNetworkSecuritySummary">සංකේතනය, සංකේතිත නොවන ජාල සඳහා දැනුම්දීම</string>
+    <string name="scCellularNetworkSecurityTitle">ජංගම ජාල ආරක්‍ෂාව</string>
+    <string name="scIdentifierDisclosureIssueSummary">"%1$s ට, අවට ජාලයක් ඔබේ %2$s SIM පත භාවිත කළ විට ඔබේ උපාංගයේ අද්විතීය හැඳුනුම (IMSI හෝ IMEI) සටහන් කළේය.
+
+එනම් ඔබේ ස්ථානය, ක්‍රියාකාරකම, හෝ අනන්‍යතාව සටහන් කර ඇත. මෙය සාමාන්‍ය පුරුද්දකි, නමුත් පෞද්ගලිකත්වය ගැන සැලකිලිමත් වන පුද්ගලයින්ට ගැටලුවක් වේවි."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">%1$s ට, අවට ජාලයක් ඔබේ %2$s SIM පත භාවිත කළ විට ඔබේ උපාංගයේ අද්විතීය හැඳුනුම (IMSI හෝ IMEI) සටහන් කළේය.</string>
+    <string name="scIdentifierDisclosureIssueTitle">උපාංග හැඳුනුමට ප්‍රවේශ වන ලදි</string>
+    <string name="scNullCipherIssueActionGotIt">තේරුණා</string>
+    <string name="scNullCipherIssueActionLearnMore">තව දැන ගන්න</string>
+    <string name="scNullCipherIssueActionSettings">ජංගම ජාල ආරක්‍ෂක සැකසීම්</string>
+    <string name="scNullCipherIssueEncryptedSummary">%1$s SIM සම්බන්‍ධතාව දැන් ඉතා සුරක්‍ෂිතයි</string>
+    <string name="scNullCipherIssueEncryptedTitle">%1$s සංකේතිත ජාලයට සම්බන්‍ධ කළා</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"ඔබේ %1$s SIM පත භාවිත කරන අතරතුර ඇමතුම්, පණිවුඩ, සහ දත්ත දැනට ඉතා දුර්වලයි.
+
+ඔබේ සම්බන්‍ධතාව නැවත සංකේතිත වූ විට, ඔබට තව දැනුම්දීමක් ලැබෙයි."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">ඔබේ %1$s SIM පත භාවිත කරන අතරතුර ඇමතුම්, පණිවුඩ, සහ දත්ත දැනට ඉතා දුර්වලයි.</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">සංකේතිත නොවන ජාලයට සම්බන්‍ධ කළා</string>
     <string name="scan_text">පෙළ උපුටන්න</string>
     <string name="screen_compat_mode_hint">පද්ධති සැකසීම් තුළ මෙය නැවත ක්‍රියාත්මක කරන්න > යෙදුම් > බාගන්නා ලදි.</string>
     <string name="screen_compat_mode_scale">පරිමාණය</string>
@@ -2728,16 +2767,17 @@
     <string name="screen_lock">තිර අගුල</string>
     <string name="screen_lock_app_setting_name">තිර අගුල භාවිත කරන්න</string>
     <string name="screen_lock_dialog_default_subtitle">ඉදිරියට යාමට ඔබගේ තිර අගුල ඇතුළත් කරන්න</string>
+    <string name="screen_not_shared_sensitive_content">ආරක්ෂාව සඳහා යෙදුම් අන්තර්ගතය තිරය බෙදා ගැනීමෙන් සඟවා ඇත</string>
     <string name="screencapture_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් තිර ග්‍රහණය භාවිතය වළක්වයි.</string>
     <string name="screenshot_edit">සංස්කරණය</string>
     <string name="sd_card_unavailable_message">වෙනස් පරිශීලක පැතිකඩක් භාවිතයේ තිබෙන අතරේ ඇතුළත් කළ නිසා ඔබට SD කාඩ්පත භාවිතා කළ නොහැක.</string>
     <string name="sd_card_unavailable_title">SD කාඩ්පත නොමැත</string>
-    <string name="sdcard_bad_removal_message">SD කාඩ්පතක් අනාරක්ෂිතව ඉවත් කර ඇත. ඔබේ ටැබ්ලටය අනපේක්ෂිත ලෙස යළි ඇරඹීමෙන් වැළැක්වීම සඳහා, නොසුරැකි දත්ත සුරැක දැන් යළි අරඹන්න.</string>
+    <string name="sdcard_bad_removal_message">SD කාඩ්පතක් අනාරක්ෂිතව ඉවත් කර ඇත. ඔබේ දුරකථනය අනපේක්ෂිත ලෙස යළි ඇරඹීමෙන් වැළැක්වීම සඳහා, නොසුරැකි දත්ත සුරැක දැන් යළි අරඹන්න.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD කාඩ්පත විකේතනය කරන්න</string>
     <string name="sdcard_batch_decrypt_noti_title">SD කාඩ්පත් විකේතනය</string>
     <string name="sdcard_batch_decrypt_popup_content">සංකේතිත SD කාඩ්පත භාවිතා කිරීමට පෙර විකේතනය කළ යුතුය. විකේතනය සඳහා පැයක් හෝ ඊට වඩා වැඩි කාලයක් ගත වනු ඇත. චාර්ජ් වු බැටරියක් ආරම්භ කර විකේතනය සම්පුර්ණයෙන්ම නිම වන තෙක් උපාංගය පේනුවෙන් ඉවත් කර තබන්න. විකේතන ක්‍රියාවලියට බාධා කිරීමෙන් දත්ත සමහරක් හෝ සියල්ල අහිමි වීමට හේතු විය හැකිය.</string>
     <string name="sdcard_decrypt_err_notification">SD කාඩ්පත විකේතනයේදී දෝෂයක් මතුවිය.</string>
-    <string name="sdcard_decrypt_error_otherdevice">ඔබේ SD කාඩ්පතෙහි සමහර ගොනු වෙනත් උපාංගයක සංකේතනය කර ඇති අතර මෙම ටැබ්ලටයෙහි භාවිතා කළ නොහැක.</string>
+    <string name="sdcard_decrypt_error_otherdevice">ඔබේ SD කාඩ්පතෙහි සමහර ගොනු වෙනත් උපාංගයක සංකේතනය කර ඇති අතර මෙම දුරකථනයෙහි භාවිතා කළ නොහැක.</string>
     <string name="sdcard_decrypt_notification">SD කාඩ්පත විකේතනය කෙරිණ.</string>
     <string name="sdcard_decrypt_title_notification">SD කාඩ්පත් විකේතනය</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD කාඩ්පත ගුප්ත වි. කර…</string>
@@ -2761,14 +2801,6 @@
     <string name="searchview_description_submit">විමසුම යොමු කරන්න</string>
     <string name="searchview_description_voice">හඬ සෙවීම</string>
     <string name="sec_bluetooth_airplane_mode_toast">බ්ලූටූත් ගුවන් යානා ප්‍රකාරයේ ක්‍රියාත්මකව පවතිනු ඇත.</string>
-    <string name="sec_immersive_cling_button_ok">හරි</string>
-    <string name="sec_immersive_cling_guide_text_gesture">මෙම යෙදුම පූර්ණ තිරය භාවිතා කරයි. සංචාලනය සඳහා ස්වයිප් අභිනයන් තත්ත්ව තීරුව පෙන්වනු ඇත. සංචාලනයට, තත්ත්ව තීරුව දෘශ්‍යමාන අතරේ නැවත ස්වයිප් කරන්න.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"මෙම යෙදුම පූර්ණ තිරය භාවිතා කරයි. අවධානය වෙනතකට යොමු වීම් අවම කිරීමට සහ ඔබව අහම්බෙන් යෙදුමෙන් ඉවත් වීම වැළැක්වීමට මුල්, ආපසු සහ මෑත බොත්තම් සඟවා ඇත.
-
-ඔබ ඔබේ දුරකථනය කරකැවූවත්, බොත්තම් සෑම විටම චාර්ජ් කිරීමේ කවුළුව යාබදව පිහිටා තිබෙනු ඇත. ඔබට ඊතලයෙන් පෙන්වා ඇති පරිදි තිරයේ කෙළවර සිට ඇතුළට ස්වයිප් කිරීමෙන් බොත්තම් යළි දිස් වීම කළ හැකිය."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"මෙම යෙදුම පූර්ණ තිරය භාවිතා කරයි. අවධානය වෙනතකට යොමු වීම් අවම කිරීමට සහ ඔබව අහම්බෙන් යෙදුමෙන් ඉවත් වීම වැළැක්වීමට මුල්, ආපසු සහ මෑත බොත්තම් සඟවා ඇත.
-
-බොත්තම් යළි දිස් වීම කිරීමට, ඊතලයෙන් පෙන්වා ඇති පරිදි තිරයේ පහළ සිට ඉහළට ස්වයිප් කරන්න."</string>
     <string name="sec_monotype_default">පෙරනිමිය</string>
     <string name="sec_ringtone_category_brand_sound">Samsung සන්නාම හඬ</string>
     <string name="sec_ringtone_category_calm">නිසල</string>
@@ -2778,6 +2810,10 @@
     <string name="sec_ringtone_category_open_theme">පවත්නා තේමාවෙහි පෙරනිමිය</string>
     <string name="sec_ringtone_category_retro">රෙට්‍රෝ</string>
     <string name="sec_ringtone_silent">නිහඬ</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">අවලංගු කරන්න</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">චන්ද්‍රිකාවකට සම්බන්ධ වීමට, ඔබේ ජාල ක්‍රියාකරු “ස්වයංක්‍රීයව තේරීම” ලෙස සැකසීමට අවශ්‍ය වේ.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">ක්‍රියාත්මක කරන්න</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">ස්වයංක්‍රීය ජාල තේරීම ක්‍රියාත්මක කරන්න ද?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">කතා කිරීමට මයික්‍රෆෝන ප්‍රවේශය ක්‍රියාත්මක කරන්න.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">%s භාවිතයට කැමරා ප්‍රවේශය ක්‍රියාත්මක කරන්න.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">%s භාවිතයට මයික්‍රෆෝන ප්‍රවේශය ක්‍රියාත්මක කරන්න.</string>
@@ -2789,7 +2825,7 @@
     <string name="secure_folder">ආරක්ෂිත ෆෝල්ඩරය</string>
     <string name="secure_folder_decrypt_btn">ගුප්ත විකේතනය</string>
     <string name="secure_folder_decrypt_message">සුරක්ෂිත ෆෝල්ඩර අන්තර්ගතය තවදුරටත් සංකේතනය නොවනු ඇත. සුරක්ෂිත ෆෝල්ඩරයේ ඇති යෙදුම් ධාවනය කර ඔබට දැනුම්දීම් යැවීමට හැකි වනු ඇත.</string>
-    <string name="secure_folder_decrypt_title">සුරක්ෂිත ෆෝල්ඩරය ගුප්ත විකේතනය ද?</string>
+    <string name="secure_folder_decrypt_title">සුරක්ෂිත ෆෝල්ඩරය ගුප්ත විකේතනය කරන්නද?</string>
     <string name="securekeypad_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් යතුරුපුවරු සැකසුම් වෙනස් කිරීම වළක්වයි.</string>
     <string name="security_policy_prevents_online_precessing">ආරක්ෂක ප්‍රතිපත්තිය උසස් බුද්ධිය සඳහා ඔන්ලයින් සැකසුම් වළක්වයි.</string>
     <string name="security_policy_summary">දුරස්ථ පරිපාලකගෙන් ලැබුණු ආරක්ෂණ ප්‍රතිපත්ති.</string>
@@ -2885,6 +2921,8 @@
     <string name="sem_face_error_already_in_use_by_VT">වීඩියෝ ඇමතුම් අතරතුර මුහුණ හඳුනා ගැනීම භාවිතා කළ නොහැක.</string>
     <string name="sem_face_error_camera_access_off">කැමරා ප්‍රවේශය ක්‍රියා විරහිත නිසා මුහුණු හැඳුනුම භාවිතා කළ නොහැක</string>
     <string name="sem_face_error_camera_fail">කැමරාව විවෘත කළ නොහැකි විය. නැවත උත්සාහ කරන්න.</string>
+    <string name="sem_face_error_lockout">බොහෝ වැරදි උත්සාහයන් නිසා ජෛවමිතික සත්‍යාපනය ලබා ගත නොහැක.</string>
+    <string name="sem_face_error_lockout_permanent">බොහෝ වැරදි උත්සාහයන් නිසා ජෛවමිතික සත්‍යාපනය ලබා ගත නොහැක.</string>
     <string name="sem_face_error_ppp_timeout">ඔබ ඔබේ අනන්‍යතාවය සත්‍යාපනය කර කලක් ගත වී ඇත. ඔබේ මුහුණ ලියාපදිංචියට ඔබට නැවත ඇරඹීමට අවශ්‍ය වනු ඇත.</string>
     <string name="sem_face_error_too_dark">මුහුණ අනාවරණයට අඳුරු වැඩියි</string>
     <string name="sem_face_error_too_dark_to_enroll">අඳුරු වැඩියි. ආලෝකයක් ක්‍රියාත්මක කිරීමට හෝ දීප්තිමත් තැනකට යාමට උත්සාහ කරන්න.</string>
@@ -2900,13 +2938,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">ඔබේ ඇඟිලි සලකුණ සුපිරික්සීමට ඔබේ S Pen තුඩ තිරයෙන් ඈතට ගෙන යන්න.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">ඇඟිලි සලකුණු භාවිතා කිරීමට, පළමුව සුරක්ෂිත තිර අගුළු ආකාරයක් (රටාව, PIN හෝ මුරපදය) පිහිටුවන්න.</string>
+    <string name="sem_fingerprint_error_lockout">බොහෝ වැරදි උත්සාහයන් නිසා ජෛවමිතික සත්‍යාපනය ලබා ගත නොහැක.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">බොහෝ වැරදි උත්සාහයන් නිසා ජෛවමිතික සත්‍යාපනය ලබා ගත නොහැක.</string>
     <string name="sem_fingerprint_error_onehand_mode">තනි-අත් ප්‍රකාරයේ ඇඟිලි සලකුණු ස්කෑනරය භාවිතා කළ නොහැක.</string>
     <string name="sem_fingerprint_error_smart_view">%s භාවිතා කරන අතරේ ඇඟිලි සලකුණ පිරික්සිය නොහැක.</string>
+    <string name="sem_fingerprint_error_system_failure">ඇඟිලි සලකුණු සංවේදකය ප්‍රතිචාර නොදක්වයි. පසුව නැවත උත්සාහ කරන්න. මෙය දිගටම පවතී නම්, ඔබේ දුරකථනය යළි ඇරඹීමෙන් උත්සාහ කරන්න.</string>
+    <string name="sem_fingerprint_error_template_corrupt">ඇඟිලි සලකුණු දත්ත සදොස් වී ඇත. ඔබේ ඇඟිලි සලකුණු නැවත එක් කරන්න.</string>
     <string name="sem_fingerprint_error_wireless_charger">ඔබේ ඇඟිලි සලකුණ භාවිතයට විරැහැන් චාජරයෙන් විසන්ධි කරන්න</string>
     <string name="sem_fingerprint_name_template">ඇඟිලි සලකුණ %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">පසුව</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">දැන් නොවේ</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">ඉවත් කර ලියාපදිංචි වන්න</string>
+    <string name="sem_fingerprint_register_dialog_message">ඇඟිලි සලකුණු හැඳුනුම නවතම මෘදුකාංග යාවත්කාලයේ වැඩි දියුණු කර ඇත. ඔබ ඔබේ ඇඟිලි සලකුණු ඉවත් කර නැවත ලියාපදිංචි කරන තුරු ඔබට ඇඟිලි සලකුණු හැඳුනුම භාවිතා කළ නොහැක.</string>
     <string name="sem_fingerprint_register_dialog_title">ඇඟිලි සලකුණු නැවත ලියාපදිංචිය</string>
     <string name="sem_fingerprint_result_failed">ගැළපීමක් නැත.</string>
     <string name="sem_fingerprint_result_retry">නැවත උත්සාහ කරන්න.</string>
@@ -2926,7 +2969,7 @@
     <string name="sem_resolver_button_always_accessibility">තේරූ යෙදුම සැම විට භාවිතා කරන්න</string>
     <string name="sem_resolver_button_just_once_accessibility">තේරූ යෙදුම එක් වරක් භාවිතා කරන්න</string>
     <string name="sem_resolver_choose_what_to_do">කළ යුතු දේ තෝරා ගැනීම</string>
-    <string name="sem_resolver_go_to_settings_tips_description">පෙරනිමි යෙදුම් සැකසුම් වෙනස් කිරීමට, සැකසුම් > යෙදුම් > පෙරනිමි යෙදුම් තෝරා ගන්න වෙත යන්න.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">මෙම වර්ගයෙහි ගොනු විවෘත කිරීමට භාවිතා කරන පෙරනිමි යෙදුම වෙනස් කිරීමට, සැකසුම් > යෙදුම් වෙත ගොස්, වත්මන් පෙරනිමි යෙදුම තෝරා, ඉන්පසු “පෙරනිමි ලෙස සකසන්න” > පෙරනිමි හිස් කරන්න තට්ටු කරන්න.</string>
     <string name="sem_resolver_icon_content_description">තොරතුරු</string>
     <string name="sem_resolver_personal_tab_accessibility">පුද්ගලික</string>
     <string name="sem_resolver_share_live_default_text">සමීපස්ථ පුද්ගලයින් සමග ක්ෂණිකව බෙදා ගන්න. තම උපාංග දෘශ්‍යමාන කර ඇති අය මෙතැන පෙන්වනු ලැබේ.</string>
@@ -2942,9 +2985,9 @@
     <string name="sending">යවමින්...</string>
     <string name="sensor_notification_service">සංවේදක දැනුම් දීමේ සේවාව</string>
     <string name="sensor_privacy_notification_channel_label">සංවේදක පෞද්ගලිකත්වය</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">සියලු යෙදුම් සඳහා කැමරා ප්‍රවේශ ක්‍රියාවි.</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">ක්‍රියාත්මක කරන්න</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">සියලු යෙදුම් සඳහා මයි. ප්‍රවේශය ක්‍රියාවි.</string>
+    <string name="sensor_privacy_start_use_camera_notification_content_title">උපාංග කැමරාව අවහිර කිරීම ඉවත් කරන්න</string>
+    <string name="sensor_privacy_start_use_dialog_turn_on_button">අවහිර කිරීම ඉවත් කරන්න</string>
+    <string name="sensor_privacy_start_use_mic_notification_content_title">උපාංග මයික්‍රෆෝනය අවහිර කිරීම ඉවත් කරන්න</string>
     <string name="sensor_privacy_start_use_notification_content_text"><b>%s</b> සහ සියලු යෙදුම් සහ සේවා සඳහා</string>
     <string name="serial_number">අනුක්‍රමාංකය:</string>
     <string name="serviceClassData">දත්ත</string>
@@ -2969,6 +3012,9 @@
     <string name="serviceRegistered">ලියාපදිංචි වීම සාර්ථකයි.</string>
     <string name="serviceisDisabled">සේවාව අඩපණ කරඇත.</string>
     <string name="serviceisEnabled">සේවාව සක්‍රිය කොට ඇත.</string>
+    <string name="set_up_screen_lock_action_label">තිර අගුල සකසන්න</string>
+    <string name="set_up_screen_lock_title">තිර අගුලක් සකසන්න</string>
+    <string name="settings">සැකසුම්</string>
     <string name="sf_quick_switch_not_supported">මෙම තත්ත්වය තුළ යුහු ස්විචයට සහාය නොදක්වයි.</string>
     <string name="sf_quick_switch_securefolder_view">%s වෙත මාරු විය.</string>
     <string name="sha1_fingerprint">SHA-1 ඇඟිලි සලකුණ:</string>
@@ -2992,12 +3038,14 @@
     <string name="show_ime">භෞතික යතුරු පුවරුව සක්‍රිය අතරතුර එය තිරය මත තබා ගන්න</string>
     <string name="show_keyboard_button">යතුරු පුවරුව පෙන්වීමේ බොත්තම</string>
     <string name="show_keyboard_button_description">සංචාලන තීරුවෙහි %s පෙන්වන්න.</string>
+    <string name="showing_esc_dialog">ඔබට Esc යතුර ආපසු බොත්තමක් ලෙස වැඩ කිරීමට සැකසිය හැක.</string>
     <string name="showing_touch_sensitivity_noti_action">ක්‍රියාත්මක කර.</string>
     <string name="showing_touch_sensitivity_noti_text">වඩාත් නිවැරදි ස්පර්ශ ප්‍රතිචාර්යතාවක් සඳහා Privacy Screen හෝ Notepaper Screen භාවිතා කරන අතරේ ස්පර්ශ සංවේදීතාව ක්‍රියාත්මක කරන්න.</string>
     <string name="showing_touch_sensitivity_noti_title">ස්පර්ශ සංවේදීතාවය වැඩි කරන්න</string>
-    <string name="shutdown_confirm">ඔබගේ ටැබ්ලටය වැසේ.</string>
+    <string name="shutdown_confirm">ඔබගේ දුරකථනය වැසේ.</string>
     <string name="shutdown_confirm_question">ඔබට වසා දැමීමට අවශ්‍යද?</string>
     <string name="shutdown_progress">වසා දමමින්…</string>
+    <string name="side_key_double_press_archived_app">යෙදුම ලේඛනාරක්ෂණය කරන ලදි. වෙනත් දෙයක් තෝරා ගන්න.</string>
     <string name="side_key_double_press_deleted_app">යෙදුම අස්ථාපිතයි. වෙනත් දෙයක් තෝරා ගන්න.</string>
     <string name="side_key_double_press_disabled_app">%s අක්‍රියයි. වෙනත් දෙයක් තෝරා ගන්න.</string>
     <string name="signature_identity_toast">%s අත්සන් කළේ</string>
@@ -3010,18 +3058,20 @@
     <string name="sim_added_message">ජංගම ජාලයට ප්‍රවේශ වීමට ඔබගේ උපාංගය නැවත අරඹන්න.</string>
     <string name="sim_added_title">SIM එක් කෙරිණි</string>
     <string name="sim_check_old_sim_message">පැරණි හෝ හානි වූ SIM කාඩ්පත් ජාල සබැඳුම් ගැටලු ඇති කළ හැක. එය ප්‍රතිස්ථාපනය කිරීමට අවශ්‍ය දැයි පරීක්ෂා කිරීමට ඔබේ සේවා සැපයුම්කරු අමතන්න හෝ ඔවුන්ගේ වෙළඳසැල් වලින් එකකට පිවිසෙන්න.</string>
+    <string name="sim_check_old_sim_message_skt">පැරණි හෝ හානි වූ SIM කාඩ්පත් ජාල සම්බන්ධතා ගැටලු ඇති කළ හැක. ඔබේ සේවා සැපයුම්කරු සම්බන්ධ කර ගන්න හෝ එය ප්‍රතිස්ථාපනය කිරීමට අවශ්‍ය දැයි පරීක්ෂා කිරීමට ඔවුන්ගේ එක් වෙළඳසැලකට පිවිසෙන්න.</string>
     <string name="sim_check_old_sim_title">ඔබේ SIM ප්‍රතිස්ථාපනය කිරීමට අවශ්‍ය විය හැක</string>
+    <string name="sim_check_old_sim_title_skt">ඔබේ SIM ප්‍රතිස්ථාපනය කිරීමට අවශ්‍ය විය හැක</string>
     <string name="sim_count_mismatched_ds_to_ss">SIM කාඩ්පත් ප්‍රකාරය ද්විත්ව SIM සිට තනි SIM වෙත මාරු කෙරිණි. මෙම සැකසුම යෙදීමට, උපාංගය එහි කම්හල් පෙරනිමි සැකසුම් වෙත යළි සැකසී යළි ඇරඹෙනු ඇත.</string>
     <string name="sim_count_mismatched_ss_to_ds">SIM කාඩ්පත් ප්‍රකාරය තනි SIM සිට ද්විත්ව SIM වෙත මාරු කෙරිණි. මෙම සැකසුම යෙදීමට, උපාංගය එහි කම්හල් පෙරනිමි සැකසුම් වෙත යළි සැකසී යළි ඇරඹෙනු ඇත.</string>
     <string name="sim_count_mismatched_title">SIM කාඩ්පත් ප්‍රකාරය මාරු කෙරිණි</string>
     <string name="sim_done_button">හරි</string>
-    <string name="sim_imsreg_error_message_lgt">ඔබේ දුරකථනයට SIM කාඩ්පත හඳුනා ගැනීමට නොහැකි නිසා එයට හඬ ඇමතුම් ලබා ගැනීමට නොහැකි වනු ඇත. SIM කාඩ්පත ඉවත් කර එය නැවත ඇතුළත් කිරීමට උත්සාහ කරන්න. මෙම ගැටලුව දිගටම පවතින්නේ නම්, ඔබට ඔබේ SIM කාඩ්පත ප්‍රතිස්ථාපනයට අවශ්‍ය විය හැක. උපකාර සඳහා, LG U+ වෙළඳසැලකට පිවිසෙන්න හෝ 1544-0010 යන අංකයෙන් LG U+ පාරිභෝගික සේවාව සම්බන්ධ කර ගන්න.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">ඔබේ ටැබ්ලටයට SIM කාඩ්පත හඳුනා ගැනීමට නොහැකි නිසා එයට හඬ ඇමතුම් ලබා ගැනීමට නොහැකි වනු ඇත. SIM කාඩ්පත ඉවත් කර එය නැවත ඇතුළත් කිරීමට උත්සාහ කරන්න. මෙම ගැටලුව දිගටම පවතින්නේ නම්, ඔබට ඔබේ SIM කාඩ්පත ප්‍රතිස්ථාපනයට අවශ්‍ය විය හැක. උපකාර සඳහා, LG U+ වෙළඳසැලකට පිවිසෙන්න හෝ 1544-0010 යන අංකයෙන් LG U+ පාරිභෝගික සේවාව අමතන්න.</string>
+    <string name="sim_imsreg_error_message_lgt">ඔබේ දුරකථනයට SIM කාඩ්පත හඳුනා ගැනීමට නොහැකි නිසා එයට හඬ ඇමතුම් ලබා ගැනීමට නොහැකි වනු ඇත. SIM කාඩ්පත ඉවත් කර එය නැවත ඇතුළත් කිරීමට උත්සාහ කරන්න. මෙම ගැටලුව දිගටම පවතින්නේ නම්, ඔබට LG U+ අලෙවිසැලක දී ඔබේ SIM කාඩ්පත ප්‍රතිස්ථාපනයට අවශ්‍ය විය හැක.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">ඔබේ ටැබ්ලටයට SIM කාඩ්පත හඳුනා ගැනීමට නොහැකි නිසා එයට හඬ ඇමතුම් ලබා ගැනීමට නොහැකි වනු ඇත. SIM කාඩ්පත ඉවත් කර එය නැවත ඇතුළත් කිරීමට උත්සාහ කරන්න. මෙම ගැටලුව දිගටම පවතින්නේ නම්, ඔබට LG U+ අලෙවිසැලක දී ඔබේ SIM කාඩ්පත ප්‍රතිස්ථාපනයට අවශ්‍ය විය හැක.</string>
     <string name="sim_off_noti_message">සියලු SIMs ක්‍රියාවිරහිත කර ඇති විට ඔබට ඇමතුම් ගැනීමට, පණිවිඩ යැවීමට, හෝ දත්ත භාවිතා කිරීමට නොහැක. SIMs ක්‍රියාත්මක කිරීමට මෙතැන තට්ටු කරන්න.</string>
     <string name="sim_off_noti_title">සියලු SIMs ක්‍රියා විරහිතයි</string>
     <string name="sim_off_toast_message">ඔබ ඇතුළත් කළ SIM කාඩ්පත ක්‍රියාවිරහිතයි. එය භාවිතය සඳහා, සැකසුම් > සබැඳුම් > SIM කළමනාකරු වෙත ගොස්, එය ක්‍රියාත්මක කරන්න.</string>
     <string name="sim_recognize_error_message_kt">ඔබේ SIM කාඩ්පත හඳුනාගෙන නොමැත. SIM කාඩ්පත ඉවත් කර එය නැවත ඇතුළත් කිරීමට උත්සාහ කරන්න. මෙම ගැටලුව දිගටම පවතින්නේ නම්, ඔබට ඔබේ SIM කාඩ්පත ප්‍රතිස්ථාපනයට අවශ්‍ය විය හැක. උපකාර සඳහා, KT වෙළඳසැලකට පිවිසෙන්න හෝ 1588-0010 යන අංකයෙන් KT පාරිභෝගික සේවාව සම්බන්ධ කර ගන්න.</string>
-    <string name="sim_recognize_error_message_lgt">ඔබේ SIM කාඩ්පත හඳුනාගෙන නොමැත. SIM කාඩ්පත ඉවත් කර එය නැවත ඇතුළත් කිරීමට උත්සාහ කරන්න. මෙම ගැටලුව දිගටම පවතින්නේ නම්, ඔබට ඔබේ SIM කාඩ්පත ප්‍රතිස්ථාපනයට අවශ්‍ය විය හැක. උපකාර සඳහා, LG U+ වෙළඳසැලකට පිවිසෙන්න හෝ 1544-0010 යන අංකයෙන් LG U+ පාරිභෝගික සේවාව සම්බන්ධ කර ගන්න.</string>
+    <string name="sim_recognize_error_message_lgt">ඔබේ SIM කාඩ්පත හඳුනාගෙන නොමැත. SIM කාඩ්පත ඉවත් කර එය නැවත ඇතුළත් කිරීමට උත්සාහ කරන්න. මෙම ගැටලුව දිගටම පවතින්නේ නම්, ඔබට LG U+ වෙළඳසැලක දී ඔබේ SIM කාඩ්පත ප්‍රතිස්ථාපනය කිරීමට අවශ්‍ය විය හැක.</string>
     <string name="sim_recognize_error_message_skt">SIM කාඩ්පත කියවිය නොහැක. සමහර යෙදුම් සහ විශේෂාංග ක්‍රියා නොකිරීමට ඉඩ ඇත. ඔබේ SIM කාඩ්පත ඉවත් කර නැවත ඇතුළත් කර, ඉන්පසු ඔබේ දුරකථනය යළි අරඹන්න. එය ගැටලුව නිරාකරණය නොකරන්නේ නම්, ඔබේ දුරකථනය සහ SIM කාඩ්පත පාරිභෝගික සේවා පිහිටීමකට ගෙන යන්න.</string>
     <string name="sim_recognize_error_message_skt_tablet">SIM කාඩ්පත කියවිය නොහැක. සමහර යෙදුම් සහ විශේෂාංග ක්‍රියා නොකිරීමට ඉඩ ඇත. ඔබේ SIM කාඩ්පත ඉවත් කර නැවත ඇතුළත් කර, ඉන්පසු ඔබේ ටැබ්ලටය යළි අරඹන්න. එය ගැටලුව නිරාකරණය නොකරන්නේ නම්, ඔබේ ටැබ්ලටය සහ SIM කාඩ්පත පාරිභෝගික සේවා පිහිටීමකට ගෙන යන්න.</string>
     <string name="sim_recognize_error_title_lgt">USIM කාඩ්පත හඳුනා ගත නොහැක</string>
@@ -3041,6 +3091,7 @@
     <string name="skip_button_label">මඟ හරින්න</string>
     <string name="slice_more_content">+ %1$d</string>
     <string name="slices_permission_request">%1$s හට කොටස් %2$sක් පෙන්වීමට අවශ්‍යයි</string>
+    <string name="smart_tip_action_click_hint_text">වසන්න</string>
     <string name="smartclip_restrict">ආරක්ෂණ ප්‍ර‍තිපත්තිය මගින් ඊසි ක්ලිප් භාවිතය වළක්වයි.</string>
     <string name="sms_control_message"><b>%1$s</b> SMS පණිවිඩ විශාල ගණනක් යවයි. මෙම යෙදුමට පණිවිඩ යැවීම නොනැවතී කරගෙන යාමට අවසර දීමට ඔබට අවශ්‍යද?</string>
     <string name="sms_control_no">ප්‍රතික්ෂේප කරන්න</string>
@@ -3054,9 +3105,7 @@
     <string name="sms_short_code_confirm_never_allow">කිසිදා අවසර නොදෙන්න</string>
     <string name="sms_short_code_details">මෙය <b>ඔබගේ ජංගම ගිණුමේ</b> අය වීම් වලට හේතුවක් වේ.</string>
     <string name="sms_short_code_remember_choice">මගේ තේරීම මතක තබාගන්න</string>
-    <string name="sms_short_code_remember_undo_instruction">ඔබට සැකසීම් > යෙදුම් වෙත ගොස් පසුව මෙය වෙනස් කළ හැක</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">ඔබට සැකසුම් > යෙදුම් > වැඩිදුර විකල්ප බොත්තම > විශේෂ ප්‍රවේශය > පාරිතෝෂික කෙටි පණිවිඩ සේවා භාවිතය වෙත ගොස් පසුව මෙය වෙනස් කළ හැක</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">ඔබ “කිසිවිටෙක ඉඩ නොදෙන්න” තට්ටු කළොත්, මෙම යෙදුමට ඒ සඳහා පෙළ පණිවිඩ යැවීමේ අවසරයට ඉඩ දී තිබුනත් පසුබිම තුළ පණිවිඩ යැවීමට නොහැකි වනු ඇත.</string>
+    <string name="sms_short_code_remember_undo_instruction">ඔබට මෙය සැකසීම් තුළ වෙනස්කර ගැනීම පසුව කළ හැක > යෙදුම්</string>
     <string name="smv_application">%1$s යෙදුම (%2$s ක්‍රියාවලිය) එහි StrictMode කොන්දේසිය උල්ලංඝනය කර ඇත.</string>
     <string name="smv_process">%1$s ක්‍රියාවලිය එහි StrictMode කොන්දේසිය උල්ලංඝනය කර ඇත.</string>
     <string name="splash_screen_view_branding_description">යෙදුම් සන්නම් කිරීමේ රූපය</string>
@@ -3140,7 +3189,6 @@
     <string name="time_picker_radial_mode_description">වේලා ආදානය සඳහා ඔරලෝසු ප්‍රකාරය වෙත මාරු වෙන්න.</string>
     <string name="time_picker_text_input_mode_description">වේලා ආදානය සඳහා ආදාන ප්‍රකාරය වෙත මාරු වෙන්න.</string>
     <string name="title_dialog_check_rotate_or_not">තිර ස්වයං කරකැවීම ක්‍රියා විරහිත කරන්න ද?</string>
-    <string name="title_uds">අධි දත්ත සුරැකුම් ප්‍රකාරය</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">ඔබේ දුරකථනය පිහිටුවන අතරේ Bixby භාවිතා කළ නොහැක.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">ඔබේ ටැබ්ලටය පිහිටුවන අතරේ Bixby භාවිතා කළ නොහැක.</string>
     <string name="toast_warning_pattern_lock">රටා අගුල විශ්ව ස්විචය සමග භාවිතා කළ නොහැක. පළමුව වෙනස් අගුළු ආකාරයකට වෙනස් කරන්න.</string>
@@ -3170,6 +3218,7 @@
     <string name="ucm_smartcard_is_encrypting_phone">ස්මාර්ට්කාඩ් දුරකථනය සංකේතනය කරමින්…</string>
     <string name="ui_translation_accessibility_translated_text">%1$s පරිවර්තනය කරන ලදි.</string>
     <string name="ui_translation_accessibility_translation_finished">පණිවිඩය %1$s සිට %2$s භාෂාවට පරිවර්තනය කරන ලදි.</string>
+    <string name="unarchival_session_app_label">පොරොත්තුයි...</string>
     <string name="undo">පසුගමනය</string>
     <string name="unknown_install_activity_warning_title">සැක සහිත අනිෂ්ට යෙදුම</string>
     <string name="unknown_install_blocked_dlg_desc">මෙම යෙදුම අනිෂ්ට විය හැකි නිසා එය ස්ථාපනය කළ නොහැක.</string>
@@ -3189,9 +3238,13 @@
     <string name="unknown_install_blocked_esm_title">නොදන්නා යෙදුම අවහිර කර ඇත</string>
     <string name="unknown_install_dlg_desc">මෙම යෙදුම අනුමත වෙළඳසැලකින් බාගෙන නොමැත. මෙම යෙදුම ස්ථාපනයෙන් ඔබේ ආරක්ෂාව සහ පෞද්ගලිකත්වය අවදානමට ලක් කිරීමට ඉඩ ඇත. යෙදුම ඔබේ පුද්ගලික තොරතුරු රැස් කිරීමට හෝ ඔබේ දත්ත අහිමි වීමට හේතු විය හැක.</string>
     <string name="unknown_install_dlg_desc2">මෙම යෙදුම නවතම ආරක්ෂක විශේෂාංගවලට සහාය නොදක්වයි. මෙම යෙදුම ස්ථාපනයෙන් පහත ආරක්ෂක අවදානම් ඇති විය හැක:</string>
+    <string name="unknown_install_dlg_desc_global_phone">මෙම යෙදුම් ස්ථාපන ගොනුව සුරක්ෂිත නොවිය හැක. එය එය යැයි පවසන යෙදුම නොවිය හැක. ඔබේ දුරකථනය සහ පුද්ගලික දත්ත ආරක්ෂා කිරීමට, ඒ වෙනුවට ඔබ විශ්වාස කරන යෙදුම් වෙළඳසැලකින් යෙදුම ස්ථාපනය කරන්න.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">මෙම යෙදුම් ස්ථාපන ගොනුව සුරක්ෂිත නොවිය හැක. එය එය යැයි පවසන යෙදුම නොවිය හැක. ඔබේ ටැබ්ලටය සහ පුද්ගලික දත්ත ආරක්ෂා කිරීමට, ඒ වෙනුවට ඔබ විශ්වාස කරන යෙදුම් වෙළඳසැලකින් යෙදුම ස්ථාපනය කරන්න.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">මෙම යෙදුම අනිෂ්ට යැයි සැක කරන අතර ඔබේ දුරකථනය සහ දත්ත අවදානමට ලක් කළ හැක. මෙම යෙදුම ස්ථාපනය නිර්දේශ කරනු නොලැබේ.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">මෙම යෙදුම අනිෂ්ට යැයි සැක කරන අතර ඔබේ ටැබ්ලටය සහ දත්ත අවදානමට ලක් කළ හැක. මෙම යෙදුම ස්ථාපනය නිර්දේශ කරනු නොලැබේ.</string>
-    <string name="unknown_install_dlg_general_title">මෙම යෙදුම නොදන්නා මූලාශ්‍රයකි</string>
+    <string name="unknown_install_dlg_desc_phone">මෙම යෙදුම බලයලත් යෙදුම් වෙළඳසැලකින් නොවේ. ඔබේ දුරකථනය සහ පුද්ගලික තොරතුරු ආරක්ෂා කිරීමට, Play Store හෝ Galaxy Store වැනි බලයලත් වෙළඳසැලකින් යෙදුම ස්ථාපනය කරන්න.</string>
+    <string name="unknown_install_dlg_desc_tablet">මෙම යෙදුම බලයලත් යෙදුම් වෙළඳසැලකින් නොවේ. ඔබේ ටැබ්ලටය සහ පුද්ගලික තොරතුරු ආරක්ෂා කිරීමට, Play Store හෝ Galaxy Store වැනි බලයලත් වෙළඳසැලකින් යෙදුම ස්ථාපනය කරන්න.</string>
+    <string name="unknown_install_dlg_general_title">මෙම යෙදුම ස්ථාපනය නිර්දේශ කරනු නොලැබේ</string>
     <string name="unknown_install_dlg_negative_button">ස්ථාපනය නොකරන්න</string>
     <string name="unknown_install_dlg_perm_desc1">යෙදුම ඔබට ලැබෙන පෙළ පණිවිඩ වෙතින් සත්‍යාපන කේතවලට බාධා කිරීමට ඉඩ ඇත.</string>
     <string name="unknown_install_dlg_perm_desc2">යන ඇමතුම් ඔබේ අනුදැනුමකින් තොරව වෙනස් දුරකථන අංකයකට යළි හරවා යැවීමට ඉඩ ඇත.</string>
@@ -3221,7 +3274,7 @@
     <string name="usb_abnormal_reset_title">USB සබැඳුම ස්ථායී නොවේ</string>
     <string name="usb_abnormal_reset_toast">USB සබැඳුම ස්ථායී නොවේ. කේබලය ගලවා නැවත එය පේනු වද්දන්න, හෝ වෙනස් කේබලයක් උත්සාහ කරන්න.</string>
     <string name="usb_accessory_notification_title">USB අමතර කොටස් වෙත සම්බන්ධ කෙරිණි</string>
-    <string name="usb_bad_removal_message">USB ගබඩා උපාංගයක් අනාරක්ෂිතව ඉවත් කර ඇත. ඔබේ ටැබ්ලටය අනපේක්ෂිත ලෙස යළි ඇරඹීමෙන් වැළැක්වීම සඳහා, නොසුරැකි දත්ත සුරැක දැන් යළි අරඹන්න.</string>
+    <string name="usb_bad_removal_message">USB ගබඩා උපාංගයක් අනාරක්ෂිතව ඉවත් කර ඇත. ඔබේ දුරකථනය අනපේක්ෂිත ලෙස යළි ඇරඹීමෙන් වැළැක්වීම සඳහා, නොසුරැකි දත්ත සුරැක දැන් යළි අරඹන්න.</string>
     <string name="usb_blocked_by_emergency_mode">සමහර USB ක්‍රියාදාමයන් හදිසි ප්‍රකාරයේ නොමැත.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">උපරිම බල සුරැකුම් ප්‍රකාරය සක්‍රිය අතරතුර සම්බන්ධිත USB උපාංගයට අදාළ ක්‍රියාදාම භාවිතා කළ නොහැකිය.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">උපරිම බල සුරැකුම් ප්‍රකාරය ක්‍රියාත්මක අතරේ සමහර USB ක්‍රියාදාමයන් සීමා වනු ඇත.</string>
@@ -3231,7 +3284,9 @@
     <string name="usb_camera_disconnected_notification_title">මාධ්‍ය උපාංගය විසන්ධි කෙරිණි</string>
     <string name="usb_cd_installer_notification_title">මෘදුකාංග යාවත්කාලය</string>
     <string name="usb_charging_notification_title">මෙම උපාංගය USB හරහා ආරෝපණය කරමින්</string>
-    <string name="usb_charing_only_notification_title">සම්බන්ධිතයි</string>
+    <string name="usb_charing_only_notification_title">USB චාර්ජ් වීම</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">ස්වයං අවහිරකය උපරිම සීමා සහිතව ක්‍රියාත්මකයි.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB සබැඳුම අවහිර කර ඇත</string>
     <string name="usb_contaminant_detected_message">USB තොට ස්වයංක්‍රීයව අබල කෙරේ. තවත් දැන ගැනීමට තට්ටු කරන්න.</string>
     <string name="usb_contaminant_detected_title">USB තොට තුළ ද්‍රව හෝ කුණු</string>
     <string name="usb_contaminant_not_detected_message">දුරකථනය තවදුරටත් ද්‍රව හෝ කුණු අනාවරණ නොකරයි.</string>
@@ -3243,11 +3298,11 @@
     <string name="usb_host_cable_disconnected_notification_title">USB සම්බන්ධකය විසන්ධියි.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">මෙම උපකරණය වෙත පිවිසිය නොහැකිය. සම්බන්ධ කළ උපාංගයට බාහිර විදුලි සැපයුමක් අවශ්‍යය.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">අධි-බල USB උපාංගය සම්බන්ධ කෙරිණි.</string>
-    <string name="usb_host_resource_exceed_message">ඔබේ ටැබ්ලටයේ USB පාලකයට මෙම උපාංගය සබැඳීමට ප්‍රමාණවත් සම්පත් නොමැත. උපාංගය විසන්ධි කර එය නැවත සබැඳීමට උත්සාහ කරන්න.</string>
+    <string name="usb_host_resource_exceed_message">ඔබේ දුරකථනයේ USB පාලකයට මෙම උපාංගය සබැඳීමට ප්‍රමාණවත් සම්පත් නොමැත. උපාංගය විසන්ධි කර එය නැවත සබැඳීමට උත්සාහ කරන්න.</string>
     <string name="usb_host_resource_exceed_title">USB පාලක සම්පත් ප්‍රමාණවත් නොවේ</string>
-    <string name="usb_hub_depth_exceed_message">ඔබේ ටැබ්ලටයට එකවර සහාය දැක්විය හැක්කේ USB නාභි සබැඳුම් 5ක් දක්වා පමණි.</string>
+    <string name="usb_hub_depth_exceed_message">ඔබේ දුරකථනයට එකවර සහාය දැක්විය හැක්කේ USB නාභි සබැඳුම් 5ක් දක්වා පමණි.</string>
     <string name="usb_hub_depth_exceed_title">උපරිම USB නාභි සබැඳුම්</string>
-    <string name="usb_hub_power_exceed_message">ඔබේ ටැබ්ලටයට මෙම USB උපාංගය සඳහා ප්‍රමාණවත් බලයක් සැපයිය නොහැක. ඔබේ ටැබ්ලටයට සබැඳීමට පෙර උපාංගය ස්වයං-බලැති USB නාභියකට සබඳින්න.</string>
+    <string name="usb_hub_power_exceed_message">ඔබේ දුරකථනයට මෙම USB උපාංගය සඳහා ප්‍රමාණවත් බලයක් සැපයිය නොහැක. ඔබේ දුරකථනයට සබැඳීමට පෙර උපාංගය ස්වයං-බලැති USB නාභියකට සබඳින්න.</string>
     <string name="usb_increase_battery_usage">USB සබැඳුම බැටරි භාවිතය ඉහළ නැංවිය හැක.</string>
     <string name="usb_keyboard_connected_notification_title">යතුරු පුවරුව සම්බන්ධයි</string>
     <string name="usb_keyboard_disconnected_notification_title">යතුරු පුවරුව විසන්ධියි</string>
@@ -3290,8 +3345,9 @@
     <string name="usb_ums_connected_notification_message_usbhost">USB ගබඩාව අනපේක්ෂිත ලෙස ඉවත් කෙරිණි.</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB විශාල මතකය සම්බන්ධයි</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB ගබඩාව සුරක්ෂිතව ඉවත් කෙරිණ.</string>
-    <string name="usb_unblock_by_screen_unlock">සම්බන්ධිත USB උපාංගය භාවිතා කිරීමට ඔබේ ටැබ්ලටය අගුළු හරින්න.</string>
-    <string name="usb_unsupport_accessory_message">මෙම USB උපාංගයට ඔබේ ටැබ්ලටය සහාය නොදක්වයි.</string>
+    <string name="usb_unblock_by_screen_unlock">සම්බන්ධිත USB උපාංගය භාවිතා කිරීමට ඔබේ දුරකථනය අගුළු හරින්න.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USB උපාංගය භාවිතය සඳහා, ඔබේ දුරකථනය අගුළු ඇර USB උපාංගය නැවත සම්බන්ධ කරන්න.</string>
+    <string name="usb_unsupport_accessory_message">මෙම USB උපාංගයට ඔබේ දුරකථනය සහාය නොදක්වයි.</string>
     <string name="usb_unsupport_accessory_title">USB උපාංගය සහාය නොදක්වයි</string>
     <string name="usb_unsupported_audio_accessory_message">මෙම දුරකථනය සමඟ සම්බන්ධිත උපාංගය නොගැළපෙයි. තව දැන ගැනීමට තට්ටු කරන්න.</string>
     <string name="usb_unsupported_audio_accessory_title">ප්‍රතිසම ශ්‍රව්‍ය උපාංගය අනාවරණය කර ගන්නා ලදී</string>
@@ -3312,19 +3368,19 @@
     <string name="usb_water_dialg_method_2_desc_2">ඔබට කවුළුව දෙසට පංකාවක් හෝ වියළනයක් (සිසිල් වාතය පමණි) යොමු කිරීමෙන් වියළීම වේගවත් කළ හැකිය.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"ඔබේ චාර්ජ් වීමේ/USB පෝටයේ තෙතමනය හෝ සම්බන්ධකමක් නැති ද්‍රව්‍ය අපි අනාවරණය කර ගෙන ඇත්තෙමු.
 
-දූවිලි හෝ සුන්බුන් වැනි ඕනෑම සම්බන්ධකමක් නැති ද්‍රව්‍යයක් සඳහා ඔබේ චාර්ජ් කිරීමේ/USB පෝටය පරීක්ෂා කරන්න. ඔබේ ටැබ්ලටයට වන හානිය වැළැක්වීම සඳහා, චාර්ජ් කිරීමේ පෝටය පිරිසිදු වී තෙතමනය නැති වන තුරු කිසිවක් පේනුගත නොකරන්න.
+දූවිලි හෝ සුන්බුන් වැනි ඕනෑම සම්බන්ධකමක් නැති ද්‍රව්‍යයක් සඳහා ඔබේ චාර්ජ් කිරීමේ/USB පෝටය පරීක්ෂා කරන්න. ඔබේ දුරකථනයට වන හානිය වැළැක්වීම සඳහා, චාර්ජ් කිරීමේ පෝටය පිරිසිදු වී තෙතමනය නැති වන තුරු කිසිවක් පේනුගත නොකරන්න.
 
 පෝටය වියළීම සඳහා, ඕනෑම තෙතමනයක් සොලවා, එය පැය කිහිපයක් ගත වනු ඇති, වියළී යන තෙක් රැඳී සිටින්න. ඔබට පෝටය දෙසට පංකාවක් හෝ වියළනයක් (සිසිල් වාතය පමණි) යොමු කිරීමෙන් වියළීම වේගවත් කළ හැක."</string>
     <string name="usb_water_dialg_positive_button">හරි</string>
     <string name="usb_water_dialg_support_wireless_charging">"ඔබේ චාර්ජ් වීමේ/USB පෝටයේ තෙතමනය හෝ සම්බන්ධකමක් නැති ද්‍රව්‍ය අපි අනාවරණය කර ගෙන ඇත්තෙමු.
 
-දූවිලි හෝ සුන්බුන් වැනි කිසියම් සම්බන්ධකමක් නැති ද්‍රව්‍යයක් සඳහා ඔබේ චාර්ජ් කිරීමේ/USB පෝටය පරීක්ෂා කරන්න. ඔබේ ටැබ්ලටයට වන හානිය වැළැක්වීම සඳහා, චාර්ජ් කිරීමේ කවුළුව පිරිසිදු වන තුරු සහ තෙතමනය නැති වී යන තුරු කිසිවක් පේනු වැද්දීම නොකරන්න.
+දූවිලි හෝ සුන්බුන් වැනි ඕනෑම සම්බන්ධකමක් නැති ද්‍රව්‍යයක් සඳහා ඔබේ චාර්ජ් කිරීමේ/USB පෝටය පරීක්ෂා කරන්න. ඔබේ දුරකථනයට වන හානිය වැළැක්වීම සඳහා, චාර්ජ් කිරීමේ පෝටය පිරිසිදු වී තෙතමනය නැති වන තුරු කිසිවක් පේනුගත නොකරන්න.
 
-කවුළුව වියළීම සඳහා, කිසියම් තෙතමනයක් සොලවා, එය පැය කිහිපයක් ගත වනු ඇති, වියළී යන තෙක් රැඳී සිටින්න. ඔබට පෝටය දෙසට පංකාවක් හෝ වියළනයක් (සිසිල් වාතය පමණි) යොමු කිරීමෙන් වියළීම වේගවත් කළ හැක.
+පෝටය වියළීම සඳහා, ඕනෑම තෙතමනයක් සොලවා, එය පැය කිහිපයක් ගත වනු ඇති, වියළී යන තෙක් රැඳී සිටින්න. ඔබට පෝටය දෙසට පංකාවක් හෝ වියළනයක් (සිසිල් වාතය පමණි) යොමු කිරීමෙන් වියළීම වේගවත් කළ හැක.
 
-මේ අතරතුර, ඔබට නොරැහැන්ව ඔබේ ටැබ්ලටය චාර්ජ් කළ හැක."</string>
+මේ අතරතුර, ඔබට නොරැහැන්ව ඔබේ දුරකථනය චාර්ජ් කළ හැක."</string>
     <string name="usb_water_notification_content">ඔබේ චාර්ජ් කිරීමේ/USB පෝටයේ තෙතමනය හෝ සම්බන්ධකමක් නැති ද්‍රව්‍ය තිබේ. චාර්ජ් කිරීමට පෙර පරීක්ෂා කරන්න.</string>
-    <string name="usb_water_notification_message">ඔබේ චාර්ජරය/USB කවුළුව තුළ තෙතමනය අනාවරණය වී ඇත. ඔබේ ටැබ්ලටය චාර්ජ් කිරීමට පෙර එය වියළි බවට වග බලා ගන්න. සම්පූර්ණයෙන්ම වියළි වීමට යම් කාලයක් ගත විය හැකිය.</string>
+    <string name="usb_water_notification_message">ඔබේ චාර්ජරය/USB කවුළුව තුළ තෙතමනය අනාවරණය වී ඇත. ඔබේ දුරකථනය චාර්ජ් කිරීමට පෙර එය වියළි බවට වග බලා ගන්න. සම්පූර්ණයෙන්ම වියළි වීමට යම් කාලයක් ගත විය හැකිය.</string>
     <string name="usb_water_notification_message_button">විස්තර</string>
     <string name="usb_water_notification_title">චාජරය/USB කවුළුව පිරික්සන්න</string>
     <string name="usbhostStorage_restrict">ආරක්ෂණ ප්‍රතිපත්තිය මගින් USB සත්කාරක ගබඩාව භාවිතය වළක්වයි.</string>
@@ -3342,7 +3398,7 @@
     <string name="user_switched">දැනට සිටින පරිශීලකයා %1$s.</string>
     <string name="user_switching_message">%1$s වෙත මාරු කරමින්…</string>
     <string name="validity_period">වලංගුතාවය:</string>
-    <string name="vdm_camera_access_denied">ඔබගේ %1$s වෙතින් ටැබ්ලටයේ කැමරාවට ප්‍රවේශ විය නොහැකිය</string>
+    <string name="vdm_camera_access_denied">ඔබගේ %1$s වෙතින් දුරකථනයේ කැමරාවට ප්‍රවේශ විය නොහැකිය</string>
     <string name="vdm_pip_blocked">ප්‍රවාහය අතරේ පින්තූරයේ-පින්තූරය බැලිය නොහැක</string>
     <string name="vdm_secure_window">ප්‍රවාහය කරන අතරේ මෙයට ප්‍රවේශ විය නොහැක. ඒ වෙනුවට ඔබේ දුරකථනයෙහි උත්සාහ කරන්න.</string>
     <string name="view_and_control_notification_content">%s හට ඔබගේ තිරය බැලීමට සහ පාලනය කිරීමට හැකිය. සමාලෝචනය කිරීමට තට්ටු කරන්න.</string>
@@ -3367,6 +3423,8 @@
     <string name="vpn_allowOnlySecureConnection">VPN පැතිකඩ ආරක්ෂාකාරී නොවේ.</string>
     <string name="vpn_error_text">VPN හා නැවත සම්බන්ධවීමට උත්සාහ කරන්න.</string>
     <string name="vpn_error_title">VPN ‍සම්බන්ධතා දෝෂය</string>
+    <string name="vpn_fail_text_long">%s වෙත සබැඳිය නොහැකි විය. මෙම VPN කළමනාකරණය කිරීමට තට්ටු කරන්න.</string>
+    <string name="vpn_fail_title">VPN සම්බන්ධ වී නැත</string>
     <string name="vpn_lockdown_config">ජාලය හෝ VPN සැකසීම් වෙනස් කරන්න</string>
     <string name="vpn_lockdown_connected">නිරතුරුවම VPN සම්බන්ධ කර ඇත</string>
     <string name="vpn_lockdown_connecting">සැමවිටම VPN සම්බන්ධ වෙමින්…</string>
@@ -3493,6 +3551,7 @@
     <string name="wifi_networks_available_detailed">විවෘත Wi-Fi ජාල තිබේ.</string>
     <string name="wifi_no_internet">%1$s හට අන්තර්ජාල ප්‍රවේශය නැත</string>
     <string name="wifi_no_internet_detailed">විකල්ප සඳහා තට්ටු කරන්න</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">ඔබේ WLAN සබැඳුම මන්දගාමී හෝ අස්ථායී නිසා %s ජංගම දත්ත භාවිතා කරයි.</string>
     <string name="wifi_notification_switch_wifi_detail">Wi-Fi ජාලය අස්ථායී වූ නිසා ඔබේ දුරකථනය ජංගම දත්ත වෙත මාරු විය.</string>
     <string name="wifi_notification_switch_wifi_title">ජංගම දත්ත වෙත මාරු විය</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">හදිසි දැනුම්දීම්</string>
@@ -3534,9 +3593,9 @@
     <string name="work_profile_on_message">මෙය ඔබට වැඩ යෙදුම්, දැනුම්දීම්, දත්ත සහ වෙනත් වැඩ පැතිකඩ විශේෂාංගවලට ප්‍රවේශයට ඉඩ දෙනු ඇත.</string>
     <string name="work_profile_on_title">වැඩ පැතිකඩ ක්‍රියාත්මක කරන්න ද?</string>
     <string name="work_profile_restricted">ස්වයං අවහිරකය උපරිම සීමා සහිතව ක්‍රියාත්මකයි. ඔබේ ආරක්ෂාව ආරක්ෂා කිරීමට, කාර්යාල පැතිකඩ තැනීමට නොහැක.</string>
-    <string name="work_profile_telephony_paused_text">ඔබ ඔබේ වැඩ යෙදුම් විරාම කර ඇත. ඔබට ඔවුන්ගෙන් දුරකථන ඇමතුම් හෝ පෙළ පණිවිඩ නොලැබෙනු ඇත.</string>
-    <string name="work_profile_telephony_paused_title">ඇමතුම් සහ පණිවිඩ ක්‍රියාවිරහිතය</string>
-    <string name="work_profile_telephony_paused_turn_on_button">වැඩ පැතිකඩ ක්‍රියාත්මක කරන්න ද?</string>
+    <string name="work_profile_telephony_paused_text">ඔබ කාර්යාල යෙදුම් විරාම කර ඇත. ඔබට දුරකථන ඇමතුම් හෝ පෙළ පණිවිඩ නොලැබෙනු ඇත.</string>
+    <string name="work_profile_telephony_paused_title">ඇමතුම් සහ පණිවිඩ ක්‍රියා විරහිතයි</string>
+    <string name="work_profile_telephony_paused_turn_on_button">කාර්යාල යෙදුම් විරාමය නොකරන්න</string>
     <string name="workspace_title">Workspace</string>
     <string name="write_fail_reason_cancelled">අවලංගු කරන ලදි</string>
     <string name="write_fail_reason_cannot_write">අන්තර්ගතය ලිවීමේදී දෝෂයකි</string>
@@ -3557,9 +3616,15 @@
     <string name="zen_mode_duration_minutes_summary">{count,plural, =1{මිනිත්තු එකක් සඳහා ({formattedTime} තෙක්)}one{මිනිත්තු #ක් සඳහා ({formattedTime} තෙක්)}other{මිනිත්තු #ක් සඳහා ({formattedTime} තෙක්)}}</string>
     <string name="zen_mode_duration_minutes_summary_short">{count,plural, =1{මිනි 1ක් සඳහා ({formattedTime} තෙක්)}one{මිනි #ක් සඳහා ({formattedTime} තෙක්)}other{මිනි #ක් සඳහා ({formattedTime} තෙක්)}}</string>
     <string name="zen_mode_feature_name">බාධා නොකරන්න</string>
-    <string name="zen_mode_forever">මම එය ක්‍රියාවිරහිත කරන තුරු</string>
+    <string name="zen_mode_forever">ඔබ ක්‍රියාවිරහිත කරන තුරු</string>
     <string name="zen_mode_forever_dnd">බාධා නොකරන්න ඔබ අක්‍රිය කරන තුරු</string>
+    <string name="zen_mode_implicit_activated">ක්‍රියාත්මකයි</string>
+    <string name="zen_mode_implicit_deactivated">ක්‍රියාවිරහිතයි</string>
+    <string name="zen_mode_implicit_trigger_description">%1$s විසින් කළමනාකරණය කරයි</string>
     <string name="zen_mode_rule_name_combination">%1$s / %2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">ඕනෑම දින දර්ශනයක්</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s - %2$s</string>
     <string name="zen_mode_until">%1$s තෙක්</string>
     <string name="zen_mode_until_next_day">%1$s දක්වා</string>
     <string name="zen_upgrade_notification_content">අවහිර කර ඇති දේ පරීක්ෂා කිරීමට තට්ටු කරන්න.</string>

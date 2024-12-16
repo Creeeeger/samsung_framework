@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">သင့်တက်ဘလက်တွင် ထည့်သွင်းထားသည့် အက်ပ်များပါရှိသော SD ကတ်ကို ဖယ်ရှားခဲ့သောကြောင့် သင့်တက်ဘလက်က တည်ငြိမ်မှုမရှိပါ။ သင့်တက်ဘလက် ပုံမှန်ပြန်ဖြစ်ရန်အတွက် %d စက္ကန့်အကြာမှာ ပြန်စတင်ပါမည်။ တက်ဘလက် ပြန်မစတင်မီ သိမ်းဆည်းမထားသည့် ဒေတာမှန်သမျှကို သိမ်းဆည်းပါ။</item>
+        <item quantity="other">အက်ပ်များ ထည့်သွင်းထားသည့် SD ကတ်ကို ဖယ်ရှားလိုက်သည့်အတွက် သင့်ဖုန်းက တည်ငြိမ်မှု မရှိပါ။ %d စက္ကန့်ကြာပြီးနောက် သင့်ဖုန်းက ပြန်လည်စတင်ပြီး ပုံမှန်အတိုင်း ပြန်ဖြစ်သွားပါမည်။ ဖုန်း ပြန်လည် မစတင်မီ သိမ်းမထားသည့် ဒေတာမှန်သမျှကို သိမ်းပါ။</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">ဤတက်ဘလက်သည် %d စက္ကန့်အကြာမှာ ပြန်စတင်ပါမည</item>
+        <item quantity="other">သင့်ဖုန်းသည် %d စက္ကန့်အကြာမှာ ပြန်စတင်ပါမည်</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -98,14 +98,6 @@
     </plurals>
     <plurals name="sem_chooser_preview_items">
         <item quantity="other">အရာဝတ္တု %d ခု</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">N/A</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">N/A</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">သင်ချိတ်ဆက်လိုသော Wi-Fi ကွန်ရက်ကို တစ်ကြိမ်လျှင် ကိရိယာ %d လုံးနှင့်သာ ချိတ်ဆက်နိုင်သည်။ အခြားမည်သည့် ကိရိယာကိုမဆို ထိုကွန်ရက်မှဖြုတ်ပြီး ထပ်မံကြိုးစားကြည့်ပါ။</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

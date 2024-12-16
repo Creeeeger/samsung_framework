@@ -43,7 +43,7 @@
     <string name="ColrMmi">Қосылған желі идентификаторын шектеу</string>
     <string name="CwMmi">Қоңырауды ұстап тұру</string>
     <string name="DndMmi">Мазаламау</string>
-    <string name="EmergencyCallWarningSummary">Wi-Fi арқылы жедел қызметке қоңырау шалу мүмкін емес</string>
+    <string name="EmergencyCallWarningSummary">Құтқару қызметіне қоңырау шалу үшін мобильдік желі қажет.</string>
     <string name="EmergencyCallWarningTitle">Жедел қызметке қоңырау шалу мүмкін емес</string>
     <string name="Midnight">Түн ортасы</string>
     <string name="NetworkPreferenceSwitchSummary">Таңдаулы желіні өзгертіп көріңіз. Өзгерту үшін түртіңіз.</string>
@@ -174,14 +174,19 @@
     <string name="accessibility_button_prompt_text">\"Арнайы мүмкіндіктер\" түймесін түрткенде пайдаланатын функцияны таңдаңыз:</string>
     <string name="accessibility_dialog_button_allow">Рұқсат ету</string>
     <string name="accessibility_dialog_button_deny">Тыйым салу</string>
+    <string name="accessibility_dialog_button_uninstall">Жою</string>
+    <string name="accessibility_dialog_touch_filtered_warning">Қолданба рұқсат сұрауын жасырып тұрғандықтан, жауабыңыз расталмайды.</string>
     <string name="accessibility_edit_shortcut_menu_button_title">\"Арнайы мүмкіндіктер\" түймесімен қолданылатын функцияларды таңдаңыз</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">Дыбыс деңгейі пернелері тіркесімімен қолданылатын функцияларды таңдаңыз</string>
     <string name="accessibility_enable_service_title">%1$s қызметіне құрылғыны толық басқаруға рұқсат етілсін бе?</string>
-    <string name="accessibility_freeform_caption">%1$s қолданбасының жазу жолағы.</string>
     <string name="accessibility_gesture_3finger_instructional_text">Бір функциядан екінші функцияға ауысу үшін үш саусақпен жоғары қарай сырғытып, ұстап тұрыңыз.</string>
     <string name="accessibility_gesture_3finger_prompt_text">Арнайы мүмкіндіктер қимылымен (үш саусақпен экранның төменгі жағынан жоғары қарай сырғытыңыз) пайдаланатын функцияны таңдаңыз:</string>
     <string name="accessibility_gesture_instructional_text">Бір функциядан екінші функцияға ауысу үшін екі саусақпен жоғары қарай сырғытып, ұстап тұрыңыз.</string>
     <string name="accessibility_gesture_prompt_text">Арнайы мүмкіндіктер қимылымен (екі саусақпен экранның төменгі жағынан жоғары қарай сырғытыңыз) пайдаланатын функцияны таңдаңыз:</string>
+    <string name="accessibility_label_clone_profile">Клон</string>
+    <string name="accessibility_label_communal_profile">Жалпы</string>
+    <string name="accessibility_label_managed_profile">Жұмыс профилі</string>
+    <string name="accessibility_label_private_profile">Құпия кеңістік</string>
     <string name="accessibility_magnification_chooser_text">Ұлғайту</string>
     <string name="accessibility_select_shortcut_menu_title">Функцияны пайдалана бастау үшін түртіңіз:</string>
     <string name="accessibility_service_action_perform_description">Ол қолданбамен немесе жабдық датчигімен істеген тапсырмаларыңызды бақылайды және қолданбаларды сіздің атыңыздан пайдаланады.</string>
@@ -267,14 +272,17 @@
     <string name="alert_windows_notification_title">%s басқа қолданбалардың үстінен көрсетіледі</string>
     <string name="alert_windows_notification_turn_off_action">Өшіру</string>
     <string name="allow">Рұқсат беру</string>
+    <string name="alternative_face_setup_notification_content">Саусағыңыздың ізі анықталмаған (мысалы, саусақтарыңыз дымқыл болған) кезде, бет тану функциясын қолданыңыз.</string>
+    <string name="alternative_fp_setup_notification_content">Бетіңіз анықталмаған (мысалы, жарық әлсіз болған) кезде, cаусақ ізімен ашу функциясын қолданыңыз.</string>
+    <string name="alternative_unlock_setup_notification_title">Басқа ашу тәсілін қолданып көріңіз</string>
     <string name="alwaysUse">Бұл әрекет үшін бастапқы параметрін қолданыңыз.</string>
     <string name="android_preparing_apk">%1$s дайындалуда.</string>
-    <string name="android_start_title">Планшет іске қосылуда…</string>
+    <string name="android_start_title">Телефон іске қосылуда…</string>
     <string name="android_system_label">Android жүйесі</string>
     <string name="android_upgrading_complete">Қосуды аяқтауда.</string>
     <string name="android_upgrading_notification_title">Жүйелік жаңарту аяқталуда…</string>
     <string name="android_upgrading_starting_apps">Қолданбалар іске қосылуда.</string>
-    <string name="android_upgrading_title">Планшет жаңартылуда…</string>
+    <string name="android_upgrading_title">Телефон жаңартылуда…</string>
     <string name="anr_activity_application">%2$s жауап бермей жатыр</string>
     <string name="anr_activity_process">%1$s жауап бермей жатыр</string>
     <string name="anr_application_process">%1$s жауап бермей жатыр</string>
@@ -295,16 +303,17 @@
     <string name="app_not_found">Бұл әрекетті орындайтын қолданба табылмады</string>
     <string name="app_running_notification_text">Қосымша ақпаратты қарау үшін немесе қолданбаны тоқтату үшін түртіңіз.</string>
     <string name="app_running_notification_title">%1$s қосылған</string>
-    <string name="app_streaming_blocked_message">Қазір бұған %1$s құрылғысынан кіру мүмкін емес. Оның орнына планшетті пайдаланып көріңіз.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Бұл қолданба үшін қосымша қауіпсіздік шарасы қажет. Оның орнына планшетті пайдаланып көріңіз.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Бұған %1$s құрылғысынан кіру мүмкін емес. Оның орнына планшетті пайдаланып көріңіз.</string>
+    <string name="app_streaming_blocked_message">Қазір бұған %1$s құрылғысынан кіру мүмкін емес. Оның орнына телефонды пайдаланып көріңіз.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Бұл қолданба үшін қосымша қауіпсіздік шарасы қажет. Оның орнына телефонды пайдаланып көріңіз.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">Бұл қолданба қосымша рұқсаттар сұрап жатыр, бірақ трансляция жүріп жатқанда рұқсат беру мүмкін емес. Алдымен телефонда рұқсат беріңіз.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Бұған %1$s құрылғысынан кіру мүмкін емес. Оның орнына телефонды пайдаланып көріңіз.</string>
     <string name="app_streaming_blocked_title">%1$s қолжетімсіз</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Камера қолжетімді емес</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Телефоннан жалғастыру</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Микрофон қолжетімді емес</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">Рұқсат қажет</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">Рұқсат сұрауы блокталды</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store қолжетімсіз</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Планшет параметрлері қолжетімді емес</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Телефон параметрлері қолжетімді емес</string>
     <string name="app_suspended_default_message">%1$s дәл қазір қолжетімді емес. Ол %2$s арқылы басқарылады.</string>
     <string name="app_suspended_more_details">Толығырақ</string>
     <string name="app_suspended_title">Қолданба қолжетімді емес</string>
@@ -344,13 +353,15 @@
     <string name="back_button_label">Артқа</string>
     <string name="badPin">Сіз терген ескі PIN коды дұрыс емес.</string>
     <string name="badPuk">Cіз терген PUK коды дұрыс емес.</string>
-    <string name="battery_saver_charged_notification_summary">Планшеттің заряды жеткілікті. Функцияларға енді шектеу қойылмайды.</string>
+    <string name="battery_saver_charged_notification_summary">Телефонның заряды жеткілікті. Функцияларға енді шектеу қойылмайды.</string>
     <string name="battery_saver_description">Батареяны үнемдеу режимі қараңғы режимді іске қосады және фондық әрекеттерге, кейбір визуалдық әсерлерге, белгілі бір функциялар мен кейбір желі байланыстарына шектеу қояды немесе оларды өшіреді.</string>
     <string name="battery_saver_description_with_learn_more">Батареяны үнемдеу режимі қараңғы режимді іске қосады және фондық әрекеттерге, кейбір визуалдық әсерлерге, белгілі бір функциялар мен кейбір желі байланыстарына шектеу қояды немесе оларды өшіреді.</string>
     <string name="battery_saver_notification_channel_name">Батареяны үнемдеу режимі</string>
     <string name="battery_saver_off_notification_title">Батареяны үнемдеу режимі өшірілді</string>
     <string name="beforeOneMonthDurationPast">Осыған дейін 1 ай бұрын</string>
     <string name="biometric_app_setting_name">Биометриканы пайдалану</string>
+    <string name="biometric_dangling_notification_action_not_now">Қазір емес</string>
+    <string name="biometric_dangling_notification_action_set_up">Реттеу</string>
     <string name="biometric_dialog_default_subtitle">Жалғастыру үшін биометрикаңызды пайдаланыңыз.</string>
     <string name="biometric_dialog_default_title">Бұл сіз екеніңізді растаңыз</string>
     <string name="biometric_error_canceled">Аутентификациядан бас тартылды.</string>
@@ -358,6 +369,7 @@
     <string name="biometric_error_generic">Аутентификациялауда қате шықты.</string>
     <string name="biometric_error_hw_unavailable">Биометрикалық жабдық жоқ</string>
     <string name="biometric_error_user_canceled">Аутентификациядан бас тартылды.</string>
+    <string name="biometric_face_not_recognized">Бет танылмады.</string>
     <string name="biometric_not_recognized">Танылмады</string>
     <string name="biometric_or_screen_lock_app_setting_name">Биометриканы немесе экран құлпын пайдалану</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">Жалғастыру үшін биометриканы немесе экран құлпын пайдаланыңыз.</string>
@@ -373,7 +385,7 @@
     <string name="bugreport_screenshot_success_toast">Қате туралы есеп түсірілген скриншот</string>
     <string name="bugreport_title">Қате туралы есеп</string>
     <string name="byteShort">Б</string>
-    <string name="call_notification_answer_action">Жауап</string>
+    <string name="call_notification_answer_action">Жауап беру</string>
     <string name="call_notification_answer_video_action">Бейне</string>
     <string name="call_notification_decline_action">Қабылдамау</string>
     <string name="call_notification_hang_up_action">Тұтқаны қою</string>
@@ -409,7 +421,7 @@
     <string name="checked">белгіленген</string>
     <string name="chooseActivity">Әрекет таңдау</string>
     <string name="chooseUsbActivity">USB құрылғысына бағдарлама таңдаңыз.</string>
-    <string name="choose_account_label">Аккаунт таңдау</string>
+    <string name="choose_account_label">Аккаунт таңдаңыз</string>
     <string name="chooser_all_apps_button_label">Қолданбалар тізімі</string>
     <string name="chooser_no_direct_share_targets">Бөлісу үшін ұсынылатын адамдар жоқ.</string>
     <string name="chooser_wallpaper">Артқы фонын өзгерту</string>
@@ -420,11 +432,11 @@
     <string name="color_inversion_feature_name">Түс инверсиясы</string>
     <string name="common_name">Стандартты атауы:</string>
     <string name="concurrent_display_notification_active_content">%1$s қолданбасы контентті көрсету үшін екі дисплейді де пайдаланады.</string>
-    <string name="concurrent_display_notification_active_title">Қос экран функциясы қосулы</string>
-    <string name="concurrent_display_notification_name">Қос экран</string>
+    <string name="concurrent_display_notification_active_title">Dual Screen функциясы қосулы</string>
+    <string name="concurrent_display_notification_name">Dual Screen</string>
     <string name="concurrent_display_notification_power_save_content">Батареяны үнемдеу режимі қосулы болғандықтан, Dual Screen қолжетімсіз. Мұны параметрлерден өшіруге болады.</string>
     <string name="concurrent_display_notification_power_save_title">Dual Screen қолжетімсіз</string>
-    <string name="concurrent_display_notification_thermal_content">Қос экран функциясы істемейді, себебі телефон қатты қызып кетеді.</string>
+    <string name="concurrent_display_notification_thermal_content">Dual Screen функциясы істемейді, себебі телефон қатты қызып кетеді.</string>
     <string name="concurrent_display_notification_thermal_title">Құрылғы қатты қызып кетті.</string>
     <string name="condition_provider_service_binding_label">Шарт провайдері</string>
     <string name="conference_call">Конференциялық қоңырау</string>
@@ -433,11 +445,16 @@
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">Жарайды</string>
+    <string name="connected_display_thermally_unavailable_notification_content">Құрылғыңыз тым қызып кетті, сондықтан ол суымайынша, дисплейге экран көшірмесін көрсете алмайды.</string>
+    <string name="connected_display_unavailable_notification_content">Басқа кабельмен көріңіз.</string>
+    <string name="connected_display_unavailable_notification_title">Экран көшірмесін көрсету мүмкін емес</string>
     <string name="console_running_notification_message">Өнімділікке әсер етеді. Өшіру үшін жүктегішті тексеріңіз.</string>
     <string name="console_running_notification_title">Сериялық консоль қосылды</string>
     <string name="contentServiceSync">Синх</string>
     <string name="contentServiceSyncNotificationTitle">Синхрондау мүмкін емес</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">Көптеген %s контентін жоюға әрекет жасалды.</string>
+    <string name="content_description_collapsed">Жиылды</string>
+    <string name="content_description_expanded">Жайылды</string>
     <string name="content_description_sliding_handle">Сырғитын тұтқа. Түртіп, ұстап тұрыңыз.</string>
     <string name="conversation_single_line_image_placeholder">сурет жіберілді</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -453,7 +470,7 @@
 Құлақаспаптың жоғары дыбыс деңгейі ұсынылған уақыттан ұзақ қосылып тұрды. Есту мүшеңізге зияны тиюі мүмкін."</string>
     <string name="csd_momentary_exposure_warning">"Қатты дыбыс анықталды
 
-Құлақаспаптың жоғары дыбыс деңгейі ұсынылған уақыттан ұзақ қосылып тұрды. Есту мүшеңізге зияны тиюі мүмкін."</string>
+Құлақаспаптың дыбысы ұсынылған деңгейден асып кетті. Есту мүшеңізге зияны тиюі мүмкін."</string>
     <string name="data_saver_description">Дерек шығынын азайту үшін трафикті үнемдеу режимінде кейбір қолданбаларға деректі фондық режимде жіберуге және алуға тыйым салынады. Ашық тұрған қолданба деректі шектеулі шамада пайдаланады (мысалы, кескіндер оларды түрткенге дейін көрсетілмейді).</string>
     <string name="data_saver_enable_button">Қосу</string>
     <string name="data_saver_enable_title">Трафикті үнемдеу режимі қосылсын ба?</string>
@@ -486,7 +503,7 @@
     <string name="decline">Бас тарту</string>
     <string name="decline_remote_bugreport_action">ҚАБЫЛДАМАУ</string>
     <string name="default_audio_route_category_name">Жүйе</string>
-    <string name="default_audio_route_name">Планшет</string>
+    <string name="default_audio_route_name">Телефон</string>
     <string name="default_audio_route_name_dock_speakers">Қондыру станциясының динамиктері</string>
     <string name="default_audio_route_name_external_device">Сыртқы құрылғы</string>
     <string name="default_audio_route_name_headphones">Құлақаспаптар</string>
@@ -508,6 +525,7 @@
     <string name="device_state_notification_settings_button">Параметрлерге өту</string>
     <string name="device_state_notification_turn_off_button">Өшіру</string>
     <string name="device_storage_monitor_notification_channel">Құрылғы жады</string>
+    <string name="device_unlock_notification_name">Құрылғының құлпын ашу</string>
     <string name="dial_number_using">"Нөмірді
  %s қолданып теріңіз"</string>
     <string name="disable_accessibility_shortcut">Төте жолды өшіру</string>
@@ -524,6 +542,7 @@
     <string name="dlg_ok">Жарайды</string>
     <string name="done_accessibility_shortcut_menu_button">Дайын</string>
     <string name="done_label">Дайын</string>
+    <string name="dream_accessibility_action_click">жабу</string>
     <string name="dream_preview_title">Алғы көрініс, %1$s</string>
     <string name="dump_heap_notification">%1$s жад шегінен асты</string>
     <string name="dump_heap_notification_detail">Үйінді дамп жиналды. Бөлісу үшін түртіңіз.</string>
@@ -550,7 +569,9 @@
     <string name="duration_years_shortest_future">%d жылдан кейін</string>
     <string name="dynamic_mode_notification_channel_name">Режим туралы хабарландыру</string>
     <string name="dynamic_mode_notification_summary">Батарея шығынын азайтсаңыз, батареяның жұмысы ұзарады.</string>
+    <string name="dynamic_mode_notification_summary_v2">Батарея жұмысының ұзақтығын арттыру үшін батареяны үнемдеу режимі қосылған.</string>
     <string name="dynamic_mode_notification_title">Батареяны үнемдеу режимі қосулы</string>
+    <string name="dynamic_mode_notification_title_v2">Батареяны үнемдеу режимі қосулы</string>
     <string name="editTextMenuTitle">Мәтін әрекеттері</string>
     <string name="edit_accessibility_shortcut_menu_button">Жылдам пәрмендерді өзгерту</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
@@ -563,8 +584,10 @@
     <string name="emergency_call_dialog_number_for_display">Төтенше жағдай нөмірі</string>
     <string name="emergency_calls_only">Құтқару қызметіне ғана қоңырау шалынады</string>
     <string name="enablePin">Сәтсіз, SIM/RUIM бекітпесін қосыңыз.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s қызметі Түртілген элементтерді дыбыстау функциясын қосуға рұқсат сұрап тұр. Ол қосылған кезде, саусағыңыздың астындағы элементтің сипаттамасын естіп не көріп тұрасыз немесе планшетті қимылмен басқарасыз.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s қызметі Түртілген элементтерді дыбыстау функциясын қосуға рұқсат сұрап тұр. Ол қосылған кезде, саусағыңыздың астындағы элементтің сипаттамасын естіп не көріп тұрасыз немесе телефонды қимылмен басқарасыз.</string>
     <string name="enable_explore_by_touch_warning_title">Түртілген элементтерді дыбыстау функциясы қосылсын ба?</string>
+    <string name="error_handwriting_unsupported">Бұл өрісте қолмен жазу мүмкін емес.</string>
+    <string name="error_handwriting_unsupported_password">Құпия сөз өрістерінде қолмен жазу мүмкін емес.</string>
     <string name="error_message_change_not_allowed">Бұл өзгертуге әкімші рұқсат етпеген</string>
     <string name="error_message_title">Қателік</string>
     <string name="etws_primary_default_message_earthquake">Сабыр сақтап, жақын жерден баспана іздеңіз.</string>
@@ -655,6 +678,8 @@
     <string name="face_app_setting_name">Бет тану функциясын пайдалану</string>
     <string name="face_authenticated_confirmation_required">Бет танылды, \"Растау\" түймесін басыңыз</string>
     <string name="face_authenticated_no_confirmation_required">Бет танылды</string>
+    <string name="face_dangling_notification_msg">Бет үлгіңіз бұдан былай танылмайды. Бет тану функциясын қайта реттеңіз.</string>
+    <string name="face_dangling_notification_title">Бет тану функциясын қайта реттеу</string>
     <string name="face_dialog_default_subtitle">Жалғастыру үшін бетіңізді көрсетіңіз.</string>
     <string name="face_error_canceled">Бетті танудан бас тартылды.</string>
     <string name="face_error_hw_not_available">Бетті тану мүмкін емес. Жабдық қолжетімді емес.</string>
@@ -677,8 +702,6 @@
     <string name="face_recalibrate_notification_name">Бет тану</string>
     <string name="face_recalibrate_notification_title">Бет тану функциясына қатысты мәселе шықты</string>
     <string name="face_sensor_privacy_enabled">Face Unlock функциясын пайдалану үшін \"Параметрлер > Құпиялық\" бөлімінен <b>Камераны пайдалану рұқсатын</b> қосыңыз.</string>
-    <string name="face_setup_notification_content">Телефоныңызға қарап, оның құлпын ашыңыз.</string>
-    <string name="face_setup_notification_title">Бет тану функциясын реттеу</string>
     <string name="faceunlock_multiple_failures">Бет тану арқылы ашу әрекеттері анықталған шегінен асып кетті</string>
     <string name="factory_reset_message">"Әкімші қолданбасын пайдалану мүмкін емес. Қазір құрылғыдағы деректер өшіріледі
 
@@ -703,7 +726,7 @@
     <string name="fingerprint_acquired_imager_dirty">Саусақ ізін оқу сканерін тазалап, әрекетті қайталаңыз.</string>
     <string name="fingerprint_acquired_imager_dirty_alt">Сканерді тазалап, әрекетті қайталаңыз.</string>
     <string name="fingerprint_acquired_immobile">Саусағыңыздың орнын аздап өзгертіп тұрыңыз</string>
-    <string name="fingerprint_acquired_insufficient">Саусақ ізін тану мүмкін емес. Қайталап көріңіз.</string>
+    <string name="fingerprint_acquired_insufficient">Саусақ ізі танылмады. Қайталап көріңіз.</string>
     <string name="fingerprint_acquired_partial">Сканерді қатты басыңыз</string>
     <string name="fingerprint_acquired_power_press">Қуат түймесін басу әрекеті анықталды.</string>
     <string name="fingerprint_acquired_too_bright">Тым жарық.</string>
@@ -712,14 +735,20 @@
     <string name="fingerprint_acquired_try_adjusting">Дұрыстап қойып көріңіз.</string>
     <string name="fingerprint_app_setting_name">Саусақ ізін пайдалану</string>
     <string name="fingerprint_authenticated">Саусақ ізі аутентификацияланды</string>
+    <string name="fingerprint_dangling_notification_msg_1">%s бұдан былай танылмайды.</string>
+    <string name="fingerprint_dangling_notification_msg_2">%1$s және %2$s бұдан былай танылмайды.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_1">%s бұдан былай танылмайды. Саусақ ізімен ашу функциясын қайта реттеңіз.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_2">%1$s және %2$s бұдан былай танылмайды. Саусақ ізімен ашу функциясын қайта реттеңіз.</string>
+    <string name="fingerprint_dangling_notification_title">Саусақ ізімен ашу функциясын қайта реттеу</string>
     <string name="fingerprint_dialog_default_subtitle">Жалғастыру үшін саусақ ізін пайдаланыңыз.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">Бет танылмады. Орнына саусақ ізін пайдаланыңыз.</string>
     <string name="fingerprint_error_bad_calibration">Саусақ ізін оқу сканерін пайдалану мүмкін емес. Жөндеу қызметіне барыңыз.</string>
-    <string name="fingerprint_error_canceled">Саусақ ізі операциясынан бас тартылған.</string>
-    <string name="fingerprint_error_hw_not_available">Саусақ ізі жабдығы қолжетімді емес.</string>
-    <string name="fingerprint_error_hw_not_present">Бұл құрылғыда саусақ ізін оқу сканері жоқ.</string>
+    <string name="fingerprint_error_canceled">Саусақ ізі операциясынан бас тартылды.</string>
+    <string name="fingerprint_error_hw_not_available">Саусақ ізін тану жабдығы қолжетімді емес.</string>
+    <string name="fingerprint_error_hw_not_present">Бұл құрылғыда саусақ ізін оқу сканері жоқ</string>
     <string name="fingerprint_error_lockout">Тым көп әрекет жасалды. Орнына экран құлпын пайдаланыңыз.</string>
     <string name="fingerprint_error_lockout_permanent">Тым көп әрекет жасалды. Орнына экран құлпын пайдаланыңыз.</string>
-    <string name="fingerprint_error_no_fingerprints">Саусақ іздері тіркелмеген.</string>
+    <string name="fingerprint_error_no_fingerprints">Ешқандай саусақ іздері тіркелмеді.</string>
     <string name="fingerprint_error_no_space">Саусақ ізін орнату мүмкін емес.</string>
     <string name="fingerprint_error_not_match">Саусақ ізі танылмады.</string>
     <string name="fingerprint_error_power_pressed">Қуат түймесі басулы.</string>
@@ -734,8 +763,6 @@
     <string name="fingerprint_recalibrate_notification_content">Жөндеу қызметіне барыңыз.</string>
     <string name="fingerprint_recalibrate_notification_name">Құлыпты саусақ ізімен ашу</string>
     <string name="fingerprint_recalibrate_notification_title">Саусақ ізін оқу сканерін пайдалану мүмкін емес</string>
-    <string name="fingerprint_setup_notification_content">Саусақ ізін қосу үшін түртіңіз.</string>
-    <string name="fingerprint_setup_notification_title">Құлыпты ашудың басқа тәсілдерін реттеу</string>
     <string name="fingerprint_udfps_error_not_match">Саусақ ізі танылмады.</string>
     <string name="fingerprints">Саусақ таңбалары:</string>
     <string name="floating_toolbar_close_overflow_description">Артық толуды жабу</string>
@@ -758,7 +785,7 @@
     <string name="fp_power_button_enrollment_message">"Қуат түймесін бастыңыз. Бұл әдетте экранды өшіреді.
 
 Саусақ ізін реттеу үшін, оны жайлап түртіп көріңіз."</string>
-    <string name="fp_power_button_enrollment_title">Реттеуді аяқтау үшін экранды өшіріңіз</string>
+    <string name="fp_power_button_enrollment_title">Реттеуді аяқтау үшін экранды өшіріңіз.</string>
     <string name="gadget_host_error_inflating">Виджетті қосу.</string>
     <string name="geofencing_service">Геоқоршау қызметі</string>
     <string name="global_action_assist">Көмек</string>
@@ -776,7 +803,7 @@
     <string name="global_action_silent_mode_on_status">Дыбыс ӨШІРУЛІ</string>
     <string name="global_action_toggle_silent_mode">Үнсіз режимі</string>
     <string name="global_action_voice_assist">Дауыс көмекшісі</string>
-    <string name="global_actions">Планшет опциялары</string>
+    <string name="global_actions">Телефон опциялары</string>
     <string name="global_actions_airplane_mode_off_status">Ұшақ режимі ӨШІРУЛІ</string>
     <string name="global_actions_airplane_mode_on_status">Ұшақ режимі ҚОСУЛЫ</string>
     <string name="global_actions_toggle_airplane_mode">Ұшақ режимі</string>
@@ -795,7 +822,7 @@
     <string name="granularity_label_link">сілтеме</string>
     <string name="granularity_label_word">сөз</string>
     <string name="guest_name">Қонақ</string>
-    <string name="hardware">Виртуалдық пернетақтаны көрсету</string>
+    <string name="hardware">Экрандағы пернетақтаны пайдалану</string>
     <string name="harmful_app_warning_open_anyway">БӘРІБІР АШУ</string>
     <string name="harmful_app_warning_title">Зиянды қолданба анықталды</string>
     <string name="harmful_app_warning_uninstall">ЖОЮ</string>
@@ -843,7 +870,7 @@
     <string name="ime_action_search">Іздеу</string>
     <string name="ime_action_send">Жіберу</string>
     <string name="imei">IMEI (Халықаралық мобильдік құрылғы анықтағышы)</string>
-    <string name="immersive_cling_description">Шығу үшін жоғарыдан төмен қарай сырғытыңыз.</string>
+    <string name="immersive_cling_description">Шығу үшін экранның жоғарғы жағынан төмен қарай сырғытыңыз.</string>
     <string name="immersive_cling_positive">Түсінікті</string>
     <string name="immersive_cling_title">Толық экранда көру</string>
     <string name="importance_from_person">Қатысты адамдарға байланысты бұл маңызды.</string>
@@ -917,11 +944,11 @@
     <string name="keyguard_password_entry_touch_hint"><font size="17">Құпия сөзді енгізу үшін түртіңіз</font></string>
     <string name="keyguard_password_wrong_pin_code">Қате PIN код</string>
     <string name="kg_enter_confirm_pin_hint">Қажетті PIN кодты растау</string>
-    <string name="kg_failed_attempts_almost_at_login">"Бекітпені ашу кескінін %1$d рет қате сыздыңыз. After %2$d сәтсіз әрекеттен кейін планшетіңізді аккаунт арқылы ашу өтінішін аласыз.
+    <string name="kg_failed_attempts_almost_at_login">"Бекітпені ашу кескінін %1$d рет қате сыздыңыз. %2$d сәтсіз әрекеттен кейін телефоныңызды аккаунт арқылы ашу өтінішін аласыз. 
 
-  %3$d секундтан кейін қайта әрекеттеніңіз."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Планшетті ашуға %1$d рет қате әрекеттендіңіз. %2$d сәтсіз әрекеттен кейін телефоныңыз бастапқы зауыттық параметрлеріне қайта реттеледі және барлық пайдаланушы деректері жойылады.</string>
-    <string name="kg_failed_attempts_now_wiping">Планшетті ашуға %d рет қате әрекеттендіңіз. Планшет бастапқы зауыттық параметрлеріне қайта реттеледі.</string>
+ %3$d секундтан кейін қайта әрекеттеніңіз."</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Телефонды ашуға %1$d рет қате әрекеттендіңіз. %2$d сәтсіз әрекеттен кейін телефоныңыз бастапқы зауыттық параметрлеріне қайта реттеледі және барлық пайдаланушы деректері жойылады.</string>
+    <string name="kg_failed_attempts_now_wiping">Телефонды ашуға %d рет қате әрекеттендіңіз. Телефон бастапқы зауыттық параметрлеріне қайта реттеледі.</string>
     <string name="kg_forgot_pattern_button_text">Кескінді ұмытып қалу</string>
     <string name="kg_invalid_confirm_pin_hint">PIN коды сәйкес емес.</string>
     <string name="kg_invalid_puk">Дұрыс PUK кодын қайта енгізіңіз. Әрекеттерді қайталау SIM картасының істен шығуына себеп болады.</string>
@@ -986,11 +1013,11 @@
     <string name="lockscreen_access_pattern_start">Кескін басталды</string>
     <string name="lockscreen_carrier_default">Қызмет жоқ</string>
     <string name="lockscreen_emergency_call">Төтенше жағдай</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Планшеттің бекітпесін ашуға %1$d рет қате әрекеттендіңіз. %2$d сәтсіз әрекеттен кейін, телефон зауыттың бастапқы параметрлеріне қайта реттеледі және пайдаланушы деректері жоғалады.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Бекітпесін ашу өрнегін %1$d рет қате салдыңыз. Тағы %2$d сәтсіз әрекеттен кейін сізден Google жүйесіне кіріп планшет бекітпесін ашу сұралады.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Телефонның бекітпесін ашуға %1$d рет қате әрекеттендіңіз. %2$d сәтсіз әрекеттен кейін, телефон зауыттың бастапқы параметрлеріне қайта реттеледі және пайдаланушы деректері жоғалады.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Бекітпесін ашу өрнегін %1$d рет қате салдыңыз. Тағы %2$d сәтсіз әрекеттен кейін сізден Google жүйесіне кіріп телефон бекітпесін ашу сұралады.
 
  %3$d секундтан кейін әрекетті қайталаңыз."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Планшетті ашуға %d рет қате әрекеттендіңіз. Планшет зауыттың бастапқы параметрлеріне қайта реттеледі.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Телефонды ашуға %d рет қате әрекеттендіңіз. Телефон зауыттың бастапқы параметрлеріне қайта реттеледі.</string>
     <string name="lockscreen_forgot_pattern_button_text">Кескінді ұмытып қалдыңыз ба?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Пайдаланушы атауын немесе кілтсөзді ұмытып қалдыңыз ба?
 "<b>google.com/accounts/recovery</b> веб-сайтына кірісіңіз.</string>
@@ -1006,7 +1033,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">Бекітпесін ашу үшін немесе төтенше қоңырауды табу үшін Мәзір тармағын басыңыз.</string>
     <string name="lockscreen_missing_sim_instructions">SIM картасын қосыңыз.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM картасы жоқ немесе оқылмай тұр. SIM картасын қосыңыз.</string>
-    <string name="lockscreen_missing_sim_message">Планшетте SIM картасы жоқ.</string>
+    <string name="lockscreen_missing_sim_message">Телефонда SIM картасы жоқ.</string>
     <string name="lockscreen_missing_sim_message_short">SIM картасы жоқ.</string>
     <string name="lockscreen_network_locked_message">Желі бекітілген</string>
     <string name="lockscreen_password_wrong">Қайталап көріңіз</string>
@@ -1024,7 +1051,7 @@
     <string name="lockscreen_sim_unlock_progress_dialog_message">SIM картасының құлпы ашылып жатыр…</string>
     <string name="lockscreen_sound_off_label">Дыбыс өшірулі</string>
     <string name="lockscreen_sound_on_label">Дыбыс қосулы</string>
-    <string name="lockscreen_storage_locked">Мүмкіндіктер мен деректер үшін құлыпты ашыңыз</string>
+    <string name="lockscreen_storage_locked">Барлық функция мен дерек үшін құлыпты ашыңыз</string>
     <string name="lockscreen_too_many_failed_attempts_countdown">%d секундтан кейін қайта әрекеттеніңіз.</string>
     <string name="lockscreen_too_many_failed_attempts_dialog_message">"Құлыпты ашу өрнегін %1$d рет қате салдыңыз. 
 
@@ -1046,7 +1073,7 @@
     <string name="low_internal_storage_view_text">Жүйенің кейбір функциялары жұмыс істемеуі мүмкін</string>
     <string name="low_internal_storage_view_text_no_boot">Жүйе үшін жад жеткіліксіз. 250 МБ бос орын бар екенін тексеріп, қайта іске қосыңыз.</string>
     <string name="low_internal_storage_view_title">Жадта орын азайып барады</string>
-    <string name="low_memory">Планшет жады толы. Орын босату үшін кейбір файлдарды жойыңыз.</string>
+    <string name="low_memory">Телефон жады толы. Орын босату үшін кейбір файлдарды жойыңыз.</string>
     <string name="managed_profile_app_label">Жұмыс профиліне (%1$s) ауысу</string>
     <string name="managed_profile_label">Жұмыс профиліне ауысу</string>
     <string name="managed_profile_label_badge">Жұмыс %1$s</string>
@@ -1203,6 +1230,8 @@
     <string name="miniresolver_open_in_personal">%s қолданбасындағы жеке профильден ашылсын ба?</string>
     <string name="miniresolver_open_in_work">%s қолданбасындағы жұмыс профилінен ашылсын ба?</string>
     <string name="miniresolver_open_work">%s қолданбасы жұмыс профилімен ашылсын ба?</string>
+    <string name="miniresolver_private_space_messages_information">SMS хабарларын жеке Messages қолданбасынан ғана жібере аласыз.</string>
+    <string name="miniresolver_private_space_phone_information">Жеке Телефон қолданбасынан ғана қоңырау шала аласыз. Бұл қолданба арқылы жасалған қоңыраулар жеке қоңыраулар тарихына қосылады.</string>
     <string name="miniresolver_sms_information">Ұйымыңыз тек жұмыс қолданбаларынан хабар жіберуге рұқсат етеді.</string>
     <string name="miniresolver_switch">Ауысу</string>
     <string name="miniresolver_switch_to_work">Жұмыс қолданбасына ауысу керек пе?</string>
@@ -1281,6 +1310,7 @@
     <string name="notification_channel_developer">Әзірлеуші хабарлары</string>
     <string name="notification_channel_developer_important">Әзірлеушілердің маңызды хабарлары</string>
     <string name="notification_channel_device_admin">АТ әкімшісі жіберген ескертулер</string>
+    <string name="notification_channel_display">Дисплей</string>
     <string name="notification_channel_do_not_disturb">Мазаламау режимі</string>
     <string name="notification_channel_emergency_callback">Шұғыл кері қоңырау шалу режимі</string>
     <string name="notification_channel_foreground_service">Батареяны пайдаланып жатқан қолданбалар</string>
@@ -1302,6 +1332,7 @@
     <string name="notification_channel_voice_mail">Дауыстық пошта хабарлары</string>
     <string name="notification_channel_vpn">VPN күйі</string>
     <string name="notification_channel_wfc">Wi-Fi қоңыраулары</string>
+    <string name="notification_compact_heads_up_reply">Жауап беру</string>
     <string name="notification_content_abusive_bg_apps">%1$s фондық режимде жұмыс істеп тұр. Батарея шығынын басқару үшін түртіңіз.</string>
     <string name="notification_content_long_running_fgs">%1$s қолданбасы батарея жұмысының ұзақтығына әсер етуі мүмкін. Белсенді қолданбаларды қарап шығу үшін түртіңіз.</string>
     <string name="notification_feedback_indicator">Пікір білдіру</string>
@@ -1310,7 +1341,7 @@
     <string name="notification_feedback_indicator_promoted">Бұл хабарландырудың маңыздылық деңгейі көтерілді. Пікір қалдыру үшін түртіңіз.</string>
     <string name="notification_feedback_indicator_silenced">Бұл хабарландырудың маңыздылық деңгейі \"Үнсіз\" санатына төмендетілді. Пікір қалдыру үшін түртіңіз.</string>
     <string name="notification_hidden_text">Жаңа хабарландыру</string>
-    <string name="notification_history_title_placeholder">Арнаулы хабар хабарландыруы</string>
+    <string name="notification_history_title_placeholder">Арнаулы қолданба хабарландыруы</string>
     <string name="notification_listener_binding_label">Хабар бақылағыш</string>
     <string name="notification_messaging_title_template">%1$s: %2$s</string>
     <string name="notification_phishing_alert_content_description">Фишинг ескертуі</string>
@@ -1338,7 +1369,8 @@
     <string name="other_networks_no_internet">Желі интернетке қосылмаған.</string>
     <string name="owner_name">Құрылғы иесі</string>
     <string name="package_deleted_device_owner">Әкімші жойған</string>
-    <string name="package_installed_device_owner">Әкімші орнатқан</string>
+    <string name="package_installed_device_owner">"Әкімшіңіз орнатты.
+Берілген рұқсаттарды көру үшін параметрлерге өтіңіз."</string>
     <string name="package_updated_device_owner">Әкімші жаңартқан</string>
     <string name="passwordIncorrect">Қате кілтсөз.</string>
     <string name="password_keyboard_label_alpha_key">ABC</string>
@@ -1355,7 +1387,9 @@
     <string name="permdesc_accessCoarseLocation">Бұл қолданба пайдаланылып жатқанда, ол Локация қызметтерінен болжалды геодерегіңізді ала алады. Геодеректі алу үшін құрылғыңызға арналған Локация қызметтері қосулы тұруы керек.</string>
     <string name="permdesc_accessDrmCertificates">Қолданбаға DRM сертификаттарын қамтамасыз етуге және пайдалануға рұқсат береді. Қалыпты қолданбалар үшін ешқашан қажет болмайды.</string>
     <string name="permdesc_accessFineLocation">Қолданба пайдаланылып жатқанда, ол Локация қызметтерінен дәл геодерегіңізді ала алады. Геодеректі алу үшін құрылғыңызға арналған Локация қызметтері қосулы тұруы керек. Бұл батарея шығынын арттыруы мүмкін.</string>
+    <string name="permdesc_accessHiddenProfile">Қолданбаға жасырын профильдерге кіру рұқсатын береді.</string>
     <string name="permdesc_accessImsCallService">Сіздің қатысуыңызсыз қоңыраулар соғу үшін қолданбаға IMS қызметін пайдалануға рұқсат етеді.</string>
+    <string name="permdesc_accessLastKnownCellId">Қолданба телефония қызметі берген белгілі соңғы ұялы байланыс идентификаторын пайдалануға рұқсат алады.</string>
     <string name="permdesc_accessLocationExtraCommands">Қолданбаға орын жеткізушісінің қосымша пәрмендеріне қатынасуға рұқсат береді. Бұл қолданбаға GPS немесе басқа орын көздерінің жұмысына кедергі келтіруге рұқсат беруі мүмкін.</string>
     <string name="permdesc_accessNetworkConditions">Қолданбаның желі күйі туралы бағдарларды тыңдау мүмкіндігін ұсынады. Қалыпты қоданбаны қажет етпеуі керек.</string>
     <string name="permdesc_accessNetworkState">Қолданбаға желі байланысы туралы ақпаратты, мысалы, қайсысы бар және қосылған деген сияқты, көру мүмкіндігін береді.</string>
@@ -1376,28 +1410,29 @@
     <string name="permdesc_bindNotificationListenerService">Пайдаланушыға хабар есту қызметінің жоғары деңгейлі интерфейсіне жалғану мүмкіндігін ұсынады. Қалыпты қолданбаны ешқашан қажет етпеуі тиіс.</string>
     <string name="permdesc_bind_connection_service">Қолданбаға қоңыраулар шалу/қабылдау үшін телефония қызметтерімен өзара әрекеттесуге рұқсат етеді.</string>
     <string name="permdesc_bind_incall_service">Қолданбаға пайдаланушының қоңырау кезінде экранды қашан және қалай көретінін басқару мүмкіндігін береді.</string>
-    <string name="permdesc_bluetooth">Қолданбаға планшеттегі Bluetooth конфигурациясын көру және жұпталған құрылғымен байланыс орнату немесе қабылдау мүмкіндігін береді.</string>
-    <string name="permdesc_bluetoothAdmin">Қолданбаға жергілікті Bluetooth планшетін конфигурациялауға, әрі қашықтағы құрылғыларды табуға және олармен жұптауға рұқсат береді.</string>
+    <string name="permdesc_bluetooth">Қолданбаға телефондағы Bluetooth конфигурациясын көру және жұпталған құрылғымен байланыс орнату немесе қабылдау мүмкіндігін береді</string>
+    <string name="permdesc_bluetoothAdmin">Қолданбаға жергілікті Bluetooth телефонын конфигурациялауға, әрі қашықтағы құрылғыларды табуға және олармен жұптауға рұқсат береді.</string>
     <string name="permdesc_bluetooth_advertise">Қолданба жарнаманы маңайдағы Bluetooth құрылғыларына бере алады.</string>
     <string name="permdesc_bluetooth_connect">Қолданбаға жұпталған Bluetooth құрылғыларына қосылуға рұқсат береді.</string>
     <string name="permdesc_bluetooth_scan">Қолданбаға маңайдағы Bluetooth құрылғыларын анықтап, жұптауға рұқсат береді.</string>
     <string name="permdesc_bodySensors">Жұмыс кезінде қолданбаға дене датчигінен алынған жүрек қағысы, температура, қандағы оттегі пайызы сияқты деректі пайдалануға рұқсат береді.</string>
     <string name="permdesc_bodySensors_background">Фондық режимде қолданбаға дене датчигінен алынған жүрек қағысы, температура, қандағы оттегі пайызы сияқты деректі пайдалануға рұқсат береді.</string>
-    <string name="permdesc_broadcastSticky">Қолданбаға хабар тарату аяқталғанда сақталатын жабысқақ хабар тарату мүмкіндігін береді. Тым көп қолдану планшет жұмысын баяулатады немесе жадты көп қолдану арқылы жұмысын тұрақсыздандырады.</string>
+    <string name="permdesc_broadcastSticky">Қолданбаға хабар тарату аяқталғанда сақталатын жабысқақ хабар тарату мүмкіндігін береді. Тым көп қолдану телефон жұмысын баяулатады немесе жадты көп қолдану арқылы жұмысын тұрақсыздандырады.</string>
     <string name="permdesc_callCompanionApp">Қолданбаға құрылғыдағы қазіргі қоңырауларды көруге және басқаруға мүмкіндік береді. Бұл – қоңырау шалу нөмірлері және қоңыраулардың күйі сияқты ақпаратқа қатысты.</string>
     <string name="permdesc_callPhone">Қолданбаға сіз қатыспай-ақ телефон нөміріне қоңырау шалу рұқсаты беріледі. Нәтижесінде болжанбаған ақы төлеуіңіз немесе күтпеген қоңырау алуыңыз мүмкін. Қолданбаға құтқару қызметінің нөміріне қоңырау шалуға рұқсат берілмейтінін ескеріңіз. Зиянды қолданбалар келісіміңізді алмай қоңырау шалып, шығынға батыруы мүмкін немесе оператор кодын теріп, кіріс қоңырауларды басқа нөмірге автоматты түрде бағыттауы мүмкін.</string>
     <string name="permdesc_camera">Бұл қолданба жұмыс барысында камерамен суретке түсіріп, бейнелер жаза алады.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">Бұл қолданба камераны мониторсыз жүйе пайдаланушысы ретінде пайдалана алады.</string>
     <string name="permdesc_cameraOpenCloseListener">Кез келген камера ашылып (көрсетілген қолданба арқылы) не жабылып жатқанда, бұл қолданба кері шақыру алады.</string>
     <string name="permdesc_changeNetworkState">Қолданбаға желілік қосылым күйін өзгертуге рұқсат береді.</string>
     <string name="permdesc_changeTetherState">Қолданбаға байланысқан желілік қосылымның күйін өзгертуге рұқсат береді.</string>
-    <string name="permdesc_changeWifiMulticastState">Қолданбаға Wi-Fi желісіндегі барлық құрылғыларға мекенжайлар тобы арқылы, сіздің планшетіңіз арқылы ғана емес, жіберілген жинақтарды алу мүмкіндігін береді. Бұл мекенжайлар тобы емес режимге қарағанда қуатты көбірек тұтынуы мүмкін.</string>
+    <string name="permdesc_changeWifiMulticastState">Қолданбаға Wi-Fi желісіндегі барлық құрылғыларға мекенжайлар тобы арқылы, сіздің телефоныңыз арқылы ғана емес, жіберілген жинақтарды алу мүмкіндігін береді. Бұл мекенжайлар тобы емес режимге қарағанда қуатты көбірек тұтынуы мүмкін.</string>
     <string name="permdesc_changeWifiState">Қолданбаларға Wi-Fi нүктелеріне қосылу және ажырау және Wi-Fi желілеріне арналған құрылғы конфигурацияларына өзгерістер енгізу мүмкіндігін береді.</string>
-    <string name="permdesc_changeWimaxState">Қолданбаларға планшетті WiMAX желілеріне қосу және ажырату мүмкіндіктерін береді.</string>
-    <string name="permdesc_companionProfileWatch">Қосымша қолданбаға сағаттарды басқаруға рұқсат беріледі.</string>
+    <string name="permdesc_changeWimaxState">Қолданбаларға телефонды WiMAX желілеріне қосу және ажырату мүмкіндіктерін береді.</string>
+    <string name="permdesc_companionProfileWatch">Серік қолданбаға сағаттарды басқаруға рұқсат беріледі.</string>
     <string name="permdesc_connection_manager">Қолданбаға телекоммуникациялық байланыстарды басқаруға рұқсат етеді.</string>
     <string name="permdesc_control_incall_experience">Қолданбаға қоңыраудағы пайдаланушы тәжірибесін қамтамасыз етуге рұқсат етеді.</string>
     <string name="permdesc_createNetworkSockets">Қолданбаларға желі ұяларын жасақтау және қалыпты желі протоколдарын қолдану мүмкіндігін береді. Деректерді интернетке жіберу үшін бұл рұқсат талап етілмес үшін браузер және басқа қолданбалар деректерді интернетке жіберу жолдарын қамтамасыз етеді.</string>
-    <string name="permdesc_deliverCompanionMessages">Қосымша қолданбаға ілеспе хабарларды басқа құрылғыларға жеткізуге рұқсат беріледі.</string>
+    <string name="permdesc_deliverCompanionMessages">Серік қолданбаға басқа құрылғыларға серік хабарлар жеткізуге рұқсат беріледі.</string>
     <string name="permdesc_detectScreenCapture">Қолданбаны пайдаланып скриншот жасаған кезде, ескерту шығады.</string>
     <string name="permdesc_disableKeyguard">Қолданбаларға кілтперне және басқа кілтсөзге қатысты қауіпсіздік шараларын өшіру мүмкіндігін береді. Мысалы, телефон кіріс қоңырауларын алғанда кілтпернені өшіреді және қоңырау аяқталғанда қайта қосады.</string>
     <string name="permdesc_enableCarMode">Қолданбаға көлік режимін қосуға рұқсат береді.</string>
@@ -1411,6 +1446,7 @@
     <string name="permdesc_foregroundServiceHealth">Қолданбаға \"health\" түріне жататын экрандық режимдегі қызметтерді пайдалануға рұқсат беріледі.</string>
     <string name="permdesc_foregroundServiceLocation">Қолданбаға \"location\" түріне жататын экрандық режимдегі қызметтерді пайдалануға рұқсат беріледі.</string>
     <string name="permdesc_foregroundServiceMediaPlayback">Қолданбаға \"mediaPlayback\" түріне жататын экрандық режимдегі қызметтерді пайдалануға рұқсат беріледі.</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">Қолданбаға \"mediaProcessing\" түріне жататын экрандық режимдегі қызметтерді пайдалануға рұқсат беріледі.</string>
     <string name="permdesc_foregroundServiceMediaProjection">Қолданбаға \"mediaProjection\" түріне жататын экрандық режимдегі қызметтерді пайдалануға рұқсат беріледі.</string>
     <string name="permdesc_foregroundServiceMicrophone">Қолданбаға \"microphone\" түріне жататын экрандық режимдегі қызметтерді пайдалануға рұқсат беріледі.</string>
     <string name="permdesc_foregroundServicePhoneCall">Қолданбаға \"phoneCall\" түріне жататын экрандық режимдегі қызметтерді пайдалануға рұқсат беріледі.</string>
@@ -1418,7 +1454,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">Қолданбаға \"specialUse\" түріне жататын экрандық режимдегі қызметтерді пайдалануға рұқсат беріледі.</string>
     <string name="permdesc_foregroundServiceSystemExempted">Қолданбаға \"systemExempted\" түріне жататын экрандық режимдегі қызметтерді пайдалануға рұқсат беріледі.</string>
     <string name="permdesc_fullScreenIntent">Қолданбаның құлыпталған құрылғыда хабарландыруларды толық экрандағы әрекеттер түрінде көрсетуіне рұқсат береді.</string>
-    <string name="permdesc_getAccounts">Қолданбаға планшет арқылы белгілі аккаунттар тізімін алу мүмкіндігін береді. Сіз орнатқан қолданбалар жасақтаған аккаунттар да қамтылуы мүмкін.</string>
+    <string name="permdesc_getAccounts">Қолданбаға телефон арқылы белгілі аккаунттар тізімін алу мүмкіндігін береді. Сіз орнатқан қолданбалар жасақтаған аккаунттар да қамтылуы мүмкін.</string>
     <string name="permdesc_getPackageSize">Қолданбаға оның кодын, деректерін және кэш өлшемдерін шығарып алуға рұқсат береді</string>
     <string name="permdesc_getTasks">Қолданбаларға ағымдағы және соңғы тапсырмалар туралы ақпарат алу мүмкіндігін береді. Бұл қолданбаға құрылғы қолданатын басқа қолданбалар туралы деректері анықтау мүмкіндігін беруі ықтимал.</string>
     <string name="permdesc_handoverStatus">Осы қолданбаға ағымдағы Android Beam тасымалдаулары туралы ақпарат алуға рұқсат ету</string>
@@ -1440,17 +1476,18 @@
     <string name="permdesc_mount_unmount_filesystems">Бағдарламаға алынбалы сақтау құралы үшін файл жүйелерін орнатуға және шығаруға мүмкіндік береді.</string>
     <string name="permdesc_nearby_wifi_devices">Қолданба маңайдағы Wi‑Fi құрылғыларына жарнама беріп, оларға қосылып, шамамен орналасқан жерін анықтай алады.</string>
     <string name="permdesc_nfc">Қолданбаға NFC белгілерімен, карталармен және оқу құралдарымен байланысуға рұқсат береді.</string>
-    <string name="permdesc_observeCompanionDevicePresence">Қосымша қолданбаға қолданбалар маңайда немесе алыста болған кезде қосымша құрылғының бар болуын бақылауға рұқсат беріледі.</string>
-    <string name="permdesc_persistentActivity">Қолданбаға өзінің бөліктерін жадта бекіндіру мүмкіндігін береді. Бұл басқа қолданбалардың жадқа қол жетімділігін шектеп, планшетті баяулатуы мүмкін.</string>
+    <string name="permdesc_nfcTransactionEvent">Қолданбаға қауіпсіз элемент арқылы жасалатын транзакциялар жөнінде ақпарат алуға мүмкіндік береді.</string>
+    <string name="permdesc_observeCompanionDevicePresence">Серік қолданбаға құрылғылар маңайда немесе алыста болуына қарамастан серік құрылғыны табуға рұқсат беріледі.</string>
+    <string name="permdesc_persistentActivity">Қолданбаға өзінің бөліктерін жадта бекіндіру мүмкіндігін береді. Бұл басқа қолданбалардың жадқа қол жетімділігін шектеп, телефонды баяулатуы мүмкін.</string>
     <string name="permdesc_postNotification">Қолданбаға хабарландыруларды көрсетуге мүмкіндік береді.</string>
     <string name="permdesc_preferredPaymentInfo">Қолданба тіркелген көмектер және баратын жер маршруты сияқты таңдаулы NFC төлеу қызметі туралы ақпаратты ала алатын болады.</string>
     <string name="permdesc_processOutgoingCalls">Қолданбаға шығыс қоңырау кезінде қоңырауды басқа нөмірге қайта бағыттау немесе қоңырауды мүлде доғару опциясы бар теріліп жатқан нөмірді көруге рұқсат береді.</string>
     <string name="permdesc_queryAllPackages">Қолданба барлық орнатылған буманы көре алады.</string>
     <string name="permdesc_readBasicPhoneState">Қолданбаға құрылғының негізгі телефония функцияларын пайдалануға рұқсат береді.</string>
-    <string name="permdesc_readCalendar">Бұл қолданба планшетте сақталған барлық күнтізбе оқиғаларын оқи алады және күнтізбе деректерін бөлісе не сақтай алады.</string>
+    <string name="permdesc_readCalendar">Бұл қолданба телефонда сақталған барлық күнтізбе оқиғаларын оқи алады және күнтізбе деректерін бөлісе не сақтай алады.</string>
     <string name="permdesc_readCallLog">Бұл қолданба қоңыраулар тарихын оқи алады.</string>
     <string name="permdesc_readCellBroadcasts">Қолданбаға ұялы таратылым хабарларын оқу мүмкіндігін береді. Ұялы таратылым дабылдары кейбір аймақтарда төтенше жағдай туралы ескерту үшін қолданылады. Төтенше ұялы хабарлар келгенде залалды қолданбалар құрылғының жұмысына кедергі жасауы мүмкін.</string>
-    <string name="permdesc_readContacts">Қолданбаға планшетте сақталған контактілеріңіз туралы деректерді оқуға рұқсат етеді. Қолданбалар контактілер жасалған планшеттегі аккаунттарды пайдалана алады. Бұған сіз орнатқан қолданбалар арқылы жасалған аккаунттар кіруі мүмкін. Бұл рұқсат қолданбаларға контакт деректерін сақтау мүмкіндігін береді және зиянды қолданбалар контакт деректерін сіздің келісіміңізсіз бөлісуі ықтимал.</string>
+    <string name="permdesc_readContacts">Қолданбаға телефонда сақталған контактілеріңіз туралы деректерді оқуға рұқсат етеді. Қолданбалар контактілер жасалған телефондағы аккаунттарды пайдалана алады. Бұған сіз орнатқан қолданбалар арқылы жасалған аккаунттар кіруі мүмкін. Бұл рұқсат қолданбаларға контакт деректерін сақтау мүмкіндігін береді және зиянды қолданбалар контакт деректерін сіздің келісіміңізсіз бөлісуі ықтимал.</string>
     <string name="permdesc_readInstallSessions">Қолданбаға орнату сеанстарын оқуға рұқсат етеді. Бұл оған белсенді бума орнатулары туралы мәліметтерді көруге рұқсат етеді.</string>
     <string name="permdesc_readMediaAudio">Қолданбаға ортақ жадтың аудиофайлдарын оқуға мүмкіндік береді.</string>
     <string name="permdesc_readMediaImages">Қолданбаға ортақ жадтың кескін файлдарын оқуға мүмкіндік береді.</string>
@@ -1458,11 +1495,11 @@
     <string name="permdesc_readNetworkUsageHistory">Қолданбаға белгілі бір желілер және қолданбалар үшін журналдық желіні пайдалануды оқуға рұқсат береді.</string>
     <string name="permdesc_readPhoneNumbers">Қолданбаға құрылғының телефон нөмірлерін алуға мүмкіндік береді.</string>
     <string name="permdesc_readPhoneState">Қолданбаға құрылғыдағы телефон функцияларына кіру мүмкіндігін береді. Бұл рұқсат қолданбаға телефон нөмірі, құрылғы жеке анықтағышы, қоңырау белсенділігі және сол қоңырауға байланысты қашықтағы нөмірді анықтау мүмкіндігін береді.</string>
-    <string name="permdesc_readSms">Бұл қолданба планшетте сақталған барлық SMS (мәтіндік) хабарларын оқи алады.</string>
+    <string name="permdesc_readSms">Бұл қолданба телефонда сақталған барлық SMS (мәтіндік) хабарларын оқи алады.</string>
     <string name="permdesc_readSyncSettings">Қолданбаға аккаунт синхрондау параметрлерін оқу мүмкіндігін береді. Мысалы, бұл арқылы People қолданбасының аккаунтмен сихрондалғаны анықталуы мүмкін.</string>
     <string name="permdesc_readSyncStats">Қолданбаға аккаунттың синхрондалу статистикаларын, оның ішінде синхрондау шараларының тарихы және қанша дерек синхрондалғаны жайлы, оқу мүмкіндігін береді.</string>
     <string name="permdesc_readVisualUserSelect">Қолданбаға ортақ жадтың сурет файлдарын және бейнефайлдарын оқуға мүмкіндік береді.</string>
-    <string name="permdesc_receiveBootCompleted">Қолданбаға жүйе жүктелуін аяқтағаннан кейін өзін іске қосуға рұқсат береді. Бұл планшеттің іске қосылуын ұзағырақ етуі және қолданбаның әрқашан жұмыс істеу арқылы жалпы планшетті баяулатуына мүмкіндік беруі мүмкін.</string>
+    <string name="permdesc_receiveBootCompleted">Қолданбаға жүйе жүктелуін аяқтағаннан кейін өзін іске қосуға рұқсат береді. Бұл телефонның іске қосылуын ұзағырақ етуі және қолданбаның әрқашан жұмыс істеу арқылы жалпы телефонды баяулатуына мүмкіндік беруі мүмкін.</string>
     <string name="permdesc_receiveMms">Қолданбаға MMS хабарларын алу және өңдеу мүмкіндігін береді. Бұл қолданба құрылғыңызға жіберілген хабарларды сізге көрсетпестен қабылдай және жоя алады дегенді білдіреді.</string>
     <string name="permdesc_receiveSms">Қолданбаға SMS хабарларын алу және өңдеу мүмкіндігін береді. Бұл қолданба құрылғыңызға жіберілген хабарларды сізге көрсетпестен қабылдай және жоя алады дегенді білдіреді.</string>
     <string name="permdesc_receiveWapPush">Қолданбаға WAP хабарларын алу және өңдеу мүмкіндігін береді. Бұл қолданба құрылғыңызға жіберілген хабарларды сізге көрсетпестен қабылдай және жоя алады дегенді білдіреді.</string>
@@ -1484,11 +1521,11 @@
     <string name="permdesc_sendSms">Қолданбаға SMS хабарларын жіберу мүмкіндігін береді. Бұл қосымша төлемдерге себеп болуы мүмкін. Залалды қолданбалар сіздің құптауыңызсыз хабар жіберіп, қосымша шығынға себеп болуы мүмкін.</string>
     <string name="permdesc_setAlarm">Қолданбаға орнатылған оятқыш қолданбасында дабылды орнатуға рұқсат береді. Кейбір қолданбаларда бұл мүмкіндік іске асырылмауы мүмкін.</string>
     <string name="permdesc_setInputCalibration">Қолданбаға сенсорлы экранның параметрлерін өзгертуге рұқсат береді. Қалыпты қолданбалар үшін ешқашан қажет болмайды.</string>
-    <string name="permdesc_setTimeZone">Қолданбаға планшеттің уақыт белдеуін өзгертуге рұқсат береді.</string>
+    <string name="permdesc_setTimeZone">Қолданбаға телефонның уақыт белдеуін өзгертуге рұқсат береді.</string>
     <string name="permdesc_setWallpaper">Қолданбаға жүйелік экранның артқы фонын орнатуға рұқсат береді.</string>
     <string name="permdesc_setWallpaperHints">Қолданбаға жүйелік экранның артқы фонының өлшемі туралы кеңестерді орнатуға рұқсат береді.</string>
     <string name="permdesc_sim_communication">Қолданбаға SIM картасына пәрмен жіберу мүмкіндігін береді. Бұл өте қауіпті.</string>
-    <string name="permdesc_startForegroundServicesFromBackground">Қосымша қолданбаға экрандық режимдегі қызметтерді фоннан іске қосуға рұқсат беріледі.</string>
+    <string name="permdesc_startForegroundServicesFromBackground">Серік қолданбаға экрандық режимдегі қызметтерді фоннан іске қосуға рұқсат беріледі.</string>
     <string name="permdesc_startReviewPermissionDecisions">Қолданбаға рұқсаттары бар әрекеттерді көруге мүмкіндік береді. Әдеттегі қолданбаларға қажет емес.</string>
     <string name="permdesc_startViewAppFeatures">Қолданбаға функциялар туралы ақпаратты көре бастауды кідіртуге мүмкіндік береді.</string>
     <string name="permdesc_startViewPermissionUsage">Пайдаланушы қолданбаға берілетін рұқсаттарды басқара алады. Ондай рұқсаттар әдеттегі қолданбаларға керек емес.</string>
@@ -1497,7 +1534,7 @@
     <string name="permdesc_subscribedFeedsRead">Қолданбаға қазіргі уақытта синхрондалған арналар туралы мәліметтерді алуға рұқсат береді.</string>
     <string name="permdesc_systemAlertWindow">Бұл қолданба өзге қолданбалардың не экранның басқа бөліктерінің үстінен шығуы мүмкін. Бұл қолданбаны қалыпты пайдалануға кедергі келтіріп, өзге қолданбалардың басқаша шығуына әкелуі мүмкін.</string>
     <string name="permdesc_systemCamera">Осы айрықша немесе жүйе қолданбасы кез келген уақытта жүйелік камера арқылы суретке не бейнеге түсіре алады. Қолданбаға android.permission.CAMERA рұқсаты қажет болады.</string>
-    <string name="permdesc_transmitIr">Қолданбаға планшеттің инфрақызыл қабылдағышын қолдану мүмкіндігін береді.</string>
+    <string name="permdesc_transmitIr">Қолданбаға телефонның инфрақызыл қабылдағышын қолдану мүмкіндігін береді.</string>
     <string name="permdesc_turnScreenOn">Қолдабаға экранды қосуға рұқсат етеді.</string>
     <string name="permdesc_uninstall_shortcut">Қолданбаға Негізгі экрандағы таңбашаларды пайдаланушының қатысуынсыз өшіру мүмкіндігін береді.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">Бұған дейін орнатылған қолданбаның автоматты түрде жаңартылуына мүмкіндік береді.</string>
@@ -1510,12 +1547,13 @@
     <string name="permdesc_vibrate">Қолданбаға вибраторды басқаруға рұқсат береді.</string>
     <string name="permdesc_vibrator_state">Қолданбаға діріл күйін пайдалануға мүмкіндік береді.</string>
     <string name="permdesc_videoWrite">Қолданбаға бейнелер жинағын өзгертуге мүмкіндік береді.</string>
-    <string name="permdesc_wakeLock">Қолданбаға планшеттің ұйқыға кетуін болдырмауға рұқсат береді.</string>
-    <string name="permdesc_writeCalendar">Бұл қолданба планшеттегі күнтізбе оқиғаларын енгізе, өшіре не өзгерте алады. Ол күнтізбе иелерінен келгендей болып көрінетін хабарларды жіберуі немесе иелеріне хабарламай, оқиғаларды өзгертуі мүмкін.</string>
-    <string name="permdesc_writeCallLog">Қолданбаға сіздің планшетіңіздегі қоңырау тіркеуін, келетін немесе шығатын қоңыраулар туралы деректерді қоса, өзгерту мүмкіндігін береді. Залалды қолданбалар бұны сіздің қоңырау тіркеуіңізді өшіру үшін қолдануы мүмкін.</string>
-    <string name="permdesc_writeContacts">Қолданбаға планшетте сақталған контактілеріңіз туралы деректерді өзгертуге рұқсат етеді. Бұл рұқсат қолданбаларға контактілер туралы деректерді жоюға рұқсат береді.</string>
+    <string name="permdesc_wakeLock">Қолданбаға телефонның ұйқыға кетуін болдырмауға рұқсат береді.</string>
+    <string name="permdesc_writeCalendar">Бұл қолданба телефондағы күнтізбе оқиғаларын енгізе, өшіре не өзгерте алады. Ол күнтізбе иелерінен келгендей болып көрінетін хабарларды жіберуі немесе иелеріне хабарламай, оқиғаларды өзгертуі мүмкін.</string>
+    <string name="permdesc_writeCallLog">Қолданбаға сіздің телефоныңыздың қоңырау тіркеуін, келетін немесе шығатын қоңыраулар туралы деректерді қоса, өзгерту мүмкіндігін береді. Залалды қолданбалар бұны сіздің қоңырау тіркеуіңізді өшіру үшін қолдануы мүмкін.</string>
+    <string name="permdesc_writeContacts">Қолданбаға телефонда сақталған контактілеріңіз туралы деректерді өзгертуге рұқсат етеді. Бұл рұқсат қолданбаларға контактілер туралы деректерді жоюға рұқсат береді.</string>
     <string name="permdesc_writeSettings">Қолданбаға жүйенің параметрлерінің деректерін өзгертуге рұқсат береді. Зиянкес қолданбалар жүйенің конфигурациясын бүлдіруі мүмкін.</string>
     <string name="permdesc_writeSyncSettings">Қолданбаға аккаунттың синхрондау параметрлерін жөндеу мүмкіндігін береді. Мысалы, бұл People қолданбасын аккаунтпен синхрондауды қосу үшін қолданылуы мүмкін.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">Қолданбаға тура шифрлаумен қорғалған және басқа қолданбаларға тиесілі контакт кілттерін тексеру күйлерін жаңартуға рұқсат береді.</string>
     <string name="permgroupdesc_activityRecognition">қимыл-қозғалыс дерегін алу</string>
     <string name="permgroupdesc_calendar">күнтізбеге кіру</string>
     <string name="permgroupdesc_calllog">телефонның қоңыраулар журналын оқу және жазу</string>
@@ -1556,7 +1594,9 @@
     <string name="permlab_accessCoarseLocation">болжалды орналасқан жер туралы ақпаратқа тек ашық экранда кіру</string>
     <string name="permlab_accessDrmCertificates">DRM сертификаттарына қатынасу</string>
     <string name="permlab_accessFineLocation">нақты орналасқан жер туралы ақпаратқа тек ашық экранда кіру</string>
+    <string name="permlab_accessHiddenProfile">Жасырын профильдерге кіру</string>
     <string name="permlab_accessImsCallService">IMS қоңырау қызметін пайдалану</string>
+    <string name="permlab_accessLastKnownCellId">Белгілі соңғы ұялы байланыс идентификаторын пайдалану.</string>
     <string name="permlab_accessLocationExtraCommands">қосымша аймақ жабдықтаушы пәрмендеріне қол жетімділік</string>
     <string name="permlab_accessNetworkConditions">желі күйлері туралы бағдарды тыңдау мүмкіндігі</string>
     <string name="permlab_accessNetworkState">желі байланыстарын көру</string>
@@ -1588,6 +1628,7 @@
     <string name="permlab_callCompanionApp">жүйе арқылы қоңырауларды көру және басқару.</string>
     <string name="permlab_callPhone">нөмірлерге тікелей телефон шалу</string>
     <string name="permlab_camera">фотосурет жасау және бейне жазу</string>
+    <string name="permlab_cameraHeadlessSystemUser">Қолданбаға немесе қызметке камераны мониторсыз жүйе пайдаланушысы ретінде пайдалануға рұқсат беру.</string>
     <string name="permlab_cameraOpenCloseListener">Қолданбаға не қызметке ашылып не жабылып жатқан камера құрылғылары туралы кері шақыру алуға рұқсат ету</string>
     <string name="permlab_changeNetworkState">желі байланысын өзгерту</string>
     <string name="permlab_changeTetherState">интернетке байланыс түрін өзгерту</string>
@@ -1612,6 +1653,7 @@
     <string name="permlab_foregroundServiceHealth">\"health\" түріне жататын экрандық режимдегі қызметті іске қосу</string>
     <string name="permlab_foregroundServiceLocation">\"location\" түріне жататын экрандық режимдегі қызметті іске қосу</string>
     <string name="permlab_foregroundServiceMediaPlayback">\"mediaPlayback\" түріне жататын экрандық режимдегі қызметті іске қосу</string>
+    <string name="permlab_foregroundServiceMediaProcessing">\"mediaProcessing\" түріне жататын экрандық режимдегі қызметті іске қосу</string>
     <string name="permlab_foregroundServiceMediaProjection">\"mediaProjection\" түріне жататын экрандық режимдегі қызметті іске қосу</string>
     <string name="permlab_foregroundServiceMicrophone">\"microphone\" түріне жататын экрандық режимдегі қызметті іске қосу</string>
     <string name="permlab_foregroundServicePhoneCall">\"phoneCall\" түріне жататын экрандық режимдегі қызметті іске қосу</string>
@@ -1641,6 +1683,7 @@
     <string name="permlab_mount_unmount_filesystems">SD картасының файлдық жүйесіне қатынасу</string>
     <string name="permlab_nearby_wifi_devices">маңайдағы Wi-Fi құрылғыларымен байланысу</string>
     <string name="permlab_nfc">NFC функциясын басқару</string>
+    <string name="permlab_nfcTransactionEvent">Қауіпсіз элемент арқылы жасалатын транзакция оқиғасы</string>
     <string name="permlab_observeCompanionDevicePresence">Серіктес құрылғының бар-жоғын бақылау</string>
     <string name="permlab_persistentActivity">қолданбаны әрқашан жұмыс істейтін ету</string>
     <string name="permlab_postNotification">хабарландыруларды көрсету</string>
@@ -1710,12 +1753,13 @@
     <string name="permlab_uwb_ranging">маңайдағы кең жолақты құрылғылардың бір-біріне қатысты орнын анықтау</string>
     <string name="permlab_vibrate">тербелісті басқару</string>
     <string name="permlab_videoWrite">бейнелер жинағын өзгерту</string>
-    <string name="permlab_wakeLock">планшетті ұйқыдан бөгеу</string>
+    <string name="permlab_wakeLock">телефонды ұйқыдан бөгеу</string>
     <string name="permlab_writeCalendar">күнтізбе шараларын қосу немесе өзгерту және пайдаланушының қатысуынсыз қонақтардың эл. пошталарына жіберу.</string>
     <string name="permlab_writeCallLog">қоңырау тіркеуді жазу</string>
     <string name="permlab_writeContacts">контактілерді өзгерту</string>
     <string name="permlab_writeSettings">жүйе параметрлерін өзгерту</string>
     <string name="permlab_writeSyncSettings">синх қосу және өшіру арасында ауысу</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">тура шифрлаумен қорғалған және басқа қолданбаларға тиесілі контакт кілттерін тексеру күйлерін жаңарту</string>
     <string name="perms_description_app">Жабдықтаған %1$s.</string>
     <string name="perms_new_perm_prefix"><font fgcolor="#ff33b5e5" size="12">ЖАҢА: </font></string>
     <string name="personal_apps_suspended_turn_profile_on">Қосу</string>
@@ -1753,10 +1797,10 @@
     <string name="policydesc_limitPassword">Экран бекітпесінің құпия сөздерінің және PIN кодтарының ұзындығын және оларда рұқсат етілген таңбаларды басқару.</string>
     <string name="policydesc_resetPassword">Экран құлпын өзгерте алады.</string>
     <string name="policydesc_setGlobalProxy">Саясат қосулы болғанда пайдаланылатын құрылғының ғаламдық прокси-серверін орнатыңыз. Ғаламдық прокси-серверді тек құрылғы иесі орната алады.</string>
-    <string name="policydesc_watchLogin">Экран бекітпесін ашқан кезде терілген қате құпия сөздердің санын бақылау және планшетті бекіту немесе тым көп қате құпия сөздер терілген болса, планшеттің бүкіл деректерін өшіру.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Экран бекітпесін ашқанда терілген қате құпия сөздердің санын бақылау және тым көп қате құпия сөздер терілсе, планшетті бекіту немесе осы пайдаланушының барлық деректерін өшіру.</string>
-    <string name="policydesc_wipeData">Планшет дерекқорын ескертусіз, зауыттық дерекқорын қайта реттеу арқылы өшіру.</string>
-    <string name="policydesc_wipeData_secondaryUser">Осы пайдаланушының осы планшеттегі деректерін ескертусіз өшіре алады.</string>
+    <string name="policydesc_watchLogin">Экран құлпын ашқан кезде терілген қате құпия сөздердің санын бақылау және құпия сөз тым көп рет қате терілгенде, телефонды құлыптау немесе оның бүкіл деректерін өшіру.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Экран бекітпесін ашқанда терілген қате құпия сөздердің санын бақылау және тым көп қате құпия сөздер терілсе, телефонды бекіту немесе осы пайдаланушының барлық деректерін өшіру.</string>
+    <string name="policydesc_wipeData">Зауыттық деректерге қайтару арқылы телефон деректерін ескертусіз өшіре алады.</string>
+    <string name="policydesc_wipeData_secondaryUser">Осы пайдаланушының осы телефондағы деректерін ескертусіз өшіре алады.</string>
     <string name="policylab_disableCamera">Камераларды өшіру</string>
     <string name="policylab_disableKeyguardFeatures">Экран құлпы функцияларын өшіру</string>
     <string name="policylab_encryptedStorage">Жад қорының шрифтін тағайындау</string>
@@ -1765,15 +1809,15 @@
     <string name="policylab_limitPassword">Құпия сөз ережелерін тағайындау</string>
     <string name="policylab_resetPassword">Экран құлпын өзгерту</string>
     <string name="policylab_setGlobalProxy">Құрылғы жаһандық прокси қызметін орнату</string>
-    <string name="policylab_watchLogin">Экран құлпын ашу әркеттерін бақылау</string>
-    <string name="policylab_wipeData">Барлық деректерді өшіру</string>
+    <string name="policylab_watchLogin">Экран құлпын ашу әрекеттерін бақылау</string>
+    <string name="policylab_wipeData">Барлық деректі өшіру</string>
     <string name="policylab_wipeData_secondaryUser">Пайдаланушы деректерін өшіру</string>
     <string name="popup_window_default_title">Қалқымалы терезе</string>
     <string name="postalTypeCustom">Арнаулы</string>
     <string name="postalTypeHome">Үй</string>
     <string name="postalTypeOther">Басқа</string>
     <string name="postalTypeWork">Жұмыс</string>
-    <string name="power_dialog">Планшет опциялары</string>
+    <string name="power_dialog">Телефон опциялары</string>
     <string name="power_off">Өшіру</string>
     <string name="prepend_shortcut_label">Mәзір+</string>
     <string name="preposition_for_date">%s күні</string>
@@ -1783,9 +1827,21 @@
     <string name="print_service_installed_title">%s қызметі орнатылды</string>
     <string name="printing_disabled_by">Басып шығаруды %s өшірді.</string>
     <string name="private_dns_broken_detailed">Жеке DNS серверіне кіру мүмкін емес.</string>
+    <string name="private_profile_label_badge">Жеке %1$s</string>
+    <string name="private_space_biometric_prompt_title">Құпия кеңістік</string>
+    <string name="private_space_deleted_by_admin">Құпия кеңістік өшірілді</string>
+    <string name="private_space_deleted_by_admin_details">Ұйымыңыз басқаратын құрылғыда құпия кеңістік мүмкіндіктерін пайдалануға рұқсат етілмейді.</string>
+    <string name="private_space_set_up_screen_lock_message">Құпия кеңістігіңізді қолдану үшін осы құрылғыда экран құлпын орнатыңыз.</string>
     <string name="profile_encrypted_detail">Жұмыс профилі құлыптаулы</string>
     <string name="profile_encrypted_message">Жұмыс профилінің құлпын ашу үшін түртіңіз</string>
     <string name="profile_encrypted_title">Кейбір функциялар істемеуі мүмкін.</string>
+    <string name="profile_label_clone">Клон</string>
+    <string name="profile_label_communal">Жалпы</string>
+    <string name="profile_label_private">Құпия</string>
+    <string name="profile_label_test">Сынақ</string>
+    <string name="profile_label_work">Жұмыс</string>
+    <string name="profile_label_work_2">Жұмыс 2</string>
+    <string name="profile_label_work_3">Жұмыс 3</string>
     <string name="progress_erasing">Ортақ жад тазартылуда…</string>
     <string name="progress_erasing_usbhost">Ішкі телефон жады форматталуда…</string>
     <string name="progress_unmounting">SD картасы шығарылуда…</string>
@@ -1803,6 +1859,8 @@
     <string name="reboot_to_update_reboot">Қайта іске қосылуда…</string>
     <string name="reboot_to_update_title">Android жүйе жаңартулары</string>
     <string name="recent_tasks_title">Жуықта қолданылған</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">Хабарландырудың құпия контенті жасырылған.</string>
     <string name="redo">Қайтару</string>
     <string name="reduce_bright_colors_feature_name">Экранды қарайту</string>
     <string name="region_picker_section_all">Барлық аймақтар</string>
@@ -1880,12 +1938,36 @@
     <string name="safe_media_volume_warning">"Дыбыс деңгейін ұсынылған деңгейден көтеру керек пе?
 
 Жоғары дыбыс деңгейінде ұзақ кезеңдер бойы тыңдау есту қабілетіңізге зиян тигізуі мүмкін."</string>
+    <string name="satellite_notification_how_it_works">Бұл қалай орындалады?</string>
+    <string name="satellite_notification_manual_summary">Хабарландыруларды мобильдік желіге немесе Wi-Fi желісіне қосылмай жіберіңіз және алыңыз.</string>
+    <string name="satellite_notification_manual_title">Жерсерік арқылы хабар алмасасыз ба?</string>
+    <string name="satellite_notification_open_message">Messages қолданбасын ашу</string>
+    <string name="satellite_notification_summary">Мобильдік не Wi-Fi желісіне қосылмастан хабар жібере аласыз және ала аласыз.</string>
+    <string name="satellite_notification_title">Жерсерік қызметіне автоматты түрде қосылды</string>
+    <string name="scCellularNetworkSecuritySummary">Шифрлау, шифрланбаған желілер туралы хабарландырулар</string>
+    <string name="scCellularNetworkSecurityTitle">Мобильдік желінің қауіпсіздігі</string>
+    <string name="scIdentifierDisclosureIssueSummary">"%2$s SIM картасын қолдану кезінде маңайдағы желіде сағат %1$s шамасында құрылғыңыздың бірегей идентификаторы (IMSI не IMEI) жазып алынды.
+
+Орналасқан жеріңіз, әрекеттеріңіз не жеке басыңыз туралы ақпарат тіркелді. Мұндай жағдай жиі болып тұратынына қарамастан, ол өз құпиялығына үлкен мән беретін адамдарға қиындық келтіруі мүмкін."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">%2$s SIM картасын қолдану кезінде маңайдағы желіде сағат %1$s шамасында құрылғыңыздың бірегей идентификаторы (IMSI не IMEI) жазып алынды.</string>
+    <string name="scIdentifierDisclosureIssueTitle">Құрылғы идентификаторы алынды</string>
+    <string name="scNullCipherIssueActionGotIt">Түсінікті</string>
+    <string name="scNullCipherIssueActionLearnMore">Толық ақпарат</string>
+    <string name="scNullCipherIssueActionSettings">Мобильдік желінің қауіпсіздік параметрлері</string>
+    <string name="scNullCipherIssueEncryptedSummary">Енді %1$s SIM картасымен қосылу қорғалған.</string>
+    <string name="scNullCipherIssueEncryptedTitle">Шифрланған желіге (%1$s) қосылды</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"%1$s SIM картасын пайдаланған кезде, қазір қоңырауларға, хабарларға және деректерге зиян тию қаупі жоғары.
+
+Байланыс қайта шифрланғанда, тағы бір хабарландыру келеді."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">%1$s SIM картасын пайдаланған кезде, қазіргі уақытта қоңырауларға, хабарларға және деректерге қауіп төнеді.</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">Шифрланбаған желіге қосылды</string>
     <string name="screen_compat_mode_hint">Мұны «Жүйелік параметрлер» > «Қолданбалар» > «Жүктелгендер» тармағында қосыңыз.</string>
     <string name="screen_compat_mode_scale">Меже</string>
     <string name="screen_compat_mode_show">Үнемі көрсету</string>
     <string name="screen_lock">Экранды құлыптау</string>
     <string name="screen_lock_app_setting_name">Экран құлпын пайдалану</string>
     <string name="screen_lock_dialog_default_subtitle">Жалғастыру үшін экран құлпын енгізіңіз.</string>
+    <string name="screen_not_shared_sensitive_content">Қауіпсіздік мақсатында қолданба контенті экранды көрсету кезінде жасырылды.</string>
     <string name="screenshot_edit">Өзгерту</string>
     <string name="search_hint">Іздеу…</string>
     <string name="search_language_hint">Тіл атауын теріңіз</string>
@@ -1929,6 +2011,8 @@
     <string name="serviceErased">Өшіру іске аспады.</string>
     <string name="serviceNotProvisioned">Қызмет ұсынылмаған.</string>
     <string name="serviceRegistered">Тіркеу сәтті орындалды.</string>
+    <string name="set_up_screen_lock_action_label">Экран құлпын орнату</string>
+    <string name="set_up_screen_lock_title">Экран құлпын орнатыңыз</string>
     <string name="sha1_fingerprint">SHA-1 саусақ таңбасы:</string>
     <string name="sha256_fingerprint">SHA-256 саусақ таңбасы:</string>
     <string name="share">Бөлісу</string>
@@ -1945,9 +2029,9 @@
     <string name="shortcut_restore_unknown_issue">Таңбаша қалпына келтірілмеді</string>
     <string name="shortcut_restored_on_lower_version">Қолданбаның нұсқасы ескі немесе бұл таңбашамен үйлеспейді</string>
     <string name="show_ime">Физикалық пернетақта қосулы кезде оны экранға шығару</string>
-    <string name="shutdown_confirm">Планшет өшіріледі.</string>
+    <string name="shutdown_confirm">Телефон өшіріледі.</string>
     <string name="shutdown_confirm_question">Өшіру керек пе?</string>
-    <string name="shutdown_progress">Өшірілуде…</string>
+    <string name="shutdown_progress">Өшіріліп жатыр…</string>
     <string name="silent_mode">Үнсіз режим</string>
     <string name="silent_mode_ring">Қоңырау қосулы</string>
     <string name="silent_mode_silent">Қоңырау өшірулі</string>
@@ -2043,6 +2127,7 @@
     <string name="twilight_service">Twilight қызметі</string>
     <string name="ui_translation_accessibility_translated_text">\"%1$s\" хабары аударылды.</string>
     <string name="ui_translation_accessibility_translation_finished">Хабар мына тілге аударылды: %2$s. Түпнұсқаның тілі: %1$s.</string>
+    <string name="unarchival_session_app_label">Дайын емес…</string>
     <string name="undo">Қайтару</string>
     <string name="unpin_specific_target">%1$s босату</string>
     <string name="unpin_target">Босату</string>
@@ -2115,7 +2200,7 @@
     <string name="user_switched">Ағымдағы пайдаланушы %1$s.</string>
     <string name="user_switching_message">%1$s профиліне ауысу…</string>
     <string name="validity_period">Жарамдылығы:</string>
-    <string name="vdm_camera_access_denied">%1$s құрылғысынан планшет камерасын пайдалану мүмкін емес.</string>
+    <string name="vdm_camera_access_denied">%1$s құрылғысынан телефон камерасын пайдалану мүмкін емес.</string>
     <string name="vdm_pip_blocked">Трансляция кезінде суреттегі суретті көру мүмкін емес.</string>
     <string name="vdm_secure_window">Трансляция кезінде контентті көру мүмкін емес. Оның орнына телефоннан көріңіз.</string>
     <string name="view_and_control_notification_content">%s экраныңызды көріп, оны басқара алады. Өту үшін түртіңіз.</string>
@@ -2124,7 +2209,7 @@
     <string name="volume_bluetooth_call">Bluetooth қоңырауының қаттылығы</string>
     <string name="volume_call">Сөйлесу кезіндегі дыбыс деңгейі</string>
     <string name="volume_dialog_ringer_guidance_silent">Қоңыраулар мен хабарландырулардың дыбыстық сигналы өшіріледі</string>
-    <string name="volume_dialog_ringer_guidance_vibrate">Қоңыраулар мен хабарландырулардың вибрациясы болады</string>
+    <string name="volume_dialog_ringer_guidance_vibrate">Қоңыраулар мен хабарландырулардың дірілі болады.</string>
     <string name="volume_icon_description_bluetooth">Bluetooth дыбысының қаттылығы</string>
     <string name="volume_icon_description_incall">Сөйлесу кезіндегі дыбыс деңгейі</string>
     <string name="volume_icon_description_media">Mультимeдианың дыбыс деңгейі</string>
@@ -2234,7 +2319,13 @@
     <string name="zen_mode_feature_name">Мазаламау</string>
     <string name="zen_mode_forever">Өшірілгенге дейін</string>
     <string name="zen_mode_forever_dnd">Мазаламау режимін өшіргенше</string>
+    <string name="zen_mode_implicit_activated">Қосулы</string>
+    <string name="zen_mode_implicit_deactivated">Өшірулі</string>
+    <string name="zen_mode_implicit_trigger_description">%1$s басқарады.</string>
     <string name="zen_mode_rule_name_combination">%1$s/%2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">Кез келген күнтізбе</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s – %2$s</string>
     <string name="zen_mode_until">%1$s дейін</string>
     <string name="zen_mode_until_next_day">%1$s дейін</string>
     <string name="zen_upgrade_notification_content">Түймені түртіп, неге тыйым салынатынын көріңіз.</string>

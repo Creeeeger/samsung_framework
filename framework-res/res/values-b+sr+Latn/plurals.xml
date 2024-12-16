@@ -24,6 +24,14 @@
         <item quantity="few">%d aplikacije su zatvorene</item>
         <item quantity="many">N/A</item>
     </plurals>
+    <plurals name="dex_max_count_text">
+        <item quantity="other">Istovremeno možete da prikazujete najviše %d aplikacija na ekranu. Najstarija aplikacija je umanjena.</item>
+        <item quantity="zero">N/A</item>
+        <item quantity="one">Istovremeno možete da prikazujete najviše %d aplikaciju na ekranu. Najstarija aplikacija je umanjena.</item>
+        <item quantity="two">N/A</item>
+        <item quantity="few">Istovremeno možete da prikazujete najviše %d aplikacije na ekranu. Najstarija aplikacija je umanjena.</item>
+        <item quantity="many">N/A</item>
+    </plurals>
     <plurals name="hot_key_guide_message">
         <item quantity="other">Otvorite aplikaciju koju želite da dodelite, a zatim pritisnite i zadržite taster aplikacije na %d sekundi.</item>
         <item quantity="zero">N/A</item>
@@ -82,14 +90,6 @@
         <item quantity="one">%d stavka</item>
         <item quantity="two">N/A</item>
         <item quantity="few">%d stavke</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">Samo %d uređaja može istovremeno da se poveže na Wi-Fi mrežu na koju želite da se povežete. Prekinite vezu svih drugih uređaja sa tom mrežom i pokušajte ponovo.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">Samo %d uređaj može istovremeno da se poveže na Wi-Fi mrežu na koju želite da se povežete. Prekinite vezu svih drugih uređaja sa tom mrežom i pokušajte ponovo.</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">Samo %d uređaja mogu istovremeno da se povežu na Wi-Fi mrežu na koju želite da se povežete. Prekinite vezu svih drugih uređaja sa tom mrežom i pokušajte ponovo.</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="zen_mode_duration_time_hours">

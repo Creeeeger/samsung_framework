@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Tablet je nestabilan jer ste uklonili SD karticu na kojoj su instalirane aplikacije. Tablet će se ponovno pokrenuti za %d sekundi da bi se vratio u normalno stanje. Sačuvajte sve nesačuvane podatke prije nego što se tablet ponovno pokrene.</item>
+        <item quantity="other">Telefon je nestabilan jer ste uklonili SD karticu na kojoj su instalirane aplikacije. Telefon će se ponovno pokrenuti za %d sekundi da bi se vratio u normalno stanje. Sačuvajte sve nesačuvane podatke prije nego što se telefon ponovno pokrene.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Tablet je nestabilan jer ste uklonili SD karticu na kojoj su instalirane aplikacije. Tablet će se ponovno pokrenuti za %d sekundu da bi se vratio u normalno stanje. Sačuvajte sve nesačuvane podatke prije nego što se tablet ponovno pokrene.</item>
+        <item quantity="one">Telefon je nestabilan jer ste uklonili SD karticu na kojoj su instalirane aplikacije. Telefon će se ponovno pokrenuti za %d sekundu da bi se vratio u normalno stanje. Sačuvajte sve nesačuvane podatke prije nego što se telefon ponovno pokrene.</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Tablet je nestabilan jer ste uklonili SD karticu na kojoj su instalirane aplikacije. Tablet će se ponovno pokrenuti za %d sekunde da bi se vratio u normalno stanje. Sačuvajte sve nesačuvane podatke prije nego što se tablet ponovno pokrene.</item>
+        <item quantity="few">Telefon je nestabilan jer ste uklonili SD karticu na kojoj su instalirane aplikacije. Telefon će se ponovno pokrenuti za %d sekunde da bi se vratio u normalno stanje. Sačuvajte sve nesačuvane podatke prije nego što se telefon ponovno pokrene.</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Tablet će se ponovno pokrenuti za %d s</item>
+        <item quantity="other">Telef. će se pon. pokr. za %d sekundi</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Tablet će se ponovno pokrenuti za %d s</item>
+        <item quantity="one">Telef. će se pon. pokr. za %d sekundu</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Tablet će se ponovno pokrenuti za %d s</item>
+        <item quantity="few">Telef. će se pon. pokr. za %d sekunde</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="app_kills_content_v2_phone">
@@ -106,14 +106,6 @@
         <item quantity="one">%d stavka</item>
         <item quantity="two">N/A</item>
         <item quantity="few">%d stavke</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">Wi-Fi mrežu s kojom se želite povezati moguće je povezati samo s %d uređaja istovremeno. Prekinite vezu sa svim drugim uređajima od te mreže, zatim pokušajte ponovno.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">Wi-Fi mrežu s kojom se želite povezati moguće je povezati samo s %d uređajem istovremeno. Prekinite vezu sa svim drugim uređajima od te mreže, zatim pokušajte ponovno.</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">Wi-Fi mrežu s kojom se želite povezati moguće je povezati samo s %d uređaja istovremeno. Prekinite vezu sa svim drugim uređajima od te mreže, zatim pokušajte ponovno.</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="zen_mode_duration_time_hours">

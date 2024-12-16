@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Bercakap dgn Bixby</string>
     <string name="accessibility_corner_action_type_zoom_in">Zum masuk</string>
     <string name="accessibility_corner_action_type_zoom_out">Zum keluar</string>
+    <string name="accessibility_dialog_button_allow_samsung">Benarkan</string>
+    <string name="accessibility_dialog_button_deny_samsung">Nafi</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Nyahpasang</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Menekan kekunci Kuasa dan Kelantangan ke atas dengan cepat akan menghidupkan atau mematikan fungsi berikut:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Menekan butang Sisi dan Kelantangan ke atas dengan cepat akan menghidupkan atau mematikan fungsi berikut:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Menekan kekunci Kuasa dan Kelantangan ke atas dengan cepat akan menghidupkan atau mematikan %s.</string>
@@ -117,6 +120,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">Dasar keselamatan menghalang penambahan akaun ini.</string>
     <string name="account_removal_restrict">Dasar keselamatan menghalang pengalihan keluar akaun ini.</string>
+    <string name="action_bar_up_description">Pandu arah ke atas</string>
     <string name="action_menu_overflow_description">Lebih pilihan</string>
     <string name="adb_active_notification_message">Pilih untuk menyahaktifkan penyahpepijatan USB.</string>
     <string name="adb_active_notification_title">Penyahpepijatan USB disambungkan.</string>
@@ -125,6 +129,9 @@
     <string name="advance_wifi_sharing_msg">Rangkaian Wi-Fi yang tersedia telah dikesan. Sambung untuk menggunakan perkongsian Wi-Fi dan bukannya data mudah alih bagi Mobile Hotspot anda.</string>
     <string name="airplanemode_restrict">Dasar keselamatan menghalang mengaktifkan Mod penerbangan.</string>
     <string name="allow_settings_changes">Dasar keselamatan menghalang pengubahan aturan.</string>
+    <string name="always_allow">Sentiasa benarkan</string>
+    <string name="app_block_button_open">Buka</string>
+    <string name="app_block_content">%1$s ingin membuka aplikasi %2$s.</string>
     <string name="app_clone_storage">Storan dalaman (Messenger Duaan)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Pilih aplikasi</string>
     <string name="app_continuity_guide_cling_button_not_now">Bukan skrg</string>
@@ -139,32 +146,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">Anda telah menggunakan semua masa anda untuk %s hari ini. Anda boleh mengubah ini dalam Aturan.</string>
     <string name="app_restricted_message_concentration_mode">%s disekat semasa Mod tumpuan. Hubungi pentadbir IT anda untuk mengetahui lebih lanjut.</string>
     <string name="app_updating_message">%s sedang dikemas kini. Cuba lagi kemudian.</string>
-    <string name="appblock_block_subtitle1_phone">Untuk melindungi telefon dan data peribadi anda, aplikasi ini tidak dapat dipasang kerana aplikasi disyaki merupakan aplikasi hasad.</string>
-    <string name="appblock_block_subtitle1_tablet">Untuk melindungi tablet dan data peribadi anda, aplikasi ini tidak dapat dipasang kerana aplikasi disyaki merupakan aplikasi hasad.</string>
-    <string name="appblock_block_subtitle2">Aplikasi ini tidak dapat dipasang kerana aplikasi telah disyorkan sebagai hasad.</string>
-    <string name="appblock_block_text1">Aplikasi ini bukan daripada sumber yang disahkan dan memerlukan kebenaran sensitif yang mungkin digunakan untuk mencuri atau membocorkan data peribadi anda.</string>
-    <string name="appblock_block_text2">"Aplikasi hasad boleh menggunakan kebenaran sensitif untuk mencuri data peribadi anda, menyamar sebagai identiti anda atau mencapai akaun kewangan anda.
-
-Institusi kewangan sah tidak menghendaki pemasangan fail ZIP, fail APK atau aplikasi pengurus fail.
-
-Sentiasa pastikan bahawa aplikasi anda adalah daripada sumber yang boleh dipercayai."</string>
-    <string name="appblock_warn_subtitle">Aplikasi ini mungkin mencuri atau membocorkan maklumat peribadi anda.</string>
+    <string name="appblock_block_text_phone">Aplikasi ini tidak dapat dipasang kerana aplikasi telah dilaporkan sebagai bersifat hasad atau serupa dengan aplikasi yang dilaporkan sebagai bersifat hasad. Aplikasi ini berkemungkinan digunakan dalam jenayah seperti pancingan data. Untuk memastikan telefon dan data anda selamat, sekatan ini tidak dapat dipintas.</string>
+    <string name="appblock_block_text_tablet">Aplikasi ini tidak dapat dipasang kerana aplikasi telah dilaporkan sebagai bersifat hasad atau serupa dengan aplikasi yang dilaporkan sebagai bersifat hasad. Aplikasi ini berkemungkinan digunakan dalam jenayah seperti pancingan data. Untuk memastikan tablet dan data anda selamat, sekatan ini tidak dapat dipintas.</string>
+    <string name="appblock_link_text">Ketahui lebih lanjut</string>
     <string name="appblock_warn_text1">"Pemasangan aplikasi daripada sumber yang tidak disahkan mungkin membenarkan aplikasi untuk mengumpulkan maklumat peribadi anda atau menjejak aktiviti anda.
 
 Pemasangan aplikasi ini tidak disyorkan.
 
 Jika anda memilih untuk memasangnya juga, semak Notis Privasi aplikasi dengan teliti dan pastikan anda hanya memberikan kebenaran yang diperlukan."</string>
-    <string name="appblock_warn_text2">"Aplikasi hasad kerap cuba memperoleh maklumat peribadi anda menggunakan kebenaran Kenalan, SMS dan Foto.
-
-Pemasangan aplikasi ini tidak disyorkan.
-
-Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang daripada sumber yang anda percayai dan berhati-hati apabila memberikan kebenaran atau capai lain kepada data anda."</string>
     <string name="application_default_restrict">Aplikasi lain ditetapkan sebagai lalai oleh pentadbir peranti.</string>
     <string name="auto_click_paused">Auto klik dijeda.</string>
     <string name="auto_click_resumed">Auto klik diteruskan.</string>
     <string name="autofill_never_use_for_this_app">Jangan guna %s untuk aplikasi ini</string>
     <string name="autofill_save_cancel">Batal</string>
     <string name="autofill_save_never_OK">OK</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">Dasar keselamatan menghalang penggunaan Sandaran.</string>
     <string name="badPin2">PIN2 adalah salah. Cuba lagi.</string>
     <string name="badPuk2">PUK2 yang anda masukkan adalah salah</string>
@@ -175,8 +171,6 @@ Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang dar
     <string name="bluetooth_a2dp_restrict">Dasar keselamatan menghalang penggunaan audio media Bluetooth.</string>
     <string name="bluetooth_avrcp_restrict">Dasar keselamatan menghalang penggunaan kawalan audio/video Bluetooth.</string>
     <string name="bluetooth_bpp_restrict">Dasar keselamatan menghalang mencetak melalui Bluetooth.</string>
-    <string name="bluetooth_china_popup_message">%1$s meminta kebenaran untuk menggunakan %2$s. Benarkan?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Dasar keselamatan menghalang pemindahan data melalui Bluetooth.</string>
     <string name="bluetooth_desktop_restrict">Dasar keselamatan menghalang sambungan ke desktop anda melalui Bluetooth.</string>
     <string name="bluetooth_device_restrict">Dasar keselamatan menghalang berpasangan dengan peranti Bluetooth ini.</string>
@@ -187,7 +181,6 @@ Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang dar
     <string name="bluetooth_outgoing_call_restrict">Dasar keselamatan menghalang membuat panggilan keluar melalui Bluetooth.</string>
     <string name="bluetooth_pairing_restrict">Dasar keselamatan menghalang berpasangan Bluetooth.</string>
     <string name="bluetooth_pbap_restrict">Dasar keselamatan menghalang penggunaan buku alamat Bluetooth.</string>
-    <string name="bluetooth_permission_request">Permintaan kebenaran Bluetooth</string>
     <string name="bluetooth_restrict">Dasar keselamatan menghalang penggunaan Bluetooth.</string>
     <string name="bluetooth_sap_restrict">Dasar keselamatan menghalang kad SIM anda daripada dicapai melalui Bluetooth.</string>
     <string name="bluetooth_security_mode_disable">Dasar keselamatan menghalang penggunaan Bluetooth.</string>
@@ -250,11 +243,8 @@ Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang dar
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">Peranti dibenarkan</string>
     <string name="data_call_restriction">Dasar keselamatan mengehadkan penggunaan data mudah alih.</string>
-    <string name="data_usage_disable_mobile">Nyahaktifkan sambungan data mudah alih?</string>
-    <string name="data_usage_enable_mobile_warning">Bersambung melalui data paket boleh dikenakan caj tambahan. Teruskan?</string>
     <string name="data_usage_limit_body">Data mudah alih dijeda hingga kitaran pengebilan anda tamat.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Melebihi had data mdh alih anda</string>
-    <string name="data_usage_mobile_limit_title">Had data mudah alih dicapai</string>
     <string name="data_usage_rapid_app_body">%s telah menggunakan lebih banyak data berbanding biasa.</string>
     <string name="data_usage_rapid_body">Aplikasi anda telah menggunakan lebih banyak data daripada biasa.</string>
     <string name="data_usage_rapid_title">Penggunaan data telefon tinggi</string>
@@ -265,6 +255,7 @@ Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang dar
     <string name="data_usage_warning_title_offpeak_chn">%s data luar puncak digunakan</string>
     <string name="data_usage_warning_title_unlimited_chn">Had kelajuan data mdh alih dicapai</string>
     <string name="device_disabled">Peranti dinyahaktifkan. Hubungi pentadbir IT.</string>
+    <string name="device_info_not_available">Tidak tersedia.</string>
     <string name="dex_cant_change_user_profile">Tidak dapat mengubah profil pengguna semasa dalam mod Samsung DeX.</string>
     <string name="dex_dialog_launch_toast">Aplikasi yang terbuka mungkin ditutup. Simpan data anda sebelum memulakan atau keluar dari Samsung DeX.</string>
     <string name="dex_disconnected_from_device">DeX dinyahsambung daripada %s. Semak sambungan rangkaian pada TV anda.</string>
@@ -273,9 +264,6 @@ Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang dar
     <string name="dex_launcher_mode_change">%s ditutup untuk bertukar kepada Samsung DeX.</string>
     <string name="dex_mirroring_jit_msg">Apabila anda menjalankan Samsung DeX pada tablet, anda boleh mencerminkan skrin pada sebarang paparan disambungkan HDMI untuk pandangan yang lebih besar.</string>
     <string name="dex_mirroring_jit_title">Cerminkan DeX pd skrn yg lbh besar</string>
-    <string name="dex_restart_app_dialog_button_positive">Mulakan semula</string>
-    <string name="dex_restart_app_dialog_message">Aplikasi ini sedang berjalan pada paparan lain. Untuk membukanya di sini, aplikasi perlu dimulakan semula. Simpan apa-apa yang penting sebelum anda memulakannya semula.</string>
-    <string name="dex_restart_app_dialog_title">Mulakan semula %s?</string>
     <string name="dex_restriction_blockerMessage">Dasar keselamatan menghalang penggunaan Samsung DeX.</string>
     <string name="dex_restriction_ethernetOnly">Dasar keselamatan menghalang penggunaan data Wi-Fi, data mudah alih dan penambatan dalam DeX. Sambungan berwayar diperlukan untuk ciri rangkaian.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Disebabkan dasar keselamatan, nyahsambungkan paparan luaran untuk keluar daripada Samsung DeX.</string>
@@ -300,7 +288,6 @@ Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang dar
     <string name="digital_signature_failure_user_notification">Tandatangan digital tidak sah untuk pengguna %d</string>
     <string name="disableupdate_application_restrict">Dasar keselamatan menghalang kemas kini aplikasi ini.</string>
     <string name="display_chooser_button_positive">Mulakan semula</string>
-    <string name="display_chooser_dont_show_again">Jangan tunjukkan lagi</string>
     <string name="dlg_confirm_kill_storage_users_text">Menyambung storan USB akan menghentikan beberapa aplikasi yang sedang diguna. Ini mungkin tidak tersedia ada sehingga anda putus sambungan storan USB.</string>
     <string name="dlg_confirm_kill_storage_users_title">Sambung storan ke PC</string>
     <string name="dlg_error_title">Operasi USB tidak berjaya</string>
@@ -315,7 +302,7 @@ Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang dar
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Tidak dapat menggunakan aplikasi ini dalam Pandangan berbilang tetingkap.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Tidak dapat menggunakan ciri ini dalam Pandangan berbilang tetingkap.</string>
     <string name="edit_contact_at_sim_restriction">Dasar keselamatan menghalang penyuntingan kenalan kad SIM.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Peranti dibenarkan</string>
+    <string name="edm_policy_not_allow_open_wifiap">Dasar keselamatan menyekat penggunaan penambatan tidak selamat untuk hotspot.</string>
     <string name="emergency_calls_only">Panggilan kecemasan sahaja</string>
     <string name="ethernet_cable_connected_notification_message">Tekan untuk menyediakan.</string>
     <string name="ethernet_cable_connected_notification_title">Kabel Ethernet disambungkan</string>
@@ -335,7 +322,7 @@ Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang dar
     <string name="ext_media_unsupported_notification_message">Peranti ini tidak menyokong %s ini. Ketik untuk menyediakan dalam format yang disokong.</string>
     <string name="ext_media_unsupported_notification_title">%s tidak disokong</string>
     <string name="ext_storage_bad_removal_button">Mulakan semula</string>
-    <string name="ext_storage_bad_removal_title">Mulakan semula tablet anda</string>
+    <string name="ext_storage_bad_removal_title">Mulakan semula telefon anda</string>
     <string name="extmedia_format_button_format">Format</string>
     <string name="extmedia_format_message_usbhost">Semua fail yang disimpan dalam storan USB anda akan dipadamkan. Tindakan ini tidak boleh diterbalikkan!</string>
     <string name="extmedia_format_title_usbhost">Format storan USB?</string>
@@ -406,6 +393,7 @@ Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang dar
     <string name="globalactions_unable_restart_msg_fmm">Tidak dapat memulakan semula kerana telefon telah dikunci dari jauh oleh Cari Telefon Bimbit Saya.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Tidak dapat memulakan semula kerana tablet telah dikunci dari jauh oleh Cari Telefon Bimbit Saya.</string>
     <string name="globalactions_unable_restart_msg_securelock">Tidak dapat memulakan telefon semasa dikunci. Buka penutup dan buka kunci untuk memulakan semula telefon.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Tidak dapat memulakan semula telefon semasa kad SIM dikunci.</string>
     <string name="hardware_key_restrict">Dasar keselamatan menghalang penggunaan kekunci perkakasan ini.</string>
     <string name="hardware_sec">Papan kekunci pada skrin</string>
     <string name="hbd_translate">Terjemah input</string>
@@ -475,16 +463,16 @@ Jika anda memilih untuk memasang aplikasi ini juga, pastikan aplikasi datang dar
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Anda perlu membuka kunci tablet anda untuk mematikan Mod penyelenggaraan.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Tiada apa-apa yang akan disimpan yang berlaku semasa Mod penyelenggaraan dihidupkan, seperti data yang dimuat turun, pemasangan aplikasi atau perubahan aturan.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Tetapkan kunci skrin</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Mulakan semula tanpa mencipta log</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Cipta log dan mulakan semula</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Telefon anda perlu dimulakan semula untuk menghidupkan Mod penyelenggaraan.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Tetapkan kunci skrin dahulu.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Tablet anda perlu dimulakan semula untuk menghidupkan Mod penyelenggaraan.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Untuk membantu kakitangan sokongan kami menganalisis sebarang masalah dengan telefon anda, kami mengesyorkan anda mencipta log sistem sebelum memulakan Mod penyelenggaraan.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Untuk membantu kakitangan sokongan kami mendiagnosis dan menganalisis sebarang masalah dengan telefon anda, kami mengesyorkan penciptaan log sistem sebelum memulakan Mod penyelenggaraan.
 
-Log ini menunjukkan aplikasi yang digunakan dan sebarang ralat yang mungkin berlaku baru-baru ini, tetapi tidak mengandungi sebarang maklumat peribadi lain. Log hanya akan digunakan untuk menganalisis masalah dan bukan untuk sebarang tujuan lain. Lebih kurang 2 minit diperlukan untuk mencipta log."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Untuk membantu kakitangan sokongan kami menganalisis sebarang masalah dengan tablet anda, kami mengesyorkan anda mencipta log sistem sebelum memulakan Mod penyelenggaraan.
+Log hanya menyertakan maklumat yang penting untuk membaiki telefon anda, seperti aplikasi yang digunakan, ralat yang berlaku baru-baru ini, nombor telefon yang disekat dan kapasiti storan fail. Log hanya akan digunakan untuk mendiagnosis dan menganalisis masalah dan bukannya untuk sebarang tujuan lain. Biasanya lebih kurang 2 minit diperlukan untuk mencipta log."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Untuk membantu kakitangan sokongan kami mendiagnosis dan menganalisis sebarang masalah dengan tablet anda, kami mengesyorkan penciptaan log sistem sebelum memulakan Mod penyelenggaraan.
 
-Log ini menunjukkan aplikasi yang digunakan dan sebarang ralat yang mungkin berlaku baru-baru ini, tetapi tidak mengandungi sebarang maklumat peribadi lain. Log hanya akan digunakan untuk menganalisis masalah dan bukan untuk sebarang tujuan lain. Lebih kurang 2 minit diperlukan untuk mencipta log."</string>
+Log hanya menyertakan maklumat yang penting untuk membaiki tablet anda, seperti aplikasi yang digunakan, ralat yang berlaku baru-baru ini, nombor telefon yang disekat dan kapasiti storan fail. Log hanya akan digunakan untuk mendiagnosis dan menganalisis masalah dan bukannya untuk sebarang tujuan lain. Biasanya lebih kurang 2 minit diperlukan untuk mencipta log."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Analisis storan</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Storan dalaman telefon anda hampir penuh sepenuhnya. Jika anda kehabisan ruang storan, sesetengah aplikasi dan ciri mungkin akan berhenti daripada berfungsi dengan betul. Cuba padamkan beberapa fail atau aplikasi yang anda tidak perlukan lagi. Selepas pemadaman, jangan lupa untuk mengosongkan Sampah.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Storan dalaman tablet anda hampir penuh sepenuhnya. Jika anda kehabisan ruang storan, sesetengah aplikasi dan ciri mungkin akan berhenti daripada berfungsi dengan betul. Cuba padamkan beberapa fail atau aplikasi yang anda tidak perlukan lagi. Selepas pemadaman, jangan lupa untuk mengosongkan Sampah.</string>
@@ -506,10 +494,17 @@ Log ini menunjukkan aplikasi yang digunakan dan sebarang ralat yang mungkin berl
     <string name="maintenance_mode_outro_label">Keluar daripada Mod penyelenggaraan</string>
     <string name="maintenance_mode_outro_textview_message_phone">Anda perlu membuka kunci telefon anda untuk mematikan Mod penyelenggaraan. Apabila anda mematikan Mod penyelenggaraan, semuanya akan kembali kepada waktu Mod penyelenggaraan mula-mula dihidupkan. Perubahan yang dilakukan semasa Mod penyelenggaraan dihidupkan, seperti data yang dimuat turun, aplikasi yang dipasang atau perubahan aturan, tidak disimpan.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Anda perlu membuka kunci tablet anda untuk mematikan Mod Penyelenggaraan. Apabila anda mematikan Mod penyelenggaraan, semuanya akan kembali kepada waktu Mod penyelenggaraan mula-mula dihidupkan. Perubahan yang dilakukan semasa Mod penyelenggaraan dihidupkan, seperti data yang dimuat turun, aplikasi yang dipasang atau perubahan aturan, tidak disimpan.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Mod penyelenggaraan tidak dapat digunakan semasa %s diaktifkan.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Tidak dapat menggunakan Mod penyelenggaraan semasa Penjimatan kuasa dihidupkan dengan aplikasi terhad dan Skrin utama.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Mod penyelenggaraan ini tidak disokong pada telefon ini.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Mod penyelenggaraan tidak disokong pada tablet ini.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s hanya boleh digunakan oleh pemilik peranti.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Hentikan penyandaran data anda dan hidupkan Mod penyelenggaraan?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Untuk menghidupkan Mod penyelenggaraan, anda perlu menyelesaikan atau memadamkan sandaran anda yang belum selesai.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Untuk menghidupkan Mod penyelenggaraan, anda perlu menghentikan sandaran anda yang sedang berjalan.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Untuk menghidupkan Mod penyelenggaraan, anda perlu menghentikan pemulihan data sandaran anda.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Aplikasi pentadbir peranti</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Mencipta log…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Ini biasanya mengambil masa lebih kurang 2 minit. Selepas log dicipta, telefon anda akan dimulakan semula dalam Mod penyelenggaraan dan anda boleh menyerahkan telefon anda dengan selamat untuk penyelenggaraan.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Ini biasanya mengambil masa lebih kurang 2 minit. Selepas log dicipta, tablet anda akan dimulakan semula dalam Mod penyelenggaraan dan anda boleh menyerahkan tablet anda dengan selamat untuk penyelenggaraan.</string>
@@ -532,13 +527,8 @@ Tablet anda akan dimulakan semula tidak lama lagi."</string>
     <string name="media_checking_usbhost">Storan USB sedang disemak buat masa ini.</string>
     <string name="media_unknown_state">Media luaran dalam keadaan tidak diketahui.</string>
     <string name="mediaplayer_restrict">Dasar keselamatan menghalang penggunaan pemain media MTP.</string>
+    <string name="message_on_crash">Disekat oleh Penyekat Auto</string>
     <string name="microphone_restrict">Dasar keselamatan menghalang penggunaan mikrofon.</string>
-    <string name="miniresolver_call">Panggil</string>
-    <string name="miniresolver_call_in_work">Buat panggilan daripada aplikasi kerja?</string>
-    <string name="miniresolver_call_information">Organisasi anda hanya membenarkan anda membuat panggilan daripada aplikasi kerja.</string>
-    <string name="miniresolver_sms_information">Organisasi anda hanya membenarkan anda menghantar mesej daripada aplikasi kerja.</string>
-    <string name="miniresolver_switch">Tukar</string>
-    <string name="miniresolver_switch_to_work">Tukar kepada aplikasi kerja?</string>
     <string name="mmcc_authentication_reject_name_template">%s tidak dibenarkan</string>
     <string name="mmcc_illegal_me_name_template">%s tidak dibenarkan</string>
     <string name="mmcc_illegal_ms_name_template">%s tidak dibenarkan</string>
@@ -550,30 +540,6 @@ Tablet anda akan dimulakan semula tidak lama lagi."</string>
     <string name="mock_location_reminder_disable">Matikan</string>
     <string name="mock_location_reminder_title">Lokasi olokan dihidupkan</string>
     <string name="more_apps">Lebih aplikasi</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">Perkhidmatan %s tidak disokong. Hubungi perkhidmatan pelanggan.</string>
-    <string name="mptcp_message_address_type_not_supported">Sambungan %s lemah. Menyambung semula melalui rangkaian tersedia…</string>
-    <string name="mptcp_message_busy_ntime_wait">Sambungan %s lemah. Menyambung semula melalui rangkaian tersedia…</string>
-    <string name="mptcp_message_cmd_not_supported">Rangkaian %s tidak tersedia buat sementara waktu. Menyambung semula melalui rangkaian tersedia…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">Sambungan %s lemah. Menyambung semula melalui rangkaian tersedia…</string>
-    <string name="mptcp_message_connection_refused">Sambungan %s lemah. Menyambung semula melalui rangkaian tersedia…</string>
-    <string name="mptcp_message_data_usage_limit">Had penggunaan data dicapai. Untuk menukar had penggunaan data, pergi ke Aturan.</string>
-    <string name="mptcp_message_host_unreachable">Sambungan %s lemah. Menyambung semula melalui rangkaian tersedia…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Tidak dapat mengaktifkan %s. Peranti tidak disambung ke rangkaian LTE.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Tidak dapat mengaktifkan %s semasa perayauan antarabangsa.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Tidak dapat mengaktifkan %s ketika Mobile hotspot atau penambatan USB diaktifkan.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Gagal mengaktifkan %s ketika Wi-Fi Direct diaktifkan.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Tidak dapat mengaktifkan %s semasa Mod penerbangan diaktifkan.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Tidak dapat mengaktifkan %s ketika Data mudah alih dimatikan.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Tiada sambutan daripada pembekal perkhidmatan.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Tidak dapat mengaktifkan %1$s. %2$s tidak tersedia dengan pakej Internet anda atau tiada respons daripada pelayan %3$s diterima.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Gagal menghantar %s permintaan pengaktifan. Menyambung semula melalui rangkaian tersedia…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Tidak dapat mengaktifkan %s. Kad SIM salah dimasukkan.</string>
-    <string name="mptcp_message_network_unreachable">Sambungan %s lemah. Menyambung semula melalui rangkaian tersedia…</string>
-    <string name="mptcp_message_non_mptcp_plan">Tidak dapat menyahaktifkan Giga Multi-Path. Fungsi tidak disokong oleh pelan data.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s dinyahaktifkan untuk mengelakkan peranti terlampau panas. Sebaliknya, memuat turun melalui rangkaian mudah alih…</string>
-    <string name="mptcp_message_server_error">Sambungan %s lemah. Menyambung semula melalui rangkaian tersedia…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Tidak dapat mengaktifkan %s. Peranti terlampau panas. Tunggu sehingga peranti sejuk dan cuba lagi.</string>
-    <string name="mptcp_message_ttl_expired">Rangkaian %s tidak tersedia buat sementara waktu. Menyambung semula melalui rangkaian tersedia…</string>
     <string name="multi_user_capability_restrict">Dasar keselamatan menghalang keupayaan berbilang pengguna pada peranti anda.</string>
     <string name="multi_user_creation_restrict">Dasar keselamatan menghalang penciptaan akaun pengguna baru pada peranti anda.</string>
     <string name="multi_user_removal_restrict">Dasar keselamatan menghalang pengalihan akaun pengguna dari peranti anda.</string>
@@ -592,24 +558,22 @@ Tablet anda akan dimulakan semula tidak lama lagi."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Bunyi sedang dimainkan pada peranti audio Bluetooth anda. Ketik di sini untuk mematikannya</string>
     <string name="multisound_sound_via_headphone">Bunyi %s dimainkan melalui fon kepala anda. Ketik di sini untuk mematikannya.</string>
     <string name="multisound_sound_via_headphone_multiselection">Bunyi sedang dimainkan melalui fon kepala anda. Ketik di sini untuk mematikannya.</string>
-    <string name="multisound_sound_via_phone_speaker">Bunyi %s dimainkan melalui pembesar suara tablet anda. Ketik di sini untuk mematikannya.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Bunyi sedang dimainkan melalui pembesar suara tablet anda. Ketik di sini untuk mematikannya.</string>
+    <string name="multisound_sound_via_phone_speaker">Bunyi %s dimainkan melalui pembesar suara anda. Ketik di sini untuk mematikannya.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Bunyi sedang dimainkan melalui pembesar suara telefon anda. Ketik di sini untuk mematikannya.</string>
     <string name="multisound_sound_via_usb_audio">%s bunyi sedang dimainkan menerusi peranti audio USB anda. Ketik di sini untuk mematikannya.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Bunyi sedang dimainkan menerusi peranti audio USB anda. Ketik di sini untuk mematikannya.</string>
     <string name="multisound_title">Asingkan bunyi aplikasi</string>
     <string name="multisound_turn_off_multisound">Matikan</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s tidak dapat dijalankan dalam Samsung DeX. Cuba jalankan dalam mod tablet.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s tidak dapat dijalankan dalam Samsung DeX. Aplikasi ini direka bentuk untuk Skrin utama tablet.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Sesetengah permainan hanya berfungsi dengan skrin sentuh. Jika kawalan tetikus tidak berfungsi dalam Samsung DeX, cuba mainnya dalam mod tablet.</string>
-    <string name="my_device">Tablet ini</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s tidak dapat dijalankan dalam Samsung DeX. Cuba jalankan dalam mod telefon.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s tidak dapat dijalankan dalam Samsung DeX. Aplikasi direka bentuk untuk Skrin utama telefon.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Sesetengah permainan hanya berfungsi dengan skrin sentuh. Jika kawalan tetikus tidak berfungsi dalam Samsung DeX, cuba mainnya dalam mod telefon.</string>
+    <string name="my_device">Telefon ini</string>
     <string name="network_locked_sim_dialog_message_ais">SIM anda tidak berfungsi sepenuhnya dengan telefon ini kerana SIM tidak mematuhi terma dan syarat langganan anda. Jika anda mempunyai sebarang pertanyaan atau memerlukan maklumat lanjut tentang perkara ini, sila hubungi lokasi Perkhidmatan Pelanggan Samsung atau kedai yang menjual produk ini kepada anda.</string>
     <string name="network_locked_sim_notification_text">Kad SIM yg dkunci rngkaian dimsukkn.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Ubah aplikasi Utama lalai anda kepada One UI Home.</string>
     <string name="nfc_restrict">Dasar keselamatan mengelakkan penggunaan NFC.</string>
     <string name="nosim_limited_service">Perkhidmatan terhad</string>
-    <string name="not_support_ai_key">Kekunci AI belum dapat berfungsi dengan tablet anda. Kemaskinian akan tersedia tidak lama lagi.</string>
-    <string name="notification_app_name_settings">Aturan</string>
     <string name="notification_channel_dex_policy">Dasar Samsung DeX</string>
     <string name="ntfs_usb_storage_readonly_mount_message">Storan ini baca sahaja kerana storan ini menggunakan format NTFS.</string>
     <string name="ntfs_usb_storage_readonly_mount_title">Storan USB baca shj ditambahkan</string>
@@ -784,7 +748,6 @@ PULANGKAN KE"</string>
     <string name="permlab_scheduleExactAlarm">Tetapkan penggera dan peringatan</string>
     <string name="permlab_spdControl">Urus kemas kini dasar keselamatan</string>
     <string name="permlab_ucsPlugin">Pasang Masuk Pengurus Kelayakan Universal</string>
-    <string name="personal_apps_suspended_turn_profile_on">Hidupkan</string>
     <string name="phoneTypeConference">Persidangan</string>
     <string name="policydesc_allow_bluetoothmode">Halang penggunaan Bluetooth.</string>
     <string name="policydesc_allow_browser">Halang penggunaan Internet.</string>
@@ -792,7 +755,7 @@ PULANGKAN KE"</string>
     <string name="policydesc_allow_desktopsync">Halang penggunaan penyelarasan desktop.</string>
     <string name="policydesc_allow_internetsharing">Halang penggunaan Mobile Hotspot.</string>
     <string name="policydesc_allow_irda">Halang penggunaan IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Halang penggunaan e-mel POP dan IMAP pada tablet.</string>
+    <string name="policydesc_allow_popimapemail">Halang penggunaan e-mel POP dan IMAP pada telefon.</string>
     <string name="policydesc_allow_storagecard">Halang penggunaan kad SD.</string>
     <string name="policydesc_allow_textmessaging">Halang penggunaan mesej teks dan multimedia.</string>
     <string name="policydesc_allow_thirdParty">Aplikasi ini boleh menghalang aplikasi pihak ketiga dari berjalan.</string>
@@ -838,7 +801,7 @@ PULANGKAN KE"</string>
     <string name="pwd_change_enforced">Dasar keselamatan memerlukan anda menukar kata laluan anda.</string>
     <string name="recording_fail">Tidak dapat menggunakan mikrofon dalam %1$s semasa mikrofon sedang digunakan dalam %2$s.</string>
     <string name="recording_popup">%s sedang menggunakan mikrofon.</string>
-    <string name="recording_popup_device">Tablet</string>
+    <string name="recording_popup_device">Telefon</string>
     <string name="recording_popup_with_bluetooth">%s sedang menggunakan mikrofon Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s sedang menggunakan mikrofon %2$s.</string>
     <string name="redo">Buat semula</string>
@@ -903,12 +866,12 @@ PULANGKAN KE"</string>
     <string name="screencapture_restrict">Dasar keselamatan menghalang penggunaan tangkapan skrin.</string>
     <string name="sd_card_unavailable_message">Anda tidak boleh menggunakan kad SD kerana kad SD dimasukkan semasa profil pengguna berlainan sedang digunakan.</string>
     <string name="sd_card_unavailable_title">Kad SD tidak tersedia</string>
-    <string name="sdcard_bad_removal_message">Kad SD telah dialih keluar secara tidak selamat. Untuk mengelakkan tablet anda daripada dimulakan semula secara tidak dijangka, simpan data yang tidak disimpan dan mulakan semula sekarang.</string>
+    <string name="sdcard_bad_removal_message">Kad SD telah dialih keluar secara tidak selamat. Untuk mengelakkan telefon anda daripada dimulakan semula secara tidak dijangka, simpan data yang tidak disimpan dan mulakan semula sekarang.</string>
     <string name="sdcard_batch_decrypt_noti_content">Nyahsulitkan kad SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Penyahsulitan kad SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Kad SD disulitkan mesti dinyahsulitkan sebelum digunakan. Penyahsulitan boleh mengambil masa satu jam atau lebih. Mulakan dengan bateri yang bercas dan biarkan peranti dipalamkan sehingga penyahsulitan selesai. Penggangguan proses penyahsulitan mungkin menyebabkan kehilangan beberapa atau semua data.</string>
     <string name="sdcard_decrypt_err_notification">Ralat penyahsulitan kad SD berlaku.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Sesetengah fail pada kad SD anda telah disulitkan pada peranti lain dan tidak dapat digunakan pada tablet ini.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Sesetengah fail pada kad SD anda disulitkan pada peranti lain dan tidak dapat digunakan pada telefon ini.</string>
     <string name="sdcard_decrypt_notification">Kad SD dinyahsulit.</string>
     <string name="sdcard_decrypt_title_notification">Penyahsulitan kad SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Menyahsulitkan kad SD…</string>
@@ -925,14 +888,6 @@ PULANGKAN KE"</string>
     <string name="sdcard_unmount_policy_noti_title">Kad SD ditanggalkan kerana dasar IT.</string>
     <string name="sdhms_nr_control_low_battery">Matikan 5G untuk menjimatkan bateri apabila baki bateri telefon anda kurang daripada 15%.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth akan kekal pada Mod penerbangan.</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Aplikasi ini menggunakan skrin penuh. Gerak isyarat sapu untuk pemanduan arah akan menunjukkan bar status. Untuk memandu arah, sapu sekali lagi semasa bar status kelihatan.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Aplikasi ini menggunakan skrin penuh. Butang Utama, Kembali, dan Terkini disembunyikan untuk meminimumkan gangguan dan mengelakkan anda daripada meninggalkan aplikasi secara tidak sengaja.
-
-Walaupun jika anda memutarkan telefon anda, butang akan sentiasa berada di sebelah port pengecasan. Anda boleh menjadikan butang muncul semula dengan menyapu ke dalam dari sisi skrin seperti yang ditunjukkan anak panah."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Aplikasi ini menggunakan skrin penuh. Butang Utama, Kembali, dan Terkini disembunyikan untuk meminimumkan gangguan dan mengelakkan anda daripada meninggalkan aplikasi secara tidak sengaja.
-
-Untuk menjadikan butang muncul semula, sapu dari bahagian bawah skrin seperti yang ditunjukkan oleh anak panah."</string>
     <string name="sec_monotype_default">Lalai</string>
     <string name="sec_ringtone_category_brand_sound">Bunyi jenama Samsung</string>
     <string name="sec_ringtone_category_calm">Tenang</string>
@@ -942,6 +897,10 @@ Untuk menjadikan butang muncul semula, sapu dari bahagian bawah skrin seperti ya
     <string name="sec_ringtone_category_open_theme">Tema lalai semasa</string>
     <string name="sec_ringtone_category_retro">Retro</string>
     <string name="sec_ringtone_silent">Senyap</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Batal</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Untuk menyambungkan satelit, operator rangkaian anda perlu ditetapkan kepada Pilih secara automatik.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Hidupkan</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Hidupkan pemilihan rangkaian automatik?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Hidupkan capaian Mikrofon untuk bercakap.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Hidupkan capaian Kamera untuk menggunakan %s.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Hidupkan capaian Mikrofon untuk menggunakan %s.</string>
@@ -1037,6 +996,8 @@ Untuk menjadikan butang muncul semula, sapu dari bahagian bawah skrin seperti ya
     <string name="sem_face_error_already_in_use_by_VT">Tidak dapat menggunakan pengecaman muka semasa panggilan video.</string>
     <string name="sem_face_error_camera_access_off">Tidak dapat menggunakan pengecaman muka kerana capaian kamera dimatikan</string>
     <string name="sem_face_error_camera_fail">Tidak dapat membuka Kamera.Cuba lagi.</string>
+    <string name="sem_face_error_lockout">Pengesahan biometrik tidak tersedia kerana terlalu banyak percubaan yang salah.</string>
+    <string name="sem_face_error_lockout_permanent">Pengesahan biometrik tidak tersedia kerana terlalu banyak percubaan yang salah.</string>
     <string name="sem_face_error_ppp_timeout">Sudah agak lama sejak anda mengesahkan identiti anda. Anda perlu bermula sekali lagi untuk mendaftarkan muka anda.</string>
     <string name="sem_face_error_too_dark">Suasana terlalu gelap untuk mengesan muka</string>
     <string name="sem_face_error_too_dark_to_enroll">Terlalu gelap. Cuba hidupkan lampu atau pergi ke tempat lebih cerah.</string>
@@ -1052,13 +1013,18 @@ Untuk menjadikan butang muncul semula, sapu dari bahagian bawah skrin seperti ya
     <string name="sem_fingerprint_acquired_tsp_block">Alihkan hujung S Pen anda jauh dari skrin untuk mengimbas cap jari anda.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Untuk menggunakan cap jari, tetapkan jenis kunci skrin selamat (corak, PIN atau kata laluan) dahulu.</string>
+    <string name="sem_fingerprint_error_lockout">Pengesahan biometrik tidak tersedia kerana terlalu banyak percubaan yang salah.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Pengesahan biometrik tidak tersedia kerana terlalu banyak percubaan yang salah.</string>
     <string name="sem_fingerprint_error_onehand_mode">Tidak dapat menggunakan pengimbas cap jari dalam Mod sebelah tangan.</string>
     <string name="sem_fingerprint_error_smart_view">Tidak dapat mengimbas cap jari semasa menggunakan %s.</string>
+    <string name="sem_fingerprint_error_system_failure">Penderia cap jari tiada respons. Cuba lagi kemudian. Jika masalah ini berterusan, cuba mulakan semula telefon anda.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Data cap jari telah rosak. Tambah cap jari anda lagi.</string>
     <string name="sem_fingerprint_error_wireless_charger">Nyahsambung daripada pengecas wayarles untuk menggunakan cap jari anda</string>
     <string name="sem_fingerprint_name_template">Cap jari %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Kemudian</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Bukan skrg</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Alih keluar dan daftar</string>
+    <string name="sem_fingerprint_register_dialog_message">Pengecaman cap jari telah ditingkatkan dalam kemas kini perisian terkini. Anda tidak akan dapat menggunakan pengecaman cap jari sehingga anda mengalih keluar cap jari anda dan mendaftarkan cap jari semula.</string>
     <string name="sem_fingerprint_register_dialog_title">Daftar cap jari sekali lagi</string>
     <string name="sem_fingerprint_result_failed">Tiada padanan.</string>
     <string name="sem_fingerprint_result_retry">Cuba lagi.</string>
@@ -1078,7 +1044,7 @@ Untuk menjadikan butang muncul semula, sapu dari bahagian bawah skrin seperti ya
     <string name="sem_resolver_button_always_accessibility">Sentiasa gunakan aplikasi dipilih</string>
     <string name="sem_resolver_button_just_once_accessibility">Guna peranti dipilih hanya sekali</string>
     <string name="sem_resolver_choose_what_to_do">Pilih tindakan untuk dilakukan</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Untuk mengubah aturan aplikasi lalai, pergi ke Aturan > Aplikasi > Pilih aplikasi lalai.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Untuk mengubah aplikasi lalai yang digunakan untuk membuka jenis fail ini, pergi ke Aturan > Aplikasi, pilih aplikasi lalai semasa kemudian ketik Tetapkan sebagai Lalai > Kosongkan lalai.</string>
     <string name="sem_resolver_icon_content_description">Maklumat</string>
     <string name="sem_resolver_personal_tab_accessibility">Peribadi</string>
     <string name="sem_resolver_share_live_default_text">Kongsi segera dengan orang berdekatan. Orang yang menetapkan peranti kepada boleh dilihat akan ditunjukkan di sini.</string>
@@ -1090,9 +1056,6 @@ Untuk menjadikan butang muncul semula, sapu dari bahagian bawah skrin seperti ya
     <string name="sem_resolver_work_tab_accessibility">Kerja</string>
     <string name="sem_switch_off">Mati</string>
     <string name="sem_switch_on">Hidup</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Capaian kamera dimatikan untuk semua apl</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Hidupkan</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Capaian mikrofon dimatikan dalam semua apl</string>
     <string name="serviceErased">Pemadaman berjaya.</string>
     <string name="serviceModeAll">Semua</string>
     <string name="serviceModeAllConditional">bersyarat.</string>
@@ -1102,6 +1065,7 @@ Untuk menjadikan butang muncul semula, sapu dari bahagian bawah skrin seperti ya
     <string name="serviceModeUnconditional">secara tidak bersyarat.</string>
     <string name="serviceisDisabled">Perkhidmatan dinyahaktifkan.</string>
     <string name="serviceisEnabled">Perkhidmatan diaktifkan.</string>
+    <string name="settings">Aturan</string>
     <string name="sf_quick_switch_not_supported">Tukar pantas tidak disokong dalam situasi ini.</string>
     <string name="sf_quick_switch_securefolder_view">Bertukar kepada %s.</string>
     <string name="share">Kongsi</string>
@@ -1110,26 +1074,30 @@ Untuk menjadikan butang muncul semula, sapu dari bahagian bawah skrin seperti ya
     <string name="sharelist_restrict">Dasar keselamatan menghalang perkongsian data.</string>
     <string name="show_keyboard_button">Tunjukkan butang Papan Kekunci</string>
     <string name="show_keyboard_button_description">Tunjukkan %s pada bar pemanduan arah.</string>
+    <string name="showing_esc_dialog">Anda boleh menetapkan kekunci Esc untuk berfungsi sebagai butang Kembali.</string>
     <string name="showing_touch_sensitivity_noti_action">Hidupkan</string>
     <string name="showing_touch_sensitivity_noti_text">Hidupkan Kepekaan sentuhan semasa menggunakan Privacy Screen atau Notepaper Screen untuk keresponsifan sentuhan yang lebih tepat.</string>
     <string name="showing_touch_sensitivity_noti_title">Tingkatkan kepekaan sentuhan</string>
+    <string name="side_key_double_press_archived_app">Aplikasi diarkibkan. Pilih mod lain.</string>
     <string name="side_key_double_press_deleted_app">Aplikasi dinyahpasang. Pilih aplikasi lain.</string>
     <string name="side_key_double_press_disabled_app">%s dinyahaktifkan. Pilih aplikasi lain.</string>
     <string name="signature_identity_toast">%s ditandatangani oleh</string>
     <string name="simRefresh">Memuat semula data SIM</string>
     <string name="simReset">Mengemas kini data SIM…</string>
     <string name="sim_check_old_sim_message">Kad SIM yang lama atau rosak boleh menyebabkan masalah sambungan rangkaian. Hubungi pembekal perkhidmatan anda atau lawati salah satu kedai mereka untuk menyemak sama ada penggantian diperlukan.</string>
+    <string name="sim_check_old_sim_message_skt">Kad SIM yang lama atau rosak boleh menyebabkan masalah sambungan rangkaian. Hubungi pembekal perkhidmatan anda atau kunjungi salah satu kedai mereka untuk menyemak sama ada kad itu perlu digantikan atau tidak.</string>
     <string name="sim_check_old_sim_title">SIM anda mungkin perlu digantikan</string>
+    <string name="sim_check_old_sim_title_skt">SIM anda mungkin perlu digantikan</string>
     <string name="sim_count_mismatched_ds_to_ss">Mod kad SIM telah ditukar daripada SIM Duaan kepada SIM Tunggal. Untuk menggunakan aturan ini, peranti akan ditetapkan semula kepada aturan lalai kilang dan akan dimulakan semula.</string>
     <string name="sim_count_mismatched_ss_to_ds">Mod kad SIM telah ditukar daripada SIM Tunggal kepada SIM Duaan. Untuk menggunakan aturan ini, peranti akan ditetapkan semula kepada aturan lalai kilang dan akan dimulakan semula.</string>
     <string name="sim_count_mismatched_title">Mod kad SIM ditukar</string>
-    <string name="sim_imsreg_error_message_lgt">Telefon anda tidak akan dapat membuat panggilan suara kerana telefon tidak dapat mengenal pasti kad SIM. Cuba alih keluar kad SIM dan masukkannya semula. Jika masalah ini berterusan, anda mungkin perlu menggantikan kad SIM anda. Untuk mendapatkan bantuan, kunjungi kedai LG U+ atau hubungi Perkhidmatan Pelanggan LG U+ di talian 1544-0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Tablet anda tidak akan dapat membuat panggilan suara kerana tablet tidak dapat mengenal pasti kad SIM. Cuba alih keluar kad SIM dan masukkannya semula. Jika masalah ini berterusan, anda mungkin perlu menggantikan kad SIM anda. Untuk mendapatkan bantuan, kunjungi kedai LG U+ atau hubungi Perkhidmatan Pelanggan LG U+ di talian 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">Telefon anda tidak akan dapat membuat panggilan suara kerana telefon tidak dapat mengenal pasti kad SIM. Cuba alih keluar kad SIM dan masukkannya semula. Jika masalah ini berterusan, anda mungkin perlu menggantikan kad SIM anda di kedai LG U+.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Tablet anda tidak akan dapat membuat panggilan suara kerana tablet tidak dapat mengenal pasti kad SIM. Cuba alih keluar kad SIM dan masukkannya semula. Jika masalah ini berterusan, anda mungkin perlu menggantikan kad SIM anda di kedai LG U+.</string>
     <string name="sim_off_noti_message">Anda tidak boleh membuat panggilan, menghantar mesej atau menggunakan data apabila semua SIM dimatikan. Ketik di sini untuk menghidupkan SIM.</string>
     <string name="sim_off_noti_title">Semua SIM dimatikan</string>
     <string name="sim_off_toast_message">Kad SIM yang anda masukkan dimatikan. Untuk menggunakan SIM, pergi ke Aturan > Sambungan > Pengurus SIM, kemudian hidupkannya.</string>
     <string name="sim_recognize_error_message_kt">Kad SIM anda tidak dikenal pasti. Cuba alih keluar kad SIM dan masukkannya semula. Jika masalah ini berterusan, anda mungkin perlu menggantikan kad SIM anda. Untuk mendapatkan bantuan, kunjungi kedai KT atau hubungi Perkhidmatan Pelanggan KT di talian 1588-0010.</string>
-    <string name="sim_recognize_error_message_lgt">Kad SIM anda tidak dikenal pasti. Cuba alih keluar kad SIM dan masukkannya semula. Jika masalah ini berterusan, anda mungkin perlu menggantikan kad SIM anda. Untuk mendapatkan bantuan, kunjungi kedai LG U+ atau hubungi Perkhidmatan Pelanggan LG U+ di talian 1544-0010.</string>
+    <string name="sim_recognize_error_message_lgt">Kad SIM anda tidak dikenal pasti. Cuba alih keluar kad SIM dan masukkannya semula. Jika masalah ini berterusan, anda mungkin perlu menggantikan kad SIM anda di kedai LG U+.</string>
     <string name="sim_recognize_error_message_skt">Tidak dapat membaca kad SIM. Beberapa aplikasi dan ciri mungkin tidak berfungsi. Alih keluar dan masukkan semula kad SIM anda, kemudian mulakan semula telefon anda. Jika itu tidak membaiki isu, bawa telefon dan kad SIM anda ke lokasi Perkhidmatan Pelanggan.</string>
     <string name="sim_recognize_error_message_skt_tablet">Tidak dapat membaca kad SIM. Beberapa aplikasi dan ciri mungkin tidak berfungsi. Alih keluar dan masukkan semula kad SIM anda, kemudian mulakan semula tablet anda. Jika itu tidak membaiki isu, bawa tablet dan kad SIM anda ke lokasi Perkhidmatan Pelanggan.</string>
     <string name="sim_recognize_error_title_lgt">Tidak dapat mengenal pasti kad USIM</string>
@@ -1139,10 +1107,8 @@ Untuk menjadikan butang muncul semula, sapu dari bahagian bawah skrin seperti ya
     <string name="sim_removed_message_hotswap_us_tablet">Sambung ke rangkaian Wi-Fi atau masukkan kad SIM untuk menggunakan data mudah alih.</string>
     <string name="sim_removed_title_hotswap">Tiada kad SIM dimasukkan</string>
     <string name="sim_removed_title_hotswap_us_tablet">Masukkan kad SIM</string>
+    <string name="smart_tip_action_click_hint_text">Tutup</string>
     <string name="smartclip_restrict">Dasar keselamatan menghalang penggunaan Klip mudah.</string>
-    <string name="sms_short_code_remember_undo_instruction">Anda boleh mengubah ini kemudian dengan pergi ke Aturan > Aplikasi</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Anda boleh mengubah ini kemudian dengan pergi ke Aturan > Aplikasi > Butang lebih pilihan > Capaian khas > Guna Perkhidmatan mesej teks premium</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Jika anda mengetik JANGAN BENARKAN, aplikasi ini tidak akan dapat menghantar mesej di latar belakang walaupun kebenaran Hantar mesej teks telah diberikan.</string>
     <string name="ss_do_not_show_again_us">Jangan tunjuk lagi</string>
     <string name="sss_translate">Terjemah</string>
     <string name="ssu_lock_body_vzw">Maaf, peranti anda tidak boleh diaktifkan pada rangkaian pembawa lain buat masa ini. Untuk bantuan, hubungi Verizon di %1$s atau %2$s (pelan prabayar)</string>
@@ -1173,7 +1139,6 @@ Untuk menjadikan butang muncul semula, sapu dari bahagian bawah skrin seperti ya
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">Mobile Hotspot</string>
     <string name="title_dialog_check_rotate_or_not">Matikan Auto putar skrin?</string>
-    <string name="title_uds">Mod jimat data ultra</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Tidak dapat menggunakan Bixby semasa menyediakan telefon anda.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Tidak dapat menggunakan Bixby semasa menyediakan tablet anda.</string>
     <string name="toast_warning_pattern_lock">Kunci corak tidak dapat gunakan dengan Suis universal. Ubah kepada jenis kunci yang lain dahulu.</string>
@@ -1213,9 +1178,13 @@ Untuk mengalih keluar perlindungan ini, pergi ke Aturan > Keselamatan dan privas
     <string name="unknown_install_blocked_esm_title">Aplikasi tidak diketahui disekat</string>
     <string name="unknown_install_dlg_desc">Aplikasi ini tidak dimuat turun daripada kedai diluluskan. Memasang aplikasi ini mungkin mendedahkan anda kepada risiko keselamatan dan privasi. Aplikasi boleh mengumpulkan maklumat peribadi anda atau menyeba data anda hilang.</string>
     <string name="unknown_install_dlg_desc2">Aplikasi ini tidak menyokong ciri keselamatan terkini. Memasang aplikasi ini boleh menyebabkan risiko keselamatan berikut:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Fail pemasangan aplikasi ini mungkin tidak selamat. Fail tersebut mungkin bukan fail aplikasi seperti yang didakwa. Untuk melindungi telefon dan data peribadi anda, pasang aplikasi daripada gedung aplikasi yang anda percaya.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Fail pemasangan aplikasi ini mungkin tidak selamat. Fail tersebut mungkin bukan fail aplikasi seperti yang didakwa. Untuk melindungi tablet dan data peribadi anda, pasang aplikasi daripada gedung aplikasi yang anda percaya.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Aplikasi ini disyaki ialah perisian hasad dan boleh mendedahkan telefon dan data anda kepada risiko. Pemasangan aplikasi ini tidak disyorkan.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Aplikasi ini disyaki ialah perisian hasad dan boleh mendedahkan tablet dan data anda kepada risiko. Pemasangan aplikasi ini tidak disyorkan.</string>
-    <string name="unknown_install_dlg_general_title">Aplikasi ini daripada sumber yang tidak diketahui</string>
+    <string name="unknown_install_dlg_desc_phone">Aplikasi ini bukan daripada gedung aplikasi yang dibenarkan. Untuk melindungi telefon dan maklumat peribadi anda, pasang aplikasi daripada gedung yang dibenarkan seperti Play Store atau Galaxy Store.</string>
+    <string name="unknown_install_dlg_desc_tablet">Aplikasi ini bukan daripada gedung aplikasi yang dibenarkan. Untuk melindungi tablet dan maklumat peribadi anda, pasang aplikasi daripada gedung yang dibenarkan seperti Play Store atau Galaxy Store.</string>
+    <string name="unknown_install_dlg_general_title">Pemasangan aplikasi ini tidak disyorkan</string>
     <string name="unknown_install_dlg_negative_button">Jangan pasang</string>
     <string name="unknown_install_dlg_perm_desc1">Aplikasi boleh memintas kod pengesahan daripada teks mesej yang anda terima.</string>
     <string name="unknown_install_dlg_perm_desc2">Panggilan keluar mungkin dihalakan semula ke nombor telefon berlainan tanpa pengetahuan anda.</string>
@@ -1234,7 +1203,7 @@ Untuk mengalih keluar perlindungan ini, pergi ke Aturan > Keselamatan dan privas
     <string name="usb_abnormal_reset_title">Sambungan USB tidak stabil</string>
     <string name="usb_abnormal_reset_toast">Sambungan USB tidak stabil. Cabutkan kabel dan pasangkannya semula, atau cuba kabel berlainan.</string>
     <string name="usb_accessory_notification_title">Disambungkan ke aksesori USB</string>
-    <string name="usb_bad_removal_message">Peranti storan USB telah dialih keluar secara tidak selamat. Untuk mengelakkan tablet anda daripada dimulakan semula secara tidak dijangka, simpan data yang tidak disimpan dan mulakan semula sekarang.</string>
+    <string name="usb_bad_removal_message">Peranti storan USB telah dialih keluar secara tidak selamat. Untuk mengelakkan telefon anda daripada dimulakan semula secara tidak dijangka, simpan data yang tidak disimpan dan mulakan semula sekarang.</string>
     <string name="usb_blocked_by_emergency_mode">Sesetengah fungsi USB tidak tersedia dalam Mod kecemasan.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Tidak dapat menggunakan fungsi berkaitan dengan peranti USB yang disambungkan semasa Mod penjimatan kuasa maksimum diaktifkan.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Sesetengah fungsi USB akan terhad apabila Mod penjimatan kuasa maksimum dihidupkan.</string>
@@ -1243,13 +1212,15 @@ Untuk mengalih keluar perlindungan ini, pergi ke Aturan > Keselamatan dan privas
     <string name="usb_camera_connected_notification_title">Peranti media disambungkan</string>
     <string name="usb_camera_disconnected_notification_title">Peranti media dinyahsambungkan</string>
     <string name="usb_cd_installer_notification_title">Kemas kini perisian</string>
-    <string name="usb_charing_only_notification_title">Disambungkan</string>
+    <string name="usb_charing_only_notification_title">Pengecasan USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Penyekat Auto dihidupkan dengan sekatan maksimum.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">Sambungan USB disekat</string>
     <string name="usb_debugging_only_notification_title">Penyahpepijatan sahaja</string>
-    <string name="usb_host_resource_exceed_message">Pengawal USB tablet anda tidak mempunyai sumber yang mencukupi untuk menyambungkan peranti ini. Cuba nyahsambungkan peranti dan sambungkannya sekali lagi.</string>
+    <string name="usb_host_resource_exceed_message">Pengawal USB telefon anda tidak mempunyai sumber yang mencukupi untuk menyambungkan peranti ini. Cuba nyahsambungkan peranti dan sambungkannya sekali lagi.</string>
     <string name="usb_host_resource_exceed_title">Sumber pengawal USB Tidak Mencukupi</string>
-    <string name="usb_hub_depth_exceed_message">Tablet anda hanya boleh menyokong sehingga 5 sambungan hab USB pada masa yang sama.</string>
+    <string name="usb_hub_depth_exceed_message">Telefon anda hanya boleh menyokong sehingga 5 sambungan hab USB pada masa yang sama.</string>
     <string name="usb_hub_depth_exceed_title">Sambungan hab USB maksimum</string>
-    <string name="usb_hub_power_exceed_message">Tablet anda tidak dapat menyediakan kuasa yang mencukupi untuk peranti USB ini. Sambungkan peranti kepada hab USB kuasa sendiri sebelum menyambungkannya kepada tablet anda.</string>
+    <string name="usb_hub_power_exceed_message">Telefon anda tidak dapat menyediakan kuasa yang mencukupi untuk peranti USB ini. Sambungkan peranti kepada hab USB dikuasakan sendiri sebelum menyambungkannya kepada telefon anda.</string>
     <string name="usb_increase_battery_usage">Sambungan USB mungkin meningkatkan penggunaan bateri.</string>
     <string name="usb_mass_storage_restrict">Dasar keselamatan menghalang penggunaan storan massa USB.</string>
     <string name="usb_midi_notification_title">USB untuk MIDI</string>
@@ -1275,8 +1246,9 @@ Untuk mengalih keluar perlindungan ini, pergi ke Aturan > Keselamatan dan privas
     <string name="usb_storage_stop_title">Storan USB sedang diguna.</string>
     <string name="usb_storage_title">USB disambung.</string>
     <string name="usb_type_c_supply_power_notification_title">Mengecas peranti yg disambungkan dgn USB</string>
-    <string name="usb_unblock_by_screen_unlock">Buka kunci tablet anda untuk menggunakan peranti USB yang disambungkan.</string>
-    <string name="usb_unsupport_accessory_message">Peranti USB ini tidak disokong oleh tablet anda.</string>
+    <string name="usb_unblock_by_screen_unlock">Buka kunci telefon anda untuk menggunakan peranti USB yang disambungkan.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">Untuk menggunakan peranti USB, buka kunci telefon anda dan sambungkan semula peranti USB.</string>
+    <string name="usb_unsupport_accessory_message">Peranti USB ini tidak disokong oleh telefon anda.</string>
     <string name="usb_unsupport_accessory_title">Peranti USB tidak disokong</string>
     <string name="usb_unsupported_device">Peranti USB yang disambungkan tidak disokong.</string>
     <string name="usb_unsupported_device_title">Peranti tidak disokong</string>
@@ -1294,24 +1266,24 @@ Untuk mengalih keluar perlindungan ini, pergi ke Aturan > Keselamatan dan privas
     <string name="usb_water_dialg_method_2_desc_2">Anda boleh meningkatkan kelajuan dengan menudingkan kipas atau pengering (udara dingin sahaja) ke arah port.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Kami telah mengesan kelembapan atau bendasing pada port pengecasan/USB anda.
 
-Semak port pengecasan/USB anda untuk sebarang bendasing seperti debu atau serpihan. Untuk mengelakkan kerosakan pada tablet anda, jangan palam masuk apa-apa sehingga port pengecasan adalah bersih dan kelembapan telah hilang.
+Semak port pengecasan/USB anda untuk sebarang bendasing seperti debu atau serpihan. Untuk mengelakkan kerosakan pada telefon anda, jangan palam masuk apa-apa sehingga port pengecasan adalah bersih dan kelembapan telah hilang.
 
 Untuk mengeringkan port, goncang keluar sebarang kelembapan, kemudian tunggu sehingga kering, yang mungkin mengambil masa beberapa jam. Anda boleh mempercepat pengeringan dengan menghalakan kipas atau pengering (udara dingin sahaja) pada port."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Kami telah mengesan kelembapan atau bendasing pada port pengecasan/USB anda.
 
-Semak port pengecasan/USB anda untuk sebarang bendasing seperti debu atau serpihan. Untuk mengelakkan kerosakan pada tablet anda, jangan palam masuk apa-apa sehingga port pengecasan bersih dan kelembapan hilang.
+Semak port pengecasan/USB anda untuk sebarang bendasing seperti debu atau serpihan. Untuk mengelakkan kerosakan pada telefon anda, jangan palam masuk apa-apa sehingga port pengecasan adalah bersih dan kelembapan telah hilang.
 
-Untuk mengeringkan port, goncang keluar sebarang kelembapan, kemudian tunggu sehingga kering, yang mungkin mengambil masa beberapa jam. Anda boleh mempercepat pengeringan dengan menudingkan kipas atau pengering (udara dingin sahaja) pada port.
+Untuk mengeringkan port, goncang keluar sebarang kelembapan, kemudian tunggu sehingga kering, yang mungkin mengambil masa beberapa jam. Anda boleh mempercepat pengeringan dengan menghalakan kipas atau pengering (udara dingin sahaja) pada port.
 
-Sementara itu, anda boleh mengecas tablet anda secara wayarles."</string>
+Sementara itu, anda boleh mengecas telefon anda secara wayarles."</string>
     <string name="usb_water_notification_content">Terdapat kelembapan atau bendasing dalam port pengecasan/USB anda. Semak sebelum mengecas.</string>
-    <string name="usb_water_notification_message">Kelembapan telah dikesan dalam pengecas/port USB anda. Pastikan ia benar-benar kering sebelum mengecas tablet anda. Ia mungkin mengambil sedikit masa untuk kering sepenuhnya.</string>
+    <string name="usb_water_notification_message">Kelembapan telah dikesan dalam pengecas/port USB anda. Pastikan ia benar-benar kering sebelum mengecas telefon anda. Ia mungkin mengambil sedikit masa untuk kering sepenuhnya.</string>
     <string name="usb_water_notification_message_button">Butiran</string>
     <string name="usb_water_notification_title">Semak port pengecas/USB</string>
     <string name="usbhostStorage_restrict">Dasar keselamatan menghalang penggunaan storan hos USB.</string>
     <string name="usbmemory_added_notification_title">Storan USB ditambahkan</string>
-    <string name="usbmemory_readonly_mount_notification_message">Peranti storan USB anda tidak berfungsi dengan betul dan telah ditetapkan kepada baca sahaja untuk mengelakkan kehilangan data. Menyandarkan data pada peranti storan USB anda adalah disyorkan.</string>
+    <string name="usbmemory_readonly_mount_notification_message">Peranti storan USB anda tidak berfungsi dengan betul dan telah ditetapkan kepada baca sahaja untuk mengelakkan kehilangan data. Penyandaran data kepada peranti storan USB anda adalah disyorkan.</string>
     <string name="usbmemory_readonly_mount_notification_title">Tidak dpt tulis kpd storan USB</string>
     <string name="user_encrypted_title_phone">Telefon dimulakan semula</string>
     <string name="user_encrypted_title_tablet">Tablet dimulakan semula</string>
@@ -1319,6 +1291,8 @@ Sementara itu, anda boleh mengecas tablet anda secara wayarles."</string>
     <string name="vpn_allowOnlySecureConnection">Profil VPN tidak selamat</string>
     <string name="vpn_error_text">Ketik untuk cuba bersambung semula ke VPN.</string>
     <string name="vpn_error_title">Ralat sambungan VPN</string>
+    <string name="vpn_fail_text_long">Tidak dapat menyambung kepada %s. Ketik untuk mengurus VPN ini.</string>
+    <string name="vpn_fail_title">VPN tidak disambungkan</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Menutup aplikasi untuk menyejukkan tablet</string>
     <string name="vzw_cooldown_mode_ok">OK</string>
@@ -1381,6 +1355,7 @@ Sementara itu, anda boleh mengecas tablet anda secara wayarles."</string>
     <string name="wifi_network_available_detailed">Rangkaian Wi-Fi terbuka tersedia.</string>
     <string name="wifi_networks_available">Rangkaian Wi-Fi tersedia</string>
     <string name="wifi_networks_available_detailed">Rangkaian Wi-Fi terbuka adalah tersedia.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s sedang menggunakan data mudah alih kerana sambungan WLAN anda perlahan atau tidak stabil.</string>
     <string name="wifi_notification_switch_wifi_detail">Telefon anda menukar kepada data mudah alih kerana rangkaian Wi-Fi tidak stabil.</string>
     <string name="wifi_notification_switch_wifi_title">Bertukar kepada data mudah alih</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Pemberitahuan kecemasan</string>
@@ -1412,9 +1387,5 @@ Sementara itu, anda boleh mengecas tablet anda secara wayarles."</string>
     <string name="work_profile_on_message">Ini akan membenarkan anda mencapai aplikasi kerja, pemberitahuan, data dan ciri profil kerja yang lain.</string>
     <string name="work_profile_on_title">Hidupkan Profil kerja?</string>
     <string name="work_profile_restricted">Penyekat Auto dihidupkan dengan sekatan maksimum. Untuk melindungi keselamatan anda, profil kerja tidak dapat dicipta.</string>
-    <string name="work_profile_telephony_paused_text">Anda telah menjeda aplikasi kerja. Anda tidak akan menerima panggilan telefon atau mesej teks daripada mereka.</string>
-    <string name="work_profile_telephony_paused_title">Panggilan dan mesej dimatikan</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Hidupkan profil kerja?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">Sehingga saya mematikannya</string>
 </resources>

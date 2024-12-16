@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Суҳбат бо Bixby</string>
     <string name="accessibility_corner_action_type_zoom_in">Наздиктар кардан</string>
     <string name="accessibility_corner_action_type_zoom_out">Дуртар кардан</string>
+    <string name="accessibility_dialog_button_allow_samsung">Иҷозат ддн</string>
+    <string name="accessibility_dialog_button_deny_samsung">Рад кардан</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Нест кардан</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Зуд пахш кардани тугмаҳои Барқ ва Баландкунии садо функсияҳои зеринро фурӯзон ё хомӯш мекунад:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Зуд пахш кардани тугмаҳои Канорӣ ва Баландкунии садо функсияҳои зеринро фурӯзон ё хомӯш мекунад:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Зуд пахш кардани тугмаҳои Барқ ва Баландкунии садо %s-ро фурӯзон ё хомӯш мекунад.</string>
@@ -117,6 +120,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">Сиёсати амният илова кардани ин ҳисобро пешгирӣ мекунад.</string>
     <string name="account_removal_restrict">Сиёсати амният нест кардани ин ҳисобро пешгирӣ мекунад.</string>
+    <string name="action_bar_up_description">Паймоиш ба боло</string>
     <string name="action_menu_overflow_description">Имконоти бештар</string>
     <string name="adb_active_notification_message">Барои ғайрифаъол кардани реҷаи тахткунӣ ба воситаи USB, интихоб кунед.</string>
     <string name="adb_active_notification_title">Реҷаи тахткунӣ ба воситаи USB пайваст карда шуд.</string>
@@ -125,6 +129,9 @@
     <string name="advance_wifi_sharing_msg">Шабакаи дастраси Wi-Fi зоҳир карда шуд. Пайваст шуда, мубодила тавассути Wi-Fi-ро ба ҷои иттилооти мобилии Нуқтаи дастрасии мобилӣ истифода баред.</string>
     <string name="airplanemode_restrict">Сиёсати амният фаъолкунии реҷаи Парвоз-ро роҳ намедиҳад.</string>
     <string name="allow_settings_changes">Сиёсати амният тағйир додани танзимотро пешгирӣ мекунад.</string>
+    <string name="always_allow">Ҳамеша иҷозат додан</string>
+    <string name="app_block_button_open">Кушодан</string>
+    <string name="app_block_content">%1$s барномаи %2$s-ро кушодан мехоҳад.</string>
     <string name="app_clone_storage">Захирагоҳи дохилӣ (Қосиди дучанд)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Барнома интихоб кунед</string>
     <string name="app_continuity_guide_cling_button_not_now">Ҳоло не</string>
@@ -139,32 +146,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">Шумо ҳамаи вақти барои %s дар имрӯз ҷудошударо сарф кардаед. Инро дар Танзимот тағйир дода метавонед.</string>
     <string name="app_restricted_message_concentration_mode">%s дар реҷаи Диққат мамнуъ аст. Барои маълумоти бештар гирифтан, ба маъмури ТИ-и худ муроҷиат кунед.</string>
     <string name="app_updating_message">%s навсозӣ шуда истодааст. Кӯшишро дертар такрор кунед.</string>
-    <string name="appblock_block_subtitle1_phone">Бо мақсади муҳофизати телефон ва иттилооти шахсии шумо, ин барномаро насб кардан ғайриимкон аст, зеро он зиёновар гумонбар шудааст.</string>
-    <string name="appblock_block_subtitle1_tablet">Бо мақсади муҳофизати планшет ва иттилооти шахсии шумо, ин барномаро насб кардан ғайриимкон аст, зеро он зиёновар гумонбар шудааст.</string>
-    <string name="appblock_block_subtitle2">Ин барномаро насб кардан ғайриимкон аст, зеро он ҳамчун зиёновар гузориш дода шудааст.</string>
-    <string name="appblock_block_text1">Ин барнома аз манбаи санҷидашуда намебошад ва иҷозатҳои ҳассосеро талаб мекунад, ки метавонанд барои дуздидан ё ифшо кардани иттилооти шахсии шумо истифода бурда шаванд.</string>
-    <string name="appblock_block_text2">"Барномаҳои зиёновар метавонанд иҷозатҳои ҳассосро барои иттилооти шахсии шуморо дуздидан, шахсияти шуморо вонамуд кардан ё ҳисобҳои молиявии шуморо дастрас кардан истифода баранд.
-
-Ташкилотҳои молиявии қонунӣ аз шумо талаб намекунанд, ки ягон ZIP-файл, APK-файл ё барномаҳои идоракунии файлҳоро насб кунед.
-
-Ҳамеша мутмаин шавед, ки барномаҳои насб мекардаатон аз манбаҳои боэътимод гирифта шудаанд."</string>
-    <string name="appblock_warn_subtitle">Ин барнома метавонад маълумоти шахсии шуморо дуздад ё ифшо кунад.</string>
+    <string name="appblock_block_text_phone">Ин барномаро насб кардан ғайриимкон аст, зеро онро ҳамчун зиёновар гузориш додаанд ё он ба барномае монанд аст, ки ҳамчун зиёновар гузориш дода шуда буд. Ин барнома эҳтимоли истифода шудан дар ҷиноятҳои мисли фишинг дорад. Барои телефон ва иттилооти шуморо эмин нигоҳ доштан, ин мамнуъро каноргузарӣ кардан ғайриимкон аст.</string>
+    <string name="appblock_block_text_tablet">Ин барномаро насб кардан ғайриимкон аст, зеро онро ҳамчун зиёновар гузориш додаанд ё он ба барномае монанд аст, ки ҳамчун зиёновар гузориш дода шуда буд. Ин барнома эҳтимоли истифода шудан дар ҷиноятҳои мисли фишинг дорад. Барои планшет ва иттилооти шуморо эмин нигоҳ доштан, ин мамнуъро каноргузарӣ кардан ғайриимкон аст.</string>
+    <string name="appblock_link_text">Маълумоти бештар</string>
     <string name="appblock_warn_text1">"Насб кардани барномаҳо аз манбаҳои санҷиданашуда метавонад ба барномаҳо имконият диҳад, ки маълумоти шахсии шуморо ҷамъ кунанд ё фаъолияти шуморо пайгирӣ кунанд.
 
 Насб кардани ин барнома тавсия намешавад.
 
 Агар қарор диҳед, ки барнома ба ҳар ҳол насб карда шавад, Огоҳӣ оиди махфияти онро бодиққат аз назар гузаронед ва ҳатман танҳо иҷозатҳои лозимиро бидиҳед."</string>
-    <string name="appblock_warn_text2">"Барномаҳои зиёновар бисёр вақт кӯшиш мекунанд, ки бо истифодаи иҷозатҳои “Алоқаҳо”, “SMS” ва “Суратҳо” маълумоти шахсии шуморо ба даст оранд.
-
-Насб кардани ин барнома тавсия намешавад.
-
-Агар қарор диҳед, ки ин барномаро ба ҳар ҳол насб мекунед, мутмаин шавед, ки он аз манбаи боэътимод гирифта шудааст, ва ҳангоми додани иҷозатҳо ва дигар намуди дастрасӣ ба иттилооти худ эҳтиёткор бошед."</string>
     <string name="application_default_restrict">Маъмури дастгоҳ барномаи дигареро ҳамчун стандартӣ танзим кард.</string>
     <string name="auto_click_paused">Зеркунии худкор таваққуф дода шуд.</string>
     <string name="auto_click_resumed">Зеркунии худкор давом дода шуд.</string>
     <string name="autofill_never_use_for_this_app">%s-ро ҳэҷ гоҳ барои ин барнома истифода набурдан</string>
     <string name="autofill_save_cancel">Бекор кардан</string>
     <string name="autofill_save_never_OK">OK</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">Сиёсати амният истифодаи Нусхагирии эҳтиётиро пешгирӣ мекунад.</string>
     <string name="badPin2">PIN2 нодуруст аст. Аз нав кӯшиш кунед.</string>
     <string name="badPuk2">PUK2-и воридкардаи шумо нодуруст аст</string>
@@ -175,8 +171,6 @@
     <string name="bluetooth_a2dp_restrict">Сиёсати амният истифодаи аудио медиаи Bluetooth­ро пешгирӣ мекунад.</string>
     <string name="bluetooth_avrcp_restrict">Сиёсати амният истифодаи идоракунии аудио/видеоро ба воситаи Bluetooth пешгирӣ мекунад.</string>
     <string name="bluetooth_bpp_restrict">Сиёсати амният чопкуниро ба воситаи Bluetooth пешгирӣ мекунад.</string>
-    <string name="bluetooth_china_popup_message">%1$s иҷозати истифода кардани %2$s-ро дархост мекунад. Иҷозат медиҳед?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Сиёсати амният таҳвили иттилоотро ба воситаи Bluetooth пешгирӣ мекунад.</string>
     <string name="bluetooth_desktop_restrict">Сиёсати амният пайвастшавиро ба мизи корӣ ба воситаи Bluetooth пешгирӣ мекунад.</string>
     <string name="bluetooth_device_restrict">Сиёсати амният ҳамроҳшавиро бо ин дастгоҳ ба воситаи Bluetooth пешгирӣ мекунад.</string>
@@ -187,7 +181,6 @@
     <string name="bluetooth_outgoing_call_restrict">Сиёсати амният оғоз кардани зангҳои даромадро ба воситаи Bluetooth пешгирӣ мекунад.</string>
     <string name="bluetooth_pairing_restrict">Сиёсати амният ҳамроҳкунии тавассути Bluetooth­ро пешгирӣ мекунад.</string>
     <string name="bluetooth_pbap_restrict">Сиёсати амният истифодаи китобчаи суроғаҳои Bluetooth­ро пешгирӣ мекунад.</string>
-    <string name="bluetooth_permission_request">Дархости иҷозати Bluetooth</string>
     <string name="bluetooth_restrict">Сиёсати амният истифодаи Bluetooth­ро пешгирӣ мекунад.</string>
     <string name="bluetooth_sap_restrict">Сиёсати амният дастрасиро ба корти СИМ ба воситаи Bluetooth пешгирӣ мекунад.</string>
     <string name="bluetooth_security_mode_disable">Сиёсати амният истифодаи Bluetooth-ро роҳ намедиҳад.</string>
@@ -250,11 +243,8 @@
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">Дастгоҳҳои иҷозатдор</string>
     <string name="data_call_restriction">Сиёсати амният истифодаи иттилооти мобилиро манъ мекунад.</string>
-    <string name="data_usage_disable_mobile">Пайвасти иттилооти мобилиро ғайрифаъол кунем?</string>
-    <string name="data_usage_enable_mobile_warning">Пайвастшавӣ тавассути иттилооти баставӣ метавонад боиси хароҷоти иловагӣ шавад. Идома медиҳед?</string>
     <string name="data_usage_limit_body">Истифодаи иттилооти мобилӣ то охири давраи биллингӣ таваққуф дода шудааст.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Меъёри итт мобилӣ афзуда шуд</string>
-    <string name="data_usage_mobile_limit_title">Меъёри итт мобилӣ сарф карда ш</string>
     <string name="data_usage_rapid_app_body">%s нисбат ба одатӣ ҳаҷми зиёдтари иттилоотро сарф кардааст.</string>
     <string name="data_usage_rapid_body">Барномаҳои шумо нисбат ба одатӣ ҳаҷми зиёдтари иттилоотро сарф кардаанд.</string>
     <string name="data_usage_rapid_title">Истифодаи зиёди иттилооти мобилӣ</string>
@@ -265,6 +255,7 @@
     <string name="data_usage_warning_title_offpeak_chn">%s аз итт брн аз србрӣ сарф шуд</string>
     <string name="data_usage_warning_title_unlimited_chn">Мҳддти сръти итт моб афзуда шуд</string>
     <string name="device_disabled">Дастгоҳ ғайрифаъол шуд. Ба маъмури IT муроҷиат кунед.</string>
+    <string name="device_info_not_available">Дастрас нест</string>
     <string name="dex_cant_change_user_profile">Ҳангоми дар реҷаи Samsung DeX будан профили корбарро тағйир додан мумкин нест.</string>
     <string name="dex_dialog_launch_toast">Барномаҳои кушода метавонанд пӯшида шаванд. Қабл аз Samsung DeX-ро ба кор даровардан ё аз он баромадан, иттилооти худро захира кунед.</string>
     <string name="dex_disconnected_from_device">DeX аз %s ҷудо шуд. Пайвасти шабакавии ТВ-ро тафтиш кунед.</string>
@@ -273,9 +264,6 @@
     <string name="dex_launcher_mode_change">%s барои ба Samsung DeX гузаштан пӯшида шуд.</string>
     <string name="dex_mirroring_jit_msg">Вақте ки Samsung DeX-ро дар планшет ба кор медароред, шумо метавонед экрани онро дар дилхоҳ дисплейи тавассути HDMI пайвастшуда инъикос диҳед.</string>
     <string name="dex_mirroring_jit_title">Намоиши DeX дар экрани калонтар</string>
-    <string name="dex_restart_app_dialog_button_positive">Бозоғозӣ к</string>
-    <string name="dex_restart_app_dialog_message">Ин барнома аллакай дар дисплейи дигар фаъол аст. Барои онро дар инҷо кушодан, барнома бояд аз нав ба кор дароварда шавад. Қабл аз онро аз нав ба кор даровардан, ҳамаи чизҳои муҳимро захира кунед.</string>
-    <string name="dex_restart_app_dialog_title">%s-ро аз нав ба кор дароем?</string>
     <string name="dex_restriction_blockerMessage">Сиёсати амният истифодаи Samsung DeX-ро пешгирӣ мекунад.</string>
     <string name="dex_restriction_ethernetOnly">Сиёсати амният истифодаи иттилооти Wi-Fi, иттилооти мобилӣ ва модемро дар DeX иҷозат намедиҳад. Барои хусусиятҳои шабакавиро истифода бурдан, пайвасти симӣ лозим аст.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Бинобар сиёсати амният, барои аз Samsung DeX баромадан, дисплейи беруниро ҷудо кунед.</string>
@@ -300,7 +288,6 @@
     <string name="digital_signature_failure_user_notification">Имзои рақамии корбари %d нодуруст мебошад</string>
     <string name="disableupdate_application_restrict">Сиёсати амният навсозии ин барномаро роҳ намедиҳад.</string>
     <string name="display_chooser_button_positive">Бозоғозӣ к</string>
-    <string name="display_chooser_dont_show_again">Дигар нишон надиҳед</string>
     <string name="dlg_confirm_kill_storage_users_text">Пайвасткунии захирагоҳи USB баъзе барномаҳои истифодашавандаро бозмедорад. Онҳо метавонанд то ҷудо кардани захирагоҳи USB дастнорас бошанд.</string>
     <string name="dlg_confirm_kill_storage_users_title">Пайваст кардани захирагоҳ ба компютер</string>
     <string name="dlg_ics_security_policy">Сиёсати амният истифодаи мубодила дар Интернетро маҳдуд мекунад.</string>
@@ -314,7 +301,7 @@
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Ин барномаро дар намуди Серравзана истифода бурдан мумкин нест.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Ин хусусиятро дар намуди Серравзана истифода бурдан мумкин нест.</string>
     <string name="edit_contact_at_sim_restriction">Сиёсати амният таҳрири алоқаҳои SIM-кортро роҳ намедиҳад.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Дастгоҳҳои иҷозатдор</string>
+    <string name="edm_policy_not_allow_open_wifiap">Сиёсати амният истифодаи функсияи таҳвили пайваст ё нуқтаи дастрасии мухотиратнашударо маҳдуд мекунад.</string>
     <string name="emergency_calls_only">Танҳо зангҳои фавқулодда</string>
     <string name="ethernet_cable_connected_notification_message">Барои танзим кардан, зарба занед.</string>
     <string name="ethernet_cable_connected_notification_title">Сими Ethernet пайваст шуд.</string>
@@ -337,7 +324,7 @@
     <string name="ext_media_unsupported_notification_message">Ин дастгоҳ ин %s-ро дастгирӣ намекунад. Барои бо формати дастгирӣ мешуда танзим кардан, зарба занед.</string>
     <string name="ext_media_unsupported_notification_title">%s дастгирӣ карда намешавад</string>
     <string name="ext_storage_bad_removal_button">Аз нав оғоз кардан</string>
-    <string name="ext_storage_bad_removal_title">Планшетро аз нав ба кор дароред</string>
+    <string name="ext_storage_bad_removal_title">Телефонро аз нав ба кор дароред</string>
     <string name="extmedia_format_button_format">Формат</string>
     <string name="extmedia_format_message">Шумо ҳақиқатан мехоҳед корти SD­ро формат кунед? Ҳамаи иттилооти дохили корт нест карда мешавад.</string>
     <string name="extmedia_format_message_usbhost">Ҳамаи файлҳои дар захирагоҳи USB захирашуда кӯр карда мешаванд. Ин амал бебозгашт аст.</string>
@@ -410,6 +397,7 @@
     <string name="globalactions_unable_restart_msg_fmm">Телефонро аз нав ба кор даровардан ғайриимкон аст, зеро Ёфтани телефони мобилии ман онро бастааст.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Планшетро аз нав ба кор даровардан ғайриимкон аст, зеро Ёфтани телефони мобилии ман онро бастааст.</string>
     <string name="globalactions_unable_restart_msg_securelock">Тел-ро ҳангоми баста буданаш аз нав ба кор дрврдн ғ-имкон аст. Барои тел-ро аз нав ба кор дрврдн, сарпӯшро кушоед ва онро аз нав ба кор дррд.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Ҳангоми баста будани SIM-корт телефонро аз нав ба кор даровардан ғайриимкон аст.</string>
     <string name="hardware_key_restrict">Сиёсати амният истифодаи ин тугмаи дастгоҳро пешгирӣ мекунад.</string>
     <string name="hardware_sec">Клавиатураи экранӣ</string>
     <string name="hbd_translate">Мтни чидашударо трҷм к</string>
@@ -479,16 +467,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Барои Реҷаи хизматрасонии техникиро хомӯш кардан, шумо бояд планшети худро озод кунед.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Ягон чизе, ки ҳангоми фурӯзон будани Реҷаи хизматрасонии техникӣ рӯй медиҳад (аз ҷумла, иттилооти боргиришуда, барномаҳои насбшуда, тағйироти танзимот ва ғайра), захира карда намешавад.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Банди экран танзим к</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Бе дафтари қайд аз нав ба кор даровардан</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Дафтари қайд эҷод к-н ва аз нв ба кр д-н</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Барои Реҷаи хизматрасонии техникиро фурӯзон кардан, телефони шумо бояд аз нав ба кор дароварда шавад.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Аввал банди экран танзим кунед.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Барои Реҷаи хизматрасонии техникиро фурӯзон кардан, планшети шумо бояд аз нав ба кор дароварда шавад.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Барои таҳлили мушкилиҳои телефони шуморо барои кормандони мо осонтар кардан, тавсия медиҳем, ки пеш аз реҷаи Хизматрасонии техникиро ба кор даровардан, дафтари қайди система эҷод кунед.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Барои ташхис ва таҳлили мушкилиҳои телефони шуморо барои кормандони мо осонтар кардан, тавсия медиҳем, ки пеш аз реҷаи Хизматрасонии техникиро ба кор даровардан, дафтари қайди система эҷод кунед.
 
-Дафтари қайд нишон медиҳад, ки кадом барномаҳо истифода мешуданд ва кадом хатогиҳо ба наздикӣ рӯй дода буданд, аммо ягон маълумоти шахсиро дар бар намегирад. Дафтари қайд танҳо барои таҳлили мушкилиҳо истифода бурда мешавад ва на барои ягон мақсади дигар. Эҷод кардани дафтари қайд одатан 2 дақиқа мегирад."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Барои таҳлили мушкилиҳои планшети шуморо барои кормандони мо осонтар кардан, тавсия медиҳем, ки пеш аз реҷаи Хизматрасонии техникиро ба кор даровардан, дафтари қайди система эҷод кунед.
+Дафтари қайд танҳо маълумоти барои таъмири телефон лозим бударо дар бар мегирад, аз ҷумла барномаҳои истифода мешуда, хатогиҳои ба наздикӣ ба миён омада, рақамҳои телефонии мамнуъшуда ва ғунҷоиши захирагоҳи файлҳо. Дафтари қайд танҳо барои ташхис ва таҳлили мушкилиҳо истифода бурда мешавад ва на барои ягон мақсади дигар. Одатан эҷод кардани дафтари қайд тахминан 2 дақиқа мегирад."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Барои ташхис ва таҳлили мушкилиҳои планшети шуморо барои кормандони мо осонтар кардан, тавсия медиҳем, ки пеш аз реҷаи Хизматрасонии техникиро ба кор даровардан, дафтари қайди система эҷод кунед.
 
-Дафтари қайд нишон медиҳад, ки кадом барномаҳо истифода мешуданд ва кадом хатогиҳо ба наздикӣ рӯй дода буданд, аммо ягон маълумоти шахсиро дар бар намегирад. Дафтари қайд танҳо барои таҳлили мушкилиҳо истифода бурда мешавад ва на барои ягон мақсади дигар. Эҷод кардани дафтари қайд одатан 2 дақиқа мегирад."</string>
+Дафтари қайд танҳо маълумоти барои таъмири планшет лозим бударо дар бар мегирад, аз ҷумла барномаҳои истифода мешуда, хатогиҳои ба наздикӣ ба миён омада, рақамҳои телефонии мамнуъшуда ва ғунҷоиши захирагоҳи файлҳо. Дафтари қайд танҳо барои ташхис ва таҳлили мушкилиҳо истифода бурда мешавад ва на барои ягон мақсади дигар. Одатан эҷод кардани дафтари қайд тахминан 2 дақиқа мегирад."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Захирагоҳро таҳлил к</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Захирагоҳи дохилии телефони шумо қариб пур шудааст. Агар дар захирагоҳ ҷой намонад, баъзе барномаҳо ва хусусиятҳо метавонанд нодуруст кор кунанд. Якчанд файл ё барномаи нолозимро нест кунед. Баъди нест кардан, Сабадро холӣ кардан аз хотиратон набарояд.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Захирагоҳи дохилии планшети шумо қариб пур шудааст. Агар дар захирагоҳ ҷой намонад, баъзе барномаҳо ва хусусиятҳо метавонанд нодуруст кор кунанд. Якчанд файл ё барномаи нолозимро нест кунед. Баъди нест кардан, Сабадро холӣ кардан аз хотиратон набарояд.</string>
@@ -510,10 +498,17 @@
     <string name="maintenance_mode_outro_label">Аз Реҷаи хизматрасонии техникӣ баромадан</string>
     <string name="maintenance_mode_outro_textview_message_phone">Барои Реҷаи хизматрасонии техникиро хомӯш кардан, шумо бояд телефони худро озод кунед. Вақте ки ин реҷаро хомӯш мекунед, ҳама чиз ба ҳолате, ки пеш аз Реҷаи хизматрасонии техникиро фурӯзон карданатон буд, барқарор карда мешавад. Тағйироте, ки ҳангоми фурӯзон будани Реҷаи хизматрасонии техникӣ ба миён омада буд, аз ҷумла иттилооти боргиришуда, барномаҳои насбшуда ё тағйироти танзимот, захира карда намешавад.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Барои Реҷаи хизматрасонии техникиро хомӯш кардан, шумо бояд планшети худро озод кунед. Вақте ки ин реҷаро хомӯш мекунед, ҳама чиз ба ҳолате, ки пеш аз Реҷаи хизматрасонии техникиро фурӯзон карданатон буд, барқарор карда мешавад. Тағйироте, ки ҳангоми фурӯзон будани Реҷаи хизматрасонии техникӣ ба миён омада буд, аз ҷумла иттилооти боргиришуда, барномаҳои насбшуда ё тағйироти танзимот, захира карда намешавад.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Истифодаи реҷаи Хизматрасонии техникӣ ҳангоми фаъол будани %s ғайриимкон аст.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Истифодаи реҷаи Хизматрасонии техникӣ ҳангоми фурӯзон будани Сарфаи барқ бо барномаҳо ва экрани Асосии маҳдуд ғайриимкон аст.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Дар ин телефон реҷаи Хизматрасонии техникӣ дастгирӣ карда намешавад.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Дар ин планшет реҷаи Хизматрасонии техникӣ дастгирӣ карда намешавад.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s танҳо бо иҷозати соҳиби дастгоҳ истифода карда мешавад.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Нусхагирии эҳтиётии иттилоотии шуморо қатъ карда, Реҷаи хизматрасонии техникиро фурӯзон кунам?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Барои Реҷаи хизматрасонии техникиро фурӯзон кардан, шумо бояд раванди анҷом наёфтаи нусхагирии эҳтиётиро ба анҷом расонед ё нусхаи эҳтиётиро нест кунед.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Барои Реҷаи хизматрасонии техникиро фурӯзон кардан, шумо бояд барқарорсозии нусхаи эҳтиётиро қатъ кунед.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Барои Реҷаи хизматрасонии техникиро фурӯзон кардан, шумо бояд барқарорсозии нусхаи эҳтиётиро қатъ кунед.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Барномаи маъмури дастгоҳ</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Дафтари қайд эҷод карда мешавад…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Ин одатан 2 дақиқа мегирад. Баъди эҷод карда шудани дафтари қайд, телефон аз нав дар реҷаи Хизматрасонии техникӣ ба кор медарояд ва шумо метавонед телефони худро бо хотири ҷамъ барои хизматрасонии техникӣ супоред.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Ин одатан 2 дақиқа мегирад. Баъди эҷод карда шудани дафтари қайд, планшет аз нав дар реҷаи Хизматрасонии техникӣ ба кор медарояд ва шумо метавонед планшети худро бо хотири ҷамъ барои хизматрасонии техникӣ супоред.</string>
@@ -538,13 +533,8 @@
     <string name="media_shared">Корти SD айни ҳол аз тарафи компютер истифода бурда мешавад.</string>
     <string name="media_unknown_state">Диски берунӣ дар ҳолати номаълум аст.</string>
     <string name="mediaplayer_restrict">Сиёсати амният истифодаи плеери мултимедиаи ПТМ­ро пешгирӣ мекунад.</string>
+    <string name="message_on_crash">Мамнуъкунаки худкор мамнуъ кардааст</string>
     <string name="microphone_restrict">Сиёсати амният истифодаи микрофонро пешгирӣ мекунад.</string>
-    <string name="miniresolver_call">Занг задан</string>
-    <string name="miniresolver_call_in_work">Аз барномаи корӣ занг мезанед?</string>
-    <string name="miniresolver_call_information">Ташкилоти шумо ба шумо танҳо иҷозат додааст, ки аз барномаҳои корӣ танҳо занг занед.</string>
-    <string name="miniresolver_sms_information">Ташкилоти шумо ба шумо танҳо иҷозат додааст, ки аз барномаҳои корӣ танҳо паём фиристед.</string>
-    <string name="miniresolver_switch">Иваз кардан</string>
-    <string name="miniresolver_switch_to_work">Ба барномаи корӣ мегузаред?</string>
     <string name="mmcc_authentication_reject_name_template">%s иҷозат дода намешавад</string>
     <string name="mmcc_illegal_me_name_template">%s иҷозат дода намешавад</string>
     <string name="mmcc_illegal_ms_name_template">%s иҷозат дода намешавад</string>
@@ -556,30 +546,6 @@
     <string name="mock_location_reminder_disable">Хомӯш кардан</string>
     <string name="mock_location_reminder_title">Макони қалбакӣ фурӯзон аст</string>
     <string name="more_apps">Брнм бешт.</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">Хидмати %s дастгирӣ карда намешавад. Ба хадамоти хизматрасонии мизоҷон муроҷиат кунед.</string>
-    <string name="mptcp_message_address_type_not_supported">Пайвасти %s суст мебошад. Тавассути шабакаи мавҷуда аз нав пайваст мешавем…</string>
-    <string name="mptcp_message_busy_ntime_wait">Пайвасти %s суст мебошад. Тавассути шабакаи мавҷуда аз нав пайваст мешавем…</string>
-    <string name="mptcp_message_cmd_not_supported">Шабакаи %s муваққатан дастнорас аст. Тавассути шабакаи мавҷуда аз нав пайваст мешавем…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">Пайвасти %s суст мебошад. Тавассути шабакаи мавҷуда аз нав пайваст мешавем…</string>
-    <string name="mptcp_message_connection_refused">Пайвасти %s суст мебошад. Тавассути шабакаи мавҷуда аз нав пайваст мешавем…</string>
-    <string name="mptcp_message_data_usage_limit">Ҳудуди истифодаи иттилоот истифода шуд. Барои тағйир додани ҳудуди истифодаи иттилоот, ба Танзимот гузаред.</string>
-    <string name="mptcp_message_host_unreachable">Пайвасти %s суст мебошад. Тавассути шабакаи мавҷуда аз нав пайваст мешавем…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Фаъол кардани %s ғайриимкон аст. Дастгоҳ дар шабакаи LTE пайваст нашудааст.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Дар роуминги байналмилалӣ фаъол кардани %s ғайриимкон аст.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Ҳангоми фаъол будани Нуқтаи дастрасии мобилӣ ё USB-модем, фаъол кардани %s ғайриимкон аст.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Фаъол кардани %s ҳангоми фаъол будани Wi-Fi Direct ғайриимкон аст.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Ҳангоми фаъол будани реҷаи Парвоз, фаъол кардани %s ғайриимкон аст.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Ҳангоми хомӯш будани Иттилооти мобилӣ, фаъол кардани %s ғайриимкон аст.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Ягон посух аз таҳвилгари хидматрасонӣ нест.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">%1$s-ро фаъол карда наметавонад. %2$s бо бастаи интернети шумо дастрас нест ё аз сервери %3$s ягон посух гирифта нашуд.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Фиристодани дархости фаъолсозии %s барор наёфт. Тавассути шабакаҳои дастрас аз нав пайваст мешавем…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Фаъол кардани %s ғайриимкон аст. SIM-корти нодуруст гузошта шудааст.</string>
-    <string name="mptcp_message_network_unreachable">Пайвасти %s суст мебошад. Тавассути шабакаи мавҷуда аз нав пайваст мешавем…</string>
-    <string name="mptcp_message_non_mptcp_plan">Фаъол кардани Giga Multi-Path ғайриимкон аст. Нақшаи тарофавӣ ин функсияро дастгирӣ намекунад.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s барои пешгирии аз ҳад зиёд гарм шудани дастгоҳ ғайрифаъол карда шуд. Ба ҷои он, боргирӣ тавассути шабакаи мобилӣ иҷро мешавад…</string>
-    <string name="mptcp_message_server_error">Пайвасти %s суст мебошад. Тавассути шабакаи мавҷуда аз нав пайваст мешавем…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Фаъол кардани %s ғайриимкон аст. Дастгоҳ аз ҳад зиёд гарм мешавад. Интизор шавед, то дастгоҳатон хунук шавад, ва аз нав кӯшиш кунед.</string>
-    <string name="mptcp_message_ttl_expired">Шабакаи %s муваққатан дастнорас аст. Тавассути шабакаи мавҷуда аз нав пайваст мешавем…</string>
     <string name="multi_user_capability_restrict">Сиёсати амният қобилияти бисёркорбариро дар дастгоҳи шумо пешгирӣ мекунад.</string>
     <string name="multi_user_creation_restrict">Сиёсати амният эҷод кардани ҳисобҳои корбари навро дар дастгоҳи шумо пешгирӣ мекунад.</string>
     <string name="multi_user_removal_restrict">Сиёсати амният нест кардани ҳисобҳои корбарро дар дастгоҳи шумо пешгирӣ мекунад.</string>
@@ -598,24 +564,22 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Садо дар дастгоҳи аудиоии Bluetooth пахш карда мешавад. Барои инро хомӯш кардан, инҷо зарба занед</string>
     <string name="multisound_sound_via_headphone">Садои %s тавассути гӯшмонакҳо пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
     <string name="multisound_sound_via_headphone_multiselection">Садо тавассути гӯшмонакҳо пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
-    <string name="multisound_sound_via_phone_speaker">Садои %s тавассути баландгӯяки планшет пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Садо тавассути баландгӯяки планшет пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
+    <string name="multisound_sound_via_phone_speaker">Садои %s тавассути баландгӯяки телефон пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Садо тавассути баландгӯяки телефон пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
     <string name="multisound_sound_via_usb_audio">Садои %s тавассути дастгоҳи аудиоии USB пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Садо тавассути дастгоҳи аудиоии USB пахш карда мешавад. Барои онро хомӯш кардан, инҷо зарба занед.</string>
     <string name="multisound_title">Ҷудокунии садои барномаҳо</string>
     <string name="multisound_turn_off_multisound">Хомӯш кардан</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Иҷрои %s дар Samsung DeX ғайриимкон аст. Онро дар реҷаи планшет ба кор дароред.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Иҷрои %s дар Samsung DeX ғайриимкон аст. Он барои экранҳои Асосии планшетҳо пешбинӣ нашудааст.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Баъзе бозиҳо танҳо дар экранҳои ламсӣ кор мекунанд. Агар ҷузъҳои идоракунии муш дар Samsung DeX кор накунанд, ба ҷои онҳо дар реҷаи планшет бозӣ кунед.</string>
-    <string name="my_device">Ин планшет</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s дар Samsung DeX иҷро намешавад. Кӯшиш кунед, ки дар реҷаи телефон иҷро кунед.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Иҷрои %s дар Samsung DeX ғайриимкон аст. Он барои экранҳои Асосии телефонҳо пешбинӣ нашудааст.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Баъзе бозиҳо танҳо дар экранҳои ламсӣ кор мекунанд. Агар ҷузъҳои идоракунии муш дар Samsung DeX кор накунанд, ба ҷои онҳо дар реҷаи телефон бозӣ кунед.</string>
+    <string name="my_device">Ин телефон</string>
     <string name="network_locked_sim_dialog_message_ais">SIM-корти шумо бо ин телефон ба таври пурра кор намекунад, зеро ки он ба шарту шароитҳои обунаи шумо мувофиқат намекунад. Агар шумо оид ба ин масъала ягон савол ё ниёз барои маълумоти бештар дошта бошед, ба Маркази хизматрасонии муштариёни Samsung ё ба дуконе, ки ин маҳсулотро ба шумо фурӯхт, муроҷиат кунед.</string>
     <string name="network_locked_sim_notification_text">SIM‑корти беэътибор дарҷ карда шудааст.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Барномаи пешфарзи экрани Асосиро ба Экрани асосии One UI иваз кунед.</string>
     <string name="nfc_restrict">Сиёсати амният ба истифодаи NFC роҳ намедиҳад.</string>
     <string name="nosim_limited_service">Хизматрасонии маҳдуд</string>
-    <string name="not_support_ai_key">Тугмаи ЗС бо ҳоло бо планшети шуморо кор намекунад. Навсозӣ ба наздикӣ дастрас мешавад.</string>
-    <string name="notification_app_name_settings">Танзимот</string>
     <string name="notification_channel_dex_policy">Сиёсати Samsung DeX</string>
     <string name="ntfs_usb_storage_readonly_mount_message">Ин захирагоҳро танҳо хондан мумкин аст, зеро он формати NTFS дорад.</string>
     <string name="ntfs_usb_storage_readonly_mount_title">Зхргҳи “тнҳ хнш”-и USB илова шд</string>
@@ -792,7 +756,6 @@
     <string name="permlab_scheduleExactAlarm">Бедоркунакҳо ва ёдрасҳо танзим кардан</string>
     <string name="permlab_spdControl">Идора кардани навсозиҳои сиёсати амният</string>
     <string name="permlab_ucsPlugin">Изофаи Universal Credential Management</string>
-    <string name="personal_apps_suspended_turn_profile_on">Фурӯзон кардан</string>
     <string name="phoneTypeConference">Конфронс</string>
     <string name="policydesc_allow_bluetoothmode">Пешгирӣ кардани истифодаи Bluetooth.</string>
     <string name="policydesc_allow_browser">Пешгирӣ кардани истифодаи Интернет.</string>
@@ -800,7 +763,7 @@
     <string name="policydesc_allow_desktopsync">Пешгирӣ кардани истифодаи ҳамоҳангсозӣ бо компютер.</string>
     <string name="policydesc_allow_internetsharing">Пешгирӣ кардани истифодаи Нуқтаи дастрасии мобилӣ.</string>
     <string name="policydesc_allow_irda">Пешгирӣ кардани истифодаи IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Пешгирӣ кардани истифодаи почтаи POP ва IMAP дар планшет.</string>
+    <string name="policydesc_allow_popimapemail">Пешгирӣ кардани истифодаи почтаи POP ва IMAP дар телефон.</string>
     <string name="policydesc_allow_storagecard">Пешгирӣ кардани истифодаи кортҳои SD.</string>
     <string name="policydesc_allow_textmessaging">Пешгирӣ кардани истифодаи паёмнависии матнӣ ва мултимедиявӣ.</string>
     <string name="policydesc_allow_thirdParty">Ин барнома метавонад ба иҷро шудани барномаҳои аслӣ имкон надиҳад.</string>
@@ -846,7 +809,7 @@
     <string name="pwd_change_enforced">Сиёсати амният талаб мекунад, ки пароли худро тағйир диҳед.</string>
     <string name="recording_fail">Истифодаи микрофон дар %1$s ҳангоми дар %2$s истифода шуданаш ғайриимкон аст.</string>
     <string name="recording_popup">%s микрофонро истифода мебарад.</string>
-    <string name="recording_popup_device">Планшет</string>
+    <string name="recording_popup_device">Телефон</string>
     <string name="recording_popup_with_bluetooth">%s Bluetooth-микрофонро истифода бурда истодааст.</string>
     <string name="recording_popup_with_device">%1$s микрофони %2$s-ро истифода бурда истодааст.</string>
     <string name="redo">Такрор к</string>
@@ -912,12 +875,12 @@
     <string name="screencapture_restrict">Сиёсати амният гирифтани аксҳои экранро пешгирӣ мекунад.</string>
     <string name="sd_card_unavailable_message">Шумо корти SD-ро истифода бурда наметавонед, зеро ҳангоми андохта шуданаш профили корбари дигаре истифода шуда истода буд.</string>
     <string name="sd_card_unavailable_title">Корти SD дастнорас аст</string>
-    <string name="sdcard_bad_removal_message">Корти SD ба таври эмин ҷудо карда нашуд. Барои он, ки планшет ногаҳон аз нав ба кор надарояд, иттилооти захира нашударо захира карда, онро ҳозир аз нав ба кор дароред.</string>
+    <string name="sdcard_bad_removal_message">Корти SD ба таври эмин ҷудо карда нашуд. Барои он, ки телефон ногаҳон аз нав ба кор надарояд, иттилооти захира нашударо захира карда, онро ҳозир аз нав ба кор дароред.</string>
     <string name="sdcard_batch_decrypt_noti_content">Аз рамзбандӣ озод кардани корти SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Рамзбандии корти SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Корти SD­и рамзбанд бояд пеш аз истифода аз рамзбандӣ озод карда шавад. Ин метавонад зиёда аз як соат гирад. Батареяро барқ диҳед ва барқдиҳакро то ба охир расидани озодкунӣ аз рамзбандӣ ҷудо накунед. Қатъ кардани раванди озодкунӣ метавонад сабаби аз даст додани ҳамаи иттилоот ё қисми он шавад.</string>
     <string name="sdcard_decrypt_err_notification">Ҳангоми озод кардани корти SD аз рамзбандӣ хатогие ба миён омад.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Баъзе файлҳои дохили корти SD дар дастгоҳи дигар рамзбандӣ карда шудаанд ва наметавонанд дар ин планшет истифода бурда шаванд.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Баъзе файлҳои дохили корти SD дар дастгоҳи дигар рамзбандӣ карда шудаанд ва наметавонанд дар ин телефон истифода бурда шаванд.</string>
     <string name="sdcard_decrypt_notification">Корти SD аз рамзбандӣ озод карда шуд.</string>
     <string name="sdcard_decrypt_title_notification">Рамзбандии корти SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Рамзкушоии корти SD…</string>
@@ -934,14 +897,6 @@
     <string name="sdcard_unmount_policy_noti_title">Корти SD бо сабаби сиёсати технологияҳои иттилоотӣ хомӯш карда шудааст.</string>
     <string name="sdhms_nr_control_low_battery">Вақте ки барқи батареяи телефон аз 15% камтар мешавад, 5G баҳри сарфаи барқ хомӯш карда мешавад.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth дар реҷаи Ҳавопаймо фурӯзон мемонад.</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Ин барнома экрани пурраро истифода мебарад. Ишораҳои молиш барои паймоиш навори ҳолатро нишон медиҳанд. Барои паймоиш кардан, ҳангоми аён будани навори ҳолат бори дигар бимолед.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Ин барнома экрани пурраро истифода мебарад. Тугмаҳои Асосӣ, Қафо ва Охиринҳо барои коҳиш додани халалҳои визуалӣ ва пешгирӣ кардани тарки тасодуфии барнома пинҳон карда шудаанд.
-
-Ҳатто агар телефонро давр занонед, тугмаҳо ҳамеша дар назди порти барқдиҳӣ мемонанд. Шумо метавонед тарзе, ки тирча нишон медиҳад, аз канори экран ба дарун молида, тугмаҳоро дубора аён созед."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Ин барнома экрани пурраро истифода мебарад. Тугмаҳои Асосӣ, Қафо ва Охиринҳо барои коҳиш додани халалҳои визуалӣ ва пешгирӣ кардани тарки тасодуфии барнома пинҳон карда шудаанд.
-
-Барои тугмаҳоро дубора нишон додан, тарзе, ки нишон дода шудааст, аз поёни экран ба боло бимолед."</string>
     <string name="sec_monotype_default">Стандартӣ</string>
     <string name="sec_ringtone_category_brand_sound">Садои бренди Samsung</string>
     <string name="sec_ringtone_category_calm">Ором</string>
@@ -951,6 +906,10 @@
     <string name="sec_ringtone_category_open_theme">Мавзуи ҷорӣ стандартист</string>
     <string name="sec_ringtone_category_retro">Ретро</string>
     <string name="sec_ringtone_silent">Хомӯш</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Бекор к-н</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Барои ба радиф пайваст шудан, оператори шабакаи шумо бояд ба “Ба таври худкор интихоб кардан” гузошта шуда бошад.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Фурӯзон кардан</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Интихоби худкори шабакаро фурӯзон кунам?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Барои гап задан, “Дастрасӣ ба микрофон”-ро фурӯзон кунед.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Барои %s-ро истифода бурдан, дастрасӣ ба камераро фурӯзон кунед.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Барои %s-ро истифода бурдан, дастрасӣ ба микрофонро фурӯзон кунед.</string>
@@ -1047,6 +1006,8 @@
     <string name="sem_face_error_already_in_use_by_VT">Истифодаи шинохтагирии чеҳра дар рафти зангҳои видеоӣ ғайриимкон аст.</string>
     <string name="sem_face_error_camera_access_off">Истифода бурдани шинохтагирии чеҳра бинобар хомӯш будани дастрасӣ ба камера ғайриимкон аст</string>
     <string name="sem_face_error_camera_fail">Кушодани Камера барор наёфт. Кӯшишро такрор кунед.</string>
+    <string name="sem_face_error_lockout">Санҷиши иттилооти биометрӣ бинобар кӯшишҳои бебарори барзиёд дастнорас аст.</string>
+    <string name="sem_face_error_lockout_permanent">Санҷиши иттилооти биометрӣ бинобар кӯшишҳои бебарори барзиёд дастнорас аст.</string>
     <string name="sem_face_error_ppp_timeout">Аз замоне, ки охирин бор шахсияти худро исбот карда будед, хеле вақт гузашт. Барои чеҳраи худро қайд кардан, бояд аз аввал сар кунед.</string>
     <string name="sem_face_error_too_dark">Барои чеҳраро муайян кардан рӯшноӣ намерасад</string>
     <string name="sem_face_error_too_dark_to_enroll">Хеле торик аст. Чароғро фурӯзон кунед ё ба ҷои равшантар равед.</string>
@@ -1062,13 +1023,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">Барои изи ангушти худро скан кардан, нӯги S Pen-ро аз экран дур кунед.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Барои изҳои ангуштонро истифода бурдан, аввал навъи эмини банди экран (расм, PIN ё парол) танзим кунед.</string>
+    <string name="sem_fingerprint_error_lockout">Санҷиши иттилооти биометрӣ бинобар кӯшишҳои бебарори барзиёд дастнорас аст.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Санҷиши иттилооти биометрӣ бинобар кӯшишҳои бебарори барзиёд дастнорас аст.</string>
     <string name="sem_fingerprint_error_onehand_mode">Истифодаи сканери изҳои ангушт дар реҷаи Истифодаи якдаста ғайриимкон аст.</string>
     <string name="sem_fingerprint_error_smart_view">Скан кардани изҳои ангуштон ҳангоми истифода бурдани %s ғайриимкон аст.</string>
+    <string name="sem_fingerprint_error_system_failure">Сенсори изҳои ангуштон посух намедиҳад. Кӯшишро дертар такрор кунед. Агар ин такрор шудан гирад, телефонро аз нав ба кор дароред.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Иттилооти изи ангушт вайрон шудааст. Изи ангуштони худро аз нав илова кунед.</string>
     <string name="sem_fingerprint_error_wireless_charger">Барои изи ангушт истифода бурдан, аз барқдиҳаки бесим ҷудо кунед</string>
     <string name="sem_fingerprint_name_template">Нақши ангушт %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Дертар</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Ҳоло не</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Нест ва қайд кардан</string>
+    <string name="sem_fingerprint_register_dialog_message">Дар навсозии охирини нармафзор шинохтани изҳои ангуштон беҳтар карда шуд. Барои шинохтагирии изҳои ангуштонро истифода бурдан, изҳои ангуштони худро бояд карда, аз нав қайд кунед.</string>
     <string name="sem_fingerprint_register_dialog_title">Ангуштонро аз нав қайд кунед</string>
     <string name="sem_fingerprint_result_failed">Ягон мувофиқат нест.</string>
     <string name="sem_fingerprint_result_retry">Кӯшишро такрор кунед.</string>
@@ -1088,7 +1054,7 @@
     <string name="sem_resolver_button_always_accessibility">Ҳамеша барномаи интихобшударо истифода бурдан</string>
     <string name="sem_resolver_button_just_once_accessibility">Барномаи интихобшударо танҳо як бор истифода бурдан</string>
     <string name="sem_resolver_choose_what_to_do">Интихоб кунед, ки бояд чӣ кор иҷро шавад</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Барои танзимоти барномаҳои пешфарзро тағйир додан, ба Танзимот > Барномаҳо > Барномаҳои пешфарзро интихоб кардан гузаред.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Барои барномаи пешфарзи барои кушодани ин навъи файл истифода мешударо иваз кардан, ба Танзимот > Барномаҳо гузашта, барномаи пешфарзи ҷориро интихоб кунед, баъд Пешфарз таъйин кардан > Тоза кардан зарба занед.</string>
     <string name="sem_resolver_icon_content_description">Маълумот</string>
     <string name="sem_resolver_personal_tab_accessibility">Шахсӣ</string>
     <string name="sem_resolver_share_live_default_text">Дар як лаҳза бо одамони атроф мубодила кунед. Нафароне, ки дастгоҳи худро аён кардаанд, дар инҷо нишон дода меш.</string>
@@ -1100,9 +1066,6 @@
     <string name="sem_resolver_work_tab_accessibility">Кор</string>
     <string name="sem_switch_off">Хомӯш</string>
     <string name="sem_switch_on">Фурӯзон</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Дастрасӣ ба камера бр ҳамаи брнмҳо хомӯш ш</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Фурӯзон кардан</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Дастрасӣ ба микрофон бр ҳамаи брнмҳо хмш ш</string>
     <string name="serviceErased">Тозакунӣ барор ёфт.</string>
     <string name="serviceModeAll">Ҳама</string>
     <string name="serviceModeAllConditional">шартан.</string>
@@ -1112,6 +1075,7 @@
     <string name="serviceModeUnconditional">бе шарт.</string>
     <string name="serviceisDisabled">Хизматрасонӣ ғайрифаъол аст.</string>
     <string name="serviceisEnabled">Хизматрасонӣ фаъол аст.</string>
+    <string name="settings">Танзимот</string>
     <string name="sf_quick_switch_not_supported">Гузариши зуд дар ин ҳолат дастгирӣ карда намешавад.</string>
     <string name="sf_quick_switch_securefolder_view">Ба %s гузаштем.</string>
     <string name="share">Мубодила</string>
@@ -1120,26 +1084,30 @@
     <string name="sharelist_restrict">Сиёсати амният мубодилаи иттилоотро пешгирӣ мекунад.</string>
     <string name="show_keyboard_button">Тугмаи Клавиатураро нишон додан</string>
     <string name="show_keyboard_button_description">Дар навори паймоиш %s нишон дода мешавад.</string>
+    <string name="showing_esc_dialog">Шумо метавонед тугмаи Esc барои иҷрои функсияи тугмаи Қафо танзим кунед.</string>
     <string name="showing_touch_sensitivity_noti_action">Фурӯзон кардан</string>
     <string name="showing_touch_sensitivity_noti_text">Барои ҳассосияти ламсро дақиқтар кардан, ҳангоми истифода бурдани Privacy Screen ё Notepaper Screen “Ҳассосии ламс”-ро фурӯзон кунед.</string>
     <string name="showing_touch_sensitivity_noti_title">Ҳассосияти ламсро афзоиш додан</string>
+    <string name="side_key_double_press_archived_app">Барнома бойгонӣ карда шуд. Ягон чизи дигар интихоб кунед.</string>
     <string name="side_key_double_press_deleted_app">Барнома нест карда шуд. Ягон чизи дигар интихоб кунед.</string>
     <string name="side_key_double_press_disabled_app">%s ғайрифаъол карда шуд. Ягон чизи дигар интихоб кунед.</string>
     <string name="signature_identity_toast">%s бо имзои</string>
     <string name="simRefresh">Иттилооти СИМ нав карда мешавад</string>
     <string name="simReset">Иттилооти SIM-кортҳо нав карда мешавад…</string>
     <string name="sim_check_old_sim_message">SIM-кортҳои куҳна ё харобшуда метавонанд боиси мушкилиҳои пайваст ба шабака шаванд. Барои лозим будани ивази кортро фаҳмидан, ба таҳвилгари хизматрасониҳои худ муроҷиат кунед ё ба яке аз мағозаҳои он равед.</string>
+    <string name="sim_check_old_sim_message_skt">SIM-кортҳои куҳна ё харобшуда метавонанд боиси мушкилиҳои пайваст ба шабака шаванд. Барои лозим будани ивази кортро фаҳмидан, ба таҳвилгари хизматрасониҳои худ муроҷиат кунед ё ба яке аз мағозаҳои он равед.</string>
     <string name="sim_check_old_sim_title">Эҳтимол аст, ки SIM-корти шумо бояд иваз карда шавад</string>
+    <string name="sim_check_old_sim_title_skt">Эҳтимол аст, ки SIM-корти шумо бояд иваз карда шавад</string>
     <string name="sim_count_mismatched_ds_to_ss">Реҷаи SIM-корт аз SIM-и дучанд ба SIM-и ягона иваз карда шудааст. Барои ин танзимро татбиқ кардан, дастгоҳ ба танзимоти пешфарзи коргоҳ барқарор шуда, аз нав ба кор медарояд.</string>
     <string name="sim_count_mismatched_ss_to_ds">Реҷаи SIM-корт аз SIM-и ягона ба SIM-и дучанд иваз карда шудааст. Барои ин танзимро татбиқ кардан, дастгоҳ ба танзимоти пешфарзи коргоҳ барқарор шуда, аз нав ба кор медарояд.</string>
     <string name="sim_count_mismatched_title">Реҷаи SIM-корт иваз шуд</string>
-    <string name="sim_imsreg_error_message_lgt">Телефони шумо зангҳои овозӣ зада наметавонад, зеро ин SIM-кортро шинохта наметавонад. SIM-кортро бароварда, аз нав андозед. Агар ин мушкилӣ бартараф нашавад, шояд SIM-кортро иваз кардан лозим аст. Барои кумак гирифтан, ба мағозаи LG U+ равед ё ба Маркази хизматрасонии муштариёни LG U+ бо рақами 1544-0010 занг занед.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Планшети шумо зангҳои овозӣ зада наметавонад, зеро ин SIM-кортро шинохта наметавонад. SIM-кортро бароварда, аз нав андозед. Агар ин мушкилӣ бартараф нашавад, шояд SIM-кортро иваз кардан лозим аст. Барои кумак гирифтан, ба мағозаи LG U+ равед ё ба Маркази хизматрасонии муштариёни LG U+ бо рақами 1544-0010 занг занед.</string>
+    <string name="sim_imsreg_error_message_lgt">Телефони шумо зангҳои овозӣ зада наметавонад, зеро ин SIM-кортро шинохта наметавонад. SIM-кортро бароварда, аз нав андозед. Агар ин мушкилӣ бартараф нашавад, шояд SIM-кортро дар мағозаи LG U+ иваз кардан лозим аст.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Планшети шумо зангҳои овозӣ зада наметавонад, зеро ин SIM-кортро шинохта наметавонад. SIM-кортро бароварда, аз нав андозед. Агар ин мушкилӣ бартараф нашавад, шояд SIM-кортро дар мағозаи LG U+ иваз кардан лозим аст.</string>
     <string name="sim_off_noti_message">Ҳангоми хомӯш будани ҳамаи SIM-кортҳо занг задан, паём фиристодан ва иттилоотро истифода бурдан ғайриимкон аст. Барои SIM-кортҳоро фурӯзон кардан, инҷо зарба занед.</string>
     <string name="sim_off_noti_title">Ҳамаи SIM-кортҳо хомӯшанд</string>
     <string name="sim_off_toast_message">SIM-корти андохтаатон хомӯш аст. Барои онро истифода бурдан, ба Танзимот > Пайвастҳо > Мудири SIM гузашта, онро фурӯзон кунед.</string>
     <string name="sim_recognize_error_message_kt">SIM-корти шумо шинохта нашуд. SIM-кортро бароварда, аз нав андозед. Агар ин мушкилӣ бартараф нашавад, шояд SIM-кортро иваз кардан лозим аст. Барои кумак гирифтан, ба мағозаи KT равед ё ба Маркази хизматрасонии муштариёни KT бо рақами 1588-0010 занг занед.</string>
-    <string name="sim_recognize_error_message_lgt">SIM-корти шумо шинохта нашуд. SIM-кортро бароварда, аз нав андозед. Агар ин мушкилӣ бартараф нашавад, шояд SIM-кортро иваз кардан лозим аст. Барои кумак гирифтан, ба мағозаи LG U+ равед ё ба Маркази хизматрасонии муштариёни LG U+ бо рақами 1544-0010 занг занед.</string>
+    <string name="sim_recognize_error_message_lgt">SIM-корти шумо шинохта нашуд. SIM-кортро бароварда, аз нав андозед. Агар ин мушкилӣ бартараф нашавад, шояд SIM-кортро дар мағозаи LG U+ иваз кардан лозим аст.</string>
     <string name="sim_recognize_error_message_skt">Хондани SIM-корт ғайриимкон аст. Баъзе барномаҳо ва хусусиятҳо метавонанд кор накунанд. SIM-кортро бароварда, аз нав андозед, баъд телефонро аз нав ба кор дароред. Агар ин амал мушкилиро бартараф накунад, телефонро ҳамроҳи SIM-корт ба Маркази хизматрасонии муштариён баред.</string>
     <string name="sim_recognize_error_message_skt_tablet">Хондани SIM-корт ғайриимкон аст. Баъзе барномаҳо ва хусусиятҳо метавонанд кор накунанд. SIM-кортро бароварда, аз нав андозед, баъд планшетро аз нав ба кор дароред. Агар ин амал мушкилиро бартараф накунад, планшетро ҳамроҳи SIM-корт ба Маркази хизматрасонии муштариён баред.</string>
     <string name="sim_recognize_error_title_lgt">Шинохта гирифтани USIM-корт ғайриимкон аст</string>
@@ -1149,10 +1117,8 @@
     <string name="sim_removed_message_hotswap_us_tablet">Ба шабакаи Wi-Fi пайваст шавед ё барои иттилооти мобилиро истифода бурдан SIM-корт дохил кунед.</string>
     <string name="sim_removed_title_hotswap">SIM гузошта нашудааст</string>
     <string name="sim_removed_title_hotswap_us_tablet">Гузоштани корти SIM</string>
+    <string name="smart_tip_action_click_hint_text">Пшдн</string>
     <string name="smartclip_restrict">Сиёсати амният истифодаи Клипи осонро пешгирӣ мекунад.</string>
-    <string name="sms_short_code_remember_undo_instruction">Шумо метавонед инро бо гузаштан ба Танзимот > Барномаҳо тағйир диҳед</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Шумо метавонед инро баъдтар бо гузаштан ба Танзимот > Барномаҳо > Тугмаи Имконоти бештар > Дастрасии махсус > Истифодаи хидматҳои пардохтии паёмнависии матнӣ иваз кунед.</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Агар ҲЕҶ ГОҲ ИҶОЗАТ НАДОДАН-ро зарба занед, ин барнома, ҳатто агар иҷозати Фиристодани паёмҳои матнӣ дошта бошад, дар пасзамина паём фиристода наметавонад.</string>
     <string name="ss_do_not_show_again_us">Дигар нишон надодан</string>
     <string name="sss_translate">Тарҷума кардан</string>
     <string name="ssu_lock_body_vzw">Мутаассифона, дастгоҳи шуморо айни ҳол дар шабакаи таҳвилгари дигари хизматрасониҳо фаъол кардан ғайриимкон аст. Барои кумак гирифтан, ба Verizon дар %1$s ё %2$s (нақшаҳои пешпардохт) муроҷиат кунед</string>
@@ -1184,7 +1150,6 @@
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">Нуқтаи дастрасии мобилӣ</string>
     <string name="title_dialog_check_rotate_or_not">Даврзанонии худкори экранро хомӯш кунем?</string>
-    <string name="title_uds">Реҷаи сарфаи шадиди иттилоот</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Истифода бурдани Bixby ҳангоми танзим кардани телефон ғайриимкон аст.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Истифода бурдани Bixby ҳангоми танзим кардани планшет ғайриимкон аст.</string>
     <string name="toast_warning_pattern_lock">Банд бо расмро бо Калидаки универсалӣ истифода бурдан ғайриимкон аст. Аввал ба истифодаи навъи дигари банд гузаред.</string>
@@ -1224,9 +1189,13 @@
     <string name="unknown_install_blocked_esm_title">Барномаи номаълум мамнуъ карда шуд</string>
     <string name="unknown_install_dlg_desc">Ин барнома аз дӯкони тасвибшуда боргирӣ нашудааст. Насб кардани ин барнома метавонад амният ва махфияти шуморо зери хатар гузорад. Барнома метавонад маълумоти шахсии шуморо ҷамъ кунад ё сабаби аз даст дода шудани иттилоот шавад.</string>
     <string name="unknown_install_dlg_desc2">Ин барнома хусусиятҳои амниятии навтаринро дастгирӣ намекунад. Насб кардани ин барнома метавонад боиси хатарҳои зерин ба амният шавад:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Эҳтимол аст, ки ин файли насбии барнома бехатар намебошад. Эҳтимол аст, ки худро ҳамчун барномаи дигар вонамуд мекунад. Барои телефон ва иттилооти шахсии худро муҳофизат кардан, ба ҷои ин барномаро аз дӯкони эътимодноки барномаҳо насб кунед.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Эҳтимол аст, ки ин файли насбии барнома бехатар намебошад. Эҳтимол аст, ки худро ҳамчун барномаи дигар вонамуд мекунад. Барои планшет ва иттилооти шахсии худро муҳофизат кардан, ба ҷои ин барномаро аз дӯкони эътимодноки барномаҳо насб кунед.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Нисбат ба ин барнома шубҳае ҳаст, ки он зиёновар аст ва метавонад телефон ва иттилооти шуморо зери хатар гузорад. Насб кардани ин барнома тавсия карда намешавад.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Нисбат ба ин барнома шубҳае ҳаст, ки он зиёновар аст ва метавонад планшет ва иттилооти шуморо зери хатар гузорад. Насб кардани ин барнома тавсия карда намешавад.</string>
-    <string name="unknown_install_dlg_general_title">Ин барнома аз манбаи номаълум омадааст</string>
+    <string name="unknown_install_dlg_desc_phone">Ин барнома аз дӯкони иҷозатшудаи барномаҳо намебошад. Барои телефон ва маълумоти шахсии худро муҳофизат кардан, барномаро аз дӯкони иҷозатшуда, мисли Play Store ё Galaxy Store, насб кунед.</string>
+    <string name="unknown_install_dlg_desc_tablet">Ин барнома аз дӯкони иҷозатшудаи барномаҳо намебошад. Барои планшет ва маълумоти шахсии худро муҳофизат кардан, барномаро аз дӯкони иҷозатшуда, мисли Play Store ё Galaxy Store, насб кунед.</string>
+    <string name="unknown_install_dlg_general_title">Насб кардани ин барнома тавсия карда намешавад</string>
     <string name="unknown_install_dlg_negative_button">Насб накардан</string>
     <string name="unknown_install_dlg_perm_desc1">Барнома метавонад аз паёмҳои матнии мегирифтаатон рамзҳои санҷиширо дарёфт кунад.</string>
     <string name="unknown_install_dlg_perm_desc2">Зангҳои баромад метавонанд бидуни донистани шумо ба рақами телефонии дигар равона карда шаванд.</string>
@@ -1247,7 +1216,7 @@
     <string name="usb_abnormal_reset_title">Пайвасти USB ноустувор аст</string>
     <string name="usb_abnormal_reset_toast">Пайвасти USB ноустувор аст. Симро канда, аз нав васл кунед, ё сими дигареро истифода баред.</string>
     <string name="usb_accessory_notification_title">Таҷҳизоти USB пайваст карда шуд.</string>
-    <string name="usb_bad_removal_message">Захирагоҳи USB ба таври эмин ҷудо карда нашуд. Барои он, ки планшет ногаҳон аз нав ба кор надарояд, иттилооти захира нашударо захира карда, онро ҳозир аз нав ба кор дароред.</string>
+    <string name="usb_bad_removal_message">Захирагоҳи USB ба таври эмин ҷудо карда нашуд. Барои он, ки телефон ногаҳон аз нав ба кор надарояд, иттилооти захира нашударо захира карда, онро ҳозир аз нав ба кор дароред.</string>
     <string name="usb_blocked_by_emergency_mode">Баъзе функсияҳои USB дар реҷаи Фавқулода дастнорасанд.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Ҳангоми фаъол будани реҷаи Сарфаи ҳадди аксари барқ истифодаи функсияҳои марбут ба дастгоҳи пайвастшудаи USB ғайриимкон аст.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Ҳангоми фурӯзон будани реҷаи Сарфаи ҳадди аксари барқ баъзе функсияҳои USB метавонанд маҳдуд карда шаванд.</string>
@@ -1256,18 +1225,20 @@
     <string name="usb_camera_connected_notification_title">Дастгоҳи медиа пайваст карда шуд</string>
     <string name="usb_camera_disconnected_notification_title">Дастгоҳи медиа ҷудо карда шуд</string>
     <string name="usb_cd_installer_notification_title">Навсозии нармафзор</string>
-    <string name="usb_charing_only_notification_title">Пайвастшуда</string>
+    <string name="usb_charing_only_notification_title">Барқдиҳӣ тавассути USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Мамнуъкунаки худкор бо маҳдудиятҳои ҳадди аксар фурӯзон аст.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">Пайвасти USB мамнуъ карда шуд</string>
     <string name="usb_debugging_only_notification_title">Танҳо ислоҳи носозиҳо</string>
     <string name="usb_host_Unknown_device_connected_notification_title">Дастгоҳи номаълуми USB пайваст шуд.</string>
     <string name="usb_host_cable_connected_notification_title">Пайвасткунаки USB пайваст карда шуд.</string>
     <string name="usb_host_cable_disconnected_notification_title">Пайвасткунаки USB ҷудо карда шуд.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Дастрас кардани ин дастгоҳ ғайриимкон аст. Дастгоҳи пайвастшуда манбаъи берунии барқро талаб мекунад.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Дастгоҳи USB-и пурқувват пайваст шуд.</string>
-    <string name="usb_host_resource_exceed_message">Захираҳои USB-контроллери планшети шумо барои пайваст кардани ин дастгоҳ намерасанд. Дастгоҳро ҷудо карда, кӯшиши пайваст кардани онро такрор кунед.</string>
+    <string name="usb_host_resource_exceed_message">Захираҳои USB-контроллери телефони шумо барои пайваст кардани ин дастгоҳ намерасанд. Дастгоҳро ҷудо карда, кӯшиши пайваст кардани онро такрор кунед.</string>
     <string name="usb_host_resource_exceed_title">Захираҳои USB-контроллер намерасанд</string>
-    <string name="usb_hub_depth_exceed_message">Ин планшет танҳо то 5 пайвасти якбораи USB-консентраторро дастгирӣ мекунад.</string>
+    <string name="usb_hub_depth_exceed_message">Ин телефон танҳо то 5 пайвасти якбораи USB-консентраторро дастгирӣ мекунад.</string>
     <string name="usb_hub_depth_exceed_title">Пйвстҳ ҳадди аксар USB-кнснтртр</string>
-    <string name="usb_hub_power_exceed_message">Планшети шумо барои ин дастгоҳи USB барқӣ кофӣ таъмин карда наметавонад. Қабл аз ин дастгоҳро ба планшет пайваст кардан, онро ба USB-консентратор пайваст кунед.</string>
+    <string name="usb_hub_power_exceed_message">Телефони шумо барои ин дастгоҳи USB барқӣ кофӣ таъмин карда наметавонад. Қабл аз ин дастгоҳро ба телефон пайваст кардан, онро ба USB-консентратор пайваст кунед.</string>
     <string name="usb_increase_battery_usage">Пайвасти USB метавонад истеъмоли барқи батареяро бештар кунад.</string>
     <string name="usb_keyboard_connected_notification_title">Клавиатура пайваст карда шуд</string>
     <string name="usb_keyboard_disconnected_notification_title">Клавиатура ҷудо карда шуд</string>
@@ -1300,8 +1271,9 @@
     <string name="usb_ums_connected_notification_message_usbhost">Захирагагоҳи оммавии USB ғайричашмдошт ҷудо карда шуд.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Захирагоҳи оммавии USB пайваст шуд</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Захирагоҳи оммавии USB бехатар ҷудо карда шуд.</string>
-    <string name="usb_unblock_by_screen_unlock">Барои дастгоҳи USB-и пайвастшударо истифода бурдан, планшетро озод кунед.</string>
-    <string name="usb_unsupport_accessory_message">Планшети шумо ин дастгоҳи USB-ро дастгирӣ намекунад.</string>
+    <string name="usb_unblock_by_screen_unlock">Барои дастгоҳи USB-и пайвастшударо истифода бурдан, телефонро озод кунед.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">Барои дастгоҳи USB-ро истифода бурдан, телефонро озод карда, дастгоҳи USB-ро аз нав васл кунед.</string>
+    <string name="usb_unsupport_accessory_message">Телефони шумо ин дастгоҳи USB-ро дастгирӣ намекунад.</string>
     <string name="usb_unsupport_accessory_title">Дастгоҳи USB дастгирӣ намешавад</string>
     <string name="usb_unsupported_device">Дастгоҳи пайвастшудаи USB дастгирӣ карда намешавад.</string>
     <string name="usb_unsupported_device_title">Дастгоҳ дастгирӣ намешавад</string>
@@ -1319,19 +1291,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Шумо метавонед бо истифодаи бодкаш ё фен (танҳо ҳавои хунук) портро зудтар хушк кунед.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Дар порти барқдиҳӣ/USB намӣ ё ашёи бегона зоҳир карда шуд.
 
-Порти барқдиҳӣ/USB-ро аз ашёҳои бегона, ба мисли чанг ё чирк, озод кунед. Барои ба планшет зарар нарасонидан, то тоза шудани порти барқдиҳӣ ва нест шудани намӣ ба он ягон чӣ наандозед.
+Порти барқдиҳӣ/USB-ро аз ашёҳои бегона, ба мисли чанг ё чирк, озод кунед. Барои ба телефон зарар нарасонидан, то тоза шудани порти барқдиҳӣ ва нест шудани намӣ ба он ягон чӣ наандозед.
 
 Барои портро хушк кардан, телефонро таконда, хушк шуданашро интизор шавед, ки метавонад якчанд соат гирад. Шумо метавонед бо истифодаи бодкаш ё фен (танҳо ҳавои хунук) портро зудтар хушк кунед."</string>
     <string name="usb_water_dialg_positive_button">ОК</string>
     <string name="usb_water_dialg_support_wireless_charging">"Дар порти барқдиҳӣ/USB намӣ ё ашёи бегона зоҳир карда шуд.
 
-Порти барқдиҳӣ/USB-ро аз ашёҳои бегона, ба мисли чанг ё чирк, озод кунед. Барои ба планшет зарар нарасонидан, то тоза шудани порти барқдиҳӣ ва нест шудани намӣ ба он ягон чӣ наандозед.
+Порти барқдиҳӣ/USB-ро аз ашёҳои бегона, ба мисли чанг ё чирк, озод кунед. Барои ба телефон зарар нарасонидан, то тоза шудани порти барқдиҳӣ ва нест шудани намӣ ба он ягон чӣ наандозед.
 
-Барои портро хушк кардан, планшетро таконда, хушк шуданашро интизор шавед, ки метавонад якчанд соат гирад. Шумо метавонед портро бо истифодаи бодкаш ё фен (танҳо ҳавои хунук) зудтар хушк кунед.
+Барои портро хушк кардан, телефонро таконда, хушк шуданашро интизор шавед, ки метавонад якчанд соат гирад. Шумо метавонед портро бо истифодаи бодкаш ё фен (танҳо ҳавои хунук) зудтар хушк кунед.
 
-Бо вуҷуди ин, планшетро ба таври бесим барқ додан мумкин аст."</string>
+Бо вуҷуди ин, телефонро ба таври бесим барқ додан мумкин аст."</string>
     <string name="usb_water_notification_content">Дар порти барқдиҳӣ/USB намӣ ё ашёи бегона қарор дорад. Пеш аз барқдиҳӣ тафтиш кунед.</string>
-    <string name="usb_water_notification_message">Дар барқдиҳанда/порти USB-и шумо намӣ ошкор шуд. Қабл аз планшетро барқ додан, мутмаин шавед, ки он хушк мебошад. Пурра хушк шуданаш метавонад андак вақт гирад.</string>
+    <string name="usb_water_notification_message">Дар барқдиҳанда/порти USB-и шумо намӣ ошкор шуд. Қабл аз телефонро барқ додан, мутмаин шавед, ки он хушк мебошад. Пурра хушк шуданаш метавонад андак вақт гирад.</string>
     <string name="usb_water_notification_message_button">Тафсилот</string>
     <string name="usb_water_notification_title">Порти барқдиҳак/USB-ро тафтиш к</string>
     <string name="usbhostStorage_restrict">Сиёсати амният истифодаи захирагоҳи ҳости USB­ро пешгирӣ мекунад.</string>
@@ -1344,6 +1316,8 @@
     <string name="vpn_allowOnlySecureConnection">Профили VPN амн нест.</string>
     <string name="vpn_error_text">Барои кӯшиши барқарор кардани пайваст ба VPN, зарба занед.</string>
     <string name="vpn_error_title">Хатогии пайвасти VPN</string>
+    <string name="vpn_fail_text_long">Пайваст ба %s барор наёфт. Барои ин VPN-ро идора кардан, зарба занед.</string>
+    <string name="vpn_fail_title">VPN пайваст нашудааст</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Пӯшидани брнмҳо бр хунуктар к-ни планшет</string>
     <string name="vzw_cooldown_mode_ok">OK</string>
@@ -1406,6 +1380,7 @@
     <string name="wifi_network_available_detailed">Шабакаи кушоди Wi-Fi дастрас аст.</string>
     <string name="wifi_networks_available">Шабакаҳои Wi-Fi дастрас-д</string>
     <string name="wifi_networks_available_detailed">Шабакаҳои кушоди Wi-Fi дастрасанд.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s иттилооти мобилиро истифода бурда истодааст, зеро пайвасти WLAN суст ё ноустувор аст.</string>
     <string name="wifi_notification_switch_wifi_detail">Телефони шумо бинобар ноустувор будани шабакаи Wi-Fi ба иттилооти мобилӣ гузашт.</string>
     <string name="wifi_notification_switch_wifi_title">Ба истифодаи иттилооти мобилӣ гузаштем</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Огоҳиҳои фавқулода</string>
@@ -1437,9 +1412,5 @@
     <string name="work_profile_on_message">Ин ба шумо имкон медиҳад, ки барномаҳои корӣ, огоҳиҳо, иттилоот ва хусусиятҳои дигари профили кориро дастрас кунед.</string>
     <string name="work_profile_on_title">Профили кориро фурӯзон кунем?</string>
     <string name="work_profile_restricted">Мамнуъкунаки худкор бо маҳдудиятҳои ҳадди аксар фурӯзон аст. Барои амнияти шуморо муҳофизат кардан, эҷод кардани профилҳои корӣ ғайриимкон аст.</string>
-    <string name="work_profile_telephony_paused_text">Шумо барномаҳои кории худро ба таваққуф гузоштаед. Шумо аз онҳо ягон занги телефонӣ ё паём намегиред.</string>
-    <string name="work_profile_telephony_paused_title">Зангҳо ва паёмҳо хомӯшанд</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Профили кориро фурӯзон кунем?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">То даме, ки ман хомӯш кунам</string>
 </resources>

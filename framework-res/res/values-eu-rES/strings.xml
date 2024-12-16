@@ -86,6 +86,10 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Hitz egin Bixby-ri</string>
     <string name="accessibility_corner_action_type_zoom_in">Handitu</string>
     <string name="accessibility_corner_action_type_zoom_out">Txikitu</string>
+    <string name="accessibility_dialog_button_allow_samsung">Baimendu</string>
+    <string name="accessibility_dialog_button_deny_samsung">Ukatu</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">"Desins-
+talatu"</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Pizteko tekla eta Bolumena tekla azkar sakatuz gero, funtzio hauek aktibatu edo desaktibatuko dira:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Funtzioa botoia eta Bolumena botoia azkar sakatuz gero, funtzio hauek aktibatu edo desaktibatuko dira:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Pizteko tekla eta Bolumena tekla azkar sakatuz gero, %s aktibatu edo desaktibatuko da.</string>
@@ -117,6 +121,7 @@
     <string name="accessibility_sticky_keys_shift">Maius</string>
     <string name="account_addition_restrict">Segurtasun jarraibideak kontu hau gehitzea galarazten du.</string>
     <string name="account_removal_restrict">Segurtasun jarraibideak kontu hau kentzea galarazten du.</string>
+    <string name="action_bar_up_description">Nabigatu</string>
     <string name="action_menu_overflow_description">Aukera gehiago</string>
     <string name="adb_active_notification_message">Hautatu USB arazketa desgaitzeko</string>
     <string name="adb_active_notification_title">USB arazketa konektatuta</string>
@@ -125,6 +130,9 @@
     <string name="advance_wifi_sharing_msg">Wi-Fi sare erabilgarri bat aurkitu da. Konekta zaitez Wi-Fi bidez partekatzeko, Mobile Hotspot-eko datu mugikorrak erabili beharrean.</string>
     <string name="airplanemode_restrict">Segurtasun jarraibideak Hegaldi modua gaitzea galarazten du.</string>
     <string name="allow_settings_changes">Segurtasun jarraibideak ezarpenak aldatzea galarazten du.</string>
+    <string name="always_allow">Baimendu beti</string>
+    <string name="app_block_button_open">Ireki</string>
+    <string name="app_block_content">%1$s aplikazioak %2$s aplikazioa ireki nahi du.</string>
     <string name="app_clone_storage">Barne biltegia (Mezularitza duala)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Aukeratu aplikazioak</string>
     <string name="app_continuity_guide_cling_button_not_now">Orain ez</string>
@@ -139,32 +147,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">%s erabiltzeko denbora agortu duzu gaurkoz. Hori aldatzeko, joan Ezarpenak atalera.</string>
     <string name="app_restricted_message_concentration_mode">%s blokeatuta dago Kontzentratzeko moduan. Informazio gehiago lortzeko, jarri IKT saileko administratzailearekin harremanetan.</string>
     <string name="app_updating_message">%s eguneratzen ari da. Saiatu berriz geroago.</string>
-    <string name="appblock_block_subtitle1_phone">Zure telefonoa eta datu pertsonalak babesteko, ezin da instalatu aplikazio hau asmo txarrekoa delako susmoa dugulako.</string>
-    <string name="appblock_block_subtitle1_tablet">Zure tableta eta datu pertsonalak babesteko, ezin da instalatu aplikazio hau asmo txarrekoa delako susmoa dugulako.</string>
-    <string name="appblock_block_subtitle2">Aplikazio hau ezin da instalatu asmo txarreko aplikazioa dela salatu delako.</string>
-    <string name="appblock_block_text1">Aplikazio honen jatorria egiaztatu gabe dago eta informazio sentikorra eskatzen du. Baliteke informazio hori zure datu pertsonalak lapurtzeko edo filtratzeko erabiltzea.</string>
-    <string name="appblock_block_text2">"Asmo txarreko aplikazioek informazio sentikorra erabil dezakete zure datu pertsonalak lapurtzeko, zure nortasuna faltsutzeko edo finantza kontuetan sartzeko.
-
-Egiazko finantza erakundeek ez dute eskatzen ZIP fitxategirik, APK fitxategirik edo fitxategiak kudeatzeko aplikaziorik instalatzeko.
-
-Ziurtatu beti instalatzen dituzun aplikazioen jatorria fidagarria dela."</string>
-    <string name="appblock_warn_subtitle">Zure informazio pertsonala lapurtu edo filtratu dezake.</string>
+    <string name="appblock_block_text_phone">Aplikazio hori ezin da instalatu, asmo txarreko gisa salatu delako edo asmo txarreko gisa salatutako aplikazio baten antzekoa delako. Baliteke aplikazioa delituak gauzatzeko erabiltzea, hala nola phishinga. Telefonoa eta zure datuak seguru mantentzeko, ezin da saihestu murrizketa hori.</string>
+    <string name="appblock_block_text_tablet">Aplikazio hori ezin da instalatu, asmo txarreko gisa salatu delako edo asmo txarreko gisa salatutako aplikazio baten antzekoa delako. Baliteke aplikazioa delituak gauzatzeko erabiltzea, hala nola phishinga. Tableta eta zure datuak seguru mantentzeko, ezin da saihestu murrizketa hori.</string>
+    <string name="appblock_link_text">Informazio gehiago</string>
     <string name="appblock_warn_text1">"Egiaztatu gabeko jatorria duten aplikazioak instalatzen badituzu, baliteke zure informazio pertsonala biltzeko edo zure jardueraren jarraipena egiteko baimena ematea.
 
 Ez da gomendatzen aplikazioa instalatzea.
 
 Halere instalatzea aukeratzen baduzu, berrikusi arretaz aplikazioaren Pribatutasun oharra eta ziurtatu beharrezko baimenak soilik baimentzen dituzula."</string>
-    <string name="appblock_warn_text2">"Asmo txarreko aplikazioak sarritan informazio pertsonala lortzen saiatzen dira Kontaktuak, SMSak eta Argazkiak atzitzeko baimenak erabiliz.
-
-Ez da gomendatzen aplikazioa instalatzea.
-
-Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria dela eta kontuz baimenak edo bestelako datuak atzitzeko baimenak emateko orduan."</string>
     <string name="application_default_restrict">Gailuaren administratzaileak beste aplikazio bat ezarri du lehenetsi gisa.</string>
     <string name="auto_click_paused">Pausatu da Egin klik automatikoki.</string>
     <string name="auto_click_resumed">Berrekin zaio Egin klik automatikoki aukerari.</string>
     <string name="autofill_never_use_for_this_app">Ez erabili inoiz %s aplikazio honetarako</string>
     <string name="autofill_save_cancel">Utzi</string>
     <string name="autofill_save_never_OK">Ados</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">Segurtasun jarraibideak Babes kopia erabiltzea galarazten du.</string>
     <string name="badPin2">PIN2 okerra da. Saiatu berriz.</string>
     <string name="badPuk2">Adierazi duzun PUK2 okerra da</string>
@@ -175,8 +172,6 @@ Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria de
     <string name="bluetooth_a2dp_restrict">Segurtasun jarraibideak Bluetooth multimedia audioa erabiltzea galarazten du.</string>
     <string name="bluetooth_avrcp_restrict">Segurtasun jarraibideak Bluetooth audio/bideo kontrola erabiltzea galarazten du.</string>
     <string name="bluetooth_bpp_restrict">Segurtasun jarraibideak Bluetooth bidez inprimatzea galarazten du.</string>
-    <string name="bluetooth_china_popup_message">%1$s aplikazioa %2$s erabiltzeko baimena eskatzen ari da. Baimendu?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Segurtasun jarraibideak Bluetooth bidez datuak transferitzea galarazten du.</string>
     <string name="bluetooth_desktop_restrict">Segurtasun jarraibideak zure mahai gainera Bluetooth bidez konektatzea galarazten du.</string>
     <string name="bluetooth_device_restrict">Segurtasun jarraibideak Bluetooth gailu honekin parekatzea galarazten du.</string>
@@ -187,7 +182,6 @@ Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria de
     <string name="bluetooth_outgoing_call_restrict">Segurtasun jarraibideak Bluetooth bidez irteera deiak egitea galarazten du.</string>
     <string name="bluetooth_pairing_restrict">Segurtasun jarraibideak Bluetooth parekatzea galarazten du.</string>
     <string name="bluetooth_pbap_restrict">Segurtasun jarraibideak Bluetooth agenda erabiltzea galarazten du.</string>
-    <string name="bluetooth_permission_request">Bluetooth baimen eskaera</string>
     <string name="bluetooth_restrict">Segurtasun jarraibideak Bluetootha erabiltzea galarazten du.</string>
     <string name="bluetooth_sap_restrict">Segurtasun jarraibideak zure SIM txartela Bluetooth bidez atzitzea galarazten du.</string>
     <string name="bluetooth_security_mode_disable">Segurtasun jarraibideak Bluetooth eginbidea erabiltzea galarazten du.</string>
@@ -250,11 +244,8 @@ Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria de
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">Gailu baimenduak</string>
     <string name="data_call_restriction">Segurtasun politikak datu mugikorren erabilera mugatzen du</string>
-    <string name="data_usage_disable_mobile">Desgaitu mugikorraren datu konexioa?</string>
-    <string name="data_usage_enable_mobile_warning">Litekeena da pakete datuen bidez konektatzeak kosturen bat izatea. Jarraitu?</string>
     <string name="data_usage_limit_body">Datu mugikorrak pausatu egin dira fakturazio zikloaren amaierara arte.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Datu mugik. mugaren gainetik</string>
-    <string name="data_usage_mobile_limit_title">Datu mugikorren muga</string>
     <string name="data_usage_rapid_app_body">%s aplikazioak ohi baino datu gehiago erabili ditu.</string>
     <string name="data_usage_rapid_body">Aplikazioek ohi baino datu gehiago erabili dituzte.</string>
     <string name="data_usage_rapid_title">Mugikor datu erabilera altua</string>
@@ -265,6 +256,7 @@ Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria de
     <string name="data_usage_warning_title_offpeak_chn">Puntak. ez den erab. datuak: %s</string>
     <string name="data_usage_warning_title_unlimited_chn">Datu mugikorren abiadura muga</string>
     <string name="device_disabled">Gailua desgaituta. Jarri harremanetan IT administratzailearekin.</string>
+    <string name="device_info_not_available">Ez dago eskuragarri</string>
     <string name="dex_cant_change_user_profile">Ezin da aldatu erabiltzaile profila Samsung DeX moduan.</string>
     <string name="dex_dialog_launch_toast">Baliteke irekitako aplikazioak ixtea. Gorde datuak Samsung DeX abiarazi edo itxi baino lehen.</string>
     <string name="dex_disconnected_from_device">DeX %s gailutik deskonektatu da. Egiaztatu telebistaren sare konexioa.</string>
@@ -273,9 +265,6 @@ Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria de
     <string name="dex_launcher_mode_change">%s itxi da Samsung DeX ezartzeko.</string>
     <string name="dex_mirroring_jit_msg">Samsung DeX tabletan exekutatzen duzunean, pantaila HDMI bidez konektatutako edozein pantailatan isla dezakezu, ikuspegia handiagoa izan dadin.</string>
     <string name="dex_mirroring_jit_title">Islatu DeX pant. handiago batean</string>
-    <string name="dex_restart_app_dialog_button_positive">Berrabiar.</string>
-    <string name="dex_restart_app_dialog_message">Aplikazio hau beste pantaila batean dago abian jada. Hemen irekitzeko, aplikazioa berrabiarazi egin behar da. Berrabiarazi baino lehen, gorde eduki garrantzitsua.</string>
-    <string name="dex_restart_app_dialog_title">%s berrabiarazi nahi duzu?</string>
     <string name="dex_restriction_blockerMessage">Segurtasun politikak Samsung DeX erabiltzea galarazten du.</string>
     <string name="dex_restriction_ethernetOnly">Segurtasun politikak Wi-Fi datuak, datu mugikorrak eta kable bidezko konexio partekatzea DeX-en erabiltzea saihesten du. Sareko eginbideak erabiltzeko, kable bidezko konexioa behar da.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Segurtasun politika dela eta, deskonektatu kanpoko pantaila Samsung DeX-etik irteteko.</string>
@@ -300,7 +289,6 @@ Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria de
     <string name="digital_signature_failure_user_notification">%d erabiltzailearen sinadura digitalak ez du balio</string>
     <string name="disableupdate_application_restrict">Segurtasun politikak aplikazio hau eguneratzea galarazten du.</string>
     <string name="display_chooser_button_positive">Berrabiar.</string>
-    <string name="display_chooser_dont_show_again">Ez erakutsi berriz</string>
     <string name="dlg_confirm_kill_storage_users_text">USB biltegiraketa konektatzeak erabiltzen ari zaren zenbait aplikazio etengo ditu. Litekeena da erabilgarri ez izatea USB biltegiraketa deskonektatu arte.</string>
     <string name="dlg_confirm_kill_storage_users_title">Konektatu biltegia ordenagailura</string>
     <string name="dlg_error_title">USB eragiketak huts egin du</string>
@@ -315,7 +303,7 @@ Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria de
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Ezin da erabili aplikazio hau Multiwindow ikuspegian.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Ezin da erabili eginbide hau Multiwindow ikuspegian.</string>
     <string name="edit_contact_at_sim_restriction">Segurtasun jarraibideak SIM txarteleko kontaktuak editatzea galarazten du.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Gailu baimenduak</string>
+    <string name="edm_policy_not_allow_open_wifiap">Segurtasun politikak beroguneen ainguraketa ez segurtatuaren erabilera mugatzen du</string>
     <string name="emergency_calls_only">Larrialdi deiak soilik</string>
     <string name="ethernet_cable_connected_notification_message">Ukitu ezartzeko</string>
     <string name="ethernet_cable_connected_notification_title">Ethernet kablea konektatu da.</string>
@@ -335,7 +323,7 @@ Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria de
     <string name="ext_media_unsupported_notification_message">Gailuak ez du onartzen %s hau. Ukitu hau formatu bateragarri batean konfiguratzeko.</string>
     <string name="ext_media_unsupported_notification_title">%s ez da bateragarria</string>
     <string name="ext_storage_bad_removal_button">Berrabiarazi</string>
-    <string name="ext_storage_bad_removal_title">Berrabiarazi tableta</string>
+    <string name="ext_storage_bad_removal_title">Berrabiarazi telefonoa</string>
     <string name="extmedia_format_button_format">Formatua</string>
     <string name="extmedia_format_message_usbhost">USB memorian dauden fitxategi guztiak ezabatuko dira. Ezin izango duzu ekintza hori desegin!</string>
     <string name="extmedia_format_title_usbhost">USB memoria formateatu?</string>
@@ -406,6 +394,7 @@ Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria de
     <string name="globalactions_unable_restart_msg_fmm">Ezin da berrabiatu Bilatu nire mugikorra zerbitzuak telefonoa urrunetik blokeatu duelako.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Ezin da berrabiatu Bilatu nire mugikorra zerbitzuak tableta urrunetik blokeatu duelako.</string>
     <string name="globalactions_unable_restart_msg_securelock">Ezin da berrabiarazi telefonoa blokeatuta dagoen bitartean. Ireki estalkia eta desblokeatu telefonoa berrabiarazteko.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Ezin da berrabiarazi telefonoa SIM txartela blokeatuta dagoen bitartean.</string>
     <string name="hardware_key_restrict">Segurtasun jarraibideak tekla gogor hau erabiltzea galarazten du.</string>
     <string name="hardware_sec">Teklatua pantailan</string>
     <string name="hbd_translate">Itzuli testu idatzia</string>
@@ -475,16 +464,16 @@ Halere aplikazioa instalatzea aukeratzen baduzu, ziurtatu jatorria fidagarria de
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Mantentze modua desaktibatzeko, tableta desblokeatu egin beharko duzu.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Ez da gordeko mantentze modua aktibatuta dagoen bitartean gertatzen den ezer (esaterako, deskargatutako datuak, instalatutako aplikazioak edo ezarpenetan egindako aldaketak).</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Ezarri pant. blokeoa</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Berrabiarazi erregistrorik sortu gabe</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Sortu erregistro bat eta berrabiarazi</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Telefonoa berrabiarazi egin behar da Mantentze modua aktibatzeko.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Aurrena, ezarri pantaila blokeo seguru bat.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Tableta berrabiarazi egin behar da Mantentze modua aktibatzeko.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Gure langile teknikoek zure telefonoak dituen arazoak aztertzen laguntzeko, sistemaren erregistro bat sortzea gomendatzen dizugu, Mantentze modua hasi baino lehen.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Laguntza teknikoko langileek zure telefonoak dituen arazoak diagnostikatu eta azter ditzaten, Mantentze modua hasi baino lehen sistemaren erregistro bat sortzea gomendatzen dizugu.
 
-Erregistroak zein aplikazio erabili diren eta azkenaldian akatsik gertatu den erakusten du, baina ez dauka informazio pertsonalik. Erregistroa akatsak aztertzeko erabiliko da, eta ez da beste xede baterako ere erabiliko. Normalean minutu pare bat behar da erregistroa sortzeko."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Gure langile teknikoek zure tabletak dituen arazoak aztertzen laguntzeko, sistemaren erregistro bat sortzea gomendatzen dizugu, Mantentze modua hasi baino lehen.
+Erregistroak telefonoa konpontzeko ezinbesteko informazioa baino ez du barne hartzen, hala nola zein aplikazio erabili diren, azkenaldian gertatutako erroreak, blokeatutako telefono zenbakiak eta fitxategi biltegiaren ahalmena. Arazoak diagnostikatzeko eta aztertzeko soilik erabiliko da erregistroa, eta ez beste inongo xedetarako. Normalean minutu pare bat behar da erregistroa sortzeko."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Laguntza teknikoko langileek zure tabletak dituen arazoak diagnostikatu eta azter ditzaten, Mantentze modua hasi baino lehen sistemaren erregistro bat sortzea gomendatzen dizugu.
 
-Erregistroak zein aplikazio erabili diren eta azkenaldian akatsik gertatu den erakusten du, baina ez dauka informazio pertsonalik. Erregistroa akatsak aztertzeko erabiliko da, eta ez da beste xede baterako ere erabiliko. Normalean minutu pare bat behar da erregistroa sortzeko."</string>
+Erregistroak tableta konpontzeko ezinbesteko informazioa baino ez du barne hartzen, hala nola zein aplikazio erabili diren, azkenaldian gertatutako erroreak, blokeatutako telefono zenbakiak eta fitxategi biltegiaren ahalmena. Arazoak diagnostikatzeko eta aztertzeko soilik erabiliko da erregistroa, eta ez beste inongo xedetarako. Normalean minutu pare bat behar da erregistroa sortzeko."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Aztertu biltegia</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Telefonoaren barne biltegia ia beteta dago. Biltegian tokirik gabe geratzen bazara, baliteke aplikazio eta eginbide batzuk ongi funtzionatzeari uztea. Saiatu gehiago behar ez dituzun fitxategiak edo aplikazioak ezabatzen. Ezabatu eta gero, ez ahaztu Zakarrontzia hustea.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Tabletaren barne biltegia ia beteta dago. Biltegian tokirik gabe geratzen bazara, baliteke aplikazio eta eginbide batzuk ongi funtzionatzeari uztea. Saiatu gehiago behar ez dituzun fitxategiak edo aplikazioak ezabatzen. Ezabatu eta gero, ez ahaztu Zakarrontzia hustea.</string>
@@ -506,10 +495,17 @@ Erregistroak zein aplikazio erabili diren eta azkenaldian akatsik gertatu den er
     <string name="maintenance_mode_outro_label">Irten Mantentze modutik</string>
     <string name="maintenance_mode_outro_textview_message_phone">Telefonoa desblokeatu beharko duzu Mantentze modua desaktibatzeko. Desaktibatutakoan, Mantentze modua aktibatu zen lehen aldiko egoerara itzuliko da dena. Ez dira gordeko Mantentze modua aktibatuta zegoela egindako aldaketak, hala nola deskargatutako datuak, instalatutako aplikazioak edo ezarpen aldaketak.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Tableta desblokeatu beharko duzu Mantentze modua desaktibatzeko. Desaktibatutakoan, Mantentze modua aktibatu zen lehen aldiko egoerara itzuliko da dena. Ez dira gordeko Mantentze modua aktibatuta zegoela egindako aldaketak, hala nola deskargatutako datuak, instalatutako aplikazioak edo ezarpen aldaketak.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Ezin da erabili Mantentze modua %s aktibo dagoenean.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Ezin da erabili mantentze modua Energia aurreztea aktibatuta dagoenean aplikazio mugatuekin eta Pantaila nagusiarekin.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Mantentze modua ez da telefono honekin bateragarria.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Mantentze modua ez da tableta honekin bateragarria.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">Gailuaren jabeak soilik erabil dezake %s</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Datuen babeskopiak egiteari utzi eta Mantentze modua aktibatu?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Mantentze modua aktibatzeko, babeskopia prozesua amaitu, edo amaitu ez den babeskopia ezabatu behar duzu.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Mantentze modua aktibatzeko, abian den babeskopia prozesua gelditu behar duzu.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Mantentze modua aktibatzeko, babeskopia datuak leheneratzeko prozesua gelditu behar duzu.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Gailu administratzailearen aplikazioa</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Erregistroa sortzen…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Normalean pare bat minutu behar izaten da. Erregistroa sortu eta gero, telefonoa berrabiarazi egingo da Mantentze moduan, eta seguru utz dezakezu telefono manten dezaten.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Normalean pare bat minutu behar izaten da. Erregistroa sortu eta gero, tableta berrabiarazi egingo da Mantentze moduan, eta seguru utz dezakezu tableta manten dezaten.</string>
@@ -532,13 +528,8 @@ Tableta laster berrabiaraziko da."</string>
     <string name="media_checking_usbhost">USB memoria egiaztatzen ari da.</string>
     <string name="media_unknown_state">Kanpo multimedia egoera ezezagunean</string>
     <string name="mediaplayer_restrict">Segurtasun jarraibideak MTP multimedia irakurgailua erabiltzea galarazten du.</string>
+    <string name="message_on_crash">Blokeatzaile automatikoak blokeatu du</string>
     <string name="microphone_restrict">Segurtasun jarraibideak mikrofonoa erabiltzea galarazten du.</string>
-    <string name="miniresolver_call">Deitu</string>
-    <string name="miniresolver_call_in_work">Laneko aplikaziotik deitu nahi duzu?</string>
-    <string name="miniresolver_call_information">Zure erakundeak laneko aplikazioetatik soilik uzten dizu deiak egiten.</string>
-    <string name="miniresolver_sms_information">Zure erakundeak laneko aplikazioetatik soilik uzten dizu mezuak bidaltzen.</string>
-    <string name="miniresolver_switch">Aldatu</string>
-    <string name="miniresolver_switch_to_work">Laneko aplikaziora aldatu nahi duzu?</string>
     <string name="mmcc_authentication_reject_name_template">%s erabiltzeko baimenik ez</string>
     <string name="mmcc_illegal_me_name_template">%s erabiltzeko baimenik ez</string>
     <string name="mmcc_illegal_ms_name_template">%s erabiltzeko baimenik ez</string>
@@ -550,30 +541,6 @@ Tableta laster berrabiaraziko da."</string>
     <string name="mock_location_reminder_disable">Desaktibatu</string>
     <string name="mock_location_reminder_title">Probako kokapena aktibatuta</string>
     <string name="more_apps">Aplikazio gehiago</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s zerbitzua ez da bateragarria. Jarri bezero zerbitzuekin harremanetan.</string>
-    <string name="mptcp_message_address_type_not_supported">%s konexioa ahula da. Erabilgarri dagoen sare baten bidez berriz konektatzen…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s konexioa ahula da. Erabilgarri dagoen sare baten bidez berriz konektatzen…</string>
-    <string name="mptcp_message_cmd_not_supported">%s sarea ez dago erabilgarri. Erabilgarri dagoen sare baten bidez berriz konektatzen…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s konexioa ahula da. Erabilgarri dagoen sare baten bidez berriz konektatzen…</string>
-    <string name="mptcp_message_connection_refused">%s konexioa ahula da. Erabilgarri dagoen sare baten bidez berriz konektatzen…</string>
-    <string name="mptcp_message_data_usage_limit">Datu erabileraren muga gainditu da. Datu erabileraren muga aldatzeko, zoaz Ezarpenak atalera.</string>
-    <string name="mptcp_message_host_unreachable">%s konexioa ahula da. Erabilgarri dagoen sare baten bidez berriz konektatzen…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Ezin da gaitu %s. Gailua ez dago LTE sarera konektatuta.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Ezin da gaitu %s atzerrian ibiltaritzan zaudela.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Ezin da gaitu %s Konexioa partekatzea edo USB modema gaituta badaude.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Ezin da %s gaitu Wi-Fi Direct gaituta badago.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Ezin da gaitu %s Hegaldi modua gaituta dagoela.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Ezin da gaitu %s Datu mugikorrak desaktibatuta daudenean.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Ez dago zerbitzu hornitzailearen erantzunik.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Ezin da gaitu %1$s. %2$s ez dago erabilgarri zure Interneteko tarifan edo ez da erantzunik jaso %3$s zerbitzaritik.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Ezin izan da bidali %s aktibatzeko eskaera. Erabilgarri dauden sareen bidez berriro konektatzen…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Ezin da gaitu %s. SIM txartel okerra sartu da.</string>
-    <string name="mptcp_message_network_unreachable">%s konexioa ahula da. Erabilgarri dagoen sare baten bidez berriz konektatzen…</string>
-    <string name="mptcp_message_non_mptcp_plan">Ezin da gaitu Giga Multi-Path. Tarifak ez du funtzio hori onartzen.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s desgaitu da gailua gehiegi berotu ez dadin. Horren ordez, sare mugikor bidez deskargatzen…</string>
-    <string name="mptcp_message_server_error">%s konexioa ahula da. Erabilgarri dagoen sare baten bidez berriz konektatzen…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Ezin da gaitu %s. Gailua gehiegi berotzen ari da. Itxaron gailua hozten den arte eta saiatu berriz.</string>
-    <string name="mptcp_message_ttl_expired">%s sarea ez dago erabilgarri. Erabilgarri dagoen sare baten bidez berriz konektatzen…</string>
     <string name="multi_user_capability_restrict">Segurtasun jarraibideak zure gailuan erabiltzaile gaitasun anitza mugatzen du.</string>
     <string name="multi_user_creation_restrict">Segurtasun jarraibideak zure gailuan erabiltzaile kontu berriak sortzea galarazten du.</string>
     <string name="multi_user_removal_restrict">Segurtasun jarraibideak zure gailutik erabiltzaile kontuak kentzea galarazten du.</string>
@@ -592,27 +559,25 @@ Tableta laster berrabiaraziko da."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Soinua Bluetooth audio gailu batean erreproduzitzen ari da. Ukitu hau hori desaktibatzeko</string>
     <string name="multisound_sound_via_headphone">%s soinua entzungailuen bidez erreproduzitzen ari da. Ukitu hau desaktibatzeko.</string>
     <string name="multisound_sound_via_headphone_multiselection">Soinua entzungailuen bidez erreproduzitzen ari da. Desaktibatzeko, ukitu hau.</string>
-    <string name="multisound_sound_via_phone_speaker">%s soinua tabletaren bozgorailuaren bidez erreproduzitzen ari da. Desaktibatzeko, ukitu hau.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Soinua tabletaren bozgorailuaren bidez erreproduzitzen ari da. Desaktibatzeko, ukitu hau.</string>
+    <string name="multisound_sound_via_phone_speaker">%s soinua telefonoaren bozgorailuaren bidez erreproduzitzen ari da. Ukitu hau hori desaktibatzeko.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Soinua telefonoaren bozgorailuaren bidez erreproduzitzen ari da. Desaktibatzeko, ukitu hau.</string>
     <string name="multisound_sound_via_usb_audio">%s soinua USB audio gailuaren bidez erreproduzitzen ari da. Ukitu hau desaktibatzeko.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Soinua USB audio gailuaren bidez erreproduzitzen ari da. Desaktibatzeko, ukitu hau.</string>
     <string name="multisound_title">Aplikazioaren aparteko soinua</string>
     <string name="multisound_turn_off_multisound">Itzali</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Ezin da exekutatu %s Samsung DeX-en. Probatu tableta moduan exekutatzen.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Ezin da exekutatu %s Samsung DeX-en. Tabletetako Pantaila nagusietarako dago diseinatuta.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Joko batzuek ukipen pantailatan baino ez dute funtzionatzen. Saguak Samsung DeX-en funtzionatzen ez badu, jolastu tableta moduan.</string>
-    <string name="my_device">Tableta hau</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Ezin da exekutatu %s Samsung DeX-en. Probatu telefono moduan exekutatzen.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Ezin da exekutatu %s Samsung DeX-en. Telefonoetako Pantaila nagusietarako dago diseinatuta.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Joko batzuek ukipen pantailatan baino ez dute funtzionatzen. Saguak Samsung DeX-en funtzionatzen ez badu, jolastu telefono moduan.</string>
+    <string name="my_device">Telefono hau</string>
     <string name="network_locked_sim_dialog_message_ais">SIM txartelak ez du guztiz funtzionatzen telefono honekin, harpidetzaren zehaztapenak eta baldintzak gordetzen ez dituelako. Aipatutakoari buruzko galderarik izanez gero edo informazio gehiago nahi izanez gero, jarri Samsung-en Bezeroentzako zerbitzuarekin harremanetan edo jo produktuak erosi zenituen dendara.</string>
     <string name="network_locked_sim_notification_text">Sareak blok. SIM txartela barruan</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Aldatu Pantaila nagusiko aplikazio lehenetsia eta ezarri One UI-ren Pantaila nagusia.</string>
     <string name="nfc_restrict">Segurtasun politikak NFCren erabiltzea galarazten du.</string>
     <string name="nosim_limited_service">Zerbitzu mugatua</string>
-    <string name="not_support_ai_key">AA teklak ez du funtzionatzen oraindik zure tabletan. Laster, eguneratze bat egongo da erabilgarri.</string>
-    <string name="notification_app_name_settings">Ezarpenak</string>
     <string name="notification_channel_dex_policy">Samsung DeX politika</string>
-    <string name="ntfs_usb_storage_readonly_mount_message">Memoria hau irakurtzeko soilik da NTFS formatua darabilelako.</string>
-    <string name="ntfs_usb_storage_readonly_mount_title">USB mem. (irak. soilik) gehituta</string>
+    <string name="ntfs_usb_storage_readonly_mount_message">Biltegi hau irakurtzeko soilik da NTFS formatua darabilelako.</string>
+    <string name="ntfs_usb_storage_readonly_mount_title">USB bilt. (irak. soilik) gehituta</string>
     <string name="overheat_limit_ok">Ados</string>
     <string name="overheat_warning_title_v2_phone">Telefonoa beroegi dago</string>
     <string name="overheat_warning_title_v2_tablet">Tableta beroegi dago</string>
@@ -784,7 +749,6 @@ ITZULI HONA"</string>
     <string name="permlab_scheduleExactAlarm">Ezarri alarmak eta abisuak</string>
     <string name="permlab_spdControl">Kudeatu segurtasun politikaren eguneraketak</string>
     <string name="permlab_ucsPlugin">Kredentzialen kudeaketa unibertsalaren plugina</string>
-    <string name="personal_apps_suspended_turn_profile_on">Aktibatu</string>
     <string name="phoneTypeConference">Konferentzia</string>
     <string name="policydesc_allow_bluetoothmode">Galarazi Bluetootha erabiltzea.</string>
     <string name="policydesc_allow_browser">Galarazi Internet erabiltzea.</string>
@@ -792,7 +756,7 @@ ITZULI HONA"</string>
     <string name="policydesc_allow_desktopsync">Galarazi mahaigaineko sinkronizazioaren erabiltzea.</string>
     <string name="policydesc_allow_internetsharing">Galarazi Konexioa partekatzea erabiltzea.</string>
     <string name="policydesc_allow_irda">Galarazi IrDA erabiltzea.</string>
-    <string name="policydesc_allow_popimapemail">Galarazi POP eta IMAP mezu elektronikoak tabletan erabiltzea.</string>
+    <string name="policydesc_allow_popimapemail">Galarazi POP eta IMAP mezu elektronikoak telefonoan erabiltzea.</string>
     <string name="policydesc_allow_storagecard">Galarazi SD txartelak erabiltzea.</string>
     <string name="policydesc_allow_textmessaging">Galarazi testu eta multimedia mezularitza erabiltzea.</string>
     <string name="policydesc_allow_thirdParty">Aplikazio honek hirugarrenen aplikazioak abiaraztea galaraz dezake.</string>
@@ -838,7 +802,7 @@ ITZULI HONA"</string>
     <string name="pwd_change_enforced">Segurtasun politikak pasahitza alda dezazula behar du</string>
     <string name="recording_fail">Ezin da erabili mikrofonoa %1$s aplikazioan %2$s aplikazioak darabilen bitartean.</string>
     <string name="recording_popup">%s mikrofonoa erabiltzen ari da.</string>
-    <string name="recording_popup_device">Tableta</string>
+    <string name="recording_popup_device">Telefonoa</string>
     <string name="recording_popup_with_bluetooth">%s Bluetooth bidezko mikrofonoa erabiltzen ari da.</string>
     <string name="recording_popup_with_device">%1$s %2$s gailuko mikrofonoa erabiltzen ari da.</string>
     <string name="redo">Berriz</string>
@@ -903,12 +867,12 @@ ITZULI HONA"</string>
     <string name="screencapture_restrict">Segurtasun jarraibideak pantaila kaptura erabiltzea galarazten du.</string>
     <string name="sd_card_unavailable_message">Ezin duzu erabili SD txartela beste erabiltzaile profil bat abian zenean sartu delako.</string>
     <string name="sd_card_unavailable_title">SD txartela ez dago erabilgarri</string>
-    <string name="sdcard_bad_removal_message">SD txartel bat modu ez-seguruan kendu da. Tableta espero ez denean berrabiarazi ez dadin, gorde zain dauden datuak eta berrabiaraz ezazu.</string>
+    <string name="sdcard_bad_removal_message">SD txartel bat modu ez-seguruan kendu da. Telefonoa espero ez denean berrabiarazi ez dadin, gorde zain dauden datuak eta berrabiaraz ezazu.</string>
     <string name="sdcard_batch_decrypt_noti_content">Desenkriptatu SD txartela</string>
     <string name="sdcard_batch_decrypt_noti_title">SD txartela desenkriptatzea</string>
     <string name="sdcard_batch_decrypt_popup_content">Enkriptatutako SD txartela erabili aurretik desenkriptatu behar da. Desenkriptatzeak ordubete edo gehiago beharko du. Hasi kargatutako bateria batekin eta eduki gailua entxufatuta desenkriptatzea osatu arte. Baliteke desenkriptatze prozesua etenez gero datu batzuk edo denak galtzea.</string>
     <string name="sdcard_decrypt_err_notification">Errorea gertatu da SD txartela desenkriptatzean</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD txarteleko fitxategi batzuk beste gailu batean enkriptatu dira eta ezin dira erabili tableta honetan.</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD txarteleko fitxategi batzuk beste gailu batean enkriptatu dira eta ezin dira erabili telefono honetan.</string>
     <string name="sdcard_decrypt_notification">SD txartela desenkriptatuta</string>
     <string name="sdcard_decrypt_title_notification">SD txartela desenkriptatzea</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD desenkriptatzen…</string>
@@ -925,14 +889,6 @@ ITZULI HONA"</string>
     <string name="sdcard_unmount_policy_noti_title">SD txartela desmuntatuta IT politikagatik</string>
     <string name="sdhms_nr_control_low_battery">Desaktibatu 5G bateria aurrezteko, telefonoaren bateriaren %15 baino gutxiago geratzen denean.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetootha aktibatuta egongo da Hegaldi moduan.</string>
-    <string name="sec_immersive_cling_button_ok">Ados</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Aplikazioa pantaila osoa erabiltzen ari da. Nabigatzeko irristatze keinuak egoera barran agertuko dira. Nabigatzeko, irristatu berriz egoera barra ikusgai dagoenean.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Aplikazio hau pantaila osoa erabiltzen ari da. Botoi nagusia, Atzera botoia eta Azkenak botoiak ezkutatuta daude distrakzioak murrizteko eta aplikaziotik nahi gabe irten ez zaitezen.
-
-Telefonoa biratuta ere, kargatzeko atakaren ondoan egongo dira beti botoiak. Botoiak berriz ikusgai jartzeko, irristatu hatza pantailaren ertzetik barrura, geziak erakusten duen bezala."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Aplikazio hau pantaila osoa erabiltzen ari da. Botoi nagusia, Atzera botoia eta Azkenak botoiak ezkutatuta daude distrakzioak murrizteko eta aplikaziotik nahi gabe irten ez zaitezen.
-
-Botoiak berriz ikusgai jartzeko, irristatu hatza pantailaren behealdetik gora, geziak adierazi bezala."</string>
     <string name="sec_monotype_default">Lehenetsia</string>
     <string name="sec_ringtone_category_brand_sound">Samsung markaren soinua</string>
     <string name="sec_ringtone_category_calm">Lasaia</string>
@@ -942,6 +898,10 @@ Botoiak berriz ikusgai jartzeko, irristatu hatza pantailaren behealdetik gora, g
     <string name="sec_ringtone_category_open_theme">Uneko gaia lehenetsia da</string>
     <string name="sec_ringtone_category_retro">Retro</string>
     <string name="sec_ringtone_silent">Isila</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Utzi</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Satelite batera konektatzeko, sare operadorea Hautatu automatikoki gisa ezarri behar da.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Aktibatu</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Sare hautaketa automatikoa aktibatu?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Hitz egiteko, aktibatu Mikrofonoa erabiltzeko baimena.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">%s erabiltzeko, aktibatu Kamera erabiltzeko baimena.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">%s erabiltzeko, aktibatu Mikrofonoa erabiltzeko baimena.</string>
@@ -1037,6 +997,8 @@ Botoiak berriz ikusgai jartzeko, irristatu hatza pantailaren behealdetik gora, g
     <string name="sem_face_error_already_in_use_by_VT">Ezin da erabili aurpegi bidezko hautematea bideodeietan.</string>
     <string name="sem_face_error_camera_access_off">Ezin da erabili aurpegi bidezko hautematea kamera erabiltzeko baimena desaktibatuta baitago</string>
     <string name="sem_face_error_camera_fail">Ezin izan da Kamera ireki. Saiatu berriz.</string>
+    <string name="sem_face_error_lockout">Datu biometriko bidezko hautematea ez dago erabilgarri saiakera oker gehiegi egin direlako.</string>
+    <string name="sem_face_error_lockout_permanent">Datu biometriko bidezko hautematea ez dago erabilgarri saiakera oker gehiegi egin direlako.</string>
     <string name="sem_face_error_ppp_timeout">Aspaldian ez duzu egiaztatu zure nortasuna. Zure aurpegia erregistratzeko, berriz hasi beharko duzu.</string>
     <string name="sem_face_error_too_dark">Aurpegia hautemateko ilunegi dago</string>
     <string name="sem_face_error_too_dark_to_enroll">Ilunegi dago. Piztu argiren bat edo joan toki argitsuago batera.</string>
@@ -1052,13 +1014,18 @@ Botoiak berriz ikusgai jartzeko, irristatu hatza pantailaren behealdetik gora, g
     <string name="sem_fingerprint_acquired_tsp_block">Hatz aztarna eskaneatzeko, urrundu S Pen-aren punta pantailatik.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Hatz aztarnak erabiltzeko, ezarri pantaila blokeo mota seguru bat (patroia, PINa edo pasahitza).</string>
+    <string name="sem_fingerprint_error_lockout">Datu biometriko bidezko hautematea ez dago erabilgarri saiakera oker gehiegi egin direlako.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Datu biometriko bidezko hautematea ez dago erabilgarri saiakera oker gehiegi egin direlako.</string>
     <string name="sem_fingerprint_error_onehand_mode">Ezin da erabili hatz aztarnen eskanerra Esku bakarreko moduan.</string>
     <string name="sem_fingerprint_error_smart_view">Ezin da eskaneatu hatz aztarna %s erabili bitartean.</string>
+    <string name="sem_fingerprint_error_system_failure">Hatz aztarnen sentsoreak ez du erantzuten. Saiatu berriz geroago. Arazoak badirau, berrabiarazi telefonoa.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Hatz aztarnen datuak hondatuta daude. Gehitu hatz aztarnak berriz.</string>
     <string name="sem_fingerprint_error_wireless_charger">Hatz aztarna erabiltzeko, deskonektatu hari gabeko kargagailutik</string>
     <string name="sem_fingerprint_name_template">%d. hatz aztarna</string>
     <string name="sem_fingerprint_register_dialog_button_later">Geroago</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Orain ez</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Kendu eta erregistratu</string>
+    <string name="sem_fingerprint_register_dialog_message">Azken software eguneraketan, hatz aztarna bidezko hautematea hobetu da. Ezin duzu erabili hatz aztarna bidezko hautematea hatz aztarnak kendu eta berriz erregistratu arte.</string>
     <string name="sem_fingerprint_register_dialog_title">Erregistr. hatz aztarnak berriz</string>
     <string name="sem_fingerprint_result_failed">Ez da bat etortzerik aurkitu.</string>
     <string name="sem_fingerprint_result_retry">Saiatu berriz.</string>
@@ -1078,7 +1045,7 @@ Botoiak berriz ikusgai jartzeko, irristatu hatza pantailaren behealdetik gora, g
     <string name="sem_resolver_button_always_accessibility">Erabili beti hautatutako aplikazioa</string>
     <string name="sem_resolver_button_just_once_accessibility">Erabili hautatutako aplikazioa behin soilik</string>
     <string name="sem_resolver_choose_what_to_do">Aukeratu zer egin nahi duzun</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Aplikazio lehenetsiaren ezarpenak aldatzeko, joan Ezarpenak > Aplikazioak > Aukeratu aplikazio lehenetsiak atalera.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Mota horretako fitxategiak irekitzeko erabiltzen den aplikazio lehenetsia aldatzeko, joan Ezarpenak > Aplikazioak atalera, hautatu egungo aplikazio lehenetsia eta, ondoren, ukitu Ezarri lehenetsi gisa > Garbitu lehenetsiak.</string>
     <string name="sem_resolver_icon_content_description">Informazioa</string>
     <string name="sem_resolver_personal_tab_accessibility">Pertsonala</string>
     <string name="sem_resolver_share_live_default_text">Partekatu edukia unean bertan ingurukoekin. Gailuak ikusgai gisa ezarri dituztenak hemen agertuko dira.</string>
@@ -1090,9 +1057,6 @@ Botoiak berriz ikusgai jartzeko, irristatu hatza pantailaren behealdetik gora, g
     <string name="sem_resolver_work_tab_accessibility">Lantokia</string>
     <string name="sem_switch_off">Desaktibatuta</string>
     <string name="sem_switch_on">Aktibatuta</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Desaktibatu da apl. ororen kamera sarbidea</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Aktibatu</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Desaktibatu da mikr. ororen kamera sarbidea</string>
     <string name="serviceErased">Ondo ezabatu da</string>
     <string name="serviceModeAll">Guztiak</string>
     <string name="serviceModeAllConditional">baldintzapean</string>
@@ -1102,6 +1066,7 @@ Botoiak berriz ikusgai jartzeko, irristatu hatza pantailaren behealdetik gora, g
     <string name="serviceModeUnconditional">Baldintzarik gabe</string>
     <string name="serviceisDisabled">Zerbitzua ezgaituta</string>
     <string name="serviceisEnabled">Zerbitzua gaituta</string>
+    <string name="settings">Ezarpenak</string>
     <string name="sf_quick_switch_not_supported">Ezin da erabili azkar aldatzeko aukera egoera honetan.</string>
     <string name="sf_quick_switch_securefolder_view">Hona aldatu da: %s.</string>
     <string name="share">Partekatu</string>
@@ -1110,26 +1075,30 @@ Botoiak berriz ikusgai jartzeko, irristatu hatza pantailaren behealdetik gora, g
     <string name="sharelist_restrict">Segurtasun jarraibideak datu partekatzea galarazten du.</string>
     <string name="show_keyboard_button">Erakutsi Teklatua botoia</string>
     <string name="show_keyboard_button_description">Erakutsi %s nabigazio barran.</string>
+    <string name="showing_esc_dialog">Ihes tekla Atzera egiteko botoi gisa funtzionatzeko ezar dezakezu.</string>
     <string name="showing_touch_sensitivity_noti_action">Aktibatu</string>
     <string name="showing_touch_sensitivity_noti_text">Aktibatu Ukipen sentikortasuna Privacy Screen edo Notepaper Screen darabilzunean ukipen bidezko erantzunak zehatzagoak izan daitezen.</string>
     <string name="showing_touch_sensitivity_noti_title">Handitu ukipen sentikortasuna</string>
+    <string name="side_key_double_press_archived_app">Aplikazioa artxibatuta dago. Aukeratu beste zerbait.</string>
     <string name="side_key_double_press_deleted_app">Aplikazioa ez dago instalatuta. Aukeratu beste zerbait.</string>
     <string name="side_key_double_press_disabled_app">%s desgaituta dago. Aukeratu beste zerbait.</string>
     <string name="signature_identity_toast">Honek eskaintzen du %s:</string>
     <string name="simRefresh">SIM datuak freskatzen</string>
     <string name="simReset">SIM datuak eguneratzen…</string>
     <string name="sim_check_old_sim_message">SIM txartel zaharrek edo kaltetuek arazoak sor ditzakete sareko konexioan. Jarri zerbitzu hornitzailearekin harremanetan edo joan dendetako batera SIMa ordeztu egin behar den egiaztatzeko.</string>
+    <string name="sim_check_old_sim_message_skt">SIM txartel zaharrek edo kaltetuek arazoak sor ditzakete sareko konexioan. Jarri zerbitzu hornitzailearekin harremanetan edo joan dendetako batera SIMa ordeztu egin behar den egiaztatzeko.</string>
     <string name="sim_check_old_sim_title">Baliteke SIMa ordeztu behar izatea</string>
+    <string name="sim_check_old_sim_title_skt">Baliteke SIMa ordeztu behar izatea</string>
     <string name="sim_count_mismatched_ds_to_ss">SIM txartelaren modua aldatu egin da, Dual SIM modutik Single SIM modura. Ezarpena aplikatzeko, jatorriko ezarpenak berrezarriko dira gailuan, eta gailua berrabiaraziko da.</string>
     <string name="sim_count_mismatched_ss_to_ds">SIM txartelaren modua aldatu egin da, Single SIM modutik Dual SIM modura. Ezarpena aplikatzeko, jatorriko ezarpenak berrezarriko dira gailuan, eta gailua berrabiaraziko da.</string>
     <string name="sim_count_mismatched_title">SIM txartelaren modua aldatu da</string>
-    <string name="sim_imsreg_error_message_lgt">Telefonoak ezin izango du ahots deirik egin, SIM txartela hauteman ezin duelako. Kendu SIM txartela eta sar ezazu berriz. Arazoak badirau, SIM txartela ordeztu egin beharko duzu. Laguntza lortzeko, joan LG U+ denda batera edo jarri LG U+ enpresaren Bezeroentzako zerbitzuarekin harremanetan 1544-0010 zenbakira deituta.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Tabletak ezin izango du ahots deirik egin, SIM txartela hauteman ezin duelako. Kendu SIM txartela eta sar ezazu berriz. Arazoak badirau, SIM txartela ordeztu egin beharko duzu. Laguntza lortzeko, joan LG U+ denda batera edo jarri LG U+ enpresaren Bezeroentzako zerbitzuarekin harremanetan 1544-0010 zenbakira deituta.</string>
+    <string name="sim_imsreg_error_message_lgt">Telefonoak ezin izango du ahots deirik egin, SIM txartela hauteman ezin duelako. Kendu SIM txartela eta sar ezazu berriz. Arazoak badirau, SIM txartela ordeztu egin beharko duzu LG U+ denda batean.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Tabletak ezin izango du ahots deirik egin, SIM txartela hauteman ezin duelako. Kendu SIM txartela eta sar ezazu berriz. Arazoak badirau, SIM txartela ordeztu egin beharko duzu LG U+ denda batean.</string>
     <string name="sim_off_noti_message">SIM guztiak desaktibatuta daudenean, ezin duzu deirik egin, mezurik bidali edo daturik erabili. Ukitu hau SIMak aktibatzeko.</string>
     <string name="sim_off_noti_title">SIM guztiak desaktibatuta daude</string>
     <string name="sim_off_toast_message">Sartu duzun SIM txartela desaktibatuta dago. Hura erabiltzeko, joan Ezarpenak > Konexioak > SIM kudeatzailea atalera, eta aktiba ezazu.</string>
     <string name="sim_recognize_error_message_kt">Ezin izan da hauteman SIM txartela. Kendu SIM txartela eta sar ezazu berriz. Arazoak badirau, SIM txartela ordeztu egin beharko duzu. Laguntza lortzeko, joan KT denda batera edo jarri KT enpresaren Bezeroentzako zerbitzuarekin harremanetan 1588-0010 zenbakira deituta.</string>
-    <string name="sim_recognize_error_message_lgt">Ezin izan da hauteman SIM txartela. Kendu SIM txartela eta sar ezazu berriz. Arazoak badirau, SIM txartela ordeztu egin beharko duzu. Laguntza lortzeko, joan LG U+ denda batera edo jarri LG U+ enpresaren Bezeroentzako zerbitzuarekin harremanetan 1544-0010 zenbakira deituta.</string>
+    <string name="sim_recognize_error_message_lgt">Ez da hauteman SIM txartela. Kendu SIM txartela eta sar ezazu berriz. Arazoak badirau, SIM txartela ordeztu egin beharko duzu LG U+ denda batean.</string>
     <string name="sim_recognize_error_message_skt">Ezin da irakurri SIM txartela. Baliteke aplikazio eta eginbide batzuek ez funtzionatzea. Kendu eta sartu berriro SIM txartela, eta berrabiarazi telefonoa. Horrek funtzionatzen ez badu, eraman telefonoa eta SIM txartela Bezeroentzako zerbitzu zentro batera.</string>
     <string name="sim_recognize_error_message_skt_tablet">Ezin da irakurri SIM txartela. Baliteke aplikazio eta eginbide batzuek ez funtzionatzea. Kendu eta sartu berriro SIM txartela, eta berrabiarazi tableta. Horrek funtzionatzen ez badu, eraman tableta eta SIM txartela Bezeroentzako zerbitzu zentro batera.</string>
     <string name="sim_recognize_error_title_lgt">Ezin da hauteman USIM txartela</string>
@@ -1139,10 +1108,8 @@ Botoiak berriz ikusgai jartzeko, irristatu hatza pantailaren behealdetik gora, g
     <string name="sim_removed_message_hotswap_us_tablet">Datu mugikorrak erabiltzeko, konektatu Wi-Fi sare batera edo sartu SIM txartela.</string>
     <string name="sim_removed_title_hotswap">Ez dago SIM txartelik</string>
     <string name="sim_removed_title_hotswap_us_tablet">Sartu SIM txartela</string>
+    <string name="smart_tip_action_click_hint_text">Itxi</string>
     <string name="smartclip_restrict">Segurtasun politikak Klip errazaren erabilera galarazten du.</string>
-    <string name="sms_short_code_remember_undo_instruction">Hau geroago alda dezakezu Ezarpenak > Aplikazioak aukeran.</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Geroago alda dezakezu Ezarpenak > Aplikazioak > Aukera gehiago botoia > Sarbide berezia > Erabili testu mezuen premium zerbitzuak aukerara joanda</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">EZ BAIMENDU INOIZ ukituz gero, aplikazio honek ezingo ditu bidali mezuak atzealdean, Bidali testu mezuak baimena eman izan arren.</string>
     <string name="ss_do_not_show_again_us">Ez erakutsi berriz</string>
     <string name="sss_translate">Itzuli</string>
     <string name="ssu_lock_body_vzw">Sentitzen dugu, baina une honetan gailua ezin da aktibatu beste operadore baten sarean. Laguntza lortzeko, jarri Verizon enpresarekin harremanetan %1$s edo %2$s zenbakira deituta (aurreordainketa planak)</string>
@@ -1173,7 +1140,6 @@ Botoiak berriz ikusgai jartzeko, irristatu hatza pantailaren behealdetik gora, g
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">Konexioa partekatzea</string>
     <string name="title_dialog_check_rotate_or_not">Biratu pantaila automatikoki desaktibatu?</string>
-    <string name="title_uds">Datuak aurrezteko ultramodua</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Ezin da erabili Bixby telefonoa konfiguratzen ari zaren bitartean.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Ezin da erabili Bixby tableta konfiguratzen ari zaren bitartean.</string>
     <string name="toast_warning_pattern_lock">Patroi bidezko blokeoa ezin da erabili Etengailu orokorrarekin. Aldatu beste blokeo mota batera.</string>
@@ -1213,9 +1179,13 @@ Babesa kentzeko, joan Ezarpenak >Segurtasuna eta pribatutasuna > Blokeatzaile au
     <string name="unknown_install_blocked_esm_title">Aplikazio ezezaguna blokeatu da</string>
     <string name="unknown_install_dlg_desc">Aplikazio hau ez da onartutako denda batetik deskargatu. Aplikazioa instalatuz gero, zure segurtasuna eta pribatutasuna arriskuan jarriko dituzu. Baliteke aplikazioak zure informazio pertsonala biltzea edo datuak galtzea eragitea.</string>
     <string name="unknown_install_dlg_desc2">Aplikazio hau ez da azken segurtasun eginbideekin bateragarria. Aplikazioa instalatuz gero, segurtasun arrisku hauen mende egongo zara:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Baliteke aplikazioa instalatzeko fitxategi hori segurua ez izatea. Agian ez da esaten duen aplikazioa. Telefonoa eta datu pertsonalak babesteko, instalatu aplikazioa fidagarri zaizun aplikazio denda batetik.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Baliteke aplikazioa instalatzeko fitxategi hori segurua ez izatea. Agian ez da esaten duen aplikazioa. Tableta eta datu pertsonalak babesteko, instalatu aplikazioa fidagarri zaizun aplikazio denda batetik.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Aplikazio hau asmo txarrekoa delako susmoa dugu eta baliteke telefonoa eta datuak arriskuan jartzea. Ez da gomendatzen aplikazioa instalatzea.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Aplikazio hau asmo txarrekoa delako susmoa dugu eta baliteke tableta eta datuak arriskuan jartzea. Ez da gomendatzen aplikazioa instalatzea.</string>
-    <string name="unknown_install_dlg_general_title">Aplikazio hau iturburu ezezagun batekoa da</string>
+    <string name="unknown_install_dlg_desc_phone">Aplikazioa ez da baimendutako aplikazio denda batekoa. Telefonoa eta informazio pertsonala babesteko, instalatu aplikazioa baimendutako denda batetik, hala nola Play Store edo Galaxy Store.</string>
+    <string name="unknown_install_dlg_desc_tablet">Aplikazioa ez da baimendutako aplikazio denda batekoa. Tableta eta informazio pertsonala babesteko, instalatu aplikazioa baimendutako denda batetik, hala nola Play Store edo Galaxy Store.</string>
+    <string name="unknown_install_dlg_general_title">Ez da gomendatzen aplikazio hau instalatzea</string>
     <string name="unknown_install_dlg_negative_button">Ez instalatu</string>
     <string name="unknown_install_dlg_perm_desc1">Baliteke aplikazioak jasotzen dituzun testu mezuetako egiaztapen kodeak bidean atzematea.</string>
     <string name="unknown_install_dlg_perm_desc2">Baliteke irteerako deiak beste telefono zenbaki batera desbideratzea zuk jakin gabe.</string>
@@ -1234,7 +1204,7 @@ Babesa kentzeko, joan Ezarpenak >Segurtasuna eta pribatutasuna > Blokeatzaile au
     <string name="usb_abnormal_reset_title">USB konexioa ez da egonkorra</string>
     <string name="usb_abnormal_reset_toast">USB konexioa ez da egonkorra. Desentxufatu kablea eta entxufa ezazu berriz, edo probatu beste kable batekin.</string>
     <string name="usb_accessory_notification_title">Konektatu USB osagarri batera</string>
-    <string name="usb_bad_removal_message">USB bidez biltegiratzeko gailu bat modu ez-seguruan kendu da. Tableta espero ez denean berrabiarazi ez dadin, gorde zain dauden datuak eta berrabiaraz ezazu.</string>
+    <string name="usb_bad_removal_message">USB bidez biltegiko gailu bat modu ez-seguruan kendu da. Telefonoa espero ez denean berrabiarazi ez dadin, gorde zain dauden datuak eta berrabiaraz ezazu.</string>
     <string name="usb_blocked_by_emergency_mode">Larrialdi moduan, USB funtzio batzuk ez daude erabilgarri.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Ezin dira erabili konektatutako USB gailuarekin lotutako funtzioak Bateria aurrezteko gehienezko modua gaituta badago.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Bateria aurrezteko modu gorena aktibatuta dagoenean, USB funtzio batzuk mugatuta egongo dira.</string>
@@ -1243,13 +1213,15 @@ Babesa kentzeko, joan Ezarpenak >Segurtasuna eta pribatutasuna > Blokeatzaile au
     <string name="usb_camera_connected_notification_title">Multimedia gailu gisa konektatu da</string>
     <string name="usb_camera_disconnected_notification_title">Multimedia gailua deskonektatu da</string>
     <string name="usb_cd_installer_notification_title">Software eguneraketa</string>
-    <string name="usb_charing_only_notification_title">Konektatuta</string>
+    <string name="usb_charing_only_notification_title">USB bidez kargatzen</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Blokeatzaile automatikoa aktibatuta dago gehieneko murrizketekin.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">Blokeatu egin da USB bidezko konexioa</string>
     <string name="usb_debugging_only_notification_title">Arazketa soilik</string>
-    <string name="usb_host_resource_exceed_message">Tabletaren USB kontrolagailuak ez du gailu honetara konektatzeko behar adina baliabide. Deskonektatu gailua eta konekta ezazu berriz.</string>
+    <string name="usb_host_resource_exceed_message">Telefonoaren USB kontrolagailuak ez du gailu honetara konektatzeko behar adina baliabide. Deskonektatu gailua eta konekta ezazu berriz.</string>
     <string name="usb_host_resource_exceed_title">Ez dago USB kontr. behar adina baliabide</string>
-    <string name="usb_hub_depth_exceed_message">Tabletak USB bidezko bost konexio onartzen ditu aldi berean.</string>
+    <string name="usb_hub_depth_exceed_message">Telefonoak USB bidezko bost konexio onartzen ditu aldi berean.</string>
     <string name="usb_hub_depth_exceed_title">USB bidezko gehieneko konexioak</string>
-    <string name="usb_hub_power_exceed_message">Tabletak ezin dio eman behar adina bateria USB bidezko gailuari. Tabletara konektatu baino lehen, konektatu gailua bateria propioa duen USB gailu nagusi batera.</string>
+    <string name="usb_hub_power_exceed_message">Telefonoak ezin dio eman behar adina bateria USB bidezko gailuari. Telefonora konektatu baino lehen, konektatu gailua bateria propioa duen USB gailu nagusi batera.</string>
     <string name="usb_increase_battery_usage">Baliteke USB konexioak bateria kontsumoa handitzea.</string>
     <string name="usb_mass_storage_restrict">Segurtasun jarraibideak USB biltegi masiboa erabiltzea galarazten du.</string>
     <string name="usb_midi_notification_title">MIDIrako USB</string>
@@ -1275,8 +1247,9 @@ Babesa kentzeko, joan Ezarpenak >Segurtasuna eta pribatutasuna > Blokeatzaile au
     <string name="usb_storage_stop_title">USB biltegiraketa erabiltzen</string>
     <string name="usb_storage_title">USB konektatua</string>
     <string name="usb_type_c_supply_power_notification_title">USB bidez karg. ari den gailua</string>
-    <string name="usb_unblock_by_screen_unlock">Konektatutako USB gailua erabiltzeko, desblokeatu tableta.</string>
-    <string name="usb_unsupport_accessory_message">Tabletak ez du onartzen USB gailu hau.</string>
+    <string name="usb_unblock_by_screen_unlock">Konektatutako USB gailua erabiltzeko, desblokeatu telefonoa.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USB gailua erabiltzeko, desblokeatu zure telefonoa eta konektatu berriz USB gailua.</string>
+    <string name="usb_unsupport_accessory_message">Telefonoak ez du onartzen USB gailu hau.</string>
     <string name="usb_unsupport_accessory_title">Ez da onartzen USB gailua</string>
     <string name="usb_unsupported_device">Konektatutako USB gailua ez da bateragarria.</string>
     <string name="usb_unsupported_device_title">Gailua ez da onartzen</string>
@@ -1294,24 +1267,24 @@ Babesa kentzeko, joan Ezarpenak >Segurtasuna eta pribatutasuna > Blokeatzaile au
     <string name="usb_water_dialg_method_2_desc_2">Lehortzea bizkortzeko, jarri haizagailu edo ile lehorgailu bat (aire hotzarekin soilik) atakari begira.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Hezetasuna edo material arrotz bat hauteman dugu kargatzeko/USB atakan.
 
-Begiratu kargatzeko/USB atakan material arrotzen bat badagoen; hautsa edo hondarra, esaterako. Tableta kalte ez dadin, ez entxufatu ezer kargatzeko ataka garbitu eta hezetasuna desagertu arte.
+Begiratu kargatzeko/USB atakan material arrotzen bat badagoen; hautsa edo hondarra, esaterako. Telefonoa kalte ez dadin, ez entxufatu ezer kargatzeko ataka garbitu eta hezetasuna desagertu arte.
 
 Ataka lehortzeko, astindu gailua hezetasuna irteteko eta, ondoren, itxaron lehortu arte. Baliteke zenbait ordu behar izatea. Azkarrago lehortzeko, jarri haizagailu edo ile lehorgailu bat atakari begira (aire hotza soilik)."</string>
     <string name="usb_water_dialg_positive_button">Ados</string>
     <string name="usb_water_dialg_support_wireless_charging">"Hezetasuna edo material arrotz bat hauteman dugu kargatzeko/USB atakan.
 
-Begiratu kargatzeko/USB atakan material arrotzen bat dagoen; hautsa edo hondarra, esaterako. Tableta kalte ez dadin, ez entxufatu ezer kargatzeko ataka garbitu eta hezetasuna desagertu arte.
+Begiratu kargatzeko/USB atakan material arrotzen bat badagoen; hautsa edo hondarra, esaterako. Telefonoa kalte ez dadin, ez entxufatu ezer kargatzeko ataka garbitu eta hezetasuna desagertu arte.
 
 Ataka lehortzeko, astindu gailua hezetasuna irteteko eta, ondoren, itxaron lehortu arte. Baliteke zenbait ordu behar izatea. Azkarrago lehortzeko, jarri haizagailu edo ile lehorgailu bat atakari begira (aire hotza soilik).
 
-Bitartean, hari gabe karga dezakezu tableta."</string>
+Bitartean, hari gabe karga dezakezu telefonoa."</string>
     <string name="usb_water_notification_content">Hezetasuna edo material arrotzen bat dago kargatzeko/USB atakan. Egiaztatu kargatu aurretik.</string>
-    <string name="usb_water_notification_message">Hezetasuna hauteman da kargagailuan edo USB atakan. Tableta kargatu aurretik, ziurtatu lehor dagoela. Ataka guztiz lehortzeak luze jo dezake.</string>
+    <string name="usb_water_notification_message">Hezetasuna hauteman da kargagailuan edo USB atakan. Telefonoa kargatu aurretik, ziurtatu lehor dagoela. Ataka guztiz lehortzeak luze jo dezake.</string>
     <string name="usb_water_notification_message_button">Xehetasunak</string>
     <string name="usb_water_notification_title">Egiaztatu kargagailua/USB ataka</string>
     <string name="usbhostStorage_restrict">Segurtasun jarraibideak USB ostalari biltegia erabiltzea galarazten du.</string>
     <string name="usbmemory_added_notification_title">Gehitu da USB biltegia</string>
-    <string name="usbmemory_readonly_mount_notification_message">USB biltegiratze gailua ez dabil behar bezala eta irakurtzeko soilik moduan ezarri da datu galerak saihesteko. USB biltegiratze gailuko datuen babeskopia egitea komeni da.</string>
+    <string name="usbmemory_readonly_mount_notification_message">USB biltegi gailua ez dabil behar bezala eta irakurtzeko soilik moduan ezarri da datu galerak saihesteko. USB bidezko biltegi gailuko datuen babeskopia egitea komeni da.</string>
     <string name="usbmemory_readonly_mount_notification_title">Ezin da idatzi USB biltegian</string>
     <string name="user_encrypted_title_phone">Telefonoa berrabiarazi da</string>
     <string name="user_encrypted_title_tablet">Tableta berrabiarazi da</string>
@@ -1319,6 +1292,8 @@ Bitartean, hari gabe karga dezakezu tableta."</string>
     <string name="vpn_allowOnlySecureConnection">VPN profila ez da segurua.</string>
     <string name="vpn_error_text">Ukitu VPN-ra birkonektatzen saiatzeko</string>
     <string name="vpn_error_title">VPN konexio errorea</string>
+    <string name="vpn_fail_text_long">Ezin izan da konektatu %s sarera. Ukitu VPNa kudeatzeko.</string>
+    <string name="vpn_fail_title">VPNa ez dago konektatuta</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Aplikazioak itxiko dira tableta hozteko</string>
     <string name="vzw_cooldown_mode_ok">Ados</string>
@@ -1381,6 +1356,7 @@ Bitartean, hari gabe karga dezakezu tableta."</string>
     <string name="wifi_network_available_detailed">Wifi sare ireki bat dago erabilgarri.</string>
     <string name="wifi_networks_available">Wifi sareak erabilgarri</string>
     <string name="wifi_networks_available_detailed">Wifi sare irekiak daude erabilgarri.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s datu mugikorrak erabiltzen ari da, WLAN konexioa motela edo ez-egonkorra delako.</string>
     <string name="wifi_notification_switch_wifi_detail">Telefonoa datu mugikorretara aldatu da Wi-Fi sarea ez zelako egonkorra.</string>
     <string name="wifi_notification_switch_wifi_title">Datu mugikorretara aldatu da</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Larrialdi jakinarazpenak</string>
@@ -1412,9 +1388,5 @@ Bitartean, hari gabe karga dezakezu tableta."</string>
     <string name="work_profile_on_message">Laneko aplikazioak, jakinarazpenak, datuak eta laneko profileko beste eginbide batzuk atzitzea baimenduko zaizu.</string>
     <string name="work_profile_on_title">Laneko profila aktibatu?</string>
     <string name="work_profile_restricted">Blokeatzaile automatikoa aktibatuta dago, gehieneko murrizketekin. Segurtasuna babesteko, ezin da laneko profilik sortu.</string>
-    <string name="work_profile_telephony_paused_text">Laneko aplikazioak pausatu dituzu. Ez duzu jasoko haietako telefono deirik edo testu mezurik.</string>
-    <string name="work_profile_telephony_paused_title">Deiak eta mezuak desaktibatuta</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Laneko profila aktibatu nahi duzu?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">Itzaltzen dudan arte</string>
 </resources>

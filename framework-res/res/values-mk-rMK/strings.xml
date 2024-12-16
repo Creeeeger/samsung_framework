@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Зборувајте со Bixby</string>
     <string name="accessibility_corner_action_type_zoom_in">Зумирај</string>
     <string name="accessibility_corner_action_type_zoom_out">Одзумирај</string>
+    <string name="accessibility_dialog_button_allow_samsung">Дозволи</string>
+    <string name="accessibility_dialog_button_deny_samsung">Одбиј</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Одинстал.</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Притискањето на Копчето за вклучување и Копчето за зголемување на јачината на звукот брзо ќе ги вклучи или исклучи следниве функции:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Притискањето на Страничното копче и Копчето за зголемување на јачината на звукот брзо ќе ги вклучи или исклучи следниве функции:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Притискањето на Копчето за вклучување и Копчето за зголемување на јачината на звукот брзо ќе го вклучи или исклучи %s.</string>
@@ -117,6 +120,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">Полисата за безбедност спречува додавање на оваа сметка.</string>
     <string name="account_removal_restrict">Полисата за безбедност спречува отстранување на оваа сметка.</string>
+    <string name="action_bar_up_description">Навигација нагоре</string>
     <string name="action_menu_overflow_description">Повеќе опции</string>
     <string name="adb_active_notification_message">Изберете за исклучување на дебагирањето USB.</string>
     <string name="adb_active_notification_title">Дебагирањето на USB е поврзано.</string>
@@ -125,6 +129,9 @@
     <string name="advance_wifi_sharing_msg">Откриена е достапна мрежа Wi-Fi. Поврзете се за да користите споделување Wi-Fi наместо мобилни податоци за Mobile Hotspot.</string>
     <string name="airplanemode_restrict">Полисата за безбедност спречува вклучување на Режимот за летало.</string>
     <string name="allow_settings_changes">Полисата за безбедност спречува менување поставувања.</string>
+    <string name="always_allow">Дозвoлувај секогаш</string>
+    <string name="app_block_button_open">Отвори</string>
+    <string name="app_block_content">%1$s сака да ја отвори апликацијата %2$s.</string>
     <string name="app_clone_storage">Внатрешен склад (Dual Messenger)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Избери апликации</string>
     <string name="app_continuity_guide_cling_button_not_now">Не сега</string>
@@ -139,32 +146,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">Сте го искористиле целото Ваше време за %s денес. Можете да го смените ова во Поставувања.</string>
     <string name="app_restricted_message_concentration_mode">%s е блокирана за време на Режимот на концентрација. Контактирајте со администраторот за ИТ за да дознаете повеќе.</string>
     <string name="app_updating_message">%s се ажурира. Обидете се повторно подоцна.</string>
-    <string name="appblock_block_subtitle1_phone">За да ги заштити телефонот и личните податоци, оваа апликација не може да се инсталира затоа што постои сомнеж дека е злонамерна.</string>
-    <string name="appblock_block_subtitle1_tablet">За да ги заштити таблетот и личните податоци, оваа апликација не може да се инсталира затоа што постои сомнеж дека е злонамерна.</string>
-    <string name="appblock_block_subtitle2">Оваа апликација не може да се инсталира затоа што е пријавена како злонамерна.</string>
-    <string name="appblock_block_text1">Оваа апликација не е потврдена од потврден извор и бара чувствителни дозволи што може да се користат за крадење или протекување на Вашите лични податоци.</string>
-    <string name="appblock_block_text2">"Злонамерните апликации може да користат чувствителни дозволи за крадење на Вашите лични податоци, имитирање на Вашиот идентитет или пристапување до Вашите финансиски сметки.
-
-Легитимните финансиски институции не бараат инсталирање на ZIP-датотеки, APK-датотеки или апликации на управувачот за датотеки.
-
-Секогаш осигурувајте се дека апликациите што ги инсталирате се од доверлив извор."</string>
-    <string name="appblock_warn_subtitle">Оваа апликација може да ги краде или протекува Вашите лични податоци.</string>
+    <string name="appblock_block_text_phone">Оваа апликација не може да се инсталира затоа што е пријавена како злонамерна или е слична на апликација што е пријавена како злонамерна. Веројатно е дека оваа апликација може да се користи за кривични дела како што се фишинг. За да ги чувате телефонот и податоците безбедни, ова ограничување нема да може да се заобиколи.</string>
+    <string name="appblock_block_text_tablet">Оваа апликација не може да се инсталира затоа што е пријавена како злонамерна или е слична на апликација што е пријавена како злонамерна. Веројатно е дека оваа апликација може да се користи за кривични дела како што се фишинг. За да ги чувате таблетот и податоците безбедни, ова ограничување нема да може да се заобиколи.</string>
+    <string name="appblock_link_text">Дознај повеќе</string>
     <string name="appblock_warn_text1">"Инсталирањето апликации од непотврдени извори може да им дозволи на апликациите да ги собираат Вашите лични податоци или да ја следат Вашата активност.
 
 Не се препорачува инсталирање на оваа апликација.
 
 Ако сепак изберете да ја инсталирате, внимателно прегледајте ја Напомената за приватност на апликацијата и осигурете се дека ќе ги дозволите само дозволите што се неопходни."</string>
-    <string name="appblock_warn_text2">"Злонамерните апликации често се обидуваат да ги добијат Вашите лични податоци користејќи ги дозволите за Контакти, SMS и Фотографии.
-
-Не се препорачува инсталирање на оваа апликација.
-
-Ако сепак изберете да ја инсталирате оваа апликација, осигурете се дека доаѓа од извор на кој му верувате и внимавајте на следниве дозволи или на другиот пристап до Вашите податоци."</string>
     <string name="application_default_restrict">Друга апликација е поставена како основна од администраторот на уредот.</string>
     <string name="auto_click_paused">Автоматско кликнување е паузирано.</string>
     <string name="auto_click_resumed">Автоматско кликнување е продолжено.</string>
     <string name="autofill_never_use_for_this_app">Никогаш немојте да користите %s за оваа апликација</string>
     <string name="autofill_save_cancel">Откажи</string>
     <string name="autofill_save_never_OK">OK</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">Полисата за безбедност го спречува користењето на Резервна копија.</string>
     <string name="badPin2">PIN2 не е точен. Обидете се повторно.</string>
     <string name="badPuk2">Кодот PUK2 што го внесовте не е точен</string>
@@ -175,8 +171,6 @@
     <string name="bluetooth_a2dp_restrict">Полисата за безбедност го спречува користењето звук за медиуми Bluetooth.</string>
     <string name="bluetooth_avrcp_restrict">Полисата за безбедност го спречува користењето на контролата за звук/видео Bluetooth.</string>
     <string name="bluetooth_bpp_restrict">Полисата за безбедност спречува печатење преку Bluetooth.</string>
-    <string name="bluetooth_china_popup_message">%1$s бара дозвола да користи %2$s. Дозволи?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Полисата за безбедност спречува пренос на податоци преку Bluetooth.</string>
     <string name="bluetooth_desktop_restrict">Полисата за безбедност спречува поврзување со работната површина преку Bluetooth.</string>
     <string name="bluetooth_device_restrict">Полисата за безбедност го спречува поврзувањето со овој уред Bluetooth.</string>
@@ -187,7 +181,6 @@
     <string name="bluetooth_outgoing_call_restrict">Полисата за безбедност спречува упатувањето повици преку Bluetooth.</string>
     <string name="bluetooth_pairing_restrict">Полисата за безбедност спречува поврзување Bluetooth.</string>
     <string name="bluetooth_pbap_restrict">Полисата за безбедност го спречува користењето на адресарот Bluetooth.</string>
-    <string name="bluetooth_permission_request">Барање за дозвола Bluetooth</string>
     <string name="bluetooth_restrict">Полисата за безбедност го спречува користењето Bluetooth.</string>
     <string name="bluetooth_sap_restrict">Полисата за безбедност спречува пристап до SIM-картичката преку Bluetooth.</string>
     <string name="bluetooth_security_mode_disable">Полисата за безбедност го спречува користењето Bluetooth.</string>
@@ -250,11 +243,8 @@
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">Дозволени уреди</string>
     <string name="data_call_restriction">Политиката на безбедност го ограничува користењето мобилни податоци.</string>
-    <string name="data_usage_disable_mobile">Да се исклучи мобилно податочно поврзување?</string>
-    <string name="data_usage_enable_mobile_warning">За поврзување преку пакетни податоци може да се наплаќа дополнително. Сепак продолжи?</string>
     <string name="data_usage_limit_body">Мобилните податоци се паузирани до крајот на Вашиот циклус на наплата.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Над Вашето огранич. за податоци</string>
-    <string name="data_usage_mobile_limit_title">Достиг.е огран.за моб. податоци</string>
     <string name="data_usage_rapid_app_body">%s користеше повеќе податоци од обично.</string>
     <string name="data_usage_rapid_body">Вашите апликации користеа повеќе податоци од обично.</string>
     <string name="data_usage_rapid_title">Големо мобилно користење податоци</string>
@@ -265,6 +255,7 @@
     <string name="data_usage_warning_title_offpeak_chn">%s од под.вон шпиц се искорист.</string>
     <string name="data_usage_warning_title_unlimited_chn">Дост. е огр.за брз. на моб.под.</string>
     <string name="device_disabled">Уредот е исклучен. Контактирајте со администраторот за ИТ.</string>
+    <string name="device_info_not_available">Недостапно.</string>
     <string name="dex_cant_change_user_profile">Не може да се смени корисничкиот профил додека сте во режим на Samsung DeX.</string>
     <string name="dex_dialog_launch_toast">Отворените апликации може да се затворат. Зачувајте ги податоците пред да го пуштите или да излезете од Samsung DeX.</string>
     <string name="dex_disconnected_from_device">DeX е исклучен од %s. Проверете го мрежното поврзување на Вашиот телевизор.</string>
@@ -273,9 +264,6 @@
     <string name="dex_launcher_mode_change">%s се затвори за да се префрли на Samsung DeX.</string>
     <string name="dex_mirroring_jit_msg">Кога ќе пуштите Samsung DeX на таблетот, можете да го одразувате екранот на кој било екран поврзан со HDMI за поголем преглед.</string>
     <string name="dex_mirroring_jit_title">Mirror DeX на поголем екран</string>
-    <string name="dex_restart_app_dialog_button_positive">Рестартир.</string>
-    <string name="dex_restart_app_dialog_message">Оваа апликација веќе работи на друг екран. За да ја отворите тука, апликацијата треба да се рестартира. Зачувајте сѐ што е битно пред да ја рестартирате.</string>
-    <string name="dex_restart_app_dialog_title">Да се рестартира %s?</string>
     <string name="dex_restriction_blockerMessage">Полисата за безбедност спречува користење на Samsung DeX.</string>
     <string name="dex_restriction_ethernetOnly">Безбедносната политика спречува користење на податоци Wi-Fi, мобилни податоци и споделување врска во DeX. Потребна е жичена врска за мрежните функции.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Поради безбедносната политика, исклучете го надворешниот екран за да излезете од Samsung DeX.</string>
@@ -300,7 +288,6 @@
     <string name="digital_signature_failure_user_notification">Дигиталниот потпис не е важечки за корисникот %d</string>
     <string name="disableupdate_application_restrict">Полисата за безбедност спречува ажурирање на апликацијава.</string>
     <string name="display_chooser_button_positive">Рестартир.</string>
-    <string name="display_chooser_dont_show_again">Не прикажувај повторно</string>
     <string name="dlg_confirm_kill_storage_users_text">Поврзувањето меморија USB ќе запре некои апликации што се користат. Тие може да не бидат достапни додека не ја откачите меморијата USB.</string>
     <string name="dlg_confirm_kill_storage_users_title">Поврзи меморија со компјутер</string>
     <string name="dlg_error_title">Операцијата со УСБ уредот е неуспешна</string>
@@ -315,7 +302,7 @@
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Не може да се користи апликацијава во прегледот на Повеќе прозорци.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Не може да се користи функцијава во прегледот на Повеќе прозорци.</string>
     <string name="edit_contact_at_sim_restriction">Полисата за безбедност спречува менување на контактите на SIM-картичката.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Дозволени уреди</string>
+    <string name="edm_policy_not_allow_open_wifiap">Политиката на безбедност го ограничува користењето небезбедното споделување на хотспот.</string>
     <string name="emergency_calls_only">Само итни повици</string>
     <string name="ethernet_cable_connected_notification_message">Допрете за поставување.</string>
     <string name="ethernet_cable_connected_notification_title">Приклучен е кабел Етернет.</string>
@@ -335,7 +322,7 @@
     <string name="ext_media_unsupported_notification_message">Уредот не ја поддржува оваа %s. Допрете за да поставите во поддржан формат.</string>
     <string name="ext_media_unsupported_notification_title">Неподдржана %s</string>
     <string name="ext_storage_bad_removal_button">Рестартирај</string>
-    <string name="ext_storage_bad_removal_title">Рестартирајте го Вашиот таблет</string>
+    <string name="ext_storage_bad_removal_title">Рестартирајте го Вашиот телефон</string>
     <string name="extmedia_format_button_format">Формат</string>
     <string name="extmedia_format_message_usbhost">Сите датотеки складирани на УСБ-склад ќе се избришат. Дејството не може да се отповика.</string>
     <string name="extmedia_format_title_usbhost">Форматирај УСБ-склад?</string>
@@ -406,6 +393,7 @@
     <string name="globalactions_unable_restart_msg_fmm">Не може да се рестартира затоа што телефонот бил далечински заклучен од страна на Најди го мојот мобилен.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Не може да се рестартира затоа што таблетот бил далечински заклучен од страна на Најди го мојот мобилен.</string>
     <string name="globalactions_unable_restart_msg_securelock">Не може да се рестартира телефонот додека е заклучен. Отворете го капакот и отклучете за да го рестартирате телефонот.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Не може да се рестартира телефонот додека SIM-картичката е заклучена.</string>
     <string name="hardware_key_restrict">Полисата за безбедност го спречува користењето на ова хардверско копче.</string>
     <string name="hardware_sec">Тастатура на екранот</string>
     <string name="hbd_translate">Преведи пишан текст</string>
@@ -475,16 +463,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Ќе треба да го отклучите таблетот за да го исклучите Режимот на одржување.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Ништо што се случува додека Режимот на одржување е вклучен нема да се зачува, како што се преземените податоци, инсталираните апликации или промените во поставувањата.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Пост. заклуч. екран</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Рестартирај без создавање дневник</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Направи дневник и рестартирај</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Вашиот телефон треба да се рестартира за да вклучи Режим на одржување.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Прво поставете заклучување на екранот.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Вашиот таблет треба да се рестартира за да вклучи Режим на одржување.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"За да му помогнете на нашиот персонал за поддршка да анализира какви било проблеми со Вашиот телефон, препорачуваме да направите системски дневник пред да го пуштате Режимот на одржување.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"За да му помогнеме на нашиот персонал да дијагностицира и анализира какви било проблеми со Вашиот телефон, препорачуваме да направите системски дневник пред да го пуштате Режимот на одржување.
 
-Дневникот прикажува кои апликации се користеле, како и сите грешки што можеби се случиле во последно време, но не вклучува никакви други лични информации. Дневникот ќе се користи само за анализирање проблеми, а не за никаква друга намена. Обично се потребни околу 2 минути за да се направи дневник."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"За да му помогнете на нашиот персонал за поддршка да анализира какви било проблеми со Вашиот таблет, препорачуваме да направите системски дневник пред да го пуштате Режимот на одржување.
+Дневникот вклучува само информации што се клучни за поправање на Вашиот телефон, на пример, кои апликации се користеле, кои грешки настанале во последно време, кои телефонски броеви се блокирани и колкав е капацитетот за складирање датотеки. Дневникот ќе се користи само за дијагностицирање и анализирање проблеми, а не за никаква друга намена. За создавање на дневникот обично се потребни околу 2 минути."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"За да му помогнеме на нашиот персонал да дијагностицира и анализира какви било проблеми со Вашиот таблет, препорачуваме да направите системски дневник пред да го пуштате Режимот на одржување.
 
-Дневникот прикажува кои апликации се користеле, како и сите грешки што можеби се случиле во последно време, но не вклучува никакви други лични информации. Дневникот ќе се користи само за анализирање проблеми, а не за никаква друга намена. Обично се потребни околу 2 минути за да се направи дневник."</string>
+Дневникот вклучува само информации што се клучни за поправање на Вашиот таблет, на пример, кои апликации се користеле, кои грешки настанале во последно време, кои телефонски броеви се блокирани и колкав е капацитетот за складирање датотеки. Дневникот ќе се користи само за дијагностицирање и анализирање проблеми, а не за никаква друга намена. За создавање на дневникот обично се потребни околу 2 минути."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Анализирај склад</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Внатрешниот склад на Вашиот телефон е речиси целосно полн. Ако Ви снема простор во складот, некои апликации и функции може да престанат да функционираат правилно. Обидете се да избришете некои датотеки или апликации што повеќе не Ви се потребни. По бришењето, немојте да заборавите да го испразните Ѓубрето.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Внатрешниот склад на Вашиот таблет е речиси целосно полна. Ако Ви снема простор во складот, некои апликации и функции може да престанат да функционираат правилно. Обидете се да избришете некои датотеки или апликации што повеќе не Ви се потребни. По бришењето, немојте да заборавите да го испразните Ѓубрето.</string>
@@ -506,10 +494,17 @@
     <string name="maintenance_mode_outro_label">Излегување од Режим на одржување</string>
     <string name="maintenance_mode_outro_textview_message_phone">Ќе треба да го отклучите телефонот за да го исклучите Режимот на одржување. Кога ќе го направите тоа, сѐ ќе се врати како што било кога првпат се вклучил Режимот на одржување. Промените извршени додека е вклучен Режимот на одржување, како што се преземените податоци, инсталираните апликации или промените во поставувањата, не се зачувуваат.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Ќе треба да го отклучите таблетот за да го исклучите Режимот на одржување. Кога ќе го направите тоа, сѐ ќе се врати како што било кога првпат се вклучил Режимот на одржување. Промените извршени додека е вклучен Режимот на одржување, како што се преземените податоци, инсталираните апликации или промените во поставувањата, не се зачувуваат.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Режимот на одржување не може да се користи додека е активна %s.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Не може да се користи Режим на одржување додека е вклучено Штедење енергија со ограничени апликации и Почетен екран.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Режимот на одржување не е поддржан на овој телефон.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Режимот на одржување не е поддржан на овој таблет.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s може да ја користи само сопственикот на уредот.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Да престанете да ги архивирате Вашите податоци и да го вклучите Режимот на одржување?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">За да го вклучите Режимот на одржување, треба да го завршите или избришете Вашето нецелосно архивирање.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">За да го вклучите Режимот на одржување, треба да го сопрете тековното архивирање.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">За да го вклучите Режимот на одржување, треба да го сопрете архивирањето на Вашите податоци за архивирање.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Апликација за администраторот на уредот</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Се прави дневник…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Ова обично трае околу 2 минути. Откако ќе се направи дневникот, Вашиот телефон ќе се рестартира во Режим на одржување и можете безбедно да го предадете Вашиот телефон за одржување.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Ова обично трае околу 2 минути. Откако ќе се направи дневникот, Вашиот таблет ќе се рестартира во Режим на одржување и можете безбедно да го предадете Вашиот таблет за одржување.</string>
@@ -532,17 +527,12 @@
     <string name="media_checking_usbhost">УСБ меморијата се проверува во моментов.</string>
     <string name="media_unknown_state">Надворешниот медиум е во непозната состојба.</string>
     <string name="mediaplayer_restrict">Полисата за безбедност спречува користење медиумски плеер MTP.</string>
+    <string name="message_on_crash">Блокирано од Автоматски блокатор</string>
     <string name="microphone_restrict">Полисата за безбедност спречува користењето на микрофонот.</string>
-    <string name="miniresolver_call">Повик</string>
-    <string name="miniresolver_call_in_work">Да се јавите од работна апликација?</string>
-    <string name="miniresolver_call_information">Вашата организација Ви овозможува да упатувате повици само од работни апликации.</string>
-    <string name="miniresolver_sms_information">Вашата организација Ви овозможува да испраќате пораки само од работните апликации.</string>
-    <string name="miniresolver_switch">Префрли</string>
-    <string name="miniresolver_switch_to_work">Да се префрлите на апликација за работа?</string>
     <string name="mmcc_authentication_reject_name_template">%s не е дозволено</string>
     <string name="mmcc_illegal_me_name_template">%s не е дозволено</string>
     <string name="mmcc_illegal_ms_name_template">%s не е дозволено</string>
-    <string name="mmcc_imsi_unknown_in_hlr_name_template">%s не е употреблив</string>
+    <string name="mmcc_imsi_unknown_in_hlr_name_template">%s не е обезбеден</string>
     <string name="mmiErrorTMO">Барањето не може да се обработи.</string>
     <string name="mmiError_callbarring_CMCC">Не може да се вклучи или исклучи Забраната за повици. Ова дејство е спречено од Вашиот оператор.</string>
     <string name="mobile_hotspot_dialog_data_saver_is_on">Не може да се користи Мобилен хотспот додека Зачувувачот на податоци е вклучен.</string>
@@ -550,30 +540,6 @@
     <string name="mock_location_reminder_disable">Исклучи</string>
     <string name="mock_location_reminder_title">Лажната локација е вклучена</string>
     <string name="more_apps">Уште апликации</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">Услугата %s не е поддржана. Контактирајте со службата за корисници.</string>
-    <string name="mptcp_message_address_type_not_supported">Поврзувањето %s е слабо. Се поврзува повторно преку достапна мрежа…</string>
-    <string name="mptcp_message_busy_ntime_wait">Поврзувањето %s е слабо. Се поврзува повторно преку достапна мрежа…</string>
-    <string name="mptcp_message_cmd_not_supported">Мрежата %s привремено не е достапна. Се поврзува повторно преку достапна мрежа…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">Поврзувањето %s е слабо. Се поврзува повторно преку достапна мрежа…</string>
-    <string name="mptcp_message_connection_refused">Поврзувањето %s е слабо. Се поврзува повторно преку достапна мрежа…</string>
-    <string name="mptcp_message_data_usage_limit">Постигнато е ограничувањето за користење податоци. За да го промените ограничувањето за користење податоци, одете во Подесувања.</string>
-    <string name="mptcp_message_host_unreachable">Поврзувањето %s е слабо. Се поврзува повторно преку достапна мрежа…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Не може да се овозможи %s. Уредот не е поврзан со мрежа LTE.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Не може да се овозможи %s во меѓународен роаминг.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Не може да се овозможи %s додека е овозможено Мобилен хотспот или Споделување врска преку USB.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Не може да се вклучи %s кога е вклучен Wi-Fi Direct.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Не може да се овозможи %s додека е овозможен Авионски режим.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Не може да се овозможи %s додека се исклучени Мобилните податоци.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Нема одговор од операторот.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Не може да се овозможи %1$s. %2$s не е достапно со Вашиот интернет пакет или не е добиен одговор од серверот на %3$s.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Неуспешно испраќање на барањето за ативирање на %s. Се поврзува повторно преку достапните мрежи…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Не може да се овозможи %s. Вметната е неточна SIM-картичка.</string>
-    <string name="mptcp_message_network_unreachable">Поврзувањето %s е слабо. Се поврзува повторно преку достапна мрежа…</string>
-    <string name="mptcp_message_non_mptcp_plan">Не може да се овозможи Giga Multi-Path. Функцијата не е поддржана од пакетот.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s е оневозможено за да се спречи прегревање на уредот. Се презема преку мобилна мрежа…</string>
-    <string name="mptcp_message_server_error">Поврзувањето %s е слабо. Се поврзува повторно преку достапна мрежа…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Не може да се овозможи %s. Уредот се прегрева. Почекајте да се излади уредот и обидете се повторно.</string>
-    <string name="mptcp_message_ttl_expired">Мрежата %s привремено не е достапна. Се поврзува повторно преку достапна мрежа…</string>
     <string name="multi_user_capability_restrict">Полисата за безбедност ја спречува способноста за повеќе корисници на уредот.</string>
     <string name="multi_user_creation_restrict">Полисата за безбедност спречува правење нови кориснички сметки на уредот.</string>
     <string name="multi_user_removal_restrict">Полисата за безбедност спречува отстранување кориснички сметки од уредот.</string>
@@ -592,27 +558,25 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Се емитува звук на Вашиот аудио уред Bluetooth. Допрете тука за да го исклучите ова</string>
     <string name="multisound_sound_via_headphone">Звукот на %s се пушта преку Вашите звучници. Допрете тука за да го исклучите ова.</string>
     <string name="multisound_sound_via_headphone_multiselection">Звукот се пушта преку Вашите звучници. Допрете тука за да го исклучите ова.</string>
-    <string name="multisound_sound_via_phone_speaker">Звукот на %s се пушта преку звучникот на Вашиот таблет. Допрете тука за да го исклучите ова.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Звукот се пушта преку звучникот на Вашиот таблет. Допрете тука за да го исклучите ова.</string>
+    <string name="multisound_sound_via_phone_speaker">Звукот на %s се пушта преку звучникот на Вашиот телефон. Допрете тука за да го исклучите ова.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Звукот се пушта преку звучникот на Вашиот телефон. Допрете тука за да го исклучите ова.</string>
     <string name="multisound_sound_via_usb_audio">Звукот на %s се пушта преку Вашиот аудио уред USB. Допрете тука за да го исклучите ова.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Звукот се пушта преку Вашиот аудио уред USB. Допрете тука за да го исклучите ова.</string>
     <string name="multisound_title">Одделен звук на апликации</string>
     <string name="multisound_turn_off_multisound">Исклучи</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s не може да се пушти во Samsung DeX. Обидете се да го пуштите во режим на таблет.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s не може да се пушти во Samsung DeX. Направена е за Почетните екрани на таблет.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Некои игри функционираат само на допирните екрани. Ако не функционираат контролите на глувчето во Samsung DeX, обидете се да играте во режим на таблет наместо тоа.</string>
-    <string name="my_device">Овој таблет</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s не може да се пушти во Samsung DeX. Обидете се да го пуштите во режим на телефон.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s не може да се пушти во Samsung DeX. Направена е за Почетните екрани на телефонот.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Некои игри функционираат само на допирните екрани. Ако не функционираат контролите на глувчето во Samsung DeX, обидете се да играте во режим на телефон наместо тоа.</string>
+    <string name="my_device">Овој телефон</string>
     <string name="network_locked_sim_dialog_message_ais">Вашата SIM-картичка не е целосно операционална со овој телефон затоа што не е во согласност со Вашите одредби и услови на претплатата. Ако имате какви било прашања или Ви требаат повеќе информации за ова, контактирајте со локацијата на Услугите за корисниците на Samsung или со продавницата што Ви ги продала овие производи.</string>
     <string name="network_locked_sim_notification_text">Вметната е SIM-картичка заклучена на мрежа.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Сменете ја основната Почетна апликација на One UI Home.</string>
     <string name="nfc_restrict">Политиката за безбедност спречува користење NFC.</string>
     <string name="nosim_limited_service">Ограничена услуга</string>
-    <string name="not_support_ai_key">Клучот за вештачка интелигенција сѐ уште не функционира со Вашиот таблет. Наскоро ќе биде достапно ажурирање.</string>
-    <string name="notification_app_name_settings">Поставувања</string>
     <string name="notification_channel_dex_policy">Политика на Samsung DeX</string>
-    <string name="ntfs_usb_storage_readonly_mount_message">Оваа меморија е само за читање затоа што го користи само форматот NTFS.</string>
-    <string name="ntfs_usb_storage_readonly_mount_title">Дод. е мем. USB само за читање</string>
+    <string name="ntfs_usb_storage_readonly_mount_message">Овој склад е само за читање затоа што го користи само форматот NTFS.</string>
+    <string name="ntfs_usb_storage_readonly_mount_title">Дод. е склад USB само за читање</string>
     <string name="overheat_limit_ok">OK</string>
     <string name="overheat_warning_title_v2_phone">Телефонот се прегрева</string>
     <string name="overheat_warning_title_v2_tablet">Таблетот се прегрева</string>
@@ -784,7 +748,6 @@
     <string name="permlab_scheduleExactAlarm">Постави аларми и потсетници</string>
     <string name="permlab_spdControl">Управувај со ажурирањата на полисата за безбедност</string>
     <string name="permlab_ucsPlugin">Приклучок за Универзално доверливо управување</string>
-    <string name="personal_apps_suspended_turn_profile_on">Вклучи</string>
     <string name="phoneTypeConference">Конференција</string>
     <string name="policydesc_allow_bluetoothmode">Спречете го користењето на Bluetooth.</string>
     <string name="policydesc_allow_browser">Спречете го користењето на интернет.</string>
@@ -792,7 +755,7 @@
     <string name="policydesc_allow_desktopsync">Спречете го користењето на синхронизација на десктоп.</string>
     <string name="policydesc_allow_internetsharing">Спречете го користењето на Мобилен хотспот.</string>
     <string name="policydesc_allow_irda">Спречете го користењето на IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Спречете го користењето на POP и IMAP е-пошта на таблетот.</string>
+    <string name="policydesc_allow_popimapemail">Спречете го користењето на POP и IMAP е-пошта на телефонот.</string>
     <string name="policydesc_allow_storagecard">Спречете го користењето на SD-картички.</string>
     <string name="policydesc_allow_textmessaging">Спречете го користењето на размена на текстуални и мултимедијални пораки.</string>
     <string name="policydesc_allow_thirdParty">Оваа апликација може да спречува употреба на апликации од други производители.</string>
@@ -838,7 +801,7 @@
     <string name="pwd_change_enforced">Политиката на безбедност бара да ја смените лозинката.</string>
     <string name="recording_fail">Не може да се користи микрофон во %1$s додека се користи во %2$s.</string>
     <string name="recording_popup">%s го користи микрофонот.</string>
-    <string name="recording_popup_device">Таблет</string>
+    <string name="recording_popup_device">Телефон</string>
     <string name="recording_popup_with_bluetooth">%s го користи микрофонот на Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s го користи микрофонот на %2$s.</string>
     <string name="redo">Повтори</string>
@@ -903,12 +866,12 @@
     <string name="screencapture_restrict">Полисата за безбедност спречува користење на сликањето екран.</string>
     <string name="sd_card_unavailable_message">Не можете да ја користите SD-картичката затоа што е вметната додека се користел друг кориснички профил.</string>
     <string name="sd_card_unavailable_title">SD-картичката е недостапна</string>
-    <string name="sdcard_bad_removal_message">SD-картичка е отстранета небезбедно. За да спречите неочекувано рестартирање на таблетот, зачувајте ги незачуваните податоци и рестартирајте сега.</string>
+    <string name="sdcard_bad_removal_message">SD-картичка е отстранета небезбедно. За да спречите неочекувано рестартирање на телефонот, зачувајте ги незачуваните податоци и рестартирајте сега.</string>
     <string name="sdcard_batch_decrypt_noti_content">Дешифрирај SD-картичка</string>
     <string name="sdcard_batch_decrypt_noti_title">Дешифрирање на SD-картичката</string>
     <string name="sdcard_batch_decrypt_popup_content">Шифрираната SD-картичка мора да се дешифрира пред да се користи. Дешифрирањето може да трае еден час или повеќе. Почнете со полна батерија и оставете го уредот приклучен додека не заврши дешифрирањето. Со прекин на дешифрирањето може да изгубите податоци, делумно или целосно.</string>
     <string name="sdcard_decrypt_err_notification">Дојде до грешка при дешифрирањето на SD-картичката.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Некои датотеки на SD-картичката се шифрирани на друг уред и не можат да се користат на овој таблет.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Некои датотеки на SD-картичката се шифрирани на друг уред и не можат да се користат на овој телефон.</string>
     <string name="sdcard_decrypt_notification">SD-картичката е дешифрирана.</string>
     <string name="sdcard_decrypt_title_notification">Дешифрирање на SD-картичката</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Се дешифрира SD-карт…</string>
@@ -925,14 +888,6 @@
     <string name="sdcard_unmount_policy_noti_title">SD-картичката е демонтирана поради политиката за ИТ.</string>
     <string name="sdhms_nr_control_low_battery">Исклучете го 5G за да заштедите батерија кога на телефонот му останува батерија помалку од 15%.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth ќе остане вклучен во Режим за летало.</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Оваа апликација го користи целиот екран. Гестовите за поминување за навигација ќе ја прикажат статусната лента. За да навигирате, поминете повторно додека статусната лента е видлива.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Апликацијата го користи целиот екран. Копчињата Дома, Назад и Последни се скриени за да се намалат вознемирувањата и да се спречи да ја напуштите апликацијата случајно.
-
-Дури и ако го завртите телефонот, копчињата секогаш ќе се наоѓаат веднаш до отворот за полнење. Можете да направите копчињата повторно да се појават со поминување навнатре од работ на екранот, како што е прикажано со стрелката."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Апликацијата го користи целиот екран. Копчињата Дома, Назад и Последни се скриени за да се намалат вознемирувањата и да се спречи да ја напуштите апликацијата случајно.
-
-За да направите копчињата повторно да се појават, поминете нагоре од долниот дел на екранот како што е прикажано од стрелката."</string>
     <string name="sec_monotype_default">Основно</string>
     <string name="sec_ringtone_category_brand_sound">Звук на брендот Samsung</string>
     <string name="sec_ringtone_category_calm">Мирно</string>
@@ -942,6 +897,10 @@
     <string name="sec_ringtone_category_open_theme">Основно за моменталната тема</string>
     <string name="sec_ringtone_category_retro">Ретро</string>
     <string name="sec_ringtone_silent">Нечујно</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Откажи</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">За да се поврзете со сателит, Вашиот мрежен оператор треба да се постави на Изберете автоматски.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Вклучи</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Да се вклучи автоматското бирање мрежа?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Да се вклучи пристапот до Микрофонот за разговор.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Да се вклучи пристапот до Камерата за да се користи %s.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Да се вклучи пристапот до Микрофонот за да се користи %s.</string>
@@ -1037,6 +996,8 @@
     <string name="sem_face_error_already_in_use_by_VT">Не може да се користи препознавање на лице при видео повици.</string>
     <string name="sem_face_error_camera_access_off">Не може да се користи препознавање лице затоа што пристапот до камерата е исклучен</string>
     <string name="sem_face_error_camera_fail">Не може да се отвори Камера. Обидете се повторно.</string>
+    <string name="sem_face_error_lockout">Биометриска верификација не е достапна поради премногу неточни обиди.</string>
+    <string name="sem_face_error_lockout_permanent">Биометриска верификација не е достапна поради премногу неточни обиди.</string>
     <string name="sem_face_error_ppp_timeout">Помина некое време откако го потврдивте Вашиот идентитет. Ќе треба да почнете повторно за да го регистрирате Вашето лице.</string>
     <string name="sem_face_error_too_dark">Премногу е темно за да се открие лице</string>
     <string name="sem_face_error_too_dark_to_enroll">Премногу е темно. Обидете се да вклучите светло или да отидете некаде на посветло.</string>
@@ -1052,13 +1013,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">Поместете го врвот на Вашиот S Pen подалеку од екранот за да го скенирате Вашиот отпечаток од прст.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">За да користите отпечатоци од прст, прво поставете безбеден тип заклучување на екранот (шара, PIN или лозинка).</string>
+    <string name="sem_fingerprint_error_lockout">Биометриска верификација не е достапна поради премногу неточни обиди.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Биометриска верификација не е достапна поради премногу неточни обиди.</string>
     <string name="sem_fingerprint_error_onehand_mode">Не може да се користи скенер за отпечатоци од прст во Еднорачен режим.</string>
     <string name="sem_fingerprint_error_smart_view">Не може да се скенира отпечаток од прст додека користите %s.</string>
+    <string name="sem_fingerprint_error_system_failure">Сензорот за отпечатоци од прст не реагира. Обидете се повторно подоцна. Ако ова продолжи, обидете се да го рестартирате телефонот.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Податоците за отпечатокот се неисправни. Додадете отпечатоци повторно.</string>
     <string name="sem_fingerprint_error_wireless_charger">Исклучете се од безжичниот полнач за да го користите Вашиот отпечаток од прст</string>
     <string name="sem_fingerprint_name_template">Отпечаток на прст %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Подоцна</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Не сега</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Отстрани и регистрирај</string>
+    <string name="sem_fingerprint_register_dialog_message">Препознавањето отпечатоци од прст е подобрено во најновото ажурирање на софтверот. Нема да можете да користите препознавање отпечатоци од прст сѐ додека не ги отстраните отпечатоците од прст и не ги регистрирате повторно.</string>
     <string name="sem_fingerprint_register_dialog_title">Повт. регист.ги отпечат.од прст</string>
     <string name="sem_fingerprint_result_failed">Нема совпаѓање.</string>
     <string name="sem_fingerprint_result_retry">Обидете се повторно.</string>
@@ -1078,7 +1044,7 @@
     <string name="sem_resolver_button_always_accessibility">Секогаш користете избрана апликација</string>
     <string name="sem_resolver_button_just_once_accessibility">Користи избрана апликација само еднаш</string>
     <string name="sem_resolver_choose_what_to_do">Изберете што да правите</string>
-    <string name="sem_resolver_go_to_settings_tips_description">За да ги смените основните поставувања на апликацијата, одете во Поставувања > Апликации > Изберете основни апликации.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">За да ја смените основната апликација што се користи за отворање на овој тип датотека, одете во Поставувања > Апликации, изберете ја тековната основна апликација, а потоа допрете Постави како основна > Избриши основни.</string>
     <string name="sem_resolver_icon_content_description">Информации</string>
     <string name="sem_resolver_personal_tab_accessibility">Лично</string>
     <string name="sem_resolver_share_live_default_text">Веднаш споделувајте со луѓето во близина. Луѓето што ги направиле своите уреди видливи ќе се прикажат тука.</string>
@@ -1090,9 +1056,6 @@
     <string name="sem_resolver_work_tab_accessibility">Работа</string>
     <string name="sem_switch_off">Исклучено</string>
     <string name="sem_switch_on">Вклучено</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Прист. до кам.е исклучен за сите апликации</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Вклучи</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Прист. до микроф. е искл. за сите апликац.</string>
     <string name="serviceErased">Бришењето беше успешно.</string>
     <string name="serviceModeAll">Сите</string>
     <string name="serviceModeAllConditional">условно.</string>
@@ -1102,6 +1065,7 @@
     <string name="serviceModeUnconditional">безусловно.</string>
     <string name="serviceisDisabled">Услугата е оневозможена.</string>
     <string name="serviceisEnabled">Услугата е овозможена.</string>
+    <string name="settings">Поставувања</string>
     <string name="sf_quick_switch_not_supported">Брзото префрлување не е поддржано во оваа ситуација.</string>
     <string name="sf_quick_switch_securefolder_view">Префрлено на %s.</string>
     <string name="share">Сподели</string>
@@ -1110,26 +1074,30 @@
     <string name="sharelist_restrict">Полисата за безбедност спречува споделување податоци.</string>
     <string name="show_keyboard_button">Прикажи копче Тастатура</string>
     <string name="show_keyboard_button_description">Прикажете %s на навигациската лента.</string>
+    <string name="showing_esc_dialog">Можете да го поставите копчето Esc да функционира како копче Назад.</string>
     <string name="showing_touch_sensitivity_noti_action">Вклучи</string>
     <string name="showing_touch_sensitivity_noti_text">Вклучете Допирна чувствителност додека ги користите Privacy Screen или Notepaper Screen за попрецизна допирна реакција.</string>
     <string name="showing_touch_sensitivity_noti_title">Зголеми допирна чувствителност</string>
+    <string name="side_key_double_press_archived_app">Апликацијата е архивирана. Изберете нешто друго.</string>
     <string name="side_key_double_press_deleted_app">Апликацијата е одинсталирана. Изберете нешто друго.</string>
     <string name="side_key_double_press_disabled_app">%s е оневозможено. Изберете нешто друго.</string>
     <string name="signature_identity_toast">%s потпишано од</string>
     <string name="simRefresh">Обновување на податоците за SIM-от</string>
     <string name="simReset">Се ажурираат податоците на SIM…</string>
     <string name="sim_check_old_sim_message">Старите или оштетените SIM-картички можат да предизвикаат проблеми со мрежното поврзување. Контактирајте со Вашиот оператор или посетете некоја од неговите продавници за да проверите дали треба да биде заменета.</string>
+    <string name="sim_check_old_sim_message_skt">Старите или оштетените SIM-картички можат да предизвикаат проблеми со мрежното поврзување. Контактирајте со Вашиот оператор или посетете некоја од неговите продавници за да проверите дали треба да биде заменета.</string>
     <string name="sim_check_old_sim_title">Вашата SIM-картичка можеби ќе треба да се замени</string>
+    <string name="sim_check_old_sim_title_skt">Вашата SIM-картичка можеби ќе треба да се замени</string>
     <string name="sim_count_mismatched_ds_to_ss">Режимот за SIM-картичка е префрлен од Двоен SIM во Единечен SIM. За да го примените ова поставување, уредот ќе се ресетира на основните фабрички поставувања и ќе се рестартира.</string>
     <string name="sim_count_mismatched_ss_to_ds">Режимот за SIM-картичка е префрлен од Единечен SIM во Двоен SIM. За да го примените ова поставување, уредот ќе се ресетира на основните фабрички поставувања и ќе се рестартира.</string>
     <string name="sim_count_mismatched_title">Префрлен режим за SIM-картички</string>
-    <string name="sim_imsreg_error_message_lgt">Вашиот телефон нема да може да упатува говорни повици затоа што не може да ја препознае SIM-картичката. Обидете се да ја извадите SIM-картичката и повторно да ја внесете. Ако овој проблем продолжи, можеби ќе треба да ја замените Вашата SIM-картичка. За помош, посетете продавница LG U+ или контактирајте со Услугата за корисниците на LG U+ на 1544-0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Вашиот таблет нема да може да упатува говорни повици затоа што не може да ја препознае SIM-картичката. Обидете се да ја извадите SIM-картичката и повторно да ја внесете. Ако овој проблем продолжи, можеби ќе треба да ја замените Вашата SIM-картичка. За помош, посетете продавница LG U+ или контактирајте со Услугата за корисниците на LG U+ на 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">Вашиот телефон нема да може да упатува говорни повици затоа што не може да ја препознае SIM-картичката. Обидете се да ја извадите SIM-картичката и повторно да ја внесете. Ако овој проблем продолжи, можеби ќе треба да ја замените Вашата SIM-картичка во продавница на LG U+.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Вашиот таблет нема да може да упатува говорни повици затоа што не може да ја препознае SIM-картичката. Обидете се да ја извадите SIM-картичката и повторно да ја внесете. Ако овој проблем продолжи, можеби ќе треба да ја замените Вашата SIM-картичка во продавница на LG U+.</string>
     <string name="sim_off_noti_message">Не можете да упатувате повици, да испраќате пораки или да користите податоци кога сите SIM-картички се исклучени. Допрете тука за да вклучите SIM-картички.</string>
     <string name="sim_off_noti_title">Сите SIM-картички се исклучени</string>
     <string name="sim_off_toast_message">SIM-картичката што сте ја внеле е исклучена. За да ја користите, одете во Поставувања > Поврзувања > SIM-уредувач, а потоа вклучете ја.</string>
     <string name="sim_recognize_error_message_kt">Вашата SIM-картичка не беше препознаена. Обидете се да ја извадите SIM-картичката и повторно да ја внесете. Ако овој проблем продолжи, можеби ќе треба да ја замените Вашата SIM-картичка. За помош, посетете продавница на КТ или контактирајте со Услугата за корисниците на KT на 1588-0010.</string>
-    <string name="sim_recognize_error_message_lgt">Вашата SIM-картичка не беше препознаена. Обидете се да ја извадите SIM-картичката и повторно да ја внесете. Ако овој проблем продолжи, можеби ќе треба да ја замените Вашата SIM-картичка. За помош, посетете продавница LG U+ или контактирајте со Услугата за корисниците на LG U+ на 1544-0010.</string>
+    <string name="sim_recognize_error_message_lgt">Вашата SIM-картичка не беше препознаена. Обидете се да ја извадите SIM-картичката и повторно да ја внесете. Ако овој проблем продолжи, можеби ќе треба да ја замените Вашата SIM-картичка во продавница на LG U+.</string>
     <string name="sim_recognize_error_message_skt">Не може да се прочита SIM-картичката. Некои апликации и функции може да не функционираат. Отстранете ја и повторно вметнете ја Вашата SIM-картичка, а потоа рестартирајте го телефонот. Ако тоа не го поправи проблемот, однесете ги телефонот и SIM-картичката во локација за Услуга за корисниците.</string>
     <string name="sim_recognize_error_message_skt_tablet">Не може да се прочита SIM-картичката. Некои апликации и функции може да не функционираат. Отстранете ја и повторно вметнете ја Вашата SIM-картичка, а потоа рестартирајте го таблетот. Ако тоа не го поправи проблемот, однесете ги таблетот и SIM-картичката во локација за Услуга за корисниците.</string>
     <string name="sim_recognize_error_title_lgt">Не може да се препознае USIM-картичката</string>
@@ -1139,10 +1107,8 @@
     <string name="sim_removed_message_hotswap_us_tablet">Поврзете се со мрежа Wi-Fi или вметнете SIM-картичка за да користите мобилни податоци.</string>
     <string name="sim_removed_title_hotswap">Не е вмет. SIM-картичка</string>
     <string name="sim_removed_title_hotswap_us_tablet">Вметнување SIM-картичка</string>
+    <string name="smart_tip_action_click_hint_text">Затв.</string>
     <string name="smartclip_restrict">Полисата за безбедност спречува користење Лесно сечење.</string>
-    <string name="sms_short_code_remember_undo_instruction">Може да го смените ова подоцна преку Опции > Апликации</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Можете да го смените ова подоцна одејќи во Поставувања > Апликации > Копче повеќе опции > Посебен пристап > Користи премиум услуги за текстуални пораки</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Ако допрете НЕ ДОЗВОЛУВАЈ, оваа апликација нема да може да праќа пораки во заднина дури и ако е овозможена дозволата Прати текстуални пораки за неа.</string>
     <string name="ss_do_not_show_again_us">Не прикажувај повеќе</string>
     <string name="sss_translate">Преведи</string>
     <string name="ssu_lock_body_vzw">Извинете, Вашиот уред не може да се активира на мрежата на друг оператор во моментов. За помош, контактирајте со Verizon на %1$s или %2$s (припејд пакети)</string>
@@ -1173,7 +1139,6 @@
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">Мобилен хотспот</string>
     <string name="title_dialog_check_rotate_or_not">Да се исклучи Автоматско вртење екран?</string>
-    <string name="title_uds">Режим за Ултра штедење податоци</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Не може да се користи Bixby додека го поставувате Вашиот телефон.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Не може да се користи Bixby додека го поставувате Вашиот таблет.</string>
     <string name="toast_warning_pattern_lock">Заклучувањето со шара не може да се користи со Универзален прекинувач. Прво сменете на друг тип на заклучување.</string>
@@ -1213,9 +1178,13 @@
     <string name="unknown_install_blocked_esm_title">Блокирана е непозната апликација</string>
     <string name="unknown_install_dlg_desc">Оваа апликација не е преземена од одобрена продавница. Инсталирањето на оваа апликација може да ги загрози Вашата безбедност и приватноста. Апликацијата може да ги собере Вашите лични информации или да предизвика губење на податоците.</string>
     <string name="unknown_install_dlg_desc2">Оваа апликација не ги поддржува најновите безбедносни функции. Инсталирањето на оваа апликација може да доведе до следниве безбедносни ризици:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Оваа датотека за инсталирање на апликацијата може да не е безбедна. Тоа може да не е апликацијата што се претставува дека е. За да ги заштитите Вашиот телефон и личните податоци, инсталирајте ја апликацијата од продавницата за апликации на којашто ѝ верувате наместо тоа.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Оваа датотека за инсталирање на апликацијата може да не е безбедна. Тоа може да не е апликацијата што се претставува дека е. За да ги заштитите Вашиот таблет и личните податоци, инсталирајте ја апликацијата од продавницата за апликации на којашто ѝ верувате наместо тоа.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Оваа апликација е под сомнеж дека е злонамерна и може да ги загрози Вашиот телефон и Вашите податоци. Не се препорачува инсталирање на оваа апликација.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Оваа апликација е под сомнеж дека е злонамерна и може да ги загрози Вашиот таблет и Вашите податоци. Не се препорачува инсталирање на оваа апликација.</string>
-    <string name="unknown_install_dlg_general_title">Оваа апликација е од непознат извор</string>
+    <string name="unknown_install_dlg_desc_phone">Оваа апликација не е од овластена продавница за апликации. За да ги заштитите својот телефон и личните податоци, инсталирајте ја апликацијата од овластена продавница како што е Play Store или Galaxy Store.</string>
+    <string name="unknown_install_dlg_desc_tablet">Оваа апликација не е од овластена продавница за апликации. За да ги заштитите својот таблет и личните податоци, инсталирајте ја апликацијата од овластена продавница како што е Play Store или Galaxy Store.</string>
+    <string name="unknown_install_dlg_general_title">Не се препорачува инсталирање на оваа апликација</string>
     <string name="unknown_install_dlg_negative_button">Не инсталирај</string>
     <string name="unknown_install_dlg_perm_desc1">Апликацијата може да ги пресретне шифрите за потврда од текстуалните пораки што ги примате.</string>
     <string name="unknown_install_dlg_perm_desc2">Појдовните повици може да се пренасочат на друг телефонски број без Ваше знаење.</string>
@@ -1234,7 +1203,7 @@
     <string name="usb_abnormal_reset_title">Врската USB не е стабилна</string>
     <string name="usb_abnormal_reset_toast">Поврзувањето USB не е стабилно. Исклучете го кабелот и повторно приклучете го или обидете се со друг кабел.</string>
     <string name="usb_accessory_notification_title">Поврзано со USB-додаток</string>
-    <string name="usb_bad_removal_message">Мемориски уред USB е отстранет небезбедно. За да спречите неочекувано рестартирање на таблетот, зачувајте ги незачуваните податоци и рестартирајте сега.</string>
+    <string name="usb_bad_removal_message">Уредот за склад USB е отстранет небезбедно. За да спречите неочекувано рестартирање на телефонот, зачувајте ги незачуваните податоци и рестартирајте сега.</string>
     <string name="usb_blocked_by_emergency_mode">Некои USB-функции се недостапни во Итен режим.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Не може да се користат функции поврзани со поврзан уред USB додека е овозможен Режимот за максимално штедење енергија.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Некои функции на USB ќе бидат ограничени додека е вклучен Режимот за максимално штедење енергија.</string>
@@ -1243,13 +1212,15 @@
     <string name="usb_camera_connected_notification_title">Медиумски уред е поврзан</string>
     <string name="usb_camera_disconnected_notification_title">Медиумскиот уред е исклучен</string>
     <string name="usb_cd_installer_notification_title">Ажуририрање на софтвер</string>
-    <string name="usb_charing_only_notification_title">Поврзано</string>
+    <string name="usb_charing_only_notification_title">Полнење преку USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Автоматски блокатор е вклучено со максимални ограничувања.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">Поврзувањето USB е блокирано</string>
     <string name="usb_debugging_only_notification_title">Само решавање проблеми</string>
-    <string name="usb_host_resource_exceed_message">Контролерот USB на таблетот нема доволно ресурси за поврзување на овој уред. Обидете се да го исклучите уредот и повторно да го поврзете.</string>
+    <string name="usb_host_resource_exceed_message">Контролерот USB на телефонот нема доволно ресурси за поврзување на овој уред. Обидете се да го исклучите уредот и повторно да го поврзете.</string>
     <string name="usb_host_resource_exceed_title">Нема доволно ресурси на контролер USB</string>
-    <string name="usb_hub_depth_exceed_message">Вашиот таблет може да поддржува само до 5 поврзувања на USB хаб истовремено.</string>
+    <string name="usb_hub_depth_exceed_message">Вашиот телефон може да поддржува само до 5 поврзувања на USB хаб истовремено.</string>
     <string name="usb_hub_depth_exceed_title">Максимум поврзувања на USB хаб</string>
-    <string name="usb_hub_power_exceed_message">Вашиот таблет не може да обезбеди доволно напојување за овој уред USB. Поврзете го уредот на самонапојувачки хаб USB пред да го поврзете со таблетот.</string>
+    <string name="usb_hub_power_exceed_message">Вашиот телефон не може да обезбеди доволно напојување за овој уред USB. Поврзете го уредот на самонапојувачки хаб USB пред да го поврзете со телефонот.</string>
     <string name="usb_increase_battery_usage">Поврзувањето USB може да го зголеми трошењето на батеријата.</string>
     <string name="usb_mass_storage_restrict">Полисата за безбедност го спречува користењето масовен склад USB.</string>
     <string name="usb_midi_notification_title">USB за MIDI</string>
@@ -1275,8 +1246,9 @@
     <string name="usb_storage_stop_title">Се користи меморија USB.</string>
     <string name="usb_storage_title">Поврзано е USB.</string>
     <string name="usb_type_c_supply_power_notification_title">Полнење на поврз.уред преку USB</string>
-    <string name="usb_unblock_by_screen_unlock">Отклучете го таблетот за да го користите поврзаниот уред USB.</string>
-    <string name="usb_unsupport_accessory_message">Овој уред USB не е поддржан од Вашиот таблет.</string>
+    <string name="usb_unblock_by_screen_unlock">Отклучете го телефонот за да го користите поврзаниот уред USB.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">За да го користите уредот USB, отклучете го Вашиот телефон и повторно поврзете се на уредот USB.</string>
+    <string name="usb_unsupport_accessory_message">Оваа уред USB не е поддржан од Вашиот телефон.</string>
     <string name="usb_unsupport_accessory_title">Не е поддржан уредот USB</string>
     <string name="usb_unsupported_device">Поврзаниот USB-уред не е поддржан.</string>
     <string name="usb_unsupported_device_title">Уредот не е поддржан</string>
@@ -1294,31 +1266,33 @@
     <string name="usb_water_dialg_method_2_desc_2">Можете да го забрзате сушењето со насочување на вентилатор или фен (само со ладен воздух) кон портата.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Откривме влага или страни тела во Вашиот приклучок за полнење/USB.
 
-Проверете го приклучокот за полнење/USB за какви било страни тела, како што се прашина или нечистотии. За да спречите оштетување на таблетот, немојте да приклучувате ништо сѐ додека портата за полнење не биде чиста и влагата не исчезне.
+Проверете го приклучокот за полнење/USB за какви било страни тела, како што се прашина или нечистотии. За да спречите оштетување на телефонот, немојте да приклучувате ништо сѐ додека приклучокот за полнење не биде чист и влагата не исчезне.
 
 За да го исушите приклучокот, истресете ја влагата, а потоа почекајте да се исуши, што може да потрае неколку часа. Можете да го забрзате сушењето насочувајќи вентилатор или фен (само со ладен воздух) кон приклучокот."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Откривме влага или страни тела во Вашиот приклучок за полнење/USB.
 
-Проверете го приклучокот за полнење/USB за какви било страни тела, како што се прашина или нечистотии. За да спречите оштетување на таблетот, немојте да вклучувате ништо сѐ додека портата за полнење не биде чиста и влагата не ја снема.
+Проверете го приклучокот за полнење/USB за какви било страни тела, како што се прашина или нечистотии. За да спречите оштетување на телефонот, немојте да приклучувате ништо сѐ додека приклучокот за полнење не биде чист и влагата не исчезне.
 
 За да го исушите приклучокот, истресете ја влагата, а потоа почекајте да се исуши, што може да потрае неколку часа. Можете да го забрзате сушењето насочувајќи вентилатор или фен (само со ладен воздух) кон приклучокот.
 
-Во меѓувреме, можете да го полните таблетот безжично."</string>
-    <string name="usb_water_notification_content">Има влага или туѓи тела во приклучокот за полнење/приклучокот USB. Проверете пред полнењето.</string>
-    <string name="usb_water_notification_message">Откриена е влага во портата полнач/USB. Осигурете се дека е сува пред да го полните таблетот. Целосното сушење може да потрае.</string>
+Во меѓувреме, можете да го полните телефонот безжично."</string>
+    <string name="usb_water_notification_content">Има влага или туѓи тела во приклучокот за полнење/USB. Проверете пред полнењето.</string>
+    <string name="usb_water_notification_message">Откриена е влага во портата полнач/USB. Осигурете се дека е сува пред да го полните телефонот. Целосното сушење може да потрае.</string>
     <string name="usb_water_notification_message_button">Детали</string>
     <string name="usb_water_notification_title">Пров. го полначот/приклуч. USB</string>
     <string name="usbhostStorage_restrict">Полисата за безбедност спречува користење на складот на домаќинот преку USB.</string>
-    <string name="usbmemory_added_notification_title">Додајте меморија USB</string>
-    <string name="usbmemory_readonly_mount_notification_message">Вашиот мемориски уред USB не функционира правилно и е поставена само на читање за да се спречи загубата на податоци. Се препорачува архивирање на податоците на Вашиот мемориски уред USB.</string>
-    <string name="usbmemory_readonly_mount_notification_title">Не може да зап. на мем.уред USB</string>
+    <string name="usbmemory_added_notification_title">Додаден е склад USB</string>
+    <string name="usbmemory_readonly_mount_notification_message">Вашиот уред за склад USB не функционира правилно и е поставен само на читање за да се спречи загубата на податоци. Се препорачува архивирање на податоците на Вашиот уред за склад USB.</string>
+    <string name="usbmemory_readonly_mount_notification_title">Не може да зап. на склад USB</string>
     <string name="user_encrypted_title_phone">Телефонот е рестартиран</string>
     <string name="user_encrypted_title_tablet">Таблетот е рестартиран</string>
     <string name="voice_to_text_message_guide_toast">За да ја користите оваа функција, треба да ја поставите Тастатура Samsung како основна.</string>
     <string name="vpn_allowOnlySecureConnection">Профилот VPN не е безбеден.</string>
     <string name="vpn_error_text">Допрете за повторно да се обидете да се поврзете со VPN.</string>
     <string name="vpn_error_title">Грешка при поврзување VPN</string>
+    <string name="vpn_fail_text_long">Не може да се поврзе со %s. Допрете за да го управувате овој VPN.</string>
+    <string name="vpn_fail_title">VPN не е поврзан</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Затворање апликации за ладење на таблетот</string>
     <string name="vzw_cooldown_mode_ok">OK</string>
@@ -1381,6 +1355,7 @@
     <string name="wifi_network_available_detailed">Достапна е отворена мрежа Wi-Fi.</string>
     <string name="wifi_networks_available">Достапни се мрежи Wi-Fi</string>
     <string name="wifi_networks_available_detailed">Достапни се отворени мрежи Wi-Fi.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s користи мобилни податоци затоа што Вашето поврзување WLAN е бавно и нестабилно.</string>
     <string name="wifi_notification_switch_wifi_detail">Вашиот телефон се префрли на мобилни податоци затоа што мрежата Wi-Fi беше нестабилна.</string>
     <string name="wifi_notification_switch_wifi_title">Префрлено на мобилни податоци</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Известувања за итен случај</string>
@@ -1412,9 +1387,5 @@
     <string name="work_profile_on_message">Ова ќе Ви овозможи да пристапите до службените апликации, известувањата, податоците и другите функции на службените профили.</string>
     <string name="work_profile_on_title">Да се вклучи Службениот профил?</string>
     <string name="work_profile_restricted">Автоматски блокатор е вклучено со максимални ограничувања. За да ја заштитите безбедноста, не може да се создадат службени профили.</string>
-    <string name="work_profile_telephony_paused_text">Ги паузиравте Вашите работни апликации. Нема да примате телефонски повици или текстуални пораки од нив.</string>
-    <string name="work_profile_telephony_paused_title">Повиц. и пораките се исклучени</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Да се вклучи службениот профил?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">Сѐ додека не го исклучам</string>
 </resources>

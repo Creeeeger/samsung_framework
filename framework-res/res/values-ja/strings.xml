@@ -44,7 +44,7 @@
     <string name="ColrMmi">接続回線IDの制限</string>
     <string name="CwMmi">通話中着信</string>
     <string name="DndMmi">着信拒否</string>
-    <string name="EmergencyCallWarningSummary">Wi‑Fi では緊急通報ができません</string>
+    <string name="EmergencyCallWarningSummary">緊急通報にはモバイル ネットワークが必要です</string>
     <string name="EmergencyCallWarningTitle">緊急通報は利用できません</string>
     <string name="Midnight">午前0時</string>
     <string name="NetworkPreferenceSwitchSummary">タップして、優先ネットワークを変更してください。</string>
@@ -255,7 +255,12 @@
     <string name="accessibility_corner_action_type_zoom_in">拡大</string>
     <string name="accessibility_corner_action_type_zoom_out">縮小</string>
     <string name="accessibility_dialog_button_allow">許可</string>
+    <string name="accessibility_dialog_button_allow_samsung">許可</string>
     <string name="accessibility_dialog_button_deny">許可しない</string>
+    <string name="accessibility_dialog_button_deny_samsung">拒否</string>
+    <string name="accessibility_dialog_button_uninstall">アンインストール</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">ｱﾝｲﾝｽﾄｰﾙ</string>
+    <string name="accessibility_dialog_touch_filtered_warning">権限のリクエストを遮っているアプリがあるため、同意の回答を確認できません。</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">電源キーと音量アップキーを素早く同時に押すと、以下の機能のON/OFFが切り替わります。</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">サイドボタンと音量アップボタンを素早く同時に押すと、以下の機能のON/OFFが切り替わります。</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">電源キーと音量アップキーを素早く同時に押すと、[%s]のON/OFFが切り替わります。</string>
@@ -269,11 +274,14 @@
     <string name="accessibility_edit_shortcut_menu_button_title">ユーザー補助機能ボタンで使用する機能の選択</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">音量ボタンのショートカットで使用する機能の選択</string>
     <string name="accessibility_enable_service_title">%1$s にデバイスのフル コントロールを許可しますか？</string>
-    <string name="accessibility_freeform_caption">%1$s のキャプション バーです。</string>
     <string name="accessibility_gesture_3finger_instructional_text">機能を切り替えるには、3 本の指で上にスワイプしたまま長押しします。</string>
     <string name="accessibility_gesture_3finger_prompt_text">ユーザー補助操作（3 本の指で画面の下から上にスワイプ）で使用する機能を選択してください。</string>
     <string name="accessibility_gesture_instructional_text">機能を切り替えるには、2 本の指で上にスワイプしたまま長押しします。</string>
     <string name="accessibility_gesture_prompt_text">ユーザー補助操作（2 本の指で画面の下から上にスワイプ）で使用する機能を選択してください。</string>
+    <string name="accessibility_label_clone_profile">複製</string>
+    <string name="accessibility_label_communal_profile">共用</string>
+    <string name="accessibility_label_managed_profile">仕事用プロファイル</string>
+    <string name="accessibility_label_private_profile">プライベート スペース</string>
     <string name="accessibility_magnification_chooser_text">拡大</string>
     <string name="accessibility_select_different_function">[設定] > [ユーザー補助] > [詳細設定]で別の機能を選択できます。</string>
     <string name="accessibility_select_shortcut_menu_title">使用を開始する機能をタップ:</string>
@@ -325,7 +333,7 @@
     <string name="accessibility_system_action_dpad_left_label">D-pad: 左</string>
     <string name="accessibility_system_action_dpad_right_label">D-pad: 右</string>
     <string name="accessibility_system_action_dpad_up_label">D-pad: 上</string>
-    <string name="accessibility_system_action_hardware_a11y_shortcut_label">ユーザー補助機能のショートカット</string>
+    <string name="accessibility_system_action_hardware_a11y_shortcut_label">ユーザー補助のショートカット</string>
     <string name="accessibility_system_action_headset_hook_label">ヘッドセット: フック</string>
     <string name="accessibility_system_action_home_label">ホーム</string>
     <string name="accessibility_system_action_lock_screen_label">ロック画面</string>
@@ -342,7 +350,7 @@
     <string name="action_bar_home_description">ホームへ移動</string>
     <string name="action_bar_home_description_format">%1$s、%2$s</string>
     <string name="action_bar_home_subtitle_description_format">%1$s、%2$s、%3$s</string>
-    <string name="action_bar_up_description">上へ移動</string>
+    <string name="action_bar_up_description">上位階層に移動</string>
     <string name="action_menu_overflow_description">他のオプション</string>
     <string name="action_mode_done">完了</string>
     <string name="activity_chooser_view_dialog_title_default">操作の選択</string>
@@ -382,19 +390,25 @@
     <string name="alert_windows_notification_turn_off_action">OFF にする</string>
     <string name="allow">許可</string>
     <string name="allow_settings_changes">設定の変更は、セキュリティポリシーによって制限されています。</string>
+    <string name="alternative_face_setup_notification_content">指が濡れている場合など、指紋が認識されないときに顔認証を使用できます</string>
+    <string name="alternative_fp_setup_notification_content">暗い場所など、顔が認識されないときに指紋認証を使用できます</string>
+    <string name="alternative_unlock_setup_notification_title">別のロック解除方法を試す</string>
     <string name="alwaysUse">常にこの操作で使用する</string>
+    <string name="always_allow">常に許可</string>
     <string name="android_preparing_apk">%1$sをペア設定しています。</string>
-    <string name="android_start_title">タブレットの起動中…</string>
+    <string name="android_start_title">スマートフォンの起動中…</string>
     <string name="android_system_label">Android システム</string>
     <string name="android_upgrading_complete">ブートを終了しています。</string>
     <string name="android_upgrading_notification_title">システム アップデートの完了中…</string>
     <string name="android_upgrading_starting_apps">アプリを起動しています。</string>
-    <string name="android_upgrading_title">タブレットの更新中…</string>
+    <string name="android_upgrading_title">スマートフォンの更新中…</string>
     <string name="anr_activity_application">「%2$s」は応答していません</string>
     <string name="anr_activity_process">「%1$s」は応答していません</string>
     <string name="anr_application_process">「%1$s」は応答していません</string>
     <string name="anr_process">プロセス「%1$s」は応答していません</string>
     <string name="anr_title" />
+    <string name="app_block_button_open">起動</string>
+    <string name="app_block_content">%1$sが%2$sアプリを起動しようとしています。</string>
     <string name="app_blocked_message">現在 %1$s はご利用になれません。</string>
     <string name="app_blocked_title">アプリの利用不可</string>
     <string name="app_category_accessibility">ユーザー補助</string>
@@ -423,40 +437,29 @@
     <string name="app_restricted_message_concentration_mode">集中モード中は%sはブロックされます。詳細については、IT管理者にお問い合わせください。</string>
     <string name="app_running_notification_text">タップすると詳細が表示されるか、アプリが停止します。</string>
     <string name="app_running_notification_title">%1$sを実行しています</string>
-    <string name="app_streaming_blocked_message">現在、%1$s からアクセスできません。タブレットでのアクセスをお試しください。</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">このアプリはセキュリティの強化を求めています。タブレットでのアクセスをお試しください。</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">%1$s からはアクセスできません。タブレットでのアクセスをお試しください。</string>
+    <string name="app_streaming_blocked_message">現在、%1$s からアクセスできません。スマートフォンでのアクセスをお試しください。</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">このアプリはセキュリティの強化を求めています。スマートフォンでのアクセスをお試しください。</string>
+    <string name="app_streaming_blocked_message_for_permission_request">このアプリは追加の権限を求めていますが、ストリーミング セッションでは権限を付与できません。スマートフォンで先に権限を付与してください。</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">%1$s からはアクセスできません。スマートフォンでのアクセスをお試しください。</string>
     <string name="app_streaming_blocked_title">%1$sは利用できません</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">カメラ: 使用不可</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">スマートフォンで続行</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">マイク: 使用不可</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">権限が必要</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">権限のリクエストが抑制されています</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play ストア利用不可</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">タブレットの設定: 使用不可</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">スマートフォンの設定: 使用不可</string>
     <string name="app_suspended_default_message">現在、%1$s は使用できません。このアプリの使用は [%2$s] で管理されています。</string>
     <string name="app_suspended_more_details">詳細</string>
     <string name="app_suspended_title">このアプリは使用できません</string>
     <string name="app_suspended_unsuspend_message">アプリの一時停止を解除</string>
     <string name="app_updating_message">%sを更新中です。後ほどお試しください。</string>
     <string name="app_upgrading_toast">「%1$s」をアップグレードしています…</string>
-    <string name="appblock_block_subtitle1_phone">このアプリは悪意のあるアプリの疑いがあります。端末と個人データを保護するため、このアプリはインストールできません。</string>
-    <string name="appblock_block_subtitle1_tablet">このアプリは悪意のあるアプリの疑いがあります。タブレットと個人データを保護するため、このアプリはインストールできません。</string>
-    <string name="appblock_block_subtitle2">このアプリは悪意のあるアプリとして報告されているため、インストールできません。</string>
-    <string name="appblock_block_text1">このアプリは認証された提供元から入手したものではなく、個人データの盗難または漏洩に使用する可能性がある機密に関わる権限を要求します。</string>
-    <string name="appblock_block_text2">"悪意のあるアプリは機密に関わる権限を使用して個人データを盗んだり、あなたになりすましたり、金融口座にアクセスしたりする可能性があります。
-
-正規の金融機関はZIPファイルやAPKファイル、ファイルマネージャーアプリのインストールを要求することはありません。
-
-インストールするアプリは信頼できる提供元から入手されていることを常に確認してください。"</string>
-    <string name="appblock_warn_subtitle">このアプリは個人情報を盗難または漏洩する可能性があります。</string>
+    <string name="appblock_block_text_phone">このアプリは悪意のあるアプリとして報告されているか、それに類するアプリであるため、インストールできません。このアプリは、フィッシングなどの犯罪に使用される可能性があります。端末とデータを安全に保護するため、この制限を回避することはできません。</string>
+    <string name="appblock_block_text_tablet">このアプリは悪意のあるアプリとして報告されているか、それに類するアプリであるため、インストールできません。このアプリは、フィッシングなどの犯罪に使用される可能性があります。タブレットとデータを安全に保護するため、この制限を回避することはできません。</string>
+    <string name="appblock_link_text">詳細を表示</string>
     <string name="appblock_warn_text1">"認証されていない提供元からアプリをインストールすると、そのアプリは個人情報を収集したり、あなたの操作を追跡したりする可能性があります。
 
 それでもインストールする場合は、アプリのプライバシーに関する注意を注意深く確認して、必要な権限のみを許可するようにしてください。"</string>
-    <string name="appblock_warn_text2">"悪意のあるアプリは、多くの場合、連絡先、SMS、画像の権限を使用して個人情報を取得しようとします。
-
-このアプリをインストールすることはおすすめしません。
-
-それでもインストールする場合は、アプリが信頼できる提供元から入手したものであることを確認し、あなたのデータへの権限やその他のアクセスの許可については注意してください。"</string>
     <string name="application_default_restrict">デバイス管理機能で別のアプリが標準として設定されています。</string>
     <string name="as_app_forced_to_restricted_bucket">%1$s は RESTRICTED バケットに移動しました。</string>
     <string name="auto_click_paused">自動クリックを一時停止しました。</string>
@@ -488,6 +491,7 @@
     <string name="autofill_save_type_payment_card">支払いカード</string>
     <string name="autofill_save_type_username">ユーザー名</string>
     <string name="autofill_save_yes">はい</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="autofill_update_title"><b>%1$s</b> で更新しますか？</string>
     <string name="autofill_update_title_with_2types">%1$s、%2$sを <b>%3$s</b> で更新しますか？</string>
     <string name="autofill_update_title_with_3types">%1$s、%2$s、%3$sを <b>%4$s</b> で更新しますか？</string>
@@ -501,7 +505,7 @@
     <string name="badPuk">入力したPUKは正しくありません。</string>
     <string name="badPuk2">入力したPUK2が正しくありません。</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">タブレットが十分に充電されました。機能は制限されなくなりました。</string>
+    <string name="battery_saver_charged_notification_summary">スマートフォンが十分に充電されました。機能は制限されなくなりました。</string>
     <string name="battery_saver_description">バッテリー セーバーを ON にすると、ダークモードが ON になります。また、バックグラウンド アクティビティ、一部の視覚効果、特定の機能、一部のネットワーク接続が制限されるか OFF になります。</string>
     <string name="battery_saver_description_with_learn_more">バッテリー セーバーを ON にすると、ダークモードが ON になります。また、バックグラウンド アクティビティ、一部の視覚効果、特定の機能、一部のネットワーク接続が制限されるか OFF になります。</string>
     <string name="battery_saver_notification_channel_name">バッテリー セーバー</string>
@@ -515,6 +519,7 @@
     <string name="biometric_error_generic">エラー認証</string>
     <string name="biometric_error_hw_unavailable">生体認証ハードウェアが利用できません</string>
     <string name="biometric_error_user_canceled">認証をキャンセルしました</string>
+    <string name="biometric_face_not_recognized">顔を認識できません</string>
     <string name="biometric_not_recognized">認識されませんでした</string>
     <string name="biometric_or_screen_lock_app_setting_name">生体認証または画面ロックの使用</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">続行するには、生体認証または画面ロックを使用してください</string>
@@ -526,8 +531,6 @@
     <string name="bluetooth_airplane_mode_toast">機内モードでも Bluetooth はオンのままになります</string>
     <string name="bluetooth_avrcp_restrict">Bluetoothオーディオ/ビデオコントロールは、セキュリティポリシーによって制限されています。</string>
     <string name="bluetooth_bpp_restrict">Bluetooth経由での印刷は、セキュリティポリシーによって制限されています。</string>
-    <string name="bluetooth_china_popup_message">%1$sが%2$sを使用する権限を要求しています。許可しますか？</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Bluetooth経由でのデータ転送は、セキュリティポリシーによって制限されています。</string>
     <string name="bluetooth_desktop_restrict">Bluetooth経由でのPCの接続は、セキュリティポリシーによって制限されています。</string>
     <string name="bluetooth_device_restrict">このBluetoothデバイスとのペアリングは、セキュリティポリシーによって制限されています。</string>
@@ -538,7 +541,6 @@
     <string name="bluetooth_outgoing_call_restrict">Bluetooth経由での発信は、セキュリティポリシーによって制限されています。</string>
     <string name="bluetooth_pairing_restrict">Bluetoothペアリングは、セキュリティポリシーによって制限されています。</string>
     <string name="bluetooth_pbap_restrict">Bluetoothアドレス帳の使用は、セキュリティポリシーによって制限されています。</string>
-    <string name="bluetooth_permission_request">Bluetoothアクセス権限の要求</string>
     <string name="bluetooth_restrict">Bluetoothの使用は、セキュリティポリシーによって制限されています。</string>
     <string name="bluetooth_sap_restrict">Bluetooth経由でのSIMカードのアクセスは、セキュリティポリシーによって制限されています。</string>
     <string name="bluetooth_security_mode_disable">Bluetoothの使用は、セキュリティポリシーによって制限されています。</string>
@@ -654,8 +656,8 @@
     <string name="concurrent_display_notification_name">デュアル スクリーン</string>
     <string name="concurrent_display_notification_power_save_content">バッテリー セーバーが ON のため、デュアル スクリーンを使用できません。この動作は設定で OFF にできます。</string>
     <string name="concurrent_display_notification_power_save_title">デュアル スクリーンを使用できません</string>
-    <string name="concurrent_display_notification_thermal_content">スマートフォンが熱くなりすぎているため、デュアル スクリーンを使用できません</string>
-    <string name="concurrent_display_notification_thermal_title">デバイスが熱くなりすぎています</string>
+    <string name="concurrent_display_notification_thermal_content">スマートフォンが熱いため、デュアル スクリーンを使用できません</string>
+    <string name="concurrent_display_notification_thermal_title">デバイスが熱くなっています</string>
     <string name="condition_provider_service_binding_label">コンディションプロバイダ</string>
     <string name="conference_call">グループ通話</string>
     <string name="config_pdp_reject_dialog_title" />
@@ -663,12 +665,17 @@
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">OK</string>
+    <string name="connected_display_thermally_unavailable_notification_content">デバイスが熱すぎるため、温度が下がるまでディスプレイにミラーリングできません</string>
+    <string name="connected_display_unavailable_notification_content">別のケーブルでもう一度お試しください</string>
+    <string name="connected_display_unavailable_notification_title">ディスプレイにミラーリングできません</string>
     <string name="console_running_notification_message">シリアル コンソールを有効にすると、パフォーマンスに影響します。無効にするには、ブートローダーをチェックしてください。</string>
     <string name="console_running_notification_title">シリアル コンソールは有効です</string>
     <string name="constrained_status_bar_device_locked">端末をロックしました。</string>
     <string name="contentServiceSync">同期</string>
     <string name="contentServiceSyncNotificationTitle">同期できません</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">削除する %s が多すぎます。</string>
+    <string name="content_description_collapsed">閉じた状態です</string>
+    <string name="content_description_expanded">開いた状態です</string>
     <string name="content_description_sliding_handle">スライダーハンドルです。押し続けます。</string>
     <string name="conversation_single_line_image_placeholder">画像を送信しました</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -683,7 +690,7 @@
     <string name="crossSimFormat_spn_cross_sim_calling">%s 通話のバックアップ</string>
     <string name="csd_dose_reached_warning">"このまま大音量で聴き続けますか？
 
-おすすめの時間よりも長い時間にわたってヘッドフォンの音量が大きいため、聴力を損なうおそれがあります"</string>
+推奨時間よりも長くヘッドフォンが大音量に設定されており、聴力を損なうおそれがあります"</string>
     <string name="csd_momentary_exposure_warning">"大きな音が検知されました
 
 ヘッドフォンの音量がおすすめの音量よりも大きいため、聴力を損なうおそれがあります"</string>
@@ -694,12 +701,10 @@
     <string name="data_saver_description">データセーバーは、一部のアプリによるバックグラウンドでのデータ送受信を停止することでデータ使用量を抑制します。使用中のアプリからデータを送受信することはできますが、その頻度は低くなる場合があります。この影響として、たとえば画像はタップしないと表示されないようになります。</string>
     <string name="data_saver_enable_button">ON にする</string>
     <string name="data_saver_enable_title">データセーバーを ON にしますか？</string>
-    <string name="data_usage_disable_mobile">モバイルデータ接続を無効にしますか？</string>
-    <string name="data_usage_enable_mobile_warning">モバイルデータを使用すると、追加料金が発生する可能性があります。続行しますか？</string>
     <string name="data_usage_limit_body">次の測定開始日までモバイルデータを一時停止します。</string>
     <string name="data_usage_limit_snoozed_body">設定した上限を %s 超えました</string>
     <string name="data_usage_mobile_limit_snoozed_title">モバイルデータの制限を超過</string>
-    <string name="data_usage_mobile_limit_title">モバイルデータの制限に到達</string>
+    <string name="data_usage_mobile_limit_title">モバイルデータの上限に達しました</string>
     <string name="data_usage_rapid_app_body">%sは普段より多くデータを使用しています。</string>
     <string name="data_usage_rapid_body">アプリが普段より多くデータを使用しています。</string>
     <string name="data_usage_rapid_title">モバイルデータ使用量が多すぎます。</string>
@@ -731,7 +736,7 @@
     <string name="decline">同意しない</string>
     <string name="decline_remote_bugreport_action">共有しない</string>
     <string name="default_audio_route_category_name">システム</string>
-    <string name="default_audio_route_name">タブレット</string>
+    <string name="default_audio_route_name">モバイル デバイス</string>
     <string name="default_audio_route_name_dock_speakers">ホルダーのスピーカー</string>
     <string name="default_audio_route_name_external_device">外部デバイス</string>
     <string name="default_audio_route_name_headphones">ヘッドホン</string>
@@ -749,11 +754,13 @@
     <string name="deprecated_target_sdk_message">このアプリは Android の以前のバージョンを対象としているため、正しく動作しない可能性があります。最新のセキュリティ保護やプライバシー保護は組み込まれていません。アップデートをご確認いただくか、アプリのデベロッパーにお問い合わせください。</string>
     <string name="description_target_unlock_tablet">ロック解除するにはスワイプします。</string>
     <string name="device_disabled">端末が無効です。IT管理者にお問い合わせください。</string>
+    <string name="device_info_not_available">利用できません。</string>
     <string name="device_ownership_relinquished">管理者により、デバイスの個人使用が許可されました</string>
     <string name="device_policy_manager_service">Device Policy Manager サービス</string>
     <string name="device_state_notification_settings_button">設定に移動</string>
     <string name="device_state_notification_turn_off_button">OFF にする</string>
     <string name="device_storage_monitor_notification_channel">デバイスのストレージ</string>
+    <string name="device_unlock_notification_name">デバイスのロック解除</string>
     <string name="dex_cant_change_user_profile">Samsung DeXモードでは、ユーザープロファイルを変更できません。</string>
     <string name="dex_dialog_launch_toast">起動しているアプリは終了する場合があります。Samsung DeXを開始または終了する前に、データを保存してください。</string>
     <string name="dex_disconnected_from_device">DeXは%sとの接続が解除されました。テレビでネットワーク接続を確認してください。</string>
@@ -762,9 +769,6 @@
     <string name="dex_launcher_mode_change">Samsung DeXに切り替えるために、%sを終了しました。</string>
     <string name="dex_mirroring_jit_msg">タブレットでSamsung DeXを実行すると、HDMIで接続された任意のディスプレイで画面を共有して大きく表示することができます。</string>
     <string name="dex_mirroring_jit_title">大きな画面でDeX画面を共有</string>
-    <string name="dex_restart_app_dialog_button_positive">再起動</string>
-    <string name="dex_restart_app_dialog_message">このアプリは既に別のディスプレイで実行されています。ここで起動するには、このアプリを再起動する必要があります。再起動する前に、重要なデータを保存してください。</string>
-    <string name="dex_restart_app_dialog_title">%sを再起動しますか？</string>
     <string name="dex_restriction_blockerMessage">Samsung DeXの使用は、セキュリティポリシーによって制限されています。</string>
     <string name="dex_restriction_ethernetOnly">DeXでWi-Fiデータ、モバイルデータ、およびテザリングを使用することは、セキュリティポリシーによって制限されています。ネットワーク機能を使用するには、有線接続が必要です。</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">セキュリティポリシーにより、外部ディスプレイとの接続を解除してSamsung DeXを終了します。</string>
@@ -793,7 +797,6 @@
     <string name="disableupdate_application_restrict">このアプリケーションの更新は、セキュリティポリシーによって制限されています。</string>
     <string name="dismiss_action">閉じる</string>
     <string name="display_chooser_button_positive">再起動</string>
-    <string name="display_chooser_dont_show_again">今後表示しない</string>
     <string name="display_manager_built_in_display_name">内蔵スクリーン</string>
     <string name="display_manager_hdmi_display_name">HDMI画面</string>
     <string name="display_manager_overlay_display_name">オーバーレイ第%1$d</string>
@@ -815,6 +818,7 @@
     <string name="dpm_wifi_misc_network_insecure">セキュリティ保護されていないWi-Fiネットワークの使用は、セキュリティポリシーによって制限されています。</string>
     <string name="dpm_wifi_misc_wifi_disabled">Wi-Fiの使用は、セキュリティポリシーによって制限されています。</string>
     <string name="dpm_wifi_user_profiles_denied">Wi-Fiネットワークの追加は、セキュリティポリシーによって制限されています。</string>
+    <string name="dream_accessibility_action_click">閉じる</string>
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">マルチウィンドウ表示では、このアプリを使用できません。</string>
     <string name="dream_preview_title">プレビュー - %1$s</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">マルチウィンドウ表示では、この機能を使用できません。</string>
@@ -843,11 +847,13 @@
     <string name="duration_years_shortest_future">%d 年後</string>
     <string name="dynamic_mode_notification_channel_name">ルーティン モード情報の通知</string>
     <string name="dynamic_mode_notification_summary">バッテリー使用量を減らし、バッテリー駆動時間を延ばします</string>
+    <string name="dynamic_mode_notification_summary_v2">バッテリーを長持ちさせるためにバッテリー セーバーが ON になっています</string>
     <string name="dynamic_mode_notification_title">バッテリー セーバーが ON になりました</string>
+    <string name="dynamic_mode_notification_title_v2">バッテリー セーバーが ON になっています</string>
     <string name="editTextMenuTitle">テキスト操作</string>
     <string name="edit_accessibility_shortcut_menu_button">ショートカットの編集</string>
     <string name="edit_contact_at_sim_restriction">SIMカードの連絡先を編集することは、セキュリティポリシーによって制限されています。</string>
-    <string name="edm_policy_not_allow_open_wifiap">許可デバイス</string>
+    <string name="edm_policy_not_allow_open_wifiap">セキュリティポリシーにより、セキュリティ保護されていないホットスポットテザリングの使用を制限します。</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
     <string name="elapsed_time_short_format_mm_ss">%1$02d:%2$02d</string>
     <string name="emailTypeCustom">カスタム</string>
@@ -858,8 +864,10 @@
     <string name="emergency_call_dialog_number_for_display">緊急通報番号</string>
     <string name="emergency_calls_only">緊急通報のみ発信可能です</string>
     <string name="enablePin">SIM/RUIMロックを有効にしてください。</string>
-    <string name="enable_explore_by_touch_warning_message">%1$sがタッチガイドをONにしようとしています。タッチガイドをONにすると、指の位置にあるアイテムの説明を読み上げたり表示したりできます。また、タブレットを通常とは違うジェスチャーで操作できます。</string>
+    <string name="enable_explore_by_touch_warning_message">%1$sがタッチガイドをONにしようとしています。タッチガイドをONにすると、指の位置にあるアイテムの説明を読み上げたり表示したりできます。また、モバイル デバイスを通常とは違うジェスチャーで操作できます。</string>
     <string name="enable_explore_by_touch_warning_title">タッチガイドをONにしますか？</string>
+    <string name="error_handwriting_unsupported">この欄は手書き入力には対応していません</string>
+    <string name="error_handwriting_unsupported_password">パスワードの欄は手書き入力には対応していません</string>
     <string name="error_message_change_not_allowed">この変更は管理者によって許可されていません</string>
     <string name="error_message_title">エラー</string>
     <string name="ethernet_cable_connected_notification_message">タップして設定</string>
@@ -921,8 +929,8 @@
     <string name="ext_media_unmounting_notification_title">%sを取り出しています</string>
     <string name="ext_media_unsupported_notification_message">%sは、この端末では対応していません。対応する形式で設定するには、タップしてください。</string>
     <string name="ext_media_unsupported_notification_title">未対応の%s</string>
-    <string name="ext_storage_bad_removal_button">再起動</string>
-    <string name="ext_storage_bad_removal_title">タブレットを再起動</string>
+    <string name="ext_storage_bad_removal_button">再開</string>
+    <string name="ext_storage_bad_removal_title">端末を再起動</string>
     <string name="extmedia_format_button_format">ファイル形式</string>
     <string name="extmedia_format_message">カード内のすべてのデータが失われます。</string>
     <string name="extmedia_format_message_usbhost">USBストレージに保存されているファイルはすべて消去されます。この操作は元に戻せません。</string>
@@ -960,8 +968,8 @@
     <string name="face_error_hw_not_available">顔を確認できません。ハードウェアを利用できません。</string>
     <string name="face_error_hw_not_present">このデバイスは顔認証に対応していません</string>
     <string name="face_error_lockout">試行回数の上限です。後でもう一度お試しください。</string>
-    <string name="face_error_lockout_permanent">試行回数が上限を超えました。顔認証を利用できません。</string>
-    <string name="face_error_lockout_screen_lock">試行回数が上限を超えました。代わりに画面ロック解除を入力してください。</string>
+    <string name="face_error_lockout_permanent">試行回数が上限に達しました。顔認証を利用できません。</string>
+    <string name="face_error_lockout_screen_lock">試行回数が上限に達しました。代わりに画面ロック解除を入力してください。</string>
     <string name="face_error_no_space">新しい顔データを保存できません。古いデータを削除してください。</string>
     <string name="face_error_not_enrolled">顔認証を設定していません</string>
     <string name="face_error_security_update_required">センサーが一時的に無効になっています。</string>
@@ -977,8 +985,6 @@
     <string name="face_recalibrate_notification_name">顔認証</string>
     <string name="face_recalibrate_notification_title">顔認証に関する問題</string>
     <string name="face_sensor_privacy_enabled">顔認証を使用するには、[設定] > [プライバシー] で<b>カメラへのアクセス</b>を有効にしてください</string>
-    <string name="face_setup_notification_content">スマートフォンに顔を向けるとロックが解除されます</string>
-    <string name="face_setup_notification_title">顔認証の設定</string>
     <string name="faceunlock_multiple_failures">顔認証の最大試行回数を超えました</string>
     <string name="factory_reset_message">"管理アプリを使用できません。デバイスのデータはこれから消去されます。
 
@@ -1014,20 +1020,21 @@
     <string name="fingerprint_app_setting_name">指紋の使用</string>
     <string name="fingerprint_authenticated">指紋認証を完了しました</string>
     <string name="fingerprint_dialog_default_subtitle">続行するには指紋認証を使用してください</string>
-    <string name="fingerprint_error_bad_calibration">指紋認証センサーを使用できません。修理業者に調整を依頼してください</string>
-    <string name="fingerprint_error_canceled">指紋の操作をキャンセルしました。</string>
-    <string name="fingerprint_error_hw_not_available">指紋認証ハードウェアは使用できません。</string>
-    <string name="fingerprint_error_hw_not_present">このデバイスには指紋認証センサーがありません。</string>
-    <string name="fingerprint_error_lockout">試行回数が上限を超えました。代わりに画面ロックを使用してください。</string>
-    <string name="fingerprint_error_lockout_permanent">試行回数が上限を超えました。代わりに画面ロックを使用してください。</string>
-    <string name="fingerprint_error_no_fingerprints">指紋が登録されていません。</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">顔を認識できません。指紋認証を使用してください。</string>
+    <string name="fingerprint_error_bad_calibration">指紋認証センサーを使用できません。修理業者に調整を依頼してください。</string>
+    <string name="fingerprint_error_canceled">指紋認証操作がキャンセルされました</string>
+    <string name="fingerprint_error_hw_not_available">指紋認証ハードウェアは使用できません</string>
+    <string name="fingerprint_error_hw_not_present">このデバイスには指紋認証センサーがありません</string>
+    <string name="fingerprint_error_lockout">試行回数が上限に達しました。代わりに画面ロックを使用してください。</string>
+    <string name="fingerprint_error_lockout_permanent">試行回数が上限に達しました。代わりに画面ロックを使用してください。</string>
+    <string name="fingerprint_error_no_fingerprints">指紋が登録されていません</string>
     <string name="fingerprint_error_no_space">指紋を設定できません</string>
     <string name="fingerprint_error_not_match">指紋を認識できません</string>
     <string name="fingerprint_error_power_pressed">電源ボタンが押されました</string>
-    <string name="fingerprint_error_security_update_required">センサーが一時的に無効になっています。</string>
+    <string name="fingerprint_error_security_update_required">センサーが一時的に無効になっています</string>
     <string name="fingerprint_error_timeout">指紋の設定がタイムアウトしました。もう一度お試しください。</string>
     <string name="fingerprint_error_unable_to_process">指紋を処理できません。もう一度お試しください。</string>
-    <string name="fingerprint_error_user_canceled">指紋の操作がユーザーによりキャンセルされました。</string>
+    <string name="fingerprint_error_user_canceled">指紋認証操作がユーザーによりキャンセルされました</string>
     <string name="fingerprint_error_vendor_unknown">エラーが発生しました。もう一度お試しください。</string>
     <string name="fingerprint_name_template">指紋 %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">指紋または画面ロックの使用</string>
@@ -1035,8 +1042,6 @@
     <string name="fingerprint_recalibrate_notification_content">修理業者に調整を依頼してください。</string>
     <string name="fingerprint_recalibrate_notification_name">指紋認証</string>
     <string name="fingerprint_recalibrate_notification_title">指紋認証センサーを使用できません</string>
-    <string name="fingerprint_setup_notification_content">タップすると指紋が追加されます</string>
-    <string name="fingerprint_setup_notification_title">その他のロック解除方法の設定</string>
     <string name="fingerprint_udfps_error_not_match">指紋を認識できません</string>
     <string name="fingerprints">指紋:</string>
     <string name="firmwarerecovery_restrict">ファームウェアリカバリーの実行は、セキュリティポリシーによって制限されています。</string>
@@ -1126,7 +1131,7 @@
     <string name="global_action_toggle_sealed_mode">シールドモード</string>
     <string name="global_action_toggle_silent_mode">マナーモード</string>
     <string name="global_action_voice_assist">音声アシスト</string>
-    <string name="global_actions">タブレットオプション</string>
+    <string name="global_actions">携帯電話オプション</string>
     <string name="global_actions_airplane_mode_off_status">機内モードOFF</string>
     <string name="global_actions_airplane_mode_on_status">機内モードON</string>
     <string name="global_actions_toggle_airplane_mode">機内モード</string>
@@ -1147,6 +1152,7 @@
     <string name="globalactions_unable_restart_msg_fmm">端末が端末リモート追跡により遠隔操作でロックされているため、再起動することはできません。</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">タブレットが端末リモート追跡により遠隔操作でロックされているため、再起動することはできません。</string>
     <string name="globalactions_unable_restart_msg_securelock">ロック中は端末を再起動できません。端末を再起動するには、カバーを開いてロックを解除してください。</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">SIMカードがロックされている間は、端末を再起動できません。</string>
     <string name="gnss_service">GNSS サービス</string>
     <string name="gnss_time_update_service">GNSS 時間アップデートサービス</string>
     <string name="gpsNotifMessage">%1$sさん（%2$s）からのリクエスト</string>
@@ -1161,8 +1167,8 @@
     <string name="granularity_label_line">行</string>
     <string name="granularity_label_link">リンク</string>
     <string name="granularity_label_word">単語</string>
-    <string name="guest_name">ゲスト</string>
-    <string name="hardware">仮想キーボードの表示</string>
+    <string name="guest_name">\ufffd\ufffd\ufffdスト</string>
+    <string name="hardware">画面キーボードを使用</string>
     <string name="hardware_key_restrict">ハードウェアキーの使用は、セキュリティポリシーによって制限されています。</string>
     <string name="hardware_sec">オンスクリーンキーボード</string>
     <string name="harmful_app_warning_open_anyway">開く</string>
@@ -1262,7 +1268,7 @@
     <string name="js_dialog_before_unload_title">ナビゲーションの確認</string>
     <string name="js_dialog_title">%s のページ:</string>
     <string name="js_dialog_title_default">JavaScript</string>
-    <string name="keyboard_layout_notification_more_than_three_selected_message">キーボードのレイアウトは%1$s、%2$s、%3$sに設定されています。タップで変更できます。</string>
+    <string name="keyboard_layout_notification_more_than_three_selected_message">キーボードのレイアウトは%1$s、%2$s、%3$sなどに設定されています。タップで変更できます。</string>
     <string name="keyboard_layout_notification_multiple_selected_message">タップするとキーボードを表示できます</string>
     <string name="keyboard_layout_notification_multiple_selected_title">物理キーボードの設定完了</string>
     <string name="keyboard_layout_notification_one_selected_message">キーボードのレイアウトは%sに設定されています。タップで変更できます。</string>
@@ -1311,11 +1317,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>タップしてパスワードを入力&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">PINコードが正しくありません。</string>
     <string name="kg_enter_confirm_pin_hint">希望のPINコードを確認してください</string>
-    <string name="kg_failed_attempts_almost_at_login">"ロック解除パターンの入力を%1$d回間違えました。あと%2$d回間違えると、タブレットのロック解除にメールアカウントが必要になります。
+    <string name="kg_failed_attempts_almost_at_login">"ロック解除パターンの入力を%1$d回間違えました。あと%2$d回間違えると、モバイルデバイスのロック解除にメールアカウントが必要になります。
 
 %3$d秒後にもう一度お試しください。"</string>
-    <string name="kg_failed_attempts_almost_at_wipe">タブレットのロック解除に%1$d回失敗しました。あと%2$d回失敗すると、タブレットは出荷時設定にリセットされ、ユーザーのデータはすべて失われます。</string>
-    <string name="kg_failed_attempts_now_wiping">タブレットのロック解除を%d回失敗しました。タブレットは出荷時設定にリセットされます。</string>
+    <string name="kg_failed_attempts_almost_at_wipe">モバイル デバイスのロック解除に%1$d回失敗しました。あと%2$d回失敗すると、デバイスは出荷時設定にリセットされ、ユーザーのデータはすべて失われます。</string>
+    <string name="kg_failed_attempts_now_wiping">モバイル デバイスのロック解除を%d回失敗しました。デバイスは出荷時設定にリセットされます。</string>
     <string name="kg_forgot_pattern_button_text">パターンを忘れた場合</string>
     <string name="kg_invalid_confirm_pin_hint">PINコードが一致しません</string>
     <string name="kg_invalid_puk">正しいPUKコードを再入力してください。誤入力を繰り返すと、SIMが永久に無効になるおそれがあります。</string>
@@ -1403,11 +1409,11 @@
     <string name="lockscreen_carrier_default">通信サービスはありません</string>
     <string name="lockscreen_carrier_noservice">（サービスなし）</string>
     <string name="lockscreen_emergency_call">緊急通報</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">タブレットのロック解除に%1$d回失敗しました。あと%2$d回失敗すると、タブレットは工場出荷状態にリセットされ、ユーザーのデータはすべて失われます。</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"ロック解除パターンの入力を%1$d回間違えました。あと%2$d回間違えると、タブレットのロック解除にGoogleへのログインが必要になります。
+    <string name="lockscreen_failed_attempts_almost_at_wipe">デバイスのロック解除に%1$d回失敗しました。あと%2$d回失敗すると、デバイスは工場出荷状態にリセットされ、ユーザーのデータはすべて失われます。</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"ロック解除パターンの入力を%1$d回間違えました。あと%2$d回間違えると、モバイルデバイスのロック解除にGoogleへのログインが必要になります。
 
 %3$d秒後にもう一度お試しください。"</string>
-    <string name="lockscreen_failed_attempts_now_wiping">タブレットのロック解除を%d回失敗しました。タブレットを工場出荷状態にリセットします。</string>
+    <string name="lockscreen_failed_attempts_now_wiping">デバイスのロック解除を%d回失敗しました。デバイスを工場出荷状態にリセットします。</string>
     <string name="lockscreen_forgot_pattern_button_text">パターンを忘れた場合</string>
     <string name="lockscreen_glogin_account_recovery_hint">"ユーザー名またはパスワードを忘れた場合は
  "<b>google.com/accounts/recovery</b> にアクセスしてください。</string>
@@ -1423,7 +1429,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">MENUキーでロック解除(または緊急通報)</string>
     <string name="lockscreen_missing_sim_instructions">SIM を追加してください。</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM が見つからないか読み取れません。SIM を追加してください。</string>
-    <string name="lockscreen_missing_sim_message">タブレットに SIM がありません。</string>
+    <string name="lockscreen_missing_sim_message">スマートフォンに SIM がありません。</string>
     <string name="lockscreen_missing_sim_message_short">SIM がありません</string>
     <string name="lockscreen_network_locked_message">ネットワークがロックされました</string>
     <string name="lockscreen_password_wrong">もう一度お試しください</string>
@@ -1463,7 +1469,7 @@
     <string name="low_internal_storage_view_text">一部のシステム機能が動作しない可能性があります</string>
     <string name="low_internal_storage_view_text_no_boot">システムに十分な容量がありません。250MBの空き容量を確保して再起動してください。</string>
     <string name="low_internal_storage_view_title">空き容量わずか</string>
-    <string name="low_memory">タブレットのストレージに空き領域がありません。ファイルを削除して空き領域を確保してください。</string>
+    <string name="low_memory">デバイスのストレージに空き領域がありません。ファイルを削除して空き領域を確保してください。</string>
     <string name="ltb_kill_content_v2_phone">端末が過熱する原因となるため、%sを終了しました。端末の温度が下がると、再度起動することができます。</string>
     <string name="ltb_kill_content_v2_tablet">タブレットが過熱する原因となるため、%sを終了しました。タブレットの温度が下がると、再度起動することができます。</string>
     <string name="ltb_warning_button">終了しない</string>
@@ -1478,21 +1484,21 @@
     <string name="maintenance_mode_dialog_button_text_restart">再起動</string>
     <string name="maintenance_mode_intro_backup_menu_main_textview_message">データをバックアップ</string>
     <string name="maintenance_mode_intro_description_data_access">プリインストールされているアプリのみが利用可能です。画像、メッセージ、アカウントなどの個人データにアクセスできなくなり、ダウンロードされたアプリは非表示になります。</string>
-    <string name="maintenance_mode_intro_description_everything_will_go_back">全てがメンテナンスモードを最初にONにしたときの状態に戻ります。</string>
+    <string name="maintenance_mode_intro_description_everything_will_go_back">メンテナンスモードを最初にONにしたときの状態に全て戻ります。</string>
     <string name="maintenance_mode_intro_description_need_to_unlock_phone">メンテナンスモードをOFFにするには、端末のロックを解除する必要があります。</string>
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">メンテナンスモードをOFFにするには、タブレットのロックを解除する必要があります。</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">メンテナンスモードがONの間に行われた処理(ダウンロードしたデータ、インストールしたアプリ、設定の変更など)は保存されません。</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">画面ロックを設定</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">ログを作成せずに再起動</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">ログを作成して再起動</string>
     <string name="maintenance_mode_intro_dialog_message_phone">メンテナンスモードをONにするには、端末を再起動する必要があります。</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">まず、画面ロックを設定してください。</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">メンテナンスモードをONにするには、タブレットを再起動する必要があります。</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"サポートスタッフが端末の問題を分析できるように、メンテナンスモードを開始する前にシステムログを作成することをおすすめします。
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"サポートスタッフが端末の問題を診断して分析できるように、メンテナンスモードを開始する前にシステムログを作成することをおすすめします。
 
-ログには使用されたアプリや最近発生した可能性のある全てのエラーが表示されますが、その他の個人情報は一切含まれません。ログは問題の分析にのみ使用し、それ以外の目的では使用しません。ログの作成には、通常2分ほどかかります。"</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"サポートスタッフがタブレットの問題を分析できるように、メンテナンスモードを開始する前にシステムログを作成することをおすすめします。
+ログには、使用されたアプリ、最近発生したエラー、ブロックされた電話番号、ファイルストレージ容量など、端末の修理に不可欠な情報のみが含まれます。ログは問題の診断と分析を行うためにのみ使用し、それ以外の目的では使用しません。ログの作成には、通常2分ほどかかります。"</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"サポートスタッフがタブレットの問題を診断して分析できるように、メンテナンスモードを開始する前にシステムログを作成することをおすすめします。
 
-ログには使用されたアプリや最近発生した可能性のある全てのエラーが表示されますが、その他の個人情報は一切含まれません。ログは問題の分析にのみ使用し、それ以外の目的では使用しません。ログの作成には、通常2分ほどかかります。"</string>
+ログには、使用されたアプリ、最近発生したエラー、ブロックされた電話番号、ファイルストレージ容量など、タブレットの修理に不可欠な情報のみが含まれます。ログは問題の診断と分析を行うためにのみ使用し、それ以外の目的では使用しません。ログの作成には、通常2分ほどかかります。"</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">ストレージを分析</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">端末の内部ストレージの残容量が低下しています。ストレージの残容量が低下すると、一部のアプリや機能は正常に動作しなくなる可能性があります。不要なファイルやアプリを削除してください。削除した後は、忘れずにごみ箱を空にしてください。</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">タブレットの内部ストレージの残容量が低下しています。ストレージの残容量が低下すると、一部のアプリや機能は正常に動作しなくなる可能性があります。不要なファイルやアプリを削除してください。削除した後は、忘れずにごみ箱を空にしてください。</string>
@@ -1514,10 +1520,17 @@
     <string name="maintenance_mode_outro_label">メンテナンスモードを終了</string>
     <string name="maintenance_mode_outro_textview_message_phone">メンテナンスモードをOFFにするには、端末のロックを解除する必要があります。メンテナンスモードをOFFにすると、メンテナンスモードを最初にONにしたときの状態に全て戻ります。メンテナンスモードがONの間に行われた変更(ダウンロードしたデータ、インストールしたアプリ、設定の変更など)は保存されません。</string>
     <string name="maintenance_mode_outro_textview_message_tablet">メンテナンスモードをOFFにするには、タブレットのロックを解除する必要があります。メンテナンスモードをOFFにすると、メンテナンスモードを最初にONにしたときの状態に全て戻ります。メンテナンスモードがONの間に行われた変更(ダウンロードしたデータ、インストールしたアプリ、設定の変更など)は保存されません。</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">[%s]が有効な間は、メンテナンスモードを使用できません。</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">[省電力モード]がONになっており、アプリとホーム画面が制限されているため、メンテナンスモードを使用できません。</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">メンテナンスモードは、この端末には対応していません。</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">メンテナンスモードは、このタブレットには対応していません。</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%sは端末の所有者のみが使用できます。</string>
     <string name="maintenance_mode_stop_backup_dialog_message">データのバックアップを停止して、メンテナンスモードをONにしますか？</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">メンテナンスモードをONにするには、未完了のバックアップを完了または削除する必要があります。</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">メンテナンスモードをONにするには、進行中のバックアップを停止する必要があります。</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">メンテナンスモードをONにするには、バックアップデータの復元を停止する必要があります。</string>
+    <string name="maintenance_mode_toast_text_device_admin">デバイス管理アプリ</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">ログを作成中…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">通常、作成には2分ほどかかります。ログが作成されると、端末はメンテナンスモードで再起動し、この端末をメンテナンス用に安全に引き渡すことができるようになります。</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">通常、作成には2分ほどかかります。ログが作成されると、タブレットはメンテナンスモードで再起動し、このタブレットをメンテナンス用に安全に引き渡すことができるようになります。</string>
@@ -1667,6 +1680,7 @@
     <string name="menu_shift_shortcut_label">Shift+</string>
     <string name="menu_space_shortcut_label">Space</string>
     <string name="menu_sym_shortcut_label">Sym+</string>
+    <string name="message_on_crash">自動ブロッカーによりブロック</string>
     <string name="mic_access_off_toast">マイクがブロックされています</string>
     <string name="mic_access_on_toast">マイクを利用できます</string>
     <string name="microphone_restrict">マイクの使用は、セキュリティポリシーによって制限されています。</string>
@@ -1689,15 +1703,17 @@
     <string name="mime_type_spreadsheet_ext">%1$s スプレッドシート</string>
     <string name="mime_type_video">動画</string>
     <string name="mime_type_video_ext">%1$s 動画</string>
-    <string name="miniresolver_call">発信</string>
-    <string name="miniresolver_call_in_work">業務用アプリから発信しますか？</string>
-    <string name="miniresolver_call_information">この組織では、業務用アプリからの電話の発信のみが許可されています。</string>
+    <string name="miniresolver_call">通話</string>
+    <string name="miniresolver_call_in_work">仕事用アプリからの通話ですか？</string>
+    <string name="miniresolver_call_information">組織では、仕事用アプリからの通話のみ許可されています</string>
     <string name="miniresolver_open_in_personal">個人用の %s で開きますか？</string>
     <string name="miniresolver_open_in_work">仕事用の %s で開きますか？</string>
     <string name="miniresolver_open_work">仕事用の %s を開きますか？</string>
-    <string name="miniresolver_sms_information">この組織では、業務用アプリからのメッセージの送信のみが許可されています。</string>
-    <string name="miniresolver_switch">切替</string>
-    <string name="miniresolver_switch_to_work">業務用アプリに切り替えますか？</string>
+    <string name="miniresolver_private_space_messages_information">SMS メッセージは個人用のメッセージ アプリからのみ送信できます。</string>
+    <string name="miniresolver_private_space_phone_information">電話は個人用の電話アプリからのみかけることができます。個人用の電話アプリを使った通話は、個人用の通話履歴に追加されます。</string>
+    <string name="miniresolver_sms_information">組織では、仕事用アプリからのメッセージ送信のみ許可されています</string>
+    <string name="miniresolver_switch">切り替える</string>
+    <string name="miniresolver_switch_to_work">仕事用アプリに切り替えますか？</string>
     <string name="miniresolver_use_personal_browser">個人用ブラウザを使用</string>
     <string name="miniresolver_use_work_browser">仕事用ブラウザを使用</string>
     <string name="minute">分</string>
@@ -1730,31 +1746,7 @@
     <string name="mock_location_reminder_title">擬似ロケーションがON</string>
     <string name="month_day_year" formatted="false">%Y年%-m月%-e日</string>
     <string name="more_apps">その他のアプリ</string>
-    <string name="more_item_label">その他</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%sサービスは対応していません。カスタマーサービスにお問い合わせください。</string>
-    <string name="mptcp_message_address_type_not_supported">%s接続が不安定です。利用可能なネットワークで再接続中…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s接続が不安定です。利用可能なネットワークで再接続中…</string>
-    <string name="mptcp_message_cmd_not_supported">%sネットワークが一時的に利用できません。利用可能なネットワークで再接続中…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s接続が不安定です。利用可能なネットワークで再接続中…</string>
-    <string name="mptcp_message_connection_refused">%s接続が不安定です。利用可能なネットワークで再接続中…</string>
-    <string name="mptcp_message_data_usage_limit">データ使用制限に達しました。データ使用制限を変更するには、[設定]に移動してください。</string>
-    <string name="mptcp_message_host_unreachable">%s接続が不安定です。利用可能なネットワークで再接続中…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">端末がLTEネットワークに接続されていないため、%sを有効にできません。</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">国際ローミング中は、%sを有効にできません。</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Wi-FiテザリングまたはUSBテザリングが有効な間は、%sを有効にできません。</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Wi-Fi Directが有効な間は、%sを有効にできません。</string>
-    <string name="mptcp_message_mptcp_capability_airplane">機内モードが有効な間は、%sを有効にできません。</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">モバイルデータがOFFの間は、%sを有効にできません。</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">サービスプロバイダから応答がありません。</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">%1$sを有効にできません。%2$sはインターネットパッケージで利用できないか、受信した%3$sサーバーから応答がありません。</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">%sの有効化要求の送信に失敗しました。利用可能なネットワークで再接続しています…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">正しくないSIMカードが挿入されたため、%sを有効にできません。</string>
-    <string name="mptcp_message_network_unreachable">%s接続が不安定です。利用可能なネットワークで再接続中…</string>
-    <string name="mptcp_message_non_mptcp_plan">Gigaマルチパスを有効にできません。データプランがこの機能に対応していません。</string>
-    <string name="mptcp_message_operation_disabled_overheating">端末の過熱を防止するため、%sを無効にしました。代わりにモバイルネットワークでダウンロード中…</string>
-    <string name="mptcp_message_server_error">%s接続が不安定です。利用可能なネットワークで再接続中…</string>
-    <string name="mptcp_message_setting_disabled_overheating">端末が過熱しているため、%sを有効にできません。端末の温度が下がってから再度実行してください。</string>
-    <string name="mptcp_message_ttl_expired">%sネットワークが一時的に利用できません。利用可能なネットワークで再接続中…</string>
+    <string name="more_item_label">続きを見る</string>
     <string name="mte_override_notification_message">パフォーマンスと安定性が影響を受ける可能性があります。無効にするには再起動してください。arm64.memtag.bootctl を使用して有効にした場合は、事前に無効にしてください。</string>
     <string name="mte_override_notification_title">試験運用版 MTE を有効にしました</string>
     <string name="multi_user_capability_restrict">端末を複数のユーザーが使用する機能は、セキュリティポリシーによって制限されています。</string>
@@ -1775,18 +1767,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">サウンドをBluetoothオーディオデバイスで再生します。この設定をOFFにするには、ここをタップしてください。</string>
     <string name="multisound_sound_via_headphone">%sのサウンドをヘッドホンで再生します。この機能をOFFにするには、ここをタップしてください。</string>
     <string name="multisound_sound_via_headphone_multiselection">サウンドをヘッドホンで再生します。この設定をOFFにするには、ここをタップしてください。</string>
-    <string name="multisound_sound_via_phone_speaker">%sのサウンドをタブレットのスピーカーで再生します。この機能をOFFにするには、ここをタップしてください。</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">サウンドをタブレットのスピーカーで再生します。この設定をOFFにするには、ここをタップしてください。</string>
+    <string name="multisound_sound_via_phone_speaker">%sのサウンドを端末のスピーカーで再生します。この機能をOFFにするには、ここをタップしてください。</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">サウンドを端末のスピーカーで再生します。この設定をOFFにするには、ここをタップしてください。</string>
     <string name="multisound_sound_via_usb_audio">%sのサウンドをUSBオーディオデバイスで再生します。この機能をOFFにするには、ここをタップしてください。</string>
     <string name="multisound_sound_via_usb_audio_multiselection">サウンドをUSBオーディオデバイスで再生しています。この設定をOFFにするには、ここをタップしてください。</string>
     <string name="multisound_title">アプリサウンドの出力デバイスを設定</string>
     <string name="multisound_turn_off_multisound">OFF</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%sは、Samsung DeXでは実行できません。タブレットモードで実行してください。</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%sは、Samsung DeXでは実行できません。タブレットのホーム画面でのみ実行できます。</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">一部のゲームはタッチスクリーンでのみ動作します。Samsung DeXでマウス操作が機能しない場合、タブレットモードでプレイしてみてください。</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%sは、Samsung DeXでは実行できません。モバイル端末モードで実行してください。</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%sは、Samsung DeXでは実行できません。端末のホーム画面でのみ実行できます。</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">一部のゲームはタッチスクリーンでのみ動作します。Samsung DeXでマウス操作が機能しない場合、モバイル端末モードでプレイしてみてください。</string>
     <string name="music_recognition_manager_service">楽曲認識マネージャー サービス</string>
     <string name="muted_by">%1$s により一部の音はミュートに設定</string>
-    <string name="my_device">このタブレット</string>
+    <string name="my_device">この端末</string>
     <string name="nas_upgrade_notification_content">操作や返信の候補が拡張通知から提供されるようになりました。Android 通知の自動調整はサポートを終了しました。</string>
     <string name="nas_upgrade_notification_disable_action">OFF にする</string>
     <string name="nas_upgrade_notification_enable_action">OK</string>
@@ -1826,7 +1818,6 @@
     <string name="nosim_limited_service">制限区域サービス</string>
     <string name="not_checked">OFF</string>
     <string name="not_selected">未選択</string>
-    <string name="not_support_ai_key">AIキーはタブレットではまだ使用できません。間もなくアップデートが利用可能になります。</string>
     <string name="notification_action_check_bg_apps">実行中のアプリをチェック</string>
     <string name="notification_alerted_content_description">アラートとして送信済み</string>
     <string name="notification_app_name_settings">設定</string>
@@ -1845,6 +1836,7 @@
     <string name="notification_channel_developer_important">デベロッパーからの重要なメッセージ</string>
     <string name="notification_channel_device_admin">IT 管理者からの通知</string>
     <string name="notification_channel_dex_policy">Samsung DeXポリシー</string>
+    <string name="notification_channel_display">ディスプレイ</string>
     <string name="notification_channel_do_not_disturb">サイレント モード</string>
     <string name="notification_channel_emergency_callback">緊急通報待機モード</string>
     <string name="notification_channel_foreground_service">電池を消費しているアプリ</string>
@@ -1907,7 +1899,8 @@
     <string name="overheat_warning_title_v2_tablet">タブレットの過熱</string>
     <string name="owner_name">オーナー</string>
     <string name="package_deleted_device_owner">管理者により削除されています</string>
-    <string name="package_installed_device_owner">管理者によりインストールされています</string>
+    <string name="package_installed_device_owner">"管理者によりインストールされています。
+付与された権限を確認するには、設定に移動してください"</string>
     <string name="package_module">パッケージ</string>
     <string name="package_night_mode_dialog_got_it">OK</string>
     <string name="package_night_mode_dialog_message">%sは、バッテリーを節約するためにダークモードで動作しています。[設定]の[ラボ]でライトモードに切り替えることができます。</string>
@@ -1930,7 +1923,9 @@
     <string name="permdesc_accessCoarseLocation">このアプリは、使用中に、位置情報サービスからデバイスのおおよその位置情報を取得できます。アプリが位置情報を取得するには、デバイスで位置情報サービスがオンになっている必要があります。</string>
     <string name="permdesc_accessDrmCertificates">DRM証明書のプロビジョニングと使用をアプリに許可します。通常のアプリでは不要です。</string>
     <string name="permdesc_accessFineLocation">このアプリは、使用中に、位置情報サービスからデバイスの正確な位置情報を取得できます。アプリが位置情報を取得するには、デバイスで位置情報サービスが ON になっている必要があります。この場合、バッテリー使用量が増えることがあります。</string>
+    <string name="permdesc_accessHiddenProfile">非表示プロファイルへのアクセスをアプリに許可します。</string>
     <string name="permdesc_accessImsCallService">IMSサービスがユーザー操作なしで電話をかけることをアプリに許可します。</string>
+    <string name="permdesc_accessLastKnownCellId">電話通信により提供される最後に認識されたセル ID へのアクセスをアプリに許可します。</string>
     <string name="permdesc_accessLocationExtraCommands">位置情報提供元の追加のコマンドにアクセスすることをアプリに許可します。許可すると、アプリがGPSなどの位置情報源の動作を妨害する恐れがあります。</string>
     <string name="permdesc_accessNetworkConditions">ネットワーク状況を監視するためリッスンすることをアプリに許可します。通常のアプリで必要になることはありません。</string>
     <string name="permdesc_accessNetworkState">存在するネットワークや接続しているネットワークなど、ネットワーク接続に関する情報を表示することをアプリに許可します。</string>
@@ -1951,23 +1946,24 @@
     <string name="permdesc_bindNotificationListenerService">通知リスナーサービスのトップレベルインターフェースにバインドすることを所有者に許可します。通常のアプリでは不要です。</string>
     <string name="permdesc_bind_connection_service">受発信のためアプリが電話サービスと通信することを許可する。</string>
     <string name="permdesc_bind_incall_service">通話画面をユーザーに表示するタイミングと方法の制御をアプリに許可します。</string>
-    <string name="permdesc_bluetooth">タブレットのBluetooth設定を表示すること、ペアのデバイスに接続すること/ペアのデバイスからの接続を受け入れることをアプリに許可します。</string>
-    <string name="permdesc_bluetoothAdmin">ローカルのBluetoothタブレットを設定することと、リモートデバイスを検出してペアに設定することをアプリに許可します。</string>
+    <string name="permdesc_bluetooth">モバイルデバイスのBluetooth設定を表示すること、ペアのデバイスに接続すること/ペアのデバイスからの接続を受け入れることをアプリに許可します。</string>
+    <string name="permdesc_bluetoothAdmin">ローカルのBluetoothモバイル デバイスを設定することと、リモートデバイスを検出してペアに設定することをアプリに許可します。</string>
     <string name="permdesc_bluetooth_advertise">付近の Bluetooth デバイスへの広告の配信をアプリに許可します</string>
     <string name="permdesc_bluetooth_connect">ペア設定された Bluetooth デバイスへの接続をアプリに許可します</string>
     <string name="permdesc_bluetooth_scan">付近の Bluetooth デバイスの検出とペア設定をアプリに許可します</string>
     <string name="permdesc_bodySensors">アプリの使用時に、心拍数、体温、血中酸素濃度など、ボディセンサー データにアクセスすることをアプリに許可します。</string>
     <string name="permdesc_bodySensors_background">バックグラウンドでのアプリの動作時に、心拍数、体温、血中酸素濃度など、ボディセンサー データにアクセスすることをアプリに許可します。</string>
-    <string name="permdesc_broadcastSticky">配信が終了してもメモリに残るstickyブロードキャストの配信をアプリに許可します。この許可を使用し過ぎると、メモリの使用量が増えてタブレットの動作が遅くなったり不安定になったりする恐れがあります。</string>
+    <string name="permdesc_broadcastSticky">配信が終了してもメモリに残るstickyブロードキャストの配信をアプリに許可します。この許可を使用し過ぎると、メモリの使用量が増えてモバイル デバイスの動作が遅くなったり不安定になったりする恐れがあります。</string>
     <string name="permdesc_callCompanionApp">デバイスで進行中の通話の表示と操作をアプリに許可します。通話の電話番号や状態などの情報も含まれます。</string>
     <string name="permdesc_callPhone">電話番号への自動発信をアプリに許可します。許可することで、予期せぬ発信や料金が発生する恐れがあります。この場合、緊急通報への発信はアプリに許可されません。悪意のあるアプリが確認なしで発信して料金が発生したり、携帯通信会社のコードをダイヤルして着信を別の番号に自動転送したりする恐れがあります。</string>
     <string name="permdesc_camera">このアプリは、ユーザーがアプリを使用している場合にカメラを使用して写真や動画を撮影できます。</string>
+    <string name="permdesc_cameraHeadlessSystemUser">このアプリはヘッドレス システム ユーザーとしてカメラにアクセスできます。</string>
     <string name="permdesc_cameraOpenCloseListener">このアプリは、カメラデバイスが（なんらかのアプリによって）起動するとき、または終了するときにコールバックを受け取ることができます。</string>
     <string name="permdesc_changeNetworkState">ネットワーク接続状態の変更をアプリに許可します。</string>
     <string name="permdesc_changeTetherState">ネットワークのテザリング接続状態の変更をアプリに許可します。</string>
-    <string name="permdesc_changeWifiMulticastState">マルチキャスト アドレスを使用して、このタブレットだけでなく Wi-Fi ネットワーク上のすべてのデバイスに送信されたパケットを受信することをアプリに許可します。マルチキャスト以外のモードよりもバッテリーの消費量が大きくなります。</string>
+    <string name="permdesc_changeWifiMulticastState">マルチキャスト アドレスを使用して、このモバイル デバイスだけでなく Wi-Fi ネットワーク上のすべてのデバイスに送信されたパケットを受信することをアプリに許可します。マルチキャスト以外のモードよりもバッテリーの消費量が大きくなります。</string>
     <string name="permdesc_changeWifiState">Wi-Fiアクセスポイントへの接続/切断、Wi-Fiネットワークのデバイス設定の変更をアプリに許可します。</string>
-    <string name="permdesc_changeWimaxState">タブレットのWiMAXネットワークへの接続と切断をアプリに許可します。</string>
+    <string name="permdesc_changeWimaxState">モバイル デバイスのWiMAXネットワークへの接続と切断をアプリに許可します。</string>
     <string name="permdesc_companionProfileWatch">ウォッチの管理をコンパニオン アプリに許可します。</string>
     <string name="permdesc_connection_manager">通信接続の管理をアプリに許可します。</string>
     <string name="permdesc_control_incall_experience">通話中のユーザーエクスペリエンスの提供をアプリに許可します。</string>
@@ -1988,6 +1984,7 @@
     <string name="permdesc_foregroundServiceHealth">タイプが「health」のフォアグラウンド サービスの使用をアプリに許可します</string>
     <string name="permdesc_foregroundServiceLocation">タイプが「location」のフォアグラウンド サービスの使用をアプリに許可します</string>
     <string name="permdesc_foregroundServiceMediaPlayback">タイプが「mediaPlayback」のフォアグラウンド サービスの使用をアプリに許可します</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">タイプが「mediaProcessing」のフォアグラウンド サービスの使用をアプリに許可します</string>
     <string name="permdesc_foregroundServiceMediaProjection">タイプが「mediaProjection」のフォアグラウンド サービスの使用をアプリに許可します</string>
     <string name="permdesc_foregroundServiceMicrophone">タイプが「microphone」のフォアグラウンド サービスの使用をアプリに許可します</string>
     <string name="permdesc_foregroundServicePhoneCall">タイプが「phoneCall」のフォアグラウンド サービスの使用をアプリに許可します</string>
@@ -1995,7 +1992,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">タイプが「specialUse」のフォアグラウンド サービスの使用をアプリに許可します</string>
     <string name="permdesc_foregroundServiceSystemExempted">タイプが「systemExempted」のフォアグラウンド サービスの使用をアプリに許可します</string>
     <string name="permdesc_fullScreenIntent">ロックされているデバイスに通知を全画面表示のアクティビティとして表示することをアプリに許可します</string>
-    <string name="permdesc_getAccounts">タブレットで認識されているアカウントのリストの取得をアプリに許可します。これには、インストールしたアプリによって作成されたアカウントも含まれます。</string>
+    <string name="permdesc_getAccounts">モバイル デバイスで認識されているアカウントのリストの取得をアプリに許可します。これには、インストールしたアプリによって作成されたアカウントも含まれます。</string>
     <string name="permdesc_getAppList">インストール済みアプリリストの読み取りをアプリに許可します。</string>
     <string name="permdesc_getPackageSize">アプリのコード、データ、キャッシュサイズを取得することをアプリに許可します</string>
     <string name="permdesc_getTasks">現在実行中または最近実行したタスクに関する情報の取得をアプリに許可します。これにより、そのデバイスでどのアプリを使用しているかをアプリから識別できるようになる可能性があります。</string>
@@ -2093,17 +2090,18 @@
     <string name="permdesc_mount_unmount_filesystems">リムーバブルストレージのマウントやマウント解除を、アプリケーションに許可します。</string>
     <string name="permdesc_nearby_wifi_devices">付近の Wi-Fi デバイスについて、情報の表示、接続、相対位置の確認をアプリに許可します</string>
     <string name="permdesc_nfc">NFCタグ、カード、リーダーとの通信をアプリに許可します。</string>
+    <string name="permdesc_nfcTransactionEvent">セキュア エレメントで起きたトランザクションに関する情報の受信をアプリに許可します。</string>
     <string name="permdesc_observeCompanionDevicePresence">コンパニオン デバイスの存在（近いか、遠いか）の確認をコンパニオン アプリに許可します。</string>
-    <string name="permdesc_persistentActivity">アプリにその一部をメモリに常駐させることを許可します。これにより他のアプリが使用できるメモリが制限されるため、タブレットの動作が遅くなることがあります。</string>
+    <string name="permdesc_persistentActivity">アプリにその一部をメモリに常駐させることを許可します。これにより他のアプリが使用できるメモリが制限されるため、モバイル デバイスの動作が遅くなることがあります。</string>
     <string name="permdesc_postNotification">通知の表示をアプリに許可</string>
     <string name="permdesc_preferredPaymentInfo">登録されている支援やルートの目的地など、優先される NFC お支払いサービスの情報を取得することをアプリに許可します。</string>
     <string name="permdesc_processOutgoingCalls">発信を別の番号に転送するか完全に中止するオプションで、発信中にダイヤルされた番号にアクセスすることをアプリに許可します。</string>
     <string name="permdesc_queryAllPackages">すべてのインストール済みパッケージを参照することをアプリに許可します。</string>
     <string name="permdesc_readBasicPhoneState">デバイスの基本的な電話機能へのアクセスをアプリに許可します。</string>
-    <string name="permdesc_readCalendar">このアプリは、お使いのタブレットに保存されたカレンダーの予定をすべて読み取り、カレンダーのデータを共有したり、保存したりできます。</string>
+    <string name="permdesc_readCalendar">このアプリは、お使いのスマートフォンに保存されたカレンダーの予定をすべて読み取り、カレンダーのデータを共有したり、保存したりできます。</string>
     <string name="permdesc_readCallLog">このアプリは通話履歴を読み取ることができます。</string>
     <string name="permdesc_readCellBroadcasts">デバイスで受信した緊急速報メール SMS の読み取りをアプリに許可します。緊急速報メールは、緊急事態を警告する目的で一部の地域に配信されます。緊急速報メールの受信時に、悪意のあるアプリによってデバイスの動作や処理が妨害される恐れがあります。</string>
-    <string name="permdesc_readContacts">タブレットに保存されている連絡先に関するデータの読み取りをアプリに許可します。また、この読み取りを許可したアプリは、連絡先を作成したタブレット上のアカウントにもアクセスできます。これには、インストールしたアプリによって作成されたアカウントも含まれます。これにより、連絡先データの保存をアプリに許可することになり、悪意のあるアプリによって知らないうちに連絡先データが共有される恐れがあります。</string>
+    <string name="permdesc_readContacts">スマートフォンに保存されている連絡先に関するデータの読み取りをアプリに許可します。また、この読み取りを許可したアプリは、連絡先を作成したスマートフォン上のアカウントにもアクセスできます。これには、インストールしたアプリによって作成されたアカウントも含まれます。これにより、連絡先データの保存をアプリに許可することになり、悪意のあるアプリによって知らないうちに連絡先データが共有される恐れがあります。</string>
     <string name="permdesc_readInstallSessions">インストールセッションの読み取りをアプリに許可します。これにより、アプリはアクティブパッケージのインストールに関する詳細情報を参照できるようになります。</string>
     <string name="permdesc_readMediaAudio">共有ストレージからの音声ファイルの読み取りをアプリに許可します。</string>
     <string name="permdesc_readMediaImages">共有ストレージからの画像ファイルの読み取りをアプリに許可します。</string>
@@ -2111,11 +2109,11 @@
     <string name="permdesc_readNetworkUsageHistory">特定のネットワークやアプリに関するネットワーク使用履歴の読み取りをアプリに許可します。</string>
     <string name="permdesc_readPhoneNumbers">デバイスの電話番号へのアクセスをアプリに許可します。</string>
     <string name="permdesc_readPhoneState">デバイスの電話機能へのアクセスをアプリに許可します。これにより、電話番号、デバイスID、通話中かどうか、通話相手の電話番号をアプリから特定できるようになります。</string>
-    <string name="permdesc_readSms">このアプリは、お使いのタブレットに保存された SMS（テキスト）メッセージをすべて読み取ることができます。</string>
+    <string name="permdesc_readSms">このアプリは、お使いのスマートフォンに保存された SMS（テキスト）メッセージをすべて読み取ることができます。</string>
     <string name="permdesc_readSyncSettings">アカウントの同期設定の読み取りをアプリに許可します。たとえば、連絡帳アプリがアカウントと同期しているかどうかをアプリから特定できるようになります。</string>
     <string name="permdesc_readSyncStats">アカウントの同期ステータス（同期イベントの履歴、同期されたデータの量など）の読み取りをアプリに許可します。</string>
     <string name="permdesc_readVisualUserSelect">選択した画像と動画ファイルを共有ストレージから読み取ることをアプリに許可します。</string>
-    <string name="permdesc_receiveBootCompleted">システムの起動後に自動的に起動することをアプリに許可します。許可すると、タブレットの起動時間が長くなったり、アプリが常に実行されるためにタブレット全体の動作が遅くなったりする可能性があります。</string>
+    <string name="permdesc_receiveBootCompleted">システムの起動後に自動的に起動することをアプリに許可します。許可すると、モバイル デバイスの起動時間が長くなったり、アプリが常に実行されるためにモバイル デバイス全体の動作が遅くなったりする可能性があります。</string>
     <string name="permdesc_receiveMms">MMSメッセージの受信と処理をアプリに許可します。これにより、アプリがデバイスに届いたメッセージを表示することなく監視または削除できるようになります。</string>
     <string name="permdesc_receiveSms">SMSメッセージの受信と処理をアプリに許可します。これにより、アプリがデバイスに届いたメッセージを表示することなく監視または削除できるようになります。</string>
     <string name="permdesc_receiveWapPush">WAPメッセージの受信と処理をアプリに許可します。これにより、アプリがデバイスに届いたメッセージを表示することなく監視または削除できるようになります。</string>
@@ -2137,7 +2135,7 @@
     <string name="permdesc_sendSms">SMSメッセージの送信をアプリに許可します。これにより、予期せぬ料金が発生する可能性があります。悪意のあるアプリが確認なしでメッセージを送信し、料金が発生する恐れがあります。</string>
     <string name="permdesc_setAlarm">インストール済みアラームアプリのアラームを設定することをアプリに許可します。この機能が実装されていないアラームアプリもあります。</string>
     <string name="permdesc_setInputCalibration">タッチスクリーンの調整パラメータの変更をアプリに許可します。通常のアプリでは必要ありません。</string>
-    <string name="permdesc_setTimeZone">タブレットのタイムゾーンの変更をアプリに許可します。</string>
+    <string name="permdesc_setTimeZone">モバイル デバイスのタイムゾーンの変更をアプリに許可します。</string>
     <string name="permdesc_setWallpaper">システムの壁紙を設定することをアプリに許可します。</string>
     <string name="permdesc_setWallpaperHints">システムの壁紙サイズのヒントを設定することをアプリに許可します。</string>
     <string name="permdesc_sim_communication">SIMにコマンドを送信することをアプリに許可します｡この許可は非常に危険です。</string>
@@ -2150,8 +2148,8 @@
     <string name="permdesc_statusBarService">ステータスバーへの表示をアプリに許可します。</string>
     <string name="permdesc_subscribedFeedsRead">現在同期されているフィードの詳細を取得することをアプリに許可します。</string>
     <string name="permdesc_systemAlertWindow">このアプリは他のアプリの上に重ねて表示したり、画面の他の場所に表示したりできます。これにより、通常のアプリの使用が妨げられたり、他のアプリの表示が変わる場合があります。</string>
-    <string name="permdesc_systemCamera">権限を付与されたこのアプリまたはシステムアプリは、いつでもシステムカメラを使用して写真と動画を撮影できます。アプリには android.permission.CAMERA 権限も必要です</string>
-    <string name="permdesc_transmitIr">タブレットの赤外線送信機能の使用をアプリに許可します。</string>
+    <string name="permdesc_systemCamera">権限を付与されたこの\ufffd\ufffd\ufffdプリまたはシステムアプリは、いつでもシステムカメラを使用して写真と動画を撮影できます。アプリには android.permission.CAMERA 権限も必要です</string>
+    <string name="permdesc_transmitIr">携帯電話の赤外線送信機能の使用をアプリに許可します。</string>
     <string name="permdesc_turnScreenOn">画面をオンにすることをアプリに許可します。</string>
     <string name="permdesc_ucsPlugin">サードパーティーの認証情報ストレージプラグインと連携します。</string>
     <string name="permdesc_uninstall_shortcut">ユーザー操作なしでホーム画面のショートカットを削除することをアプリに許可します。</string>
@@ -2165,12 +2163,13 @@
     <string name="permdesc_vibrate">バイブレーションの制御をアプリに許可します。</string>
     <string name="permdesc_vibrator_state">バイブレーションのオン / オフ状態の把握をアプリに許可します。</string>
     <string name="permdesc_videoWrite">動画コレクションの変更をアプリに許可します。</string>
-    <string name="permdesc_wakeLock">タブレットのスリープを無効にすることをアプリに許可します。</string>
-    <string name="permdesc_writeCalendar">このアプリは、お使いのタブレットでカレンダーの予定を追加、削除、変更できます。また、カレンダーの所有者から発信されたかのように表示されるメッセージを送信したり、所有者に通知することなく予定を変更したりできます。</string>
-    <string name="permdesc_writeCallLog">タブレットの通話履歴（着信や発信のデータなど）の変更をアプリに許可します。この許可を悪意のあるアプリに利用されると、通話履歴が消去または変更される恐れがあります。</string>
-    <string name="permdesc_writeContacts">タブレットに保存されている連絡先に関するデータの変更をアプリに許可します。これにより、連絡先データの削除をアプリに許可することになります。</string>
+    <string name="permdesc_wakeLock">モバイル デバイスのスリープを無効にすることをアプリに許可します。</string>
+    <string name="permdesc_writeCalendar">このアプリは、お使いのスマートフォンでカレンダーの予定を追加、削除、変更できます。また、カレンダーの所有者から発信されたかのように表示されるメッセージを送信したり、所有者に通知することなく予定を変更したりできます。</string>
+    <string name="permdesc_writeCallLog">モバイル デバイスの通話履歴（着信や発信のデータなど）の変更をアプリに許可します。この許可を悪意のあるアプリに利用されると、通話履歴が消去または変更される恐れがあります。</string>
+    <string name="permdesc_writeContacts">スマートフォンに保存されている連絡先に関するデータの変更をアプリに許可します。これにより、連絡先データの削除をアプリに許可することになります。</string>
     <string name="permdesc_writeSettings">システムの設定データの変更をアプリに許可します。この許可を悪意のあるアプリに利用されると、システムの設定が破損する恐れがあります。</string>
     <string name="permdesc_writeSyncSettings">アカウントの同期設定の変更をアプリに許可します。たとえば、連絡帳アプリとアカウントの同期を有効にするために使用できます。</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">他のアプリが所有する E2EE Contact Key の確認ステータスの更新をアプリに許可します</string>
     <string name="permgroupdesc_activityRecognition">身体活動にアクセス</string>
     <string name="permgroupdesc_calendar">カレンダーへのアクセス</string>
     <string name="permgroupdesc_calllog">通話履歴の読み取りと書き込み</string>
@@ -2212,7 +2211,9 @@
     <string name="permlab_accessCoarseLocation">フォアグラウンドでのみおおよその位置情報にアクセス</string>
     <string name="permlab_accessDrmCertificates">DRM証明書へのアクセス権</string>
     <string name="permlab_accessFineLocation">フォアグラウンドでのみ正確な位置情報にアクセス</string>
+    <string name="permlab_accessHiddenProfile">非表示プロファイルへのアクセス</string>
     <string name="permlab_accessImsCallService">IMS通話サービスへのアクセス</string>
+    <string name="permlab_accessLastKnownCellId">最後に認識されたセル ID へのアクセス。</string>
     <string name="permlab_accessLocationExtraCommands">位置情報提供者の追加コマンドアクセス</string>
     <string name="permlab_accessNetworkConditions">ネットワーク状況監視のためのリッスン</string>
     <string name="permlab_accessNetworkState">ネットワーク接続の表示</string>
@@ -2244,6 +2245,7 @@
     <string name="permlab_callCompanionApp">システム経由の通話の表示と操作。</string>
     <string name="permlab_callPhone">電話番号発信</string>
     <string name="permlab_camera">写真と動画の撮影</string>
+    <string name="permlab_cameraHeadlessSystemUser">ヘッドレス システム ユーザーとしてカメラにアクセスすることをアプリまたはサービスに許可してください。</string>
     <string name="permlab_cameraOpenCloseListener">カメラデバイスが起動または終了したときにコールバックを受け取ることを、アプリまたはサービスに許可してください。</string>
     <string name="permlab_changeNetworkState">ネットワーク接続の変更</string>
     <string name="permlab_changeTetherState">テザリング接続の変更</string>
@@ -2271,6 +2273,7 @@
     <string name="permlab_foregroundServiceHealth">タイプが「health」のフォアグラウンド サービスの実行</string>
     <string name="permlab_foregroundServiceLocation">タイプが「location」のフォアグラウンド サービスの実行</string>
     <string name="permlab_foregroundServiceMediaPlayback">タイプが「mediaPlayback」のフォアグラウンド サービスの実行</string>
+    <string name="permlab_foregroundServiceMediaProcessing">タイプが「mediaProcessing」のフォアグラウンド サービスの実行</string>
     <string name="permlab_foregroundServiceMediaProjection">タイプが「mediaProjection」のフォアグラウンド サービスの実行</string>
     <string name="permlab_foregroundServiceMicrophone">タイプが「microphone」のフォアグラウンド サービスの実行</string>
     <string name="permlab_foregroundServicePhoneCall">タイプが「phoneCall」のフォアグラウンド サービスの実行</string>
@@ -2371,6 +2374,7 @@
     <string name="permlab_mount_unmount_filesystems">SDカードのファイルシステムへのアクセス</string>
     <string name="permlab_nearby_wifi_devices">付近の Wi-Fi デバイスとの通信</string>
     <string name="permlab_nfc">NFCの管理</string>
+    <string name="permlab_nfcTransactionEvent">セキュア エレメントのトランザクション イベント</string>
     <string name="permlab_observeCompanionDevicePresence">コンパニオン デバイスの存在の確認</string>
     <string name="permlab_persistentActivity">アプリの常時実行</string>
     <string name="permlab_postNotification">通知を表示</string>
@@ -2443,15 +2447,16 @@
     <string name="permlab_uwb_ranging">付近の Ultra Wideband デバイス間の相対位置の特定</string>
     <string name="permlab_vibrate">バイブレーションの制御</string>
     <string name="permlab_videoWrite">動画コレクションの変更</string>
-    <string name="permlab_wakeLock">タブレットのスリープを無効化</string>
+    <string name="permlab_wakeLock">デバイスのスリープを無効にする</string>
     <string name="permlab_writeCalendar">カレンダーの予定の変更や追加を行う、所有者に通知せずにゲストにメールを送信する場合がある</string>
     <string name="permlab_writeCallLog">通話履歴の書き込み</string>
     <string name="permlab_writeContacts">連絡先の変更</string>
     <string name="permlab_writeSettings">システム設定の変更</string>
     <string name="permlab_writeSyncSettings">同期のON/OFFの切り替え</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">他のアプリが所有する E2EE Contact Key の確認ステータスの更新</string>
     <string name="perms_description_app">%1$sで提供されます。</string>
     <string name="perms_new_perm_prefix">&lt;font fgcolor=#ff33b5e5 size=12>NEW: &lt;/font></string>
-    <string name="personal_apps_suspended_turn_profile_on">ON</string>
+    <string name="personal_apps_suspended_turn_profile_on">ON にする</string>
     <string name="personal_apps_suspension_soon_text">個人用アプリは、%1$s %2$s にブロックされます。仕事用プロファイルを %3$d 日を超えて OFF にすることは、IT 管理者から許可されていません。</string>
     <string name="personal_apps_suspension_text">個人用アプリは、仕事用プロファイルを ON にしない限りブロックされます</string>
     <string name="personal_apps_suspension_title">仕事用プロファイルを ON にする</string>
@@ -2485,7 +2490,7 @@
     <string name="policydesc_allow_desktopsync">デスクトップ同期を使用不可にします。</string>
     <string name="policydesc_allow_internetsharing">Wi-Fiテザリングの使用を制限します。</string>
     <string name="policydesc_allow_irda">IrDAを使用不可にします。</string>
-    <string name="policydesc_allow_popimapemail">タブレットのPOPおよびIMAP Eメールの使用を制限します。</string>
+    <string name="policydesc_allow_popimapemail">端末のPOPおよびIMAP Eメールの使用を制限します。</string>
     <string name="policydesc_allow_storagecard">外部SDカードの使用を制限します。</string>
     <string name="policydesc_allow_textmessaging">テキストおよびマルチメディアメッセージの使用を制限します。</string>
     <string name="policydesc_allow_thirdParty">このアプリケーションは、サードパーティー製のアプリケーションの実行を制限することができます。</string>
@@ -2503,10 +2508,10 @@
     <string name="policydesc_setGlobalProxy">ポリシーが有効になっている場合はデバイスのグローバルプロキシが使用されるように設定します。グローバルプロキシを設定できるのはデバイスの所有者だけです。</string>
     <string name="policydesc_unsigned_app">このアプリケーションは、提供元が不明なアプリケーションの実行を制限することができます。</string>
     <string name="policydesc_unsigned_pkg">このアプリケーションは、提供元が不明なアプリケーションのインストールを制限することができます。</string>
-    <string name="policydesc_watchLogin">画面のロック解除に正しくないパスワードを入力した回数を監視し、回数が多すぎる場合はタブレットをロックするかタブレットのデータをすべて消去します。</string>
-    <string name="policydesc_watchLogin_secondaryUser">画面のロック解除の際に入力したパスワードが間違っていた回数を監視し、回数が多すぎる場合はタブレットをロックするかこのユーザーのデータをすべて消去します。</string>
-    <string name="policydesc_wipeData">警告せずにタブレットを初期化して内部のデータを消去します。</string>
-    <string name="policydesc_wipeData_secondaryUser">このタブレットのこのユーザーのデータを警告なく消去します。</string>
+    <string name="policydesc_watchLogin">画面のロック解除に失敗した回数を監視し、多すぎる場合はモバイルデバイスをロックするかモバイルデバイスのデータをすべて消去します。</string>
+    <string name="policydesc_watchLogin_secondaryUser">画面のロック解除に失敗した回数を監視し、多すぎる場合はスマートフォンをロックするかこのユーザーのデータをすべて消去します。</string>
+    <string name="policydesc_wipeData">警告せずにデバイスを初期化して内部のデータを消去します。</string>
+    <string name="policydesc_wipeData_secondaryUser">このスマートフォンのこのユーザーのデータを警告なく消去します。</string>
     <string name="policylab_allow_bluetoothmode">Bluetooth使用不可</string>
     <string name="policylab_allow_browser">インターネット使用不可</string>
     <string name="policylab_allow_camera">カメラ使用不可</string>
@@ -2540,7 +2545,7 @@
     <string name="postalTypeHome">自宅</string>
     <string name="postalTypeOther">その他</string>
     <string name="postalTypeWork">勤務先</string>
-    <string name="power_dialog">タブレットオプション</string>
+    <string name="power_dialog">携帯電話オプション</string>
     <string name="power_off">電源を切る</string>
     <string name="prepend_shortcut_label">MENU+</string>
     <string name="preposition_for_date">%s</string>
@@ -2552,6 +2557,8 @@
     <string name="print_service_installed_title">「%s」サービスがインストールされました</string>
     <string name="printing_disabled_by">「%s」により印刷は無効にされています。</string>
     <string name="private_dns_broken_detailed">プライベート DNS サーバーにアクセスできません</string>
+    <string name="private_profile_label_badge">プライベートの%1$s</string>
+    <string name="private_space_set_up_screen_lock_message">プライベート スペースには画面ロックの設定が必要です</string>
     <string name="profile_encrypted_detail">仕事用プロファイル: ロック</string>
     <string name="profile_encrypted_detail_workspace_premium">%sはロックされています</string>
     <string name="profile_encrypted_detail_workspace_prime">業務用プロファイルはロック中</string>
@@ -2561,6 +2568,13 @@
     <string name="profile_encrypted_message_workspace_prime">業務用アプリに関する通知を受信するには、業務用プロファイルのロックを解除してください。</string>
     <string name="profile_encrypted_title">一部の機能が制限されることがあります</string>
     <string name="profile_encrypted_title_secure_folder">セキュリティフォルダをロックしました。</string>
+    <string name="profile_label_clone">複製</string>
+    <string name="profile_label_communal">共用</string>
+    <string name="profile_label_private">非公開</string>
+    <string name="profile_label_test">テスト</string>
+    <string name="profile_label_work">仕事用</string>
+    <string name="profile_label_work_2">仕事用 2</string>
+    <string name="profile_label_work_3">仕事用 3</string>
     <string name="profile_restarting_message_premium">%1$sがロックされている間、業務用アプリの通知は一切表示されません。%2$sのロックを解除するには、ここをタップしてください。</string>
     <string name="profile_restarting_message_prime">業務用プロファイルがロックされている間、業務用アプリの通知は一切表示されません。業務用プロファイルのロックを解除するには、ここをタップしてください。</string>
     <string name="profile_restarting_title_premium">%sはロック中</string>
@@ -2586,9 +2600,11 @@
     <string name="recent_tasks_title">新着</string>
     <string name="recording_fail">%2$sでマイクを使用中のため、%1$sで使用することはできません。</string>
     <string name="recording_popup">%sがマイクを使用しています。</string>
-    <string name="recording_popup_device">タブレット</string>
+    <string name="recording_popup_device">端末</string>
     <string name="recording_popup_with_bluetooth">%sがBluetoothマイクを使用しています。</string>
     <string name="recording_popup_with_device">%1$sが%2$sのマイクを使用しています。</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">プライベートな通知内容は表示されません</string>
     <string name="redo">やり直す</string>
     <string name="reduce_bright_colors_feature_name">明るさをさらに下げる</string>
     <string name="region_picker_section_all">すべての地域</string>
@@ -2719,6 +2735,29 @@
     <string name="samsung_global_action_restart">再起動</string>
     <string name="samsung_keyboard_settings">Samsungキーボード設定</string>
     <string name="sanitized_content_text_sf">通知内容は非表示</string>
+    <string name="satellite_notification_how_it_works">仕組み</string>
+    <string name="satellite_notification_manual_summary">モバイル ネットワークや Wi-Fi ネットワークがなくてもメッセージを送受信できます</string>
+    <string name="satellite_notification_manual_title">衛星通信メッセージを使用しますか？</string>
+    <string name="satellite_notification_open_message">メッセージ アプリを開く</string>
+    <string name="satellite_notification_summary">モバイル ネットワークや Wi-Fi ネットワークを使わずにメッセージを送受信できます</string>
+    <string name="satellite_notification_title">衛星に自動接続しました</string>
+    <string name="scCellularNetworkSecuritySummary">暗号化、暗号化されていないネットワークに関する通知</string>
+    <string name="scCellularNetworkSecurityTitle">モバイル ネットワーク セキュリティ</string>
+    <string name="scIdentifierDisclosureIssueSummary">"%1$s、%2$s の SIM の使用中に付近のネットワークでお使いのデバイスの一意の ID（IMSI または IMEI）が記録されました。
+
+つまり、あなたの位置情報、アクティビティ、身元などが記録されことになります。これはよくある事象ですが、プライバシーに不安を持たれている人にとっては問題になる可能性があります。"</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">%1$s、%2$s の SIM の使用中に付近のネットワークでお使いのデバイスの一意の ID（IMSI または IMEI）が記録されました</string>
+    <string name="scIdentifierDisclosureIssueTitle">デバイス ID へのアクセスが発生しました</string>
+    <string name="scNullCipherIssueActionGotIt">OK</string>
+    <string name="scNullCipherIssueActionLearnMore">詳細</string>
+    <string name="scNullCipherIssueActionSettings">モバイル ネットワーク セキュリティの設定</string>
+    <string name="scNullCipherIssueEncryptedSummary">%1$s の SIM 接続のセキュリティが強化されました</string>
+    <string name="scNullCipherIssueEncryptedTitle">暗号化されたネットワーク（%1$s）に接続しました</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"現在、通話、メッセージ、データは、%1$s の SIM の使用中に脆弱性が高くなっています。
+
+接続が再び暗号化されましたら、改めてお知らせします。"</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">現在、通話、メッセージ、データは、%1$s の SIM の使用中に脆弱性が高くなっています</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">接続先のネットワークが暗号化されていません</string>
     <string name="scan_text">テキストを抽出</string>
     <string name="screen_compat_mode_hint">[システム設定]>[アプリ]>[ダウンロード済み]で再度有効にします。</string>
     <string name="screen_compat_mode_scale">スケール</string>
@@ -2729,16 +2768,17 @@
     <string name="screen_lock">画面をロック</string>
     <string name="screen_lock_app_setting_name">画面ロックの使用</string>
     <string name="screen_lock_dialog_default_subtitle">続行するには画面ロックを入力してください</string>
+    <string name="screen_not_shared_sensitive_content">セキュリティ上、画面共有ではアプリの内容は非表示となります</string>
     <string name="screencapture_restrict">画面キャプチャの使用は、セキュリティポリシーによって制限されています。</string>
     <string name="screenshot_edit">編集</string>
     <string name="sd_card_unavailable_message">外部SDカードは別のユーザープロファイルで使用中に挿入されたため、使用できません。</string>
     <string name="sd_card_unavailable_title">外部SDカードの使用不可</string>
-    <string name="sdcard_bad_removal_message">外部SDカードが安全でない方法で取り外されました。タブレットが予期せず再起動しないように、未保存のデータを保存して今すぐ再起動してください。</string>
+    <string name="sdcard_bad_removal_message">外部SDカードが安全でない方法で取り外されました。端末が予期せず再起動しないように、未保存のデータを保存して今すぐ再起動してください。</string>
     <string name="sdcard_batch_decrypt_noti_content">外部SDカードを復号化します。</string>
     <string name="sdcard_batch_decrypt_noti_title">外部SDｶｰﾄﾞ復号</string>
     <string name="sdcard_batch_decrypt_popup_content">暗号化された外部SDカードは使用前に復号化する必要があります。復号化には1時間以上かかります。バッテリーを充電した状態で開始し、復号化が完了するまで端末を充電したままにしてください。復号化を中断すると、一部または全てのデータが失われる可能性があります。</string>
     <string name="sdcard_decrypt_err_notification">外部SDカードの復号エラーが発生しました。</string>
-    <string name="sdcard_decrypt_error_otherdevice">外部SDカードの一部のファイルは別のデバイスで暗号化されており、このタブレットでは使用できません。</string>
+    <string name="sdcard_decrypt_error_otherdevice">外部SDカードの一部のファイルは別のデバイスで暗号化されており、この端末では使用できません。</string>
     <string name="sdcard_decrypt_notification">外部SDカードを復号しました。</string>
     <string name="sdcard_decrypt_title_notification">外部SDｶｰﾄﾞ復号</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">外部SDｶｰﾄﾞ復号中…</string>
@@ -2762,14 +2802,6 @@
     <string name="searchview_description_submit">検索キーワードを送信</string>
     <string name="searchview_description_voice">音声検索</string>
     <string name="sec_bluetooth_airplane_mode_toast">機内モードでは、BluetoothはONのままになります。</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">このアプリは全画面を使用しています。ナビゲーションのスワイプジェスチャーはステータスバーに表示されます。ナビゲーションの操作をするには、ステータスバーが表示されている間に、再度スワイプしてください。</string>
-    <string name="sec_immersive_cling_guide_text_phone">"このアプリは全画面を使用しています。不要な表示を最小限に抑え、アプリを誤って終了しないように、ホームボタン、戻るボタン、履歴ボタンは非表示になります。
-
-端末を回転させても、ボタンの位置は必ず充電ポート側になります。矢印で示すように画面の端から内側にスワイプすると、ボタンを再度表示できます。"</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"このアプリは全画面を使用しています。不要な表示を最小限に抑え、アプリを誤って終了しないように、ホームボタン、戻るボタン、履歴ボタンは非表示になります。
-
-ボタンを再度表示するには、矢印で示すように画面の下部から上にスワイプします。"</string>
     <string name="sec_monotype_default">標準</string>
     <string name="sec_ringtone_category_brand_sound">Samsungブランドサウンド</string>
     <string name="sec_ringtone_category_calm">穏やか</string>
@@ -2779,6 +2811,10 @@
     <string name="sec_ringtone_category_open_theme">現在のテーマの初期設定</string>
     <string name="sec_ringtone_category_retro">レトロ</string>
     <string name="sec_ringtone_silent">サイレント</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">キャンセル</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">衛星に接続するには、通信事業者を[自動選択]に設定する必要があります。</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">ON</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">自動ネットワーク選択をONにしますか？</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">音声入力するには、[マイクへのアクセス]をONにしてください。</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">%sを使用するには、[カメラへのアクセス]をONにしてください。</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">%sを使用するには、[マイクへのアクセス]をONにしてください。</string>
@@ -2886,6 +2922,8 @@
     <string name="sem_face_error_already_in_use_by_VT">ビデオコール中は、顔認証を使用できません。</string>
     <string name="sem_face_error_camera_access_off">カメラへのアクセスがOFFになっているため、顔認証を使用できません</string>
     <string name="sem_face_error_camera_fail">カメラを起動できませんでした。再度実行してください。</string>
+    <string name="sem_face_error_lockout">何度も失敗したため、生体認証を利用できなくなりました。</string>
+    <string name="sem_face_error_lockout_permanent">何度も失敗したため、生体認証を利用できなくなりました。</string>
     <string name="sem_face_error_ppp_timeout">前回ユーザー認証を行ってから、しばらく経っています。顔を登録するには、再度ユーザー認証を行う必要があります。</string>
     <string name="sem_face_error_too_dark">暗すぎるため、顔を検出できません</string>
     <string name="sem_face_error_too_dark_to_enroll">暗すぎます。照明を点けるか、明るい場所に移動してください。</string>
@@ -2901,13 +2939,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">指紋をスキャンするには、Sペンの先端を画面から離してください。</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">指紋認証を使用するには、まず安全な画面ロックの種類(パターン、PIN、またはパスワード)を設定してください。</string>
+    <string name="sem_fingerprint_error_lockout">何度も失敗したため、生体認証を利用できなくなりました。</string>
+    <string name="sem_fingerprint_error_lockout_permanent">何度も失敗したため、生体認証を利用できなくなりました。</string>
     <string name="sem_fingerprint_error_onehand_mode">片手モードでは、指紋認証を使用できません。</string>
     <string name="sem_fingerprint_error_smart_view">%sを使用中は、指紋をスキャンできません。</string>
+    <string name="sem_fingerprint_error_system_failure">指紋センサーが応答していません。後ほどお試しください。この問題が解決しない場合は、端末を再起動してください。</string>
+    <string name="sem_fingerprint_error_template_corrupt">指紋データが破損しています。再度指紋を追加してください。</string>
     <string name="sem_fingerprint_error_wireless_charger">指紋認証を使用するには、ワイヤレス充電器から離してください</string>
     <string name="sem_fingerprint_name_template">指紋%d</string>
     <string name="sem_fingerprint_register_dialog_button_later">後で</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">今はしない</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">削除して再登録</string>
+    <string name="sem_fingerprint_register_dialog_message">最新のソフトウェア更新で指紋認証の機能が向上しました。指紋を削除して再度登録するまで指紋認証は使用できなくなります。</string>
     <string name="sem_fingerprint_register_dialog_title">再度指紋を登録</string>
     <string name="sem_fingerprint_result_failed">一致するものがありません。</string>
     <string name="sem_fingerprint_result_retry">再度実行してください。</string>
@@ -2927,7 +2970,7 @@
     <string name="sem_resolver_button_always_accessibility">常に選択したアプリを使用</string>
     <string name="sem_resolver_button_just_once_accessibility">今回のみ選択したアプリを使用</string>
     <string name="sem_resolver_choose_what_to_do">実行する操作を選択</string>
-    <string name="sem_resolver_go_to_settings_tips_description">標準アプリ設定を変更するには、[設定] > [アプリ] > [標準アプリを選択]に移動してください。</string>
+    <string name="sem_resolver_go_to_settings_tips_description">この種類のファイルを開くために使用する標準アプリを変更するには、[設定] > [アプリ]に移動して現在の標準アプリを選択し、[標準に設定] > [標準アプリとしての設定を解除]をタップしてください。</string>
     <string name="sem_resolver_icon_content_description">情報</string>
     <string name="sem_resolver_personal_tab_accessibility">個人用</string>
     <string name="sem_resolver_share_live_default_text">近くのユーザーと素早く共有できます。デバイスを公開しているユーザーがここに表示されます。</string>
@@ -2943,9 +2986,9 @@
     <string name="sending">送信中...</string>
     <string name="sensor_notification_service">センサー通知サービス</string>
     <string name="sensor_privacy_notification_channel_label">センサー プライバシー</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">全てのアプリで[カメラへのアクセス]をOFF</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">ON</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">全てのアプリで[マイクへのアクセス]をOFF</string>
+    <string name="sensor_privacy_start_use_camera_notification_content_title">デバイスのカメラのブロックを解除してください</string>
+    <string name="sensor_privacy_start_use_dialog_turn_on_button">ブロックを解除</string>
+    <string name="sensor_privacy_start_use_mic_notification_content_title">デバイスのマイクのブロックを解除してください</string>
     <string name="sensor_privacy_start_use_notification_content_text"><b>%s</b> とすべてのアプリ、サービス</string>
     <string name="serial_number">シリアル番号:</string>
     <string name="serviceClassData">データ</string>
@@ -2970,6 +3013,9 @@
     <string name="serviceRegistered">登録されました。</string>
     <string name="serviceisDisabled">サービスは無効です。</string>
     <string name="serviceisEnabled">サービスは有効です。</string>
+    <string name="set_up_screen_lock_action_label">画面ロックを設定</string>
+    <string name="set_up_screen_lock_title">画面ロックの設定</string>
+    <string name="settings">設定</string>
     <string name="sf_quick_switch_not_supported">クイック切り替えは、この状況には対応していません。</string>
     <string name="sf_quick_switch_securefolder_view">%sに切り替えました。</string>
     <string name="sha1_fingerprint">SHA-1指紋:</string>
@@ -2993,12 +3039,14 @@
     <string name="show_ime">物理キーボードが有効になっていても画面に表示させます</string>
     <string name="show_keyboard_button">キーボードボタンを表示</string>
     <string name="show_keyboard_button_description">ﾅﾋﾞｹﾞｰｼｮﾝﾊﾞｰに%sを表示します。</string>
+    <string name="showing_esc_dialog">Escキーを戻るボタンとして動作するように設定することができます。</string>
     <string name="showing_touch_sensitivity_noti_action">ON</string>
     <string name="showing_touch_sensitivity_noti_text">Privacy ScreenまたはNote Paper Screenをご使用の際は、[タッチ感度]をONにするとタッチの反応がより正確になります。</string>
     <string name="showing_touch_sensitivity_noti_title">高感度タッチ操作</string>
-    <string name="shutdown_confirm">タブレットの電源をOFFにします。</string>
+    <string name="shutdown_confirm">携帯電話の電源を切ります。</string>
     <string name="shutdown_confirm_question">シャットダウンしますか？</string>
     <string name="shutdown_progress">シャットダウン中...</string>
+    <string name="side_key_double_press_archived_app">アプリがアーカイブされています。別のアプリを選択してください。</string>
     <string name="side_key_double_press_deleted_app">アプリがアンインストールされています。別のアプリを選択してください。</string>
     <string name="side_key_double_press_disabled_app">%sが無効になっています。別のアプリを選択してください。</string>
     <string name="signature_identity_toast">%sの署名者</string>
@@ -3011,18 +3059,20 @@
     <string name="sim_added_message">モバイルネットワークにアクセスするにはデバイスを再起動してください。</string>
     <string name="sim_added_title">SIM を追加しました</string>
     <string name="sim_check_old_sim_message">古いSIMカードや破損しているSIMカードを使用すると、ネットワーク接続に問題を引き起こす可能性があります。サービスプロバイダに問い合わせるか、いずれかの店舗にお越しいただいて、交換する必要があるかどうかを確認してください。</string>
+    <string name="sim_check_old_sim_message_skt">古いSIMカードや破損しているSIMカードを使用すると、ネットワーク接続に問題を引き起こす可能性があります。サービスプロバイダに問い合わせるか、店舗にお越しいただいて、SIMを交換する必要があるかどうかを確認してください。</string>
     <string name="sim_check_old_sim_title">SIMの交換が必要な可能性あり</string>
+    <string name="sim_check_old_sim_title_skt">SIMの交換が必要な可能性あり</string>
     <string name="sim_count_mismatched_ds_to_ss">SIMカードモードをデュアルSIMからシングルSIMに切り替えました。この設定を適用するために、端末を工場出荷時の状態にリセットして再起動します。</string>
     <string name="sim_count_mismatched_ss_to_ds">SIMカードモードをシングルSIMからデュアルSIMに切り替えました。この設定を適用するために、端末を工場出荷時の状態にリセットして再起動します。</string>
     <string name="sim_count_mismatched_title">SIMカードモードを切り替え</string>
     <string name="sim_done_button">完了</string>
-    <string name="sim_imsreg_error_message_lgt">端末でSIMカードを認識できないため、音声通話を発信できません。SIMカードを一度取り外してから、再度挿入してください。問題が解決しない場合、SIMカードを交換する必要がある場合があります。詳細については、LG U+ストアにお越しいただくか、LG U+カスタマーサービス(1544-0010)にお問い合わせください。</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">タブレットでSIMカードを認識できないため、音声通話を発信できません。SIMカードを一度取り外してから、再度挿入してください。問題が解決しない場合、SIMカードを交換する必要がある場合があります。詳細については、LG U+ストアにお越しいただくか、LG U+カスタマーサービス(1544-0010)にお問い合わせください。</string>
+    <string name="sim_imsreg_error_message_lgt">端末でSIMカードを認識できないため、音声通話を発信できません。SIMカードを一度取り外してから、再度挿入してください。問題が解決しない場合、LG U+ストアでSIMカードを交換する必要がある場合があります。</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">タブレットでSIMカードを認識できないため、音声通話を発信できません。SIMカードを一度取り外してから、再度挿入してください。問題が解決しない場合、LG U+ストアでSIMカードを交換する必要がある場合があります。</string>
     <string name="sim_off_noti_message">全てのSIMをOFFにすると、電話を発信したり、メッセージを送信したり、データを使用したりすることができなくなります。SIMをONにするには、ここをタップしてください。</string>
     <string name="sim_off_noti_title">全てのSIMがOFF</string>
     <string name="sim_off_toast_message">挿入したSIMはOFFになっています。このSIMを使用するには、[設定] > [接続] > [SIMマネージャー]に移動してから、ONにしてください。</string>
     <string name="sim_recognize_error_message_kt">SIMカードを認識できませんでした。SIMカードを一度取り外してから、再度挿入してください。問題が解決しない場合、SIMカードを交換する必要がある場合があります。詳細については、KTストアにお越しいただくか、KTカスタマーサービス(1588-0010)にお問い合わせください。</string>
-    <string name="sim_recognize_error_message_lgt">SIMカードを認識できませんでした。SIMカードを一度取り外してから、再度挿入してください。問題が解決しない場合、SIMカードを交換する必要がある場合があります。詳細については、LG U+ストアにお越しいただくか、LG U+カスタマーサービス(1544-0010)にお問い合わせください。</string>
+    <string name="sim_recognize_error_message_lgt">SIMカードを認識できませんでした。SIMカードを一度取り外してから、再度挿入してください。問題が解決しない場合、LG U+ストアでSIMカードを交換する必要がある場合があります。</string>
     <string name="sim_recognize_error_message_skt">SIMカードを読み取れません。一部のアプリおよび機能が動作していない可能性があります。一度SIMカードを取り外して再度挿入してから、端末を再起動してください。それでも問題が解決しない場合は、端末とSIMカードをカスタマーサービスにお持ちください。</string>
     <string name="sim_recognize_error_message_skt_tablet">SIMカードを読み取れません。一部のアプリおよび機能が動作していない可能性があります。一度SIMカードを取り外して再度挿入してから、タブレットを再起動してください。それでも問題が解決しない場合は、タブレットとSIMカードをカスタマーサービスにお持ちください。</string>
     <string name="sim_recognize_error_title_lgt">USIMカードの認識不可</string>
@@ -3042,6 +3092,7 @@
     <string name="skip_button_label">スキップ</string>
     <string name="slice_more_content">他 %1$d 件</string>
     <string name="slices_permission_request">「%1$s」が「%2$s」のスライスの表示をリクエストしています</string>
+    <string name="smart_tip_action_click_hint_text">閉じる</string>
     <string name="smartclip_restrict">イージークリップの使用は、セキュリティポリシーによって制限されています。</string>
     <string name="sms_control_message"><b>%1$s</b>が大量のSMSメッセージを送信しています。このアプリにこのままメッセージの送信を許可しますか？</string>
     <string name="sms_control_no">許可しない</string>
@@ -3055,9 +3106,7 @@
     <string name="sms_short_code_confirm_never_allow">許可しない</string>
     <string name="sms_short_code_details">モバイルアカウントへの<b>請求が発生する可能性</b>があります。</string>
     <string name="sms_short_code_remember_choice">この選択を保存</string>
-    <string name="sms_short_code_remember_undo_instruction">[設定] > [アプリ]に移動すると、後でこの設定を変更できます。</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">この設定は、後で[設定] > [アプリ]に移動して他のオプションボタンをタップし、[特別なアクセス] > [プレミアムテキストメッセージサービスを使用]に移動して変更することができます。</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">[許可しない]をタップすると、このアプリに[テキストメッセージの送信]権限が許可されていても、バックグラウンドでメッセージを送信することができなくなります。</string>
+    <string name="sms_short_code_remember_undo_instruction">これは後から[設定] > [アプリ]で変更できます。</string>
     <string name="smv_application">アプリ「%1$s」（プロセス「%2$s」）でStrictModeポリシー違反がありました。</string>
     <string name="smv_process">プロセス%1$sでStrictModeポリシー違反がありました。</string>
     <string name="splash_screen_view_branding_description">アプリのブランド イメージ</string>
@@ -3142,7 +3191,6 @@
     <string name="time_picker_radial_mode_description">時刻を時計で入力するモードに切り替えます。</string>
     <string name="time_picker_text_input_mode_description">時刻をテキストで入力するモードに切り替えます。</string>
     <string name="title_dialog_check_rotate_or_not">画面の自動回転をOFFにしますか？</string>
-    <string name="title_uds">ウルトラデータ節約モード</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">端末の設定中は、Bixbyを使用できません。</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">タブレットの設定中は、Bixbyを使用できません。</string>
     <string name="toast_warning_pattern_lock">ユニバーサルスイッチではパターンロックを使用できません。まず別のロックの種類に変更してください。</string>
@@ -3172,6 +3220,7 @@
     <string name="ucm_smartcard_is_encrypting_phone">スマートカードで端末を暗号化中…</string>
     <string name="ui_translation_accessibility_translated_text">%1$s に翻訳しました。</string>
     <string name="ui_translation_accessibility_translation_finished">メッセージを%1$sから%2$sに翻訳しました。</string>
+    <string name="unarchival_session_app_label">保留中...</string>
     <string name="undo">戻す</string>
     <string name="unknown_install_activity_warning_title">悪意のあるアプリの疑いあり</string>
     <string name="unknown_install_blocked_dlg_desc">このアプリは悪意のある可能性があるため、インストールできません。</string>
@@ -3191,9 +3240,13 @@
     <string name="unknown_install_blocked_esm_title">不明なアプリをブロック</string>
     <string name="unknown_install_dlg_desc">このアプリは、承認されたストアからダウンロードされていません。このアプリをインストールすると、セキュリティおよびプライバシーが危険にさらされる可能性があります。このアプリによって個人情報が収集されたり、データが失われたりする可能性があります。</string>
     <string name="unknown_install_dlg_desc2">このアプリは、最新のセキュリティ機能には対応していません。このアプリをインストールすると、以下のようなセキュリティリスクが発生する可能性があります。</string>
+    <string name="unknown_install_dlg_desc_global_phone">このアプリのインストールファイルは安全でない可能性があります。これは、アプリが主張しているものとは異なるアプリである可能性があります。端末と個人データを保護するため、代わりに信頼できるアプリストアからアプリをインストールしてください。</string>
+    <string name="unknown_install_dlg_desc_global_tablet">このアプリのインストールファイルは安全でない可能性があります。これは、アプリが主張しているものとは異なるアプリである可能性があります。タブレットと個人データを保護するため、代わりに信頼できるアプリストアからアプリをインストールしてください。</string>
     <string name="unknown_install_dlg_desc_phishing_phone">このアプリは悪意のある可能性があり、端末やデータが危険にさらされる恐れがあります。このアプリをインストールすることは、おすすめしません。</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">このアプリは悪意のある可能性があり、タブレットやデータが危険にさらされる恐れがあります。このアプリをインストールすることは、おすすめしません。</string>
-    <string name="unknown_install_dlg_general_title">このアプリは提供元が不明</string>
+    <string name="unknown_install_dlg_desc_phone">このアプリは公認のアプリストアから入手したものではありません。端末と個人情報を保護するには、PlayストアやGalaxy Storeなどの公認のストアからアプリをインストールしてください。</string>
+    <string name="unknown_install_dlg_desc_tablet">このアプリは公認のアプリストアから入手したものではありません。タブレットと個人情報を保護するには、PlayストアやGalaxy Storeなどの公認のストアからアプリをインストールしてください。</string>
+    <string name="unknown_install_dlg_general_title">このアプリのインストールは非推奨</string>
     <string name="unknown_install_dlg_negative_button">インストールしない</string>
     <string name="unknown_install_dlg_perm_desc1">このアプリは、受信したテキストメッセージから認証コードを傍受する可能性があります。</string>
     <string name="unknown_install_dlg_perm_desc2">電話を発信すると、知らない間に別の電話番号に転送される可能性があります。</string>
@@ -3223,7 +3276,7 @@
     <string name="usb_abnormal_reset_title">USB接続が不安定</string>
     <string name="usb_abnormal_reset_toast">USB接続が不安定です。ケーブルを一度取り外してから再度接続するか、別のケーブルをお試しください。</string>
     <string name="usb_accessory_notification_title">USBアクセサリに接続</string>
-    <string name="usb_bad_removal_message">USBストレージデバイスが安全でない方法で取り外されました。タブレットが予期せず再起動しないように、未保存のデータを保存して今すぐ再起動してください。</string>
+    <string name="usb_bad_removal_message">USBストレージデバイスが安全でない方法で取り外されました。端末が予期せず再起動しないように、未保存のデータを保存して今すぐ再起動してください。</string>
     <string name="usb_blocked_by_emergency_mode">一部のUSB機能は、緊急時長持ちモードでは使用できません。</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">最大省電力モードが有効な間は、接続されたUSBデバイスに関連する機能は使用できません。</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">最大省電力モードがONの間は、一部のUSB機能が制限されます。</string>
@@ -3233,7 +3286,9 @@
     <string name="usb_camera_disconnected_notification_title">メディアデバイスの接続解除済み</string>
     <string name="usb_cd_installer_notification_title">ソフトウェア更新</string>
     <string name="usb_charging_notification_title">このデバイスを USB で充電中</string>
-    <string name="usb_charing_only_notification_title">接続済み</string>
+    <string name="usb_charing_only_notification_title">USB充電</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">自動ブロッカーは最大制限でONになっています。</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB接続をブロック</string>
     <string name="usb_contaminant_detected_message">USB ポートが自動的に無効になりました。タップして詳細をご確認ください。</string>
     <string name="usb_contaminant_detected_title">USB ポート内の液体やゴミ</string>
     <string name="usb_contaminant_not_detected_message">液体やゴミは検出されなくなりました。</string>
@@ -3245,11 +3300,11 @@
     <string name="usb_host_cable_disconnected_notification_title">デバイスが取り外されました。</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">このデバイスにアクセスできません。接続されたデバイスには、外部からの電源供給が必要です。</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">ハイパワーUSBデバイスが接続されました。</string>
-    <string name="usb_host_resource_exceed_message">タブレットのUSBコントローラーには、このデバイスを接続するための十分なリソースがありません。一度デバイスとの接続を解除してから、再度接続してください。</string>
+    <string name="usb_host_resource_exceed_message">端末のUSBコントローラーには、このデバイスを接続するための十分なリソースがありません。一度デバイスとの接続を解除してから、再度接続してください。</string>
     <string name="usb_host_resource_exceed_title">USBコントローラーのリソースが不足</string>
-    <string name="usb_hub_depth_exceed_message">このタブレットでは、USBハブの接続が同時に最大5つまで可能です。</string>
+    <string name="usb_hub_depth_exceed_message">この端末では、USBハブの接続が同時に最大5つまで可能です。</string>
     <string name="usb_hub_depth_exceed_title">USBハブの最大接続数</string>
-    <string name="usb_hub_power_exceed_message">タブレットはこのUSBデバイスに十分な電源を供給できません。このデバイスをタブレットに接続する前に電源内蔵型のUSBハブに接続してください。</string>
+    <string name="usb_hub_power_exceed_message">端末はこのUSBデバイスに十分な電源を供給できません。このデバイスを端末に接続する前に電源内蔵型のUSBハブに接続してください。</string>
     <string name="usb_increase_battery_usage">USB接続は、バッテリー使用量が増加します。</string>
     <string name="usb_keyboard_connected_notification_title">キーボードが接続されました。</string>
     <string name="usb_keyboard_disconnected_notification_title">キーボードが取り外されました。</string>
@@ -3292,8 +3347,9 @@
     <string name="usb_ums_connected_notification_message_usbhost">USB大容量ストレージが予期せず取り外されました。</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB大容量ストレージが接続されました。</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB大容量ストレージが安全に取り外されました。</string>
-    <string name="usb_unblock_by_screen_unlock">接続したUSBデバイスを使用するには、タブレットのロックを解除してください。</string>
-    <string name="usb_unsupport_accessory_message">このUSBデバイスは、このタブレットに対応していません。</string>
+    <string name="usb_unblock_by_screen_unlock">接続したUSBデバイスを使用するには、端末のロックを解除してください。</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USBデバイスを使用するには、端末のロックを解除してUSBデバイスを再接続してください。</string>
+    <string name="usb_unsupport_accessory_message">このUSBデバイスは、この端末に対応していません。</string>
     <string name="usb_unsupport_accessory_title">未対応のUSBデバイス</string>
     <string name="usb_unsupported_audio_accessory_message">接続したデバイスはこのスマートフォンと互換性がありません。タップすると、詳細を確認できます。</string>
     <string name="usb_unsupported_audio_accessory_title">アナログのオーディオ アクセサリを検出</string>
@@ -3314,19 +3370,19 @@
     <string name="usb_water_dialg_method_2_desc_2">扇風機やドライヤー(冷風のみ)をポートに向けると、より速く乾燥できます。</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"充電/USBポートに水分または異物が検出されました。
 
-充電/USBポートにほこりやごみなどの異物が付着していないか確認してください。タブレットの損傷を防ぐために、充電ポートに汚れや水分がなくなるまで何も挿入しないでください。
+充電/USBポートにほこりやごみなどの異物が付着していないか確認してください。端末の損傷を防ぐために、充電ポートに汚れや水分がなくなるまで何も挿入しないでください。
 
 ポートを乾かすには、水分を取り除き、乾くまでお待ちください。これには数時間かかる場合があります。ポートに扇風機やドライヤー(冷風のみ)を当てると早く乾かすことができます。"</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"充電/USBポートに水分または異物が検出されました。
 
-充電/USBポートにほこりやごみなどの異物が付着していないか確認してください。タブレットの損傷を防ぐために、充電ポートに汚れや水分がなくなるまで何も挿入しないでください。
+充電/USBポートにほこりやごみなどの異物が付着していないか確認してください。端末の損傷を防ぐために、充電ポートに汚れや水分がなくなるまで何も挿入しないでください。
 
 ポートを乾かすには、水分を取り除き、乾くまでお待ちください。これには数時間かかる場合があります。ポートに扇風機やドライヤー(冷風のみ)を当てると早く乾かすことができます。
 
-充電ポートが乾くまでの間、タブレットをワイヤレスで充電することもできます。"</string>
-    <string name="usb_water_notification_content">充電/USBポートに水分または異物があります。充電する前に確認してください。</string>
-    <string name="usb_water_notification_message">充電器/USBポートに水分が検出されました。タブレットを充電する前に、水分をよく拭き取ってください。乾くまで時間がかかる可能性があります。</string>
+充電ポートが乾くまでの間、端末をワイヤレスで充電することもできます。"</string>
+    <string name="usb_water_notification_content">充電/USBポートに水分または異物が検出されました。充電する前に確認してください。</string>
+    <string name="usb_water_notification_message">充電器/USBポートに水分が検出されました。端末を充電する前に、水分をよく拭き取ってください。乾くまで時間がかかる可能性があります。</string>
     <string name="usb_water_notification_message_button">詳細</string>
     <string name="usb_water_notification_title">充電器/USBポートを確認</string>
     <string name="usbhostStorage_restrict">USBホストストレージの使用は、セキュリティポリシーによって制限されています。</string>
@@ -3344,7 +3400,7 @@
     <string name="user_switched">現在のユーザーは%1$sです。</string>
     <string name="user_switching_message">%1$sに切り替えています…</string>
     <string name="validity_period">有効期間:</string>
-    <string name="vdm_camera_access_denied">%1$s からタブレットのカメラにアクセスできません</string>
+    <string name="vdm_camera_access_denied">%1$s からスマートフォンのカメラにアクセスできません</string>
     <string name="vdm_pip_blocked">ストリーミング中はピクチャー イン ピクチャーを表示できません</string>
     <string name="vdm_secure_window">ストリーミング中はアクセスできません。スマートフォンでのアクセスをお試しください。</string>
     <string name="view_and_control_notification_content">%s は画面を参照、操作できます。タップしてご確認ください。</string>
@@ -3369,6 +3425,8 @@
     <string name="vpn_allowOnlySecureConnection">VPNプロファイルが安全ではありません。</string>
     <string name="vpn_error_text">VPNに再接続するにはタップしてください。</string>
     <string name="vpn_error_title">VPN接続エラー</string>
+    <string name="vpn_fail_text_long">%sに接続できませんでした。このVPNを管理するには、タップしてください。</string>
+    <string name="vpn_fail_title">VPNに未接続</string>
     <string name="vpn_lockdown_config">ネットワークまたは VPN の設定を変更できます</string>
     <string name="vpn_lockdown_connected">VPNに常時接続しました</string>
     <string name="vpn_lockdown_connecting">VPNに常時接続しています…</string>
@@ -3495,6 +3553,7 @@
     <string name="wifi_networks_available_detailed">オープンWi-Fiネットワークが利用できます。</string>
     <string name="wifi_no_internet">%1$s はインターネットにアクセスできません</string>
     <string name="wifi_no_internet_detailed">タップしてその他のオプションを表示</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">WLAN接続が低速または不安定であるため、%sはモバイルデータを使用しています。</string>
     <string name="wifi_notification_switch_wifi_detail">Wi-Fiネットワークが不安定なため、端末のネットワーク接続をモバイルデータに切り替えました。</string>
     <string name="wifi_notification_switch_wifi_title">モバイルデータに切り替え</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">緊急通知</string>
@@ -3531,14 +3590,14 @@
     <string name="work_profile_deleted">仕事用プロファイルが削除されました</string>
     <string name="work_profile_deleted_description_dpm_wipe">お使いの仕事用プロファイルはこのデバイスで使用できなくなりました</string>
     <string name="work_profile_deleted_details">仕事用プロファイルの管理アプリがないか、破損しています。そのため仕事用プロファイルと関連データが削除されました。管理者にサポートをご依頼ください。</string>
-    <string name="work_profile_deleted_reason_maximum_password_failure">パスワード入力回数が上限を超えました</string>
+    <string name="work_profile_deleted_reason_maximum_password_failure">パスワード入力回数が上限に達しました</string>
     <string name="work_profile_name">仕事プロファイル</string>
     <string name="work_profile_on_message">これにより、業務用アプリ、通知、データやその他の業務用プロファイル機能にアクセスできるようになります。</string>
     <string name="work_profile_on_title">業務用プロファイルをONにしますか？</string>
     <string name="work_profile_restricted">自動ブロッカーは最大制限でONになっています。セキュリティを保護するため、業務用プロファイルは作成できません。</string>
-    <string name="work_profile_telephony_paused_text">業務用アプリを一時停止しています。業務用アプリでの電話の着信やテキストメッセージの受信ができなくなります。</string>
-    <string name="work_profile_telephony_paused_title">通話およびメッセージがOFF</string>
-    <string name="work_profile_telephony_paused_turn_on_button">業務用プロファイルをONにしますか？</string>
+    <string name="work_profile_telephony_paused_text">仕事用アプリを一時停止しました。電話やテキスト メッセージを受信しなくなります。</string>
+    <string name="work_profile_telephony_paused_title">通話とメッセージ: OFF</string>
+    <string name="work_profile_telephony_paused_turn_on_button">仕事用アプリを停止解除</string>
     <string name="workspace_title">Workspace</string>
     <string name="write_fail_reason_cancelled">キャンセルされました</string>
     <string name="write_fail_reason_cannot_write">コンテンツの書き込み中にエラーが発生しました</string>
@@ -3559,9 +3618,15 @@
     <string name="zen_mode_duration_minutes_summary">{count,plural, =1{1 分間（{formattedTime} まで）}other{# 分間（{formattedTime} まで）}}</string>
     <string name="zen_mode_duration_minutes_summary_short">{count,plural, =1{1 分間（{formattedTime} まで）}other{# 分間（{formattedTime} まで）}}</string>
     <string name="zen_mode_feature_name">サイレント モード</string>
-    <string name="zen_mode_forever">OFFにするまで</string>
+    <string name="zen_mode_forever">自分が OFF にするまで</string>
     <string name="zen_mode_forever_dnd">サイレント モードを OFF にするまで</string>
+    <string name="zen_mode_implicit_activated">ON</string>
+    <string name="zen_mode_implicit_deactivated">OFF</string>
+    <string name="zen_mode_implicit_trigger_description">%1$s によって管理されています</string>
     <string name="zen_mode_rule_name_combination">%1$s/%2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">すべてのカレンダー</string>
+    <string name="zen_mode_trigger_summary_divider_text">"、 "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s～%2$s</string>
     <string name="zen_mode_until">%1$sまで</string>
     <string name="zen_mode_until_next_day">%1$sまで</string>
     <string name="zen_upgrade_notification_content">タップしてブロック対象をご確認ください。</string>

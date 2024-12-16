@@ -64,6 +64,27 @@
         <enum name="micro" value="1" />
         <enum name="normal" value="0" />
     </attr>
+    <attr name="customColorBrandA" format="color" />
+    <attr name="customColorBrandB" format="color" />
+    <attr name="customColorBrandC" format="color" />
+    <attr name="customColorBrandD" format="color" />
+    <attr name="customColorClockHour" format="color" />
+    <attr name="customColorClockMinute" format="color" />
+    <attr name="customColorClockSecond" format="color" />
+    <attr name="customColorOnShadeActive" format="color" />
+    <attr name="customColorOnShadeActiveVariant" format="color" />
+    <attr name="customColorOnShadeInactive" format="color" />
+    <attr name="customColorOnShadeInactiveVariant" format="color" />
+    <attr name="customColorOnThemeApp" format="color" />
+    <attr name="customColorOnThemeAppRing" format="color" />
+    <attr name="customColorOverviewBackground" format="color" />
+    <attr name="customColorShadeActive" format="color" />
+    <attr name="customColorShadeDisabled" format="color" />
+    <attr name="customColorShadeInactive" format="color" />
+    <attr name="customColorThemeApp" format="color" />
+    <attr name="customColorThemeAppRing" format="color" />
+    <attr name="customColorUnderSurface" format="color" />
+    <attr name="customColorWidgetBackground" format="color" />
     <attr name="dayHighlightColor" format="color" />
     <attr name="daySelectorColor" format="color" />
     <attr name="defaultQueryHint" format="string" />
@@ -80,9 +101,11 @@
     <attr name="dreamActivityOpenEnterAnimation" format="reference" />
     <attr name="dreamActivityOpenExitAnimation" format="reference" />
     <attr name="dropdownListPreferredItemHeight" format="dimension" />
+    <attr name="emergencyInstaller" format="string" />
     <attr name="emulated" format="boolean" />
     <attr name="enableControlView" format="boolean" />
     <attr name="enableSubtitle" format="boolean" />
+    <attr name="enlargeVertexEntryArea" format="boolean" />
     <attr name="errorColor" format="reference|color" />
     <attr name="errorMessageAboveBackground" format="reference" />
     <attr name="errorMessageBackground" format="reference" />
@@ -93,7 +116,6 @@
     <attr name="flag" format="reference|string" />
     <attr name="floatingToolbarCloseDrawable" format="reference" />
     <attr name="floatingToolbarDividerColor" format="reference" />
-    <attr name="floatingToolbarForegroundColor" format="reference|color" />
     <attr name="floatingToolbarItemBackgroundBorderlessDrawable" format="reference" />
     <attr name="floatingToolbarItemBackgroundDrawable" format="reference" />
     <attr name="floatingToolbarOpenDrawable" format="reference" />
@@ -136,6 +158,7 @@
     <attr name="interpolatorZ" format="reference" />
     <attr name="itemColor" format="reference|color" />
     <attr name="itemLayout" format="reference" />
+    <attr name="keepDotActivated" format="boolean" />
     <attr name="keyboardViewStyle" format="reference" />
     <attr name="layoutManager" format="string" />
     <attr name="layout_alwaysShow" format="boolean" />
@@ -171,6 +194,7 @@
     <attr name="magnifierZoom" format="float" />
     <attr name="majorWeightMax" format="float" />
     <attr name="majorWeightMin" format="float" />
+    <attr name="materialColorError" format="color" />
     <attr name="materialColorErrorContainer" format="color" />
     <attr name="materialColorOnBackground" format="color" />
     <attr name="materialColorOnError" format="color" />
@@ -315,6 +339,8 @@
     <attr name="pointerIconTopLeftDiagonalDoubleArrow" format="reference" />
     <attr name="pointerIconTopRightDiagonalDoubleArrow" format="reference" />
     <attr name="pointerIconTransparent" format="reference" />
+    <attr name="pointerIconVectorFill" format="color" />
+    <attr name="pointerIconVectorFillInverse" format="color" />
     <attr name="pointerIconVerticalDoubleArrow" format="reference" />
     <attr name="pointerIconVerticalText" format="reference" />
     <attr name="pointerIconWait" format="reference" />
@@ -373,12 +399,16 @@
     <attr name="semCircleProgressDialogTextColor" format="reference|color" />
     <attr name="semCopyAndPastePopupDividerColor" format="reference|color" />
     <attr name="semDialogDividerColor" format="reference|color" />
+    <attr name="semFloatingPopupOverflowButtonTint" format="color" />
     <attr name="semFloatingPopupTextColor" format="reference|color" />
     <attr name="semGoToTopStyle" format="reference" />
     <attr name="semHorizontalProgressDialogTextColor" format="reference|color" />
     <attr name="semProgressActivatedColor" format="reference|color" />
     <attr name="semProgressDialogTextColor" format="reference|color" />
     <attr name="semProgressNormalColor" format="reference|color" />
+    <attr name="semRecoilColor" format="color" />
+    <attr name="semRecoilMask" format="reference" />
+    <attr name="semRecoilRadius" format="dimension" />
     <attr name="semResolverChipButtonBackground" format="reference" />
     <attr name="semSearchViewHintTextColor" format="color" />
     <attr name="semSearchViewIconColor" format="color" />
@@ -402,7 +432,6 @@
     <attr name="state_ux_restricted" format="boolean" />
     <attr name="storageDescription" format="string" />
     <attr name="successColor" format="reference|color" />
-    <attr name="systemUserOnly" format="boolean" />
     <attr name="tabLayout" format="reference" />
     <attr name="textAppearanceAutoCorrectionSuggestion" format="reference" />
     <attr name="textAppearanceEasyCorrectSuggestion" format="reference" />
@@ -431,6 +460,7 @@
     <attr name="twDragBlockImage" format="reference" />
     <attr name="twListMultiSelectBackground" format="boolean" />
     <attr name="unlockProfile" format="boolean" />
+    <attr name="updatableSystem" format="boolean" />
     <attr name="useDisabledAlpha" format="boolean" />
     <attr name="vendorId" format="integer" />
     <attr name="viewType">

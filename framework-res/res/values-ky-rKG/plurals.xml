@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Планшетиңиз туруксуз, себеби анын ичиндеги SD картада орнотулган колдонмолор өчүрүлгөн. Планшетиңиз кадимки абалына кайтуу үчүн %d секунда ичинде кайра жүргүзүлөт. Планшет кайра жүргүзүлгөнгө чейин бардык маалыматтарды сактаңыз.</item>
+        <item quantity="other">Колдонмолор орнотулган SD карта алып салынгандыктан, телефонуңуз туруксуз. Телефонуңуз кадимки абалына кайтуу үчүн %d секундадан кийин кайра күйгүзүлөт. Телефон кайрадан иштетилгенге чейин бардык сакталбаган маалыматтарды сактаңыз.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Планшетиңиз туруксуз, себеби анын ичиндеги SD картада орнотулган колдонмолор өчүрүлгөн. Планшетиңиз кадимки абалына кайтуу үчүн %d секунда ичинде кайра жүргүзүлөт. Планшет кайра жүргүзүлгөнгө чейин бардык маалыматтарды сактаңыз.</item>
+        <item quantity="one">Колдонмолор орнотулган SD карта алып салынгандыктан, телефонуңуз туруксуз. Телефонуңуз кадимки абалына кайтуу үчүн %d секундадан кийин кайра күйгүзүлөт. Телефон кайрадан иштетилгенге чейин бардык сакталбаган маалыматтарды сактаңыз.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Планшет. %d секунд. кийин кайра күйг.</item>
+        <item quantity="other">Тел. %d секунд кийин кайра күйгүзүлөт</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Планшет. %d секунд. кийин кайра күйг.</item>
+        <item quantity="one">Тел. %d секунд кийин кайра күйгүзүлөт</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
@@ -100,14 +100,6 @@
         <item quantity="other">%d нерсе</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">%d нерсе</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">N/A</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">Сиз туташкыңыз келген Wi-Fi тармагы бир учурда %d түзмөккө гана туташтырылат. Башка түзмөктөрдү ошол тармактан ажыратып, кайра аракет кылыңыз.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">Сиз туташкыңыз келген Wi-Fi тармагы бир учурда %d түзмөккө гана туташтырылат. Башка түзмөктөрдү ошол тармактан ажыратып, кайра аракет кылыңыз.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Tablet działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Tablet uruchomi się ponownie za %d sekund, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem tabletu.</item>
+        <item quantity="other">Telefon działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Telefon uruchomi się ponownie ze %d sekund, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem telefonu.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Tablet działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Tablet uruchomi się ponownie za %d sekundę, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem tabletu.</item>
+        <item quantity="one">Telefon działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Telefon uruchomi się ponownie ze %d sekundę, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem telefonu.</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Tablet działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Tablet uruchomi się ponownie za %d sekundy, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem tabletu.</item>
-        <item quantity="many">Tablet działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Tablet uruchomi się ponownie za %d sekund, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem tabletu.</item>
+        <item quantity="few">Telefon działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Telefon uruchomi się ponownie ze %d sekundy, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem telefonu.</item>
+        <item quantity="many">Telefon działa niestabilnie, ponieważ karta pamięci, na której zainstalowano aplikacje, została usunięta. Telefon uruchomi się ponownie ze %d sekund, aby powrócić do normalnego stanu. Zapisz niezapisane dane przed ponownym uruchomieniem telefonu.</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Tablet uruchomi się ponownie za %d s</item>
+        <item quantity="other">Telefon uruchomi się ponownie za %d s</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Tablet uruchomi się ponownie za %d s</item>
+        <item quantity="one">Telefon uruchomi się ponownie za %d s</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Tablet uruchomi się ponownie za %d s</item>
-        <item quantity="many">Tablet uruchomi się ponownie za %d s</item>
+        <item quantity="few">Telefon uruchomi się ponownie za %d s</item>
+        <item quantity="many">Telefon uruchomi się ponownie za %d s</item>
     </plurals>
     <plurals name="app_kills_content_v2_phone">
         <item quantity="other">%d aplikacji zostało zamkniętych automatycznie, ponieważ powodowały przegrzewanie telefonu. Możesz ponownie otworzyć je później po ostygnięciu telefonu.</item>
@@ -107,14 +107,6 @@
         <item quantity="two">N/A</item>
         <item quantity="few">%d elementy</item>
         <item quantity="many">%d elementów</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">Sieć Wi-Fi, z którą chcesz się połączyć, może być połączona tylko z %d urządzenia jednocześnie. Odłącz któreś z urządzeń i spróbuj ponownie.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">Sieć Wi-Fi, z którą chcesz się połączyć, może być połączona tylko z %d urządzeniem jednocześnie. Odłącz któreś z urządzeń i spróbuj ponownie.</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">Sieć Wi-Fi, z którą chcesz się połączyć, może być połączona tylko z %d urządzeniami jednocześnie. Odłącz któreś z urządzeń i spróbuj ponownie.</item>
-        <item quantity="many">Sieć Wi-Fi, z którą chcesz się połączyć, może być połączona tylko z %d urządzeniami jednocześnie. Odłącz któreś z urządzeń i spróbuj ponownie.</item>
     </plurals>
     <plurals name="zen_mode_duration_time_hours">
         <item quantity="other">%d godziny</item>

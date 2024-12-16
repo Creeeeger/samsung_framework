@@ -43,7 +43,7 @@
     <string name="ColrMmi">இணைக்கப்பட்ட லைன் ஐடியை வரம்பிடல்</string>
     <string name="CwMmi">அழைப்பு காத்திருப்பு</string>
     <string name="DndMmi">தொந்தரவு செய்யாதே</string>
-    <string name="EmergencyCallWarningSummary">வைஃபை மூலம் அவசர அழைப்புகளைச் செய்ய முடியாது</string>
+    <string name="EmergencyCallWarningSummary">அவசர அழைப்புகளுக்கு மொபைல் நெட்வொர்க் தேவை</string>
     <string name="EmergencyCallWarningTitle">அவசர அழைப்பைச் செய்ய முடியாது</string>
     <string name="Midnight">நள்ளிரவு</string>
     <string name="NetworkPreferenceSwitchSummary">விருப்ப நெட்வொர்க்கை மாற்றவும். மாற்ற, தட்டவும்.</string>
@@ -169,19 +169,24 @@
     <string name="SetupCallDefault">அழைப்பை ஏற்கவா?</string>
     <string name="ThreeWCMmi">மும்முனை அழைப்பு</string>
     <string name="accept">ஏற்கிறேன்</string>
-    <string name="accessibility_binding_label">அணுகல்தன்மை</string>
+    <string name="accessibility_binding_label">மாற்றுத்திறன் வசதி</string>
     <string name="accessibility_button_instructional_text">அம்சங்களுக்கு இடையே மாற அணுகல்தன்மை பட்டனைத் தொட்டுப் பிடித்திருக்கவும்.</string>
     <string name="accessibility_button_prompt_text">அணுகல்தன்மை பட்டனைத் தட்டுவதன் மூலம் பயன்படுத்த விரும்பும் அம்சத்தைத் தேர்ந்தெடுக்கவும்:</string>
     <string name="accessibility_dialog_button_allow">அனுமதி</string>
     <string name="accessibility_dialog_button_deny">நிராகரி</string>
+    <string name="accessibility_dialog_button_uninstall">நிறுவல் நீக்கும்</string>
+    <string name="accessibility_dialog_touch_filtered_warning">அணுகல் கோரிக்கையை ஓர் ஆப்ஸ் மறைப்பதால் உங்கள் பதிலைச் சரிபார்க்க முடியாது.</string>
     <string name="accessibility_edit_shortcut_menu_button_title">அணுகல்தன்மை பட்டன் மூலம் பயன்படுத்த விரும்பும் அம்சங்களைத் தேர்வுசெய்யுங்கள்</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">ஒலியளவு விசை ஷார்ட்கட் மூலம் பயன்படுத்த விரும்பும் அம்சங்களைத் தேர்வுசெய்யுங்கள்</string>
     <string name="accessibility_enable_service_title">உங்கள் சாதனத்தை முழுமையாகக் கட்டுப்படுத்த %1$s சேவையை அனுமதிக்க வேண்டுமா?</string>
-    <string name="accessibility_freeform_caption">%1$s ஆப்ஸின் தலைப்புப் பட்டி.</string>
     <string name="accessibility_gesture_3finger_instructional_text">அம்சங்களுக்கு இடையே மாற மூன்று விரல்களால் மேல்நோக்கி ஸ்வைப் செய்து பிடித்திருக்கவும்.</string>
     <string name="accessibility_gesture_3finger_prompt_text">அணுகல்தன்மை சைகைக்கான அம்சத்தைத் தேர்வுசெய்யவும் (மூன்று விரல்களால் திரையின் கீழிருந்து மேல் நோக்கி ஸ்வைப் செய்யவும்):</string>
     <string name="accessibility_gesture_instructional_text">அம்சங்களுக்கு இடையே மாற இரண்டு விரல்களால் மேல்நோக்கி ஸ்வைப் செய்து பிடித்திருக்கவும்.</string>
     <string name="accessibility_gesture_prompt_text">அணுகல்தன்மை சைகைக்கான அம்சத்தைத் தேர்வுசெய்யவும் (இரண்டு விரல்களால் திரையின் கீழிருந்து மேல் நோக்கி ஸ்வைப் செய்யவும்):</string>
+    <string name="accessibility_label_clone_profile">குளோன்</string>
+    <string name="accessibility_label_communal_profile">பொது</string>
+    <string name="accessibility_label_managed_profile">பணிக் கணக்கு</string>
+    <string name="accessibility_label_private_profile">ரகசிய இடம்</string>
     <string name="accessibility_magnification_chooser_text">பெரிதாக்கல்</string>
     <string name="accessibility_select_shortcut_menu_title">ஒரு அம்சத்தைப் பயன்படுத்த அதைத் தட்டவும்:</string>
     <string name="accessibility_service_action_perform_description">ஏதேனும் ஆப்ஸ் அல்லது வன்பொருள் சென்சாரின் உதவியுடன் உரையாடல்களைக் கண்காணித்து உங்கள் சார்பாக ஆப்ஸுடன் உரையாட இச்சேவையால் இயலும்.</string>
@@ -267,14 +272,17 @@
     <string name="alert_windows_notification_title">%s பிற ஆப்ஸின் மீது தோன்றுகிறது</string>
     <string name="alert_windows_notification_turn_off_action">ஆஃப் செய்</string>
     <string name="allow">அனுமதி</string>
+    <string name="alternative_face_setup_notification_content">உங்கள் கைரேகையை அடையாளங்காண முடியாதபோது முகம் காட்டித் திறத்தல் அம்சத்தைப் பயன்படுத்தலாம் (உதாரணமாக, உங்கள் விரல்கள் ஈரமாக இருக்கும்போது)</string>
+    <string name="alternative_fp_setup_notification_content">உங்கள் முகத்தை அடையாளங்காண முடியாதபோது கைரேகை அன்லாக் அம்சத்தைப் பயன்படுத்தலாம் (உதாரணமாக, போதுமான வெளிச்சம் இல்லாதபோது)</string>
+    <string name="alternative_unlock_setup_notification_title">அன்லாக் செய்ய வேறொரு வழியை முயன்று பாருங்கள்</string>
     <string name="alwaysUse">இந்தச் செயலுக்கு இயல்பாகப் பயன்படுத்து.</string>
     <string name="android_preparing_apk">%1$sஐத் தயார்செய்கிறது.</string>
-    <string name="android_start_title">டேப்லெட் தொடங்குகிறது…</string>
+    <string name="android_start_title">மொபைல் தொடங்குகிறது…</string>
     <string name="android_system_label">Android அமைப்பு</string>
     <string name="android_upgrading_complete">துவக்குதலை முடிக்கிறது.</string>
     <string name="android_upgrading_notification_title">சிஸ்டம் புதுப்பிப்பை நிறைவுசெய்கிறது…</string>
     <string name="android_upgrading_starting_apps">ஆப்ஸ் தொடங்கப்படுகின்றன.</string>
-    <string name="android_upgrading_title">டேப்லெட் புதுப்பிக்கப்படுகிறது…</string>
+    <string name="android_upgrading_title">மொபைல் புதுப்பிக்கப்படுகிறது…</string>
     <string name="anr_activity_application">%2$s பதிலளிக்கவில்லை</string>
     <string name="anr_activity_process">%1$s பதிலளிக்கவில்லை</string>
     <string name="anr_application_process">%1$s பதிலளிக்கவில்லை</string>
@@ -282,7 +290,7 @@
     <string name="anr_title" />
     <string name="app_blocked_message">%1$s ஆப்ஸ் இப்போது கிடைப்பதில்லை.</string>
     <string name="app_blocked_title">இந்த ஆப்ஸ் இப்போது கிடைப்பதில்லை</string>
-    <string name="app_category_accessibility">அணுகல்தன்மை</string>
+    <string name="app_category_accessibility">மாற்றுத்திறன் வசதி</string>
     <string name="app_category_audio">இசை &amp; ஆடியோ</string>
     <string name="app_category_game">கேம்ஸ்</string>
     <string name="app_category_image">புகைப்படங்களும் படங்களும்</string>
@@ -295,16 +303,17 @@
     <string name="app_not_found">இந்தச் செயலைச் செய்ய ஆப்ஸ் எதுவுமில்லை</string>
     <string name="app_running_notification_text">மேலும் தகவலுக்கு அல்லது ஆப்ஸை நிறுத்த, தட்டவும்.</string>
     <string name="app_running_notification_title">%1$s இயக்குகிறது</string>
-    <string name="app_streaming_blocked_message">தற்போது உங்கள் %1$s சாதனத்தில் இதை அணுக முடியாது. அதற்குப் பதிலாக உங்கள் டேப்லெட்டில் பயன்படுத்திப் பாருங்கள்.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">இந்த ஆப்ஸ் கூடுதல் பாதுகாப்பைக் கோருகிறது. அதற்குப் பதிலாக உங்கள் டேப்லெட்டில் பயன்படுத்திப் பார்க்கவும்.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">உங்கள் %1$s சாதனத்தில் இதை அணுக முடியாது. அதற்குப் பதிலாக உங்கள் டேப்லெட்டில் முயன்று பாருங்கள்.</string>
+    <string name="app_streaming_blocked_message">தற்போது உங்கள் %1$s சாதனத்தில் இதை அணுக முடியாது. அதற்குப் பதிலாக உங்கள் மொபைலில் பயன்படுத்திப் பாருங்கள்.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">இந்த ஆப்ஸ் கூடுதல் பாதுகாப்பைக் கோருகிறது. அதற்குப் பதிலாக உங்கள் மொபைலில் பயன்படுத்திப் பார்க்கவும்.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">இந்த ஆப்ஸ் கூடுதல் அனுமதிகளைக் கோருகிறது. ஆனால் ஸ்ட்ரீமிங் அமர்வில் அனுமதிகள் வழங்கப்படாது. முதலில் உங்கள் மொபைலில் அனுமதி வழங்கவும்.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">உங்கள் %1$s சாதனத்தில் இதை அணுக முடியாது. அதற்குப் பதிலாக உங்கள் மொபைலில் முயன்று பாருங்கள்.</string>
     <string name="app_streaming_blocked_title">%1$s இல்லை</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">கேமராவைப் பயன்படுத்த முடியாது</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">மொபைலில் தொடருங்கள்</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">மைக்ரோஃபோனைப் பயன்படுத்த முடியாது</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">அனுமதி தேவை</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">அணுகல் கோரிக்கை முடக்கப்பட்டது</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store கிடைக்கவில்லை</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">டேப்லெட் அமைப்புகளைப் பயன்படுத்த முடியாது</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">மொபைல் அமைப்புகளைப் பயன்படுத்த முடியாது</string>
     <string name="app_suspended_default_message">இப்போது %1$s ஆப்ஸை உபயோகிக்க இயலாது. இதை %2$s நிர்வகிக்கிறது.</string>
     <string name="app_suspended_more_details">மேலும் அறிக</string>
     <string name="app_suspended_title">ஆப்ஸை உபயோகிக்க இயலாது</string>
@@ -344,13 +353,15 @@
     <string name="back_button_label">முந்தையது</string>
     <string name="badPin">உள்ளிட்ட பழைய பின் தவறானது.</string>
     <string name="badPuk">உள்ளிட்ட PUK2 தவறானது.</string>
-    <string name="battery_saver_charged_notification_summary">டேப்லெட்டில் போதுமான சார்ஜ் உள்ளது. அம்சங்கள் இனி தடையின்றி இயங்கும்.</string>
+    <string name="battery_saver_charged_notification_summary">மொபைலில் போதுமான சார்ஜ் உள்ளது. அம்சங்கள் இனி தடையின்றி இயங்கும்.</string>
     <string name="battery_saver_description">பேட்டரி சேமிப்பான் டார்க் தீமினை ஆன் செய்து பின்னணிச் செயல்பாடு, சில விஷுவல் எஃபெக்ட்கள், குறிப்பிட்ட அம்சங்கள், சில நெட்வொர்க் இணைப்புகள் ஆகியவற்றைக் கட்டுப்படுத்தும் அல்லது ஆஃப் செய்யும்.</string>
     <string name="battery_saver_description_with_learn_more">பேட்டரி சேமிப்பான் அம்சம் டார்க் தீமை இயக்குவதோடு பின்னணிச் செயல்பாடு, சில விஷுவல் எஃபக்ட்கள், குறிப்பிட்ட அம்சங்கள், சில நெட்வொர்க் இணைப்புகள் ஆகியவற்றைக் கட்டுப்படுத்தும் அல்லது முடக்கும்.</string>
     <string name="battery_saver_notification_channel_name">பேட்டரி சேமிப்பு</string>
     <string name="battery_saver_off_notification_title">பேட்டரி சேமிப்பான் ஆஃப் செய்யப்பட்டுள்ளது</string>
     <string name="beforeOneMonthDurationPast">1 மாதத்திற்கு முன்பு</string>
     <string name="biometric_app_setting_name">பயோமெட்ரிக்ஸைப் பயன்படுத்து</string>
+    <string name="biometric_dangling_notification_action_not_now">இப்போது வேண்டாம்</string>
+    <string name="biometric_dangling_notification_action_set_up">அமை</string>
     <string name="biometric_dialog_default_subtitle">தொடர உங்கள் பயோமெட்ரிக்கைப் பயன்படுத்துங்கள்</string>
     <string name="biometric_dialog_default_title">நீங்கள்தான் என உறுதிசெய்க</string>
     <string name="biometric_error_canceled">அங்கீகரிப்பு ரத்தானது</string>
@@ -358,6 +369,7 @@
     <string name="biometric_error_generic">அங்கீகரிப்பதில் பிழை</string>
     <string name="biometric_error_hw_unavailable">பயோமெட்ரிக் வன்பொருள் இல்லை</string>
     <string name="biometric_error_user_canceled">அங்கீகரிப்பு ரத்தானது</string>
+    <string name="biometric_face_not_recognized">முகத்தைக் கண்டறிய முடியவில்லை</string>
     <string name="biometric_not_recognized">அடையாளங்காணபடவில்லை</string>
     <string name="biometric_or_screen_lock_app_setting_name">பயோமெட்ரிக்ஸையோ திரைப் பூட்டையோ பயன்படுத்து</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">தொடர, உங்கள் பயோமெட்ரிக்கையோ திரைப் பூட்டையோ பயன்படுத்துங்கள்</string>
@@ -433,11 +445,16 @@
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">சரி</string>
+    <string name="connected_display_thermally_unavailable_notification_content">உங்கள் சாதனம் மிகவும் சூடாக இருப்பதால், அது குறையும் வரை காட்சியைப் பிரதிபலிக்க முடியாது</string>
+    <string name="connected_display_unavailable_notification_content">வெவ்வேறு கேபிள்களைப் பயன்படுத்தி மீண்டும் முயலவும்</string>
+    <string name="connected_display_unavailable_notification_title">டிஸ்ப்ளேயில் பிரதிபலிக்க முடியவில்லை</string>
     <string name="console_running_notification_message">செயல்திறன் பாதிக்கப்பட்டுள்ளது. முடக்குவதற்கு பூட்லோடரைத் தேர்வுசெய்யவும்.</string>
     <string name="console_running_notification_title">சீரியல் கன்சோல் இயக்கப்பட்டது</string>
     <string name="contentServiceSync">ஒத்திசை</string>
     <string name="contentServiceSyncNotificationTitle">ஒத்திசைக்க முடியவில்லை</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">அதிகளவிலான %s உள்ளடக்க வகைகளை நீக்க முயன்றுள்ளீர்கள்.</string>
+    <string name="content_description_collapsed">சுருக்கப்பட்டது</string>
+    <string name="content_description_expanded">விரிவாக்கப்பட்டது</string>
     <string name="content_description_sliding_handle">ஸ்லைடிங் ஹேன்டில். தொட்டுப் பிடிக்கவும்.</string>
     <string name="conversation_single_line_image_placeholder">படம் அனுப்பப்பட்டது</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -486,7 +503,7 @@
     <string name="decline">நிராகரி</string>
     <string name="decline_remote_bugreport_action">வேண்டாம்</string>
     <string name="default_audio_route_category_name">சிஸ்டம்</string>
-    <string name="default_audio_route_name">டேப்லெட்</string>
+    <string name="default_audio_route_name">ஃபோன்</string>
     <string name="default_audio_route_name_dock_speakers">மொபைல் வைக்கும் கருவியின் ஸ்பீக்கர்கள்</string>
     <string name="default_audio_route_name_external_device">வெளிப்புறச் சாதனம்</string>
     <string name="default_audio_route_name_headphones">ஹெட்ஃபோன்கள்</string>
@@ -508,6 +525,7 @@
     <string name="device_state_notification_settings_button">அமைப்புகளைத் திற</string>
     <string name="device_state_notification_turn_off_button">முடக்கு</string>
     <string name="device_storage_monitor_notification_channel">சாதனச் சேமிப்பகம்</string>
+    <string name="device_unlock_notification_name">சாதனத்தை அன்லாக் செய்தல்</string>
     <string name="dial_number_using">"%s ஐப் பயன்படுத்தி
 அழை"</string>
     <string name="disable_accessibility_shortcut">ஷார்ட்கட்டை முடக்கு</string>
@@ -524,6 +542,7 @@
     <string name="dlg_ok">சரி</string>
     <string name="done_accessibility_shortcut_menu_button">முடிந்தது</string>
     <string name="done_label">முடிந்தது</string>
+    <string name="dream_accessibility_action_click">மூடுக</string>
     <string name="dream_preview_title">மாதிரிக்காட்சி, %1$s</string>
     <string name="dump_heap_notification">நினைவக வரம்பை %1$s மீறியது</string>
     <string name="dump_heap_notification_detail">ஹீப் டம்ப் சேகரிக்கப்பட்டது. பகிர, தட்டவும்.</string>
@@ -550,7 +569,9 @@
     <string name="duration_years_shortest_future">%d ஆண்டில்</string>
     <string name="dynamic_mode_notification_channel_name">வழக்கமான பேட்டரி சேமிப்பானுக்கான விவர அறிவிப்பு</string>
     <string name="dynamic_mode_notification_summary">பேட்டரி ஆயுளை நீட்டிக்க, பேட்டரி உபயோகத்தைக் குறைக்கிறது</string>
+    <string name="dynamic_mode_notification_summary_v2">பேட்டரி ஆயுளை நீட்டிக்க பேட்டரி சேமிப்பான் இயக்கப்பட்டது</string>
     <string name="dynamic_mode_notification_title">பேட்டரி சேமிப்பு இயக்கப்பட்டுள்ளது</string>
+    <string name="dynamic_mode_notification_title_v2">பேட்டரி சேமிப்பான் இயக்கத்தில் உள்ளது</string>
     <string name="editTextMenuTitle">உரை நடவடிக்கைகள்</string>
     <string name="edit_accessibility_shortcut_menu_button">ஷார்ட்கட்களை மாற்று</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
@@ -563,8 +584,10 @@
     <string name="emergency_call_dialog_number_for_display">அவசர எண்</string>
     <string name="emergency_calls_only">அவசர அழைப்புகள் மட்டும்</string>
     <string name="enablePin">தோல்வி, சிம்/RUIM பூட்டை இயக்கவும்.</string>
-    <string name="enable_explore_by_touch_warning_message">தொடுவதன் மூலம் அறிக என்பதை இயக்க %1$s விரும்புகிறது. தொடுவதன் மூலம் அறிக என்பது இயக்கப்பட்டிருக்கும்போது, உங்கள் விரலுக்கு அடியில் இருப்பவையின் விளக்கங்களை நீங்கள் கேட்கவோ, பார்க்கவோ செய்யலாம் அல்லது டேப்லெட்டுடன் ஊடாட சைகைகளை மேற்கொள்ளலாம்.</string>
+    <string name="enable_explore_by_touch_warning_message">தொடுவதன் மூலம் அறிக என்பதை இயக்க %1$s விரும்புகிறது. தொடுவதன் மூலம் அறிக என்பது இயக்கப்பட்டிருக்கும்போது, உங்கள் விரலுக்கு அடியில் இருப்பவையின் விளக்கங்களை நீங்கள் கேட்கவோ, பார்க்கவோ செய்யலாம் அல்லது மொபைலுடன் ஊடாட சைகைகளை மேற்கொள்ளலாம்.</string>
     <string name="enable_explore_by_touch_warning_title">தொடுவதன் மூலம் அறிக என்பதை இயக்கவா?</string>
+    <string name="error_handwriting_unsupported">இந்தப் புலத்தில் கையெழுத்து ஆதரிக்கப்படவில்லை</string>
+    <string name="error_handwriting_unsupported_password">கடவுச்சொல் புலங்களில் கையெழுத்து ஆதரிக்கப்படவில்லை</string>
     <string name="error_message_change_not_allowed">உங்கள் நிர்வாகி இந்த மாற்றத்தை அனுமதிக்கவில்லை</string>
     <string name="error_message_title">பிழை</string>
     <string name="etws_primary_default_message_earthquake">பதட்டப்படாதீர்கள், அருகில் ஏதேனும் பாதுகாப்பான இடம் உள்ளதா எனப் பாருங்கள்.</string>
@@ -631,7 +654,7 @@
     <string name="extract_edit_menu_button">திருத்து</string>
     <string name="face_acquired_dark_glasses_detected_alt">அடர் நிறக் கண்ணாடிகள் கண்டறியப்பட்டுள்ளது. உங்கள் முகத்தை முழுமையாகக் காட்டவும்.</string>
     <string name="face_acquired_insufficient">முகத் தோற்றம் பதிவாகவில்லை. மீண்டும் முயலவும்.</string>
-    <string name="face_acquired_mouth_covering_detected_alt">முகம் மறைக்கப்பட்டுள்ளது. உங்கள் முகத்தை முழுமையாகக் காட்டவும்.</string>
+    <string name="face_acquired_mouth_covering_detected_alt">முகத்தை மறைக்காமல் முழுமையாகக் காட்டவும்.</string>
     <string name="face_acquired_not_detected">முகம் சரியாகத் தெரியவில்லை. மொபைலைக் கண்களுக்கு நேராகப் பிடிக்கவும்.</string>
     <string name="face_acquired_obscured">உங்கள் முகத்தை மறைக்கும் அனைத்தையும் நீக்குக.</string>
     <string name="face_acquired_pan_too_extreme">உங்கள் மொபைலை நேராகப் பார்க்கவும்</string>
@@ -644,7 +667,7 @@
     <string name="face_acquired_too_bright">அதிக ஒளிர்வு. மிதமான ஒளியில் முயலவும்.</string>
     <string name="face_acquired_too_close">மொபைலை முகத்தில் இருந்து தள்ளிப் பிடிக்கவும்</string>
     <string name="face_acquired_too_dark">போதிய வெளிச்சம் இல்லை</string>
-    <string name="face_acquired_too_different">முகத்தை அடையாளம் காண இயலவில்லை. மீண்டும் முயலவும்.</string>
+    <string name="face_acquired_too_different">முகத்தைக் கண்டறிய முடியவில்லை. மீண்டும் முயலவும்.</string>
     <string name="face_acquired_too_far">மொபைலை அருகில் நகர்த்தவும்</string>
     <string name="face_acquired_too_high">மொபைலை மேலே நகர்த்தவும்</string>
     <string name="face_acquired_too_left">மொபைலை வலதுபுறம் நகர்த்தவும்</string>
@@ -655,6 +678,8 @@
     <string name="face_app_setting_name">முகம் காட்டித் திறத்தலை உபயோகி</string>
     <string name="face_authenticated_confirmation_required">முகம் அங்கீகரிக்கப்பட்டது. ’உறுதிப்படுத்துக’ என்பதை அழுத்துக</string>
     <string name="face_authenticated_no_confirmation_required">முகம் அங்கீகரிக்கப்பட்டது</string>
+    <string name="face_dangling_notification_msg">உங்கள் முகத் தோற்றப் பதிவை இனி அடையாளம் காண முடியாது. முகம் காட்டித் திறத்தல் அம்சத்தை மீண்டும் அமையுங்கள்.</string>
+    <string name="face_dangling_notification_title">"'முகம் காட்டித் திறத்தல்' அம்சத்தை மீண்டும் அமையுங்கள்"</string>
     <string name="face_dialog_default_subtitle">தொடர்வதற்கு உங்கள் முகத்தைப் பயன்படுத்துங்கள்</string>
     <string name="face_error_canceled">முக அங்கீகாரச் செயல்பாடு ரத்துசெய்யப்பட்டது.</string>
     <string name="face_error_hw_not_available">முகத்தைச் சரிபார்க்க இயலவில்லை. வன்பொருள் இல்லை.</string>
@@ -677,8 +702,6 @@
     <string name="face_recalibrate_notification_name">முகம் காட்டித் திறத்தல்</string>
     <string name="face_recalibrate_notification_title">முகம் காட்டித் திறத்தல் அம்சத்தில் சிக்கல்</string>
     <string name="face_sensor_privacy_enabled">முகம் காட்டித் திறத்தல் அம்சத்தைப் பயன்படுத்த, அமைப்புகள் > தனியுரிமை என்பதற்குச் சென்று <b>கேமரா அணுகலை</b> இயக்கவும்</string>
-    <string name="face_setup_notification_content">மொபைலைப் பார்ப்பதன் மூலம் அதை அன்லாக் செய்யலாம்</string>
-    <string name="face_setup_notification_title">"'முகம் காட்டித் திறத்தல்' அம்சத்தை அமைத்தல்"</string>
     <string name="faceunlock_multiple_failures">முகம் காட்டித் திறத்தல் அம்சத்தை அதிகமுறை பயன்படுத்துவிட்டீர்கள்</string>
     <string name="factory_reset_message">"நிர்வாகி ஆப்ஸை உபயோகிக்க முடியாது. இப்போது, உங்கள் சாதனம் ஆரம்ப நிலைக்கு மீட்டமைக்கப்படும்.
 
@@ -703,7 +726,7 @@
     <string name="fingerprint_acquired_imager_dirty">கைரேகை சென்சாரைச் சுத்தம் செய்துவிட்டு மீண்டும் முயலவும்</string>
     <string name="fingerprint_acquired_imager_dirty_alt">சென்சாரைச் சுத்தம் செய்துவிட்டு மீண்டும் முயலவும்</string>
     <string name="fingerprint_acquired_immobile">ஒவ்வொரு முறையும் விரலின் நிலையைச் சிறிதளவு மாற்றுங்கள்</string>
-    <string name="fingerprint_acquired_insufficient">கைரேகையை அடையாளம் காண முடியவில்லை. மீண்டும் முயலவும்.</string>
+    <string name="fingerprint_acquired_insufficient">கைரேகையைக் கண்டறிய முடியவில்லை. மீண்டும் முயலவும்.</string>
     <string name="fingerprint_acquired_partial">சென்சாரின் மீது நன்றாக அழுத்தவும்</string>
     <string name="fingerprint_acquired_power_press">பவர் பட்டனை அழுத்தியது கண்டறியப்பட்டது</string>
     <string name="fingerprint_acquired_too_bright">அதிக வெளிச்சமாக உள்ளது</string>
@@ -712,21 +735,27 @@
     <string name="fingerprint_acquired_try_adjusting">விரலைச் சரியாக வைக்கவும்</string>
     <string name="fingerprint_app_setting_name">கைரேகையைப் பயன்படுத்து</string>
     <string name="fingerprint_authenticated">கைரேகை அங்கீகரிக்கப்பட்டது</string>
+    <string name="fingerprint_dangling_notification_msg_1">%sஐ இனி அடையாளம் காண முடியாது.</string>
+    <string name="fingerprint_dangling_notification_msg_2">%1$s, %2$s ஆகியவற்றை இனி அடையாளம் காண முடியாது.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_1">%sஐ இனி அடையாளம் காண முடியாது. கைரேகை அன்லாக் அம்சத்தை மீண்டும் அமையுங்கள்.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_2">%1$s, %2$s ஆகியவற்றை இனி அடையாளம் காண முடியாது. கைரேகை அன்லாக் அம்சத்தை மீண்டும் அமையுங்கள்.</string>
+    <string name="fingerprint_dangling_notification_title">கைரேகை அன்லாக் அம்சத்தை மீண்டும் அமையுங்கள்</string>
     <string name="fingerprint_dialog_default_subtitle">தொடர்வதற்கு கைரேகையைப் பயன்படுத்துங்கள்</string>
-    <string name="fingerprint_error_bad_calibration">கைரேகை சென்சாரைப் பயன்படுத்த முடியவில்லை. பழுதுபார்ப்புச் சேவை வழங்குநரைத் தொடர்புகொள்ளவும்</string>
-    <string name="fingerprint_error_canceled">கைரேகை செயல்பாடு ரத்துசெய்யப்பட்டது.</string>
-    <string name="fingerprint_error_hw_not_available">கைரேகை வன்பொருள் இல்லை.</string>
-    <string name="fingerprint_error_hw_not_present">இந்தச் சாதனத்தில் கைரேகை சென்சார் இல்லை.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">முகம் கண்டறிய முடியவில்லை. கைரேகை பயன்படுத்துக.</string>
+    <string name="fingerprint_error_bad_calibration">கைரேகை சென்சாரைப் பயன்படுத்த முடியவில்லை. பழுதுபார்ப்புச் சேவை வழங்குநரைத் தொடர்புகொள்ளவும்.</string>
+    <string name="fingerprint_error_canceled">கைரேகைச் செயல்பாடு ரத்துசெய்யப்பட்டது</string>
+    <string name="fingerprint_error_hw_not_available">கைரேகை பாகம் இல்லை</string>
+    <string name="fingerprint_error_hw_not_present">இந்தச் சாதனத்தில் கைரேகை சென்சார் இல்லை</string>
     <string name="fingerprint_error_lockout">பலமுறை முயன்றுவிட்டீர்கள். இதற்குப் பதிலாகத் திரைப்பூட்டைப் பயன்படுத்தவும்.</string>
     <string name="fingerprint_error_lockout_permanent">பலமுறை முயன்றுவிட்டீர்கள். இதற்குப் பதிலாகத் திரைப்பூட்டைப் பயன்படுத்தவும்.</string>
-    <string name="fingerprint_error_no_fingerprints">கைரேகைப் பதிவுகள் எதுவும் இல்லை.</string>
+    <string name="fingerprint_error_no_fingerprints">கைரேகைகள் எதுவும் பதிவுசெய்யப்படவில்லை</string>
     <string name="fingerprint_error_no_space">கைரேகையை அமைக்க முடியவில்லை</string>
     <string name="fingerprint_error_not_match">கைரேகை அங்கீகரிக்கப்படவில்லை</string>
     <string name="fingerprint_error_power_pressed">பவர் பட்டன் அழுத்தப்பட்டுள்ளது</string>
-    <string name="fingerprint_error_security_update_required">சென்சார் தற்காலிகமாக முடக்கப்பட்டுள்ளது.</string>
+    <string name="fingerprint_error_security_update_required">சென்சார் தற்காலிகமாக முடக்கப்பட்டுள்ளது</string>
     <string name="fingerprint_error_timeout">கைரேகை அமைவுக்கான நேரம் முடிந்துவிட்டது. மீண்டும் முயலவும்.</string>
     <string name="fingerprint_error_unable_to_process">கைரேகையைச் செயலாக்க முடியவில்லை. மீண்டும் முயலவும்.</string>
-    <string name="fingerprint_error_user_canceled">பயனர், கைரேகை உறுதிப்படுத்துதலை ரத்துசெய்தார்.</string>
+    <string name="fingerprint_error_user_canceled">கைரேகைச் செயல்பாடு பயனரால் ரத்துசெய்யப்பட்டது</string>
     <string name="fingerprint_error_vendor_unknown">ஏதோ தவறாகிவிட்டது. மீண்டும் முயலவும்.</string>
     <string name="fingerprint_name_template">கைரேகை %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">கைரேகையையோ திரைப் பூட்டையோ பயன்படுத்து</string>
@@ -734,8 +763,6 @@
     <string name="fingerprint_recalibrate_notification_content">பழுதுபார்ப்புச் சேவை வழங்குநரைத் தொடர்புகொள்ளவும்.</string>
     <string name="fingerprint_recalibrate_notification_name">கைரேகை அன்லாக்</string>
     <string name="fingerprint_recalibrate_notification_title">கைரேகை சென்சாரைப் பயன்படுத்த முடியவில்லை</string>
-    <string name="fingerprint_setup_notification_content">கைரேகையைச் சேர்க்கத் தட்டுங்கள்</string>
-    <string name="fingerprint_setup_notification_title">அன்லாக் செய்ய மேலும் பல வழிகளை அமையுங்கள்</string>
     <string name="fingerprint_udfps_error_not_match">கைரேகை அங்கீகரிக்கப்படவில்லை</string>
     <string name="fingerprints">கைரேகைகள்:</string>
     <string name="floating_toolbar_close_overflow_description">மேல்தோன்றலை மூடு</string>
@@ -776,7 +803,7 @@
     <string name="global_action_silent_mode_on_status">ஒலி முடக்கத்தில் உள்ளது</string>
     <string name="global_action_toggle_silent_mode">சைலன்ட் பயன்முறை</string>
     <string name="global_action_voice_assist">குரல் உதவி</string>
-    <string name="global_actions">டேப்லெட் விருப்பங்கள்</string>
+    <string name="global_actions">தொலைபேசி விருப்பங்கள்</string>
     <string name="global_actions_airplane_mode_off_status">விமானப் பயன்முறை முடக்கத்தில் உள்ளது</string>
     <string name="global_actions_airplane_mode_on_status">விமானப் பயன்முறை இயக்கத்தில் உள்ளது</string>
     <string name="global_actions_toggle_airplane_mode">விமானப் பயன்முறை</string>
@@ -795,7 +822,7 @@
     <string name="granularity_label_link">இணைப்பு</string>
     <string name="granularity_label_word">சொல்</string>
     <string name="guest_name">கெஸ்ட்</string>
-    <string name="hardware">விர்ச்சுவல் கீபோர்டை காட்டு</string>
+    <string name="hardware">ஸ்கிரீன் கீபோர்டை உபயோகி</string>
     <string name="harmful_app_warning_open_anyway">பரவாயில்லை, திற</string>
     <string name="harmful_app_warning_title">தீங்கிழைக்கும் ஆப்ஸ் உள்ளது</string>
     <string name="harmful_app_warning_uninstall">நிறுவல் நீக்கு</string>
@@ -843,7 +870,7 @@
     <string name="ime_action_search">தேடு</string>
     <string name="ime_action_send">அனுப்பு</string>
     <string name="imei">IMEI</string>
-    <string name="immersive_cling_description">வெளியேற, மேலிருந்து கீழே ஸ்வைப் செய்யவும்</string>
+    <string name="immersive_cling_description">வெளியேற, உங்கள் திரையின் மேலிருந்து கீழ்நோக்கி ஸ்வைப் செய்யவும்</string>
     <string name="immersive_cling_positive">புரிந்தது</string>
     <string name="immersive_cling_title">முழுத் திரையில் காட்டுகிறது</string>
     <string name="importance_from_person">ஈடுபட்டுள்ளவர்களின் காரணமாக, இது முக்கியமானது.</string>
@@ -917,11 +944,11 @@
     <string name="keyguard_password_entry_touch_hint"><font size="17">கடவுச்சொல்லை உள்ளிட, தட்டவும்</font></string>
     <string name="keyguard_password_wrong_pin_code">தவறான பின் குறியீடு.</string>
     <string name="kg_enter_confirm_pin_hint">விரும்பிய பின் குறியீட்டை உறுதிப்படுத்தவும்</string>
-    <string name="kg_failed_attempts_almost_at_login">"அன்லாக் பேட்டர்னை %1$d முறை தவறாக வரைந்துள்ளீர்கள். மேலும் %2$d தோல்வி முயற்சிகளுக்குப் பிறகு, மின்னஞ்சல் கணக்கைப் பயன்படுத்தி உங்கள் டேப்லெட்டை அன்லாக் செய்யும்படிக் கேட்கப்படுவீர்கள்.
+    <string name="kg_failed_attempts_almost_at_login">"அன்லாக் பேட்டர்னை %1$d முறை தவறாக வரைந்துள்ளீர்கள். மேலும் %2$d தோல்வி முயற்சிகளுக்குப் பிறகு, மின்னஞ்சல் கணக்கைப் பயன்படுத்தி உங்கள் மொபைலை அன்லாக் செய்யும்படிக் கேட்கப்படுவீர்கள்.
 
- %3$d வினாடிகளில் மீண்டும் முயற்சிக்கவும்."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">டேப்லெட்டை அன்லாக் செய்ய %1$d முறை தவறாக முயற்சித்துள்ளீர்கள். இன்னும் %2$d தோல்வி முயற்சிகளுக்குப் பிறகு, டேப்லெட்டானது ஆரம்பநிலைக்கு மீட்டமைக்கப்பட்டு, எல்லா பயனர் தரவையும் இழப்பீர்கள்.</string>
-    <string name="kg_failed_attempts_now_wiping">டேப்லெட்டை அன்லாக் செய்ய %d முறை தவறாக முயற்சித்துள்ளீர்கள். டேப்லெட் இப்போது ஆரம்பநிலைக்கு மீட்டமைக்கப்படும்.</string>
+ %3$d வினாடிகள் கழித்து முயற்சிக்கவும்."</string>
+    <string name="kg_failed_attempts_almost_at_wipe">மொபைலை அன்லாக் செய்ய %1$d முறை தவறாக முயற்சித்துள்ளீர்கள். இன்னும் %2$d தோல்வி முயற்சிகளுக்குப் பிறகு,மொபைலானது ஆரம்பநிலைக்கு மீட்டமைக்கப்பட்டு, எல்லா பயனர் தரவையும் இழப்பீர்கள்.</string>
+    <string name="kg_failed_attempts_now_wiping">மொபைலை அன்லாக் செய்ய %d முறை தவறாக முயற்சித்துள்ளீர்கள். மொபைல் இப்போது ஆரம்பநிலைக்கு மீட்டமைக்கப்படும்.</string>
     <string name="kg_forgot_pattern_button_text">வடிவத்தை மறந்துவிட்டீர்களா</string>
     <string name="kg_invalid_confirm_pin_hint">பின் குறியீடுகள் பொருந்தவில்லை</string>
     <string name="kg_invalid_puk">சரியான PUK குறியீட்டை மீண்டும் உள்ளிடவும். தொடர் முயற்சிகள் சிம் ஐ நிரந்தரமாக முடக்கிவிடும்.</string>
@@ -986,11 +1013,11 @@
     <string name="lockscreen_access_pattern_start">பேட்டர்ன் தொடங்கியது</string>
     <string name="lockscreen_carrier_default">சேவை இல்லை</string>
     <string name="lockscreen_emergency_call">அவசர அழைப்பு</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">டேப்லெட்டை அன்லாக் செய்ய %1$d முறை தவறாக முயற்சித்துள்ளீர்கள். இன்னும் %2$d தோல்வி முயற்சிகளுக்குப் பிறகு, டேப்லெட்டானது ஆரம்ப இயல்புநிலைக்கு மீட்டமைக்கப்பட்டு, எல்லா பயனர் தரவும் இழக்கப்படும்.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"அன்லாக் வடிவத்தை %1$d முறை தவறாக வரைந்துள்ளீர்கள். இன்னும் %2$d முறை தவறாக வரைந்தால், உங்கள் Google உள்நுழைவைப் பயன்படுத்தி டேப்லெட்டை அன்லாக் செய்யுமாறு கேட்கப்படுவீர்கள். 
+    <string name="lockscreen_failed_attempts_almost_at_wipe">மொபைலை அன்லாக் செய்ய %1$d முறை தவறாக முயற்சித்துள்ளீர்கள். இன்னும் %2$d தோல்வி முயற்சிகளுக்குப் பிறகு, மொபைல் ஆரம்ப இயல்புநிலைக்கு மீட்டமைக்கப்பட்டு, எல்லா பயனர் தரவும் இழக்கப்படும்.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"அன்லாக் பேட்டர்னை %1$d முறை தவறாக வரைந்துள்ளீர்கள். இன்னும் %2$d முறை தவறாக வரைந்தால், உங்கள் Google உள்நுழைவைப் பயன்படுத்தி மொபைலை அன்லாக் செய்யுமாறு கேட்கப்படுவீர்கள். 
 
  %3$d வினாடிகள் கழித்து முயற்சிக்கவும்."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">நீங்கள் டேப்லெட்டை அன்லாக் செய்ய %d முறை தவறாக முயற்சித்துள்ளீர்கள். டேப்லெட் இப்போது ஆரம்ப இயல்புநிலைக்கு மீட்டமைக்கப்படும்.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">மொபைலை அன்லாக் செய்ய %d முறை தவறாக முயற்சித்துள்ளீர்கள். மொபைல் இப்போது ஆரம்ப இயல்புநிலைக்கு மீட்டமைக்கப்படும்.</string>
     <string name="lockscreen_forgot_pattern_button_text">வடிவத்தை மறந்துவிட்டீர்களா?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"உங்கள் பயனர்பெயர் அல்லது கடவுச்சொல்லை மறந்துவிட்டீர்களா?
 "<b>google.com/accounts/recovery</b> ஐப் பார்வையிடவும்.</string>
@@ -1006,7 +1033,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">அன்லாக் செய்ய மெனுவை அழுத்தவும் அல்லது அவசர அழைப்பை மேற்கொள்ளவும்.</string>
     <string name="lockscreen_missing_sim_instructions">சிம்மைச் சேருங்கள்.</string>
     <string name="lockscreen_missing_sim_instructions_long">சிம் இல்லை அல்லது படிக்கக்கூடியதாக இல்லை. சிம்மைச் சேருங்கள்.</string>
-    <string name="lockscreen_missing_sim_message">டேப்லெட்டில் சிம் இல்லை.</string>
+    <string name="lockscreen_missing_sim_message">மொபைலில் சிம் இல்லை.</string>
     <string name="lockscreen_missing_sim_message_short">சிம் இல்லை</string>
     <string name="lockscreen_network_locked_message">நெட்வொர்க் பூட்டப்பட்டது</string>
     <string name="lockscreen_password_wrong">மீண்டும் முயற்சிக்கவும்</string>
@@ -1046,7 +1073,7 @@
     <string name="low_internal_storage_view_text">சில அமைப்பு செயல்பாடுகள் வேலை செய்யாமல் போகலாம்</string>
     <string name="low_internal_storage_view_text_no_boot">முறைமையில் போதுமான சேமிப்பகம் இல்லை. 250மெ.பை. அளவு காலி இடவசதி இருப்பதை உறுதிசெய்து மீண்டும் தொடங்கவும்.</string>
     <string name="low_internal_storage_view_title">சேமிப்பிடம் குறைகிறது</string>
-    <string name="low_memory">டேப்லெட் சேமிப்பிடம் நிரம்பியது. இடத்தைக் காலியாக்க சில ஃபைல்களை அழிக்கவும்.</string>
+    <string name="low_memory">மொபைல் சேமிப்பிடம் நிரம்பியது. இடத்தைக் காலியாக்க சில ஃபைல்களை அழிக்கவும்.</string>
     <string name="managed_profile_app_label">பணிக் கணக்கிற்கு (%1$s) மாறு</string>
     <string name="managed_profile_label">பணிச் சுயவிவரத்திற்கு மாற்றவும்</string>
     <string name="managed_profile_label_badge">பணியிடம் %1$s</string>
@@ -1203,6 +1230,8 @@
     <string name="miniresolver_open_in_personal">தனிப்பட்ட கணக்கில் %s ஆப்ஸைத் திறக்கவா?</string>
     <string name="miniresolver_open_in_work">பணிக் கணக்கில் %s ஆப்ஸைத் திறக்கவா?</string>
     <string name="miniresolver_open_work">பணிக் கணக்கில் உள்நுழைந்துள்ள %s ஆப்ஸைத் திறக்கவா?</string>
+    <string name="miniresolver_private_space_messages_information">உங்கள் தனிப்பட்ட Messages ஆப்ஸில் இருந்து மட்டுமே நீங்கள் SMS மெசேஜ்களை அனுப்ப முடியும்.</string>
+    <string name="miniresolver_private_space_phone_information">உங்கள் தனிப்பட்ட ஃபோன் ஆப்ஸில் இருந்து மட்டுமே நீங்கள் மொபைல் அழைப்புகளைச் செய்ய முடியும். தனிப்பட்ட ஃபோன் ஆப்ஸ் மூலம் செய்யப்படும் அழைப்புகள் உங்கள் தனிப்பட்ட அழைப்புப் பதிவில் சேர்க்கப்படும்.</string>
     <string name="miniresolver_sms_information">உங்கள் நிறுவனம் பணி ஆப்ஸில் இருந்து மட்டுமே மெசேஜ்களை அனுப்ப உங்களை அனுமதிக்கிறது</string>
     <string name="miniresolver_switch">மாற்று</string>
     <string name="miniresolver_switch_to_work">பணி ஆப்ஸுக்கு மாற வேண்டுமா?</string>
@@ -1281,6 +1310,7 @@
     <string name="notification_channel_developer">டெவெலப்பர் செய்திகள்</string>
     <string name="notification_channel_developer_important">டெவெலப்பருக்கான முக்கிய தகவல்கள்</string>
     <string name="notification_channel_device_admin">IT நிர்வாகியிடம் இருந்து வரும் விழிப்பூட்டல்கள்</string>
+    <string name="notification_channel_display">டிஸ்ப்ளே</string>
     <string name="notification_channel_do_not_disturb">தொந்தரவு செய்ய வேண்டாம்</string>
     <string name="notification_channel_emergency_callback">அவசரகாலத் திரும்ப அழைக்கும் பயன்முறை</string>
     <string name="notification_channel_foreground_service">பேட்டரியைப் பயன்படுத்தும் ஆப்ஸ்</string>
@@ -1302,6 +1332,7 @@
     <string name="notification_channel_voice_mail">குரலஞ்சல் செய்திகள்</string>
     <string name="notification_channel_vpn">VPN நிலை</string>
     <string name="notification_channel_wfc">வைஃபை அழைப்பு</string>
+    <string name="notification_compact_heads_up_reply">பதிலளி</string>
     <string name="notification_content_abusive_bg_apps">பின்னணியில் %1$s இயங்கிக் கொண்டிருக்கிறது. பேட்டரி உபயோகத்தை நிர்வகிக்க, தட்டவும்.</string>
     <string name="notification_content_long_running_fgs">%1$s பேட்டரியின் ஆயுளைப் பாதிக்கலாம். செயலிலுள்ள ஆப்ஸைப் பார்க்க தட்டவும்.</string>
     <string name="notification_feedback_indicator">கருத்து தெரிவியுங்கள்</string>
@@ -1338,7 +1369,8 @@
     <string name="other_networks_no_internet">நெட்வொர்க்கிற்கு இணைய அணுகல் இல்லை</string>
     <string name="owner_name">உரிமையாளர்</string>
     <string name="package_deleted_device_owner">உங்கள் நிர்வாகி நீக்கியுள்ளார்</string>
-    <string name="package_installed_device_owner">உங்கள் நிர்வாகி நிறுவியுள்ளார்</string>
+    <string name="package_installed_device_owner">"உங்கள் நிர்வாகி நிறுவியுள்ளார்.
+வழங்கப்பட்டுள்ள அனுமதிகளை பார்க்க அமைப்புகளுக்குச் செல்லவும்"</string>
     <string name="package_updated_device_owner">உங்கள் நிர்வாகி புதுப்பித்துள்ளார்</string>
     <string name="passwordIncorrect">தவறான கடவுச்சொல்.</string>
     <string name="password_keyboard_label_alpha_key">ABC</string>
@@ -1355,7 +1387,9 @@
     <string name="permdesc_accessCoarseLocation">இந்த ஆப்ஸ் பயன்பாட்டில் உள்ளபோது இருப்பிடச் சேவைகளிலிருந்து உங்களது தோராயமான இருப்பிடத் தகவலை அது பெறும். இருப்பிடத் தகவலை ஆப்ஸ் பெறுவதற்கு உங்களது சாதனத்தில் இருப்பிடச் சேவைகள் இயக்கப்பட்டிருக்க வேண்டும்.</string>
     <string name="permdesc_accessDrmCertificates">DRM சான்றிதழ்களை வழங்க மற்றும் பயன்படுத்த, ஆப்ஸை அனுமதிக்கிறது. சாதாரண பயன்பாடுகளுக்கு எப்போதும் தேவைப்படாது.</string>
     <string name="permdesc_accessFineLocation">இந்த ஆப்ஸ் பயன்பாட்டில் இருக்கும்போது இருப்பிடச் சேவைகளிலிருந்து உங்களது துல்லியமான இருப்பிடத் தகவலை அது பெறும். இருப்பிடத் தகவலை ஆப்ஸ் பெறுவதற்கு உங்களது சாதனத்தில் இருப்பிடச் சேவைகள் இயக்கப்பட்டிருக்க வேண்டும். இது பேட்டரியை அதிகம் உபயோகிக்கக்கூடும்.</string>
+    <string name="permdesc_accessHiddenProfile">மறைக்கப்பட்ட சுயவிவரங்களை அணுக ஆப்ஸை அனுமதிக்கும்.</string>
     <string name="permdesc_accessImsCallService">உங்கள் குறுக்கீடின்றி IMS சேவையைப் பயன்படுத்தி அழைப்பதற்கு, ஆப்ஸை அனுமதிக்கும்.</string>
+    <string name="permdesc_accessLastKnownCellId">டெலிஃபோனியால் வழங்கப்பட்ட கடைசியாகக் கண்டறிந்த மொபைல் அடையாளத்தை அணுகுவதற்கு ஆப்ஸை அனுமதிக்கும்.</string>
     <string name="permdesc_accessLocationExtraCommands">கூடுதல் இட வழங்குநர் கட்டளைகளை அணுகப் ஆப்ஸை அனுமதிக்கிறது. இது, GPS அல்லது பிற இருப்பிட மூலங்களின் செயல்பாட்டை இடைமறிக்க ஆப்ஸை அனுமதிக்கலாம்.</string>
     <string name="permdesc_accessNetworkConditions">பிணைய நிலைகள் பற்றிய அறிவிப்புகளைக் கவனிக்க ஆப்ஸை அனுமதிக்கிறது. இயல்பான பயன்பாடுகளுக்கு எப்போதுமே தேவைப்படாது.</string>
     <string name="permdesc_accessNetworkState">தற்போது இருக்கும் நெட்வொர்க்குகள் எவை மற்றும் இணைக்கப்பட்டுள்ளவை எவை போன்ற நெட்வொர்க் இணைப்புகள் குறித்த தகவலைப் பார்க்கப் ஆப்ஸை அனுமதிக்கிறது.</string>
@@ -1376,23 +1410,24 @@
     <string name="permdesc_bindNotificationListenerService">அறிவிப்புகளைக் கண்காணிக்கும் சேவையின் உயர் நிலை இடைமுகத்துடன் இணைப்பதற்கு ஹோல்டரை அனுமதிக்கிறது. இயல்பான பயன்பாடுகளுக்கு எப்போதுமே தேவைப்படாது.</string>
     <string name="permdesc_bind_connection_service">அழைப்புகளைச் செய்ய/பெற, டெலிஃபோனி சேவைகளுடன் ஊடாட ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_bind_incall_service">உள்வரும் அழைப்பிற்கான திரையைப் பயனர் எப்போது மற்றும் எப்படிக் காணவேண்டும் என்பதைக் கட்டுப்படுத்துவதற்குப் ஆப்ஸை அனுமதிக்கிறது.</string>
-    <string name="permdesc_bluetooth">டேப்லெட்டில் புளூடூத் இன் உள்ளமைவைப் பார்க்க மற்றும் இணைந்த சாதனங்களுடன் இணைப்புகளை ஏற்படுத்த மற்றும் ஏற்க ஆப்ஸை அனுமதிக்கிறது.</string>
-    <string name="permdesc_bluetoothAdmin">டேப்லெட்டில் அக புளூடூத் ஐ உள்ளமைக்க, தொலைநிலை சாதனங்களைக் கண்டறிந்து இணைக்க, ஆப்ஸை அனுமதிக்கிறது.</string>
+    <string name="permdesc_bluetooth">மொபைலில் புளூடூத் இன் உள்ளமைவைப் பார்க்க மற்றும் இணைந்த சாதனங்களுடன் இணைப்புகளை ஏற்படுத்த மற்றும் ஏற்க ஆப்ஸை அனுமதிக்கிறது.</string>
+    <string name="permdesc_bluetoothAdmin">மொபைலில் அக புளூடூத் ஐ உள்ளமைக்க, தொலைநிலை சாதனங்களைக் கண்டறிந்து இணைக்க, ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_bluetooth_advertise">அருகிலுள்ள புளூடூத் சாதனங்களுக்குத் தெரியப்படுத்த ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_bluetooth_connect">இணைக்கப்பட்ட புளூடூத் சாதனங்களுடன் இணைவதற்கு ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_bluetooth_scan">அருகிலுள்ள புளூடூத் சாதனங்களைக் கண்டறிந்து அவற்றுடன் இணைவதற்கு ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_bodySensors">ஆப்ஸ் பயன்பாட்டில் இருக்கும்போது இதயத் துடிப்பு, வெப்பநிலை, ரத்த ஆக்ஸிஜன் சதவீதம் போன்ற உடல் சென்சார் தரவை அணுக ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_bodySensors_background">ஆப்ஸ் பின்னணியில் இயங்கும்போது இதயத் துடிப்பு, வெப்பநிலை, ரத்த ஆக்ஸிஜன் சதவீதம் போன்ற உடல் சென்சார் தரவை அணுக ஆப்ஸை அனுமதிக்கிறது.</string>
-    <string name="permdesc_broadcastSticky">வலைபரப்பு முடிந்த பின்னும் இருக்கும், தொடர்ந்து அணுகத்தக்க வலைபரப்பை அனுப்பப் ஆப்ஸை அனுமதிக்கிறது. அதிகமாகப் பயன்படுத்தினால், டேப்லெட்டானது நினைவகத்தை மிக அதிகமாகப் பயன்படுத்துவதால் வேகம் குறைந்ததாகவும், நிலையற்றதாகவும் ஆகலாம்.</string>
+    <string name="permdesc_broadcastSticky">அலைபரப்பு முடிந்த பின்னும் இருக்கும், தொடர்ந்து அணுகத்தக்க அலைபரப்பை அனுப்பப் ஆப்ஸை அனுமதிக்கிறது. அதிகமாகப் பயன்படுத்தினால், மொபைலானது நினைவகத்தை மிக அதிகமாகப் பயன்படுத்துவதால் வேகம் குறைந்ததாகவும், நிலையற்றதாகவும் ஆகலாம்.</string>
     <string name="permdesc_callCompanionApp">செயலில் உள்ள அழைப்புகளைச் சாதனத்தில் பார்க்கவும் கட்டுப்படுத்தவும் ஆப்ஸை அனுமதிக்கிறது. அழைப்பு எண்கள் மற்றும் அழைப்புகளின் நிலை போன்ற தகவல்களும் இதில் அடங்கும்.</string>
     <string name="permdesc_callPhone">உங்கள் உறுதிப்படுத்தல் இல்லாமல் ஃபோன் எண்களை அழைக்க ஆப்ஸை அனுமதிக்கும். இது எதிர்பாராத கட்டணங்கள்/அழைப்புகளுக்கு வழிவகுக்கக்கூடும். அவசர உதவி எண்களை அழைக்க இது ஆப்ஸை அனுமதிக்காது என்பதை நினைவில் கொள்ளுங்கள். தீங்கிழைக்கும் ஆப்ஸ் உங்கள் உறுதிப்படுத்தல் இல்லாமல் அழைப்புகளை மேற்கொள்வதன் மூலம் உங்களுக்கு அநாவசியச் செலவு ஏற்படக்கூடும் அல்லது அவை கேரியர் குறியீடுகளை டயல் செய்து உங்களுக்கான உள்வரும் அழைப்புகளை வேறு எண்ணுக்குத் தானாகத் திசைதிருப்பக்கூடும்.</string>
     <string name="permdesc_camera">இந்த ஆப்ஸ் உபயோகத்தில் இருக்கும்போதே இதனால் கேமராவைப் பயன்படுத்தி படங்கள் எடுக்கவும் வீடியோக்களை ரெக்கார்டு செய்யவும் முடியும்.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">காட்சி இடைமுகமற்ற சிஸ்டம் பயனராக இந்த ஆப்ஸால் கேமராவை அணுக முடியும்.</string>
     <string name="permdesc_cameraOpenCloseListener">எந்தக் கேமரா சாதனமும் (எந்த ஆப்ஸாலும்) திறக்கப்படும்போதோ மூடப்படும்போதோ இந்த ஆப்ஸால் கால்பேக்குகளைப் பெற முடியும்.</string>
     <string name="permdesc_changeNetworkState">நெட்வொர்க் இணைப்பின் நிலையை மாற்ற, ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_changeTetherState">இணைக்கப்பட்ட நெட்வொர்க் இணைப்பின் நிலையை மாற்ற, ஆப்ஸை அனுமதிக்கிறது.</string>
-    <string name="permdesc_changeWifiMulticastState">உங்கள் டேப்லெட் மட்டுமல்லாமல், பலமுகவரி பயன்முறையின் முகவரிகளைப் பயன்படுத்தி வைஃபை நெட்வொர்க்கில் எல்லா சாதனங்களுக்கும் அனுப்பிய தொகுப்பைப் பெற ஆப்ஸை அனுமதிக்கிறது. பலமுகவரியற்ற பயன்முறையை விட இது அதிகமான சக்தியைப் பயன்படுத்துகிறது.</string>
+    <string name="permdesc_changeWifiMulticastState">உங்கள் மொபைல் மட்டுமல்லாமல், பலமுகவரி பயன்முறையின் முகவரிகளைப் பயன்படுத்தி வைஃபை நெட்வொர்க்கில் எல்லா சாதனங்களுக்கும் அனுப்பிய தொகுப்பைப் பெற ஆப்ஸை அனுமதிக்கிறது. பலமுகவரியற்ற பயன்முறையை விட இது அதிகமான சக்தியைப் பயன்படுத்துகிறது.</string>
     <string name="permdesc_changeWifiState">வைஃபை ஆக்சஸ் பாயிண்ட்களில் இணைக்கவும், அவற்றிலிருந்து துண்டிக்கவும் மற்றும் வைஃபை நெட்வொர்க்குகளுக்கான சாதன உள்ளமைவில் மாற்றங்களைச் செய்யவும் ஆப்ஸை அனுமதிக்கிறது.</string>
-    <string name="permdesc_changeWimaxState">WiMAX நெட்வொர்க்குகளில் டேப்லெட்டை இணைக்கவும், அவற்றிலிருந்து துண்டிக்கவும் ஆப்ஸை அனுமதிக்கிறது.</string>
+    <string name="permdesc_changeWimaxState">WiMAX நெட்வொர்க்குகளில் மொபைலை இணைக்கவும், அவற்றிலிருந்து துண்டிக்கவும் ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_companionProfileWatch">வாட்ச்சுகளை நிர்வகிக்க துணைத் தயாரிப்பு ஆப்ஸை அனுமதிக்கும்.</string>
     <string name="permdesc_connection_manager">தொலைத்தொடர்பு இணைப்புகளை நிர்வகிக்க, ஆப்ஸை அனுமதிக்கும்.</string>
     <string name="permdesc_control_incall_experience">அழைப்பின் பயனர் அனுபவத்தை வழங்க ஆப்ஸை அனுமதிக்கிறது.</string>
@@ -1411,6 +1446,7 @@
     <string name="permdesc_foregroundServiceHealth">\"health\" எனும் வகையைக் கொண்ட முன்புலச் சேவைகளைப் பயன்படுத்த ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_foregroundServiceLocation">\"location\" எனும் வகையைக் கொண்ட முன்புலச் சேவைகளைப் பயன்படுத்த ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_foregroundServiceMediaPlayback">\"mediaPlayback\" எனும் வகையைக் கொண்ட முன்புலச் சேவைகளைப் பயன்படுத்த ஆப்ஸை அனுமதிக்கும்</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">\"mediaProcessing\" எனும் வகையைக் கொண்ட முன்புலச் சேவைகளைப் பயன்படுத்த ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_foregroundServiceMediaProjection">\"mediaProjection\" எனும் வகையைக் கொண்ட முன்புலச் சேவைகளைப் பயன்படுத்த ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_foregroundServiceMicrophone">\"microphone\" எனும் வகையைக் கொண்ட முன்புலச் சேவைகளைப் பயன்படுத்த ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_foregroundServicePhoneCall">\"phoneCall\" எனும் வகையைக் கொண்ட முன்புலச் சேவைகளைப் பயன்படுத்த ஆப்ஸை அனுமதிக்கும்</string>
@@ -1418,7 +1454,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">\"specialUse\" எனும் வகையைக் கொண்ட முன்புலச் சேவைகளைப் பயன்படுத்த ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_foregroundServiceSystemExempted">\"systemExempted\" எனும் வகையைக் கொண்ட முன்புலச் சேவைகளைப் பயன்படுத்த ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_fullScreenIntent">பூட்டப்பட்ட சாதனத்தில் முழுத்திரைச் செயல்பாடுகளாக அறிவிப்புகளைக் காட்ட ஆப்ஸை அனுமதிக்கும்</string>
-    <string name="permdesc_getAccounts">டேப்லெட் மூலம் அறியப்பட்ட கணக்குகளின் பட்டியலைப் பெற ஆப்ஸை அனுமதிக்கிறது. நீங்கள் நிறுவிய ஆப்ஸ் மூலம் உருவாக்கப்பட்ட எல்லா கணக்குகளும் இதில் உள்ளடங்கலாம்.</string>
+    <string name="permdesc_getAccounts">மொபைல் மூலம் அறியப்பட்ட கணக்குகளின் பட்டியலைப் பெற ஆப்ஸை அனுமதிக்கிறது. நீங்கள் நிறுவிய ஆப்ஸ் மூலம் உருவாக்கப்பட்ட எல்லா கணக்குகளும் இதில் உள்ளடங்கலாம்.</string>
     <string name="permdesc_getPackageSize">ஆப்ஸ், அதன் குறியீடு, தரவு, மற்றும் தற்காலிகச் சேமிப்பு அளவுகளை மீட்டெடுக்க அனுமதிக்கிறது</string>
     <string name="permdesc_getTasks">நடப்பில் மற்றும் சமீபத்தில் இயங்கும் காரியங்களின் தகவலைப் பெற ஆப்ஸை அனுமதிக்கிறது. சாதனத்தில் எந்த ஆப்ஸ் பயன்படுத்தப்படுகின்றன என்பது குறித்த தகவலைக் கண்டறிய ஆப்ஸை இது அனுமதிக்கலாம்.</string>
     <string name="permdesc_handoverStatus">நடப்பு Android பீம் பரிமாற்றங்கள் குறித்த தகவலைப் பெற, ஆப்ஸை அனுமதிக்கிறது</string>
@@ -1440,17 +1476,18 @@
     <string name="permdesc_mount_unmount_filesystems">நீக்கக்கூடிய சேமிப்பகத்திற்கான கோப்பு முறைகளை மவுண்ட் செய்ய மற்றும் மவுண்ட் நீக்க பயன்பாட்டை அனுமதிக்கிறது.</string>
     <string name="permdesc_nearby_wifi_devices">அருகிலுள்ள வைஃபை சாதனங்களைத் தெரியப்படுத்தவும் இணைக்கவும் இருப்பிடத்தைத் தீர்மானிக்கவும் இது ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_nfc">குறுகிய இடைவெளி தகவல்பரிமாற்றம் (NFC), குறிகள், கார்டுகள் மற்றும் ரீடர்கள் ஆகியவற்றுடன் தொடர்புகொள்ள, ஆப்ஸை அனுமதிக்கிறது.</string>
+    <string name="permdesc_nfcTransactionEvent">பாதுகாப்பு உறுப்பில் நிகழ்கின்ற பணப் பரிமாற்றங்கள் குறித்த தகவல்களைப் பெற ஆப்ஸை அனுமதிக்கும்.</string>
     <string name="permdesc_observeCompanionDevicePresence">சாதனங்கள் அருகிலோ தொலைவிலோ இருக்கும்போது துணைச் சாதனம் இருப்பதைக் கண்காணிக்க துணைத் தயாரிப்பு ஆப்ஸை அனுமதிக்கும்.</string>
-    <string name="permdesc_persistentActivity">நினைவகத்தில் நிலையாக இருக்கும் தன்னுடைய பகுதிகளை உருவாக்கப் ஆப்ஸை அனுமதிக்கிறது. இதனால பிற பயன்பாடுகளுக்குக் கிடைக்கும் நினைவகம் வரையறுக்கப்பட்டு, டேப்லெட்டின் வேகத்தைக் குறைக்கலாம்.</string>
+    <string name="permdesc_persistentActivity">நினைவகத்தில் நிலையாக இருக்கும் தன்னுடைய பகுதிகளை உருவாக்கப் ஆப்ஸை அனுமதிக்கிறது. இதனால பிற பயன்பாடுகளுக்குக் கிடைக்கும் நினைவகம் வரையறுக்கப்பட்டு, மொபைலின் வேகத்தைக் குறைக்கலாம்</string>
     <string name="permdesc_postNotification">அறிவிப்புகளைக் காட்ட ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permdesc_preferredPaymentInfo">பதிவுசெய்யப்பட்ட கருவிகள், சேருமிடத்திற்கான வழி போன்ற விருப்பமான NFC பேமெண்ட் சேவை தொடர்பான தகவல்களைப் பெற ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_processOutgoingCalls">மற்றொரு எண்ணிற்கு அழைப்பைத் திருப்பிவிடு அல்லது அழைப்பை முழுமையாக ரத்துசெய் என்னும் விருப்பத்துடன், வெளிச்செல்லும் அழைப்பை மேற்கொள்ளும்போது டயல் செய்யப்படுகின்ற எண்ணைப் பார்க்க, ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_queryAllPackages">நிறுவப்பட்டுள்ள அனைத்துப் பேக்கேஜ்களையும் பார்ப்பதற்கு ஆப்ஸை அனுமதிக்கும்.</string>
     <string name="permdesc_readBasicPhoneState">சாதனத்திலுள்ள அடிப்படையான டெலிஃபோனி அம்சங்களை அணுக ஆப்ஸை அனுமதிக்கும்.</string>
-    <string name="permdesc_readCalendar">இந்த ஆப்ஸ் உங்கள் டேப்லெட்டில் சேமிக்கப்பட்டுள்ள கேலெண்டர் நிகழ்வுகள் அனைத்தையும் படிக்கலாம், உங்கள் கேலெண்டர் தரவைப் பகிரலாம் அல்லது சேமிக்கலாம்.</string>
+    <string name="permdesc_readCalendar">இந்த ஆப்ஸ் உங்கள் மொபைலில் சேமிக்கப்பட்டுள்ள கேலெண்டர் நிகழ்வுகள் அனைத்தையும் படிக்கலாம், உங்கள் கேலெண்டர் தரவைப் பகிரலாம் அல்லது சேமிக்கலாம்.</string>
     <string name="permdesc_readCallLog">இந்த ஆப்ஸ் உங்கள் அழைப்பு வரலாற்றைப் படிக்கலாம்.</string>
     <string name="permdesc_readCellBroadcasts">உங்கள் சாதனத்தில் பெறப்படும் செல் அலைபரப்புச் செய்திகளைப் படிப்பதற்குப் ஆப்ஸை அனுமதிக்கிறது. அவசரநிலை சூழ்நிலைகளை உங்களுக்கு எச்சரிக்கைச் செய்வதற்கு சில இடங்களில் செல் அலைபரப்பு விழிப்பூட்டல்கள் வழங்கப்படும். அவசரநிலை மொபைல் அலைபரப்புப் பெறப்படும்போது உங்கள் சாதனத்தின் செயல்திறன் அல்லது செயல்பாட்டுடன் தீங்கிழைக்கும் ஆப்ஸ் அதைத் தடுக்கலாம்.</string>
-    <string name="permdesc_readContacts">உங்கள் டேப்லெட்டில் சேமித்துள்ள தொடர்புகள் பற்றிய தரவை அணுக ஆப்ஸை அனுமதிக்கும். உங்கள் டேப்லெட்டில் உள்ள தொடர்புகளை உருவாக்கிய கணக்குகளுக்கான அணுகலும் ஆப்ஸிற்கு இருக்கும். நீங்கள் நிறுவிய ஆப்ஸ் மூலம் உருவாக்கப்பட்ட அனைத்துக் கணக்குகளும் இதில் உள்ளடங்கக்கூடும். இந்த அனுமதி உங்கள் தொடர்புத் தரவைச் சேமிக்க ஆப்ஸை அனுமதிக்கிறது, மேலும் தீங்கிழைக்கும் ஆப்ஸ் உங்களுக்குத் தெரியாமல் தொடர்பு தரவைப் பகிரக்கூடும்.</string>
+    <string name="permdesc_readContacts">உங்கள் மொபைலில் சேமித்துள்ள தொடர்புகள் பற்றிய தரவை அணுக ஆப்ஸை அனுமதிக்கும். உங்கள் மொபைலில் உள்ள தொடர்புகளை உருவாக்கிய கணக்குகளுக்கான அணுகலும் ஆப்ஸிற்கு இருக்கும். நீங்கள் நிறுவிய ஆப்ஸ் மூலம் உருவாக்கப்பட்ட அனைத்துக் கணக்குகளும் இதில் உள்ளடங்கக்கூடும். இந்த அனுமதி உங்கள் தொடர்புத் தரவைச் சேமிக்க ஆப்ஸை அனுமதிக்கிறது, மேலும் தீங்கிழைக்கும் ஆப்ஸ் உங்களுக்குத் தெரியாமல் தொடர்பு தரவைப் பகிரக்கூடும்.</string>
     <string name="permdesc_readInstallSessions">நிறுவல் அமர்வுகளைப் படிக்க, ஆப்ஸை அனுமதிக்கிறது. இது செயல்படும் தொகுப்பு நிறுவல்களைப் பற்றிய விவரங்களைப் பார்க்க அனுமதிக்கிறது.</string>
     <string name="permdesc_readMediaAudio">உங்கள் பகிர்ந்த சேமிப்பகத்திலுள்ள ஆடியோ ஃபைல்களைப் படிக்க ஆப்ஸை அனுமதிக்கும்.</string>
     <string name="permdesc_readMediaImages">உங்கள் பகிர்ந்த சேமிப்பகத்திலுள்ள பட ஃபைல்களைப் படிக்க ஆப்ஸை அனுமதிக்கும்.</string>
@@ -1458,11 +1495,11 @@
     <string name="permdesc_readNetworkUsageHistory">குறிப்பிட்ட நெட்வொர்க்குகள் மற்றும் பயன்பாடுகளுக்கான நெட்வொர்க் ஆப்ஸின் வரலாற்றைப் படிக்க, ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_readPhoneNumbers">சாதனத்தின் ஃபோன் எண்களை அணுக, ஆப்ஸை அனுமதிக்கும்.</string>
     <string name="permdesc_readPhoneState">சாதனத்தின் மொபைல் அம்சங்களை அணுகப் ஆப்ஸை அனுமதிக்கிறது. மொபைல் மற்றும் சாதன ஐடிகள், அழைப்பு செயலில் உள்ளதா மற்றும் அழைப்பு மூலம் இணைக்கப்பட்ட தொலைக் கட்டுப்பாட்டு எண் ஆகியவற்றைத் தீர்மானிக்க இந்த அனுமதி ஆப்ஸை அனுமதிக்கிறது.</string>
-    <string name="permdesc_readSms">இந்த ஆப்ஸ் உங்கள் டேப்லெட்டில் சேமிக்கப்பட்டுள்ள எல்லா SMS (உரை) செய்திகளையும் படிக்கலாம்.</string>
+    <string name="permdesc_readSms">இந்த ஆப்ஸ் உங்கள் மொபைலில் சேமிக்கப்பட்டுள்ள எல்லா SMS (உரை) செய்திகளையும் படிக்கலாம்.</string>
     <string name="permdesc_readSyncSettings">கணக்கிற்கான ஒத்திசைவு அமைப்புகளைப் படிக்க ஆப்ஸை அனுமதிக்கிறது. எடுத்துக்காட்டாக, பீப்பிள் ஆப்ஸ் கணக்குடன் ஒத்திசைக்கப்பட்டுள்ளதா என்பதை இது தீர்மானிக்கலாம்.</string>
     <string name="permdesc_readSyncStats">இதுவரையிலான ஒத்திசைவு விவரங்கள் மற்றும் ஒத்திசைக்கப்பட்ட தரவு எவ்வளவு ஆகியன உட்பட, கணக்கிற்கான ஒத்திசைவுப் புள்ளிவிவரங்களைப் படிக்க ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_readVisualUserSelect">உங்கள் பகிர்ந்த சேமிப்பகத்தில் இருந்து நீங்கள் தேர்ந்தெடுக்கும் பட/வீடியோ ஃபைல்களைப் படிக்க ஆப்ஸை அனுமதிக்கும்.</string>
-    <string name="permdesc_receiveBootCompleted">மறுஇயக்கம் முடிந்தது, விரைவில் தானாகவே தொடங்க, ஆப்ஸை அனுமதிக்கிறது. இதனால் டேப்லெட் நீண்ட நேரம் கழித்து தொடங்கும் மற்றும் எப்போதும் இயங்குகின்ற டேப்லெட்டின் ஒட்டுமொத்தச் செயல்பாட்டையும் தாமதமாகும்.</string>
+    <string name="permdesc_receiveBootCompleted">மறுஇயக்கம் முடிந்தது, விரைவில் தானாகவே தொடங்க, ஆப்ஸை அனுமதிக்கிறது. இதனால் மொபைல் நீண்ட நேரம் கழித்து தொடங்கும் மற்றும் எப்போதும் இயங்குகின்ற மொபைலின் ஒட்டுமொத்தச் செயல்பாட்டையும் தாமதமாகும்.</string>
     <string name="permdesc_receiveMms">MMS செய்திகளைப் பெற, செயற்படுத்தப் ஆப்ஸை அனுமதிக்கிறது. இதற்கு அர்த்தம் உங்கள் சாதனத்திற்கு அனுப்பப்படும் செய்திகளை உங்களுக்குக் காட்டாமல் கண்காணிக்கவோ, நீக்கவோ ஆப்ஸால் முடியும் என்பதாகும்.</string>
     <string name="permdesc_receiveSms">SMS செய்திகளைப் பெற, செயற்படுத்தப் ஆப்ஸை அனுமதிக்கிறது. இதற்கு அர்த்தம் உங்கள் சாதனத்திற்கு அனுப்பப்படும் செய்திகளை உங்களுக்குக் காட்டாமல் கண்காணிப்பதற்கு அல்லது நீக்குவதற்கு ஆப்ஸால் முடியும் என்பதாகும்.</string>
     <string name="permdesc_receiveWapPush">WAP செய்திகளைப் பெற, செயற்படுத்தப் ஆப்ஸை அனுமதிக்கிறது. உங்களுக்கு அனுப்பப்படும் செய்திகளை உங்களுக்குக் காட்டாமல் கண்காணிக்க அல்லது நீக்குவதற்கான திறன் இந்த அனுமதியில் உள்ளடங்கும்.</string>
@@ -1484,7 +1521,7 @@
     <string name="permdesc_sendSms">SMS செய்திகளை அனுப்ப ஆப்ஸை அனுமதிக்கிறது. இதற்கு எதிர்பாராத பேமெண்ட்கள் விதிக்கப்படலாம். தீங்கு விளைவிக்கும் ஆப்ஸ் உங்களின் உறுதிப்படுத்தல் எதுவுமின்றி செய்திகளை அனுப்பி உங்களுக்குக் கட்டணம் விதிக்கலாம்.</string>
     <string name="permdesc_setAlarm">நிறுவிய அலார கடிகாரப் பயன்பாட்டில் அலாரத்தை அமைக்க, ஆப்ஸை அனுமதிக்கிறது. சில அலார கடிகார பயன்பாடுகளில் இந்த அம்சம் இல்லாமல் இருக்கலாம்.</string>
     <string name="permdesc_setInputCalibration">தொடுதல் திரையின் அளவு திருத்த அளபுருக்களை மாற்ற, ஆப்ஸை அனுமதிக்கிறது. சாதாரண பயன்பாடுகளுக்குத் தேவைப்படாது.</string>
-    <string name="permdesc_setTimeZone">டேப்லெட்டின் நேர மண்டலத்தை மாற்ற, ஆப்ஸை அனுமதிக்கிறது.</string>
+    <string name="permdesc_setTimeZone">மொபைலின் நேர மண்டலத்தை மாற்ற, ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_setWallpaper">முறைமை வால்பேப்பரை அமைக்க ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_setWallpaperHints">முறைமை வால்பேப்பர் அளவுக் குறிப்புகளை அமைக்க ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_sim_communication">சிம் க்குக் கட்டளைகளை அனுப்ப ஆப்ஸை அனுமதிக்கிறது. இது மிகவும் ஆபத்தானதாகும்.</string>
@@ -1497,7 +1534,7 @@
     <string name="permdesc_subscribedFeedsRead">தற்போது ஒத்திசைந்த ஊட்டங்களைப் பற்றிய விவரங்களைப் பெற ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_systemAlertWindow">இந்த ஆப்ஸ் பிற ஆப்ஸின் மேலே அல்லது திரையின் பிற பகுதிகளில் தோன்றலாம். இது வழக்கமான ஆப்ஸ் உபயோகத்தில் குறுக்கிட்டு, பிற ஆப்ஸ் தோன்றும் விதத்தை மாற்றக்கூடும்.</string>
     <string name="permdesc_systemCamera">இந்த முன்னுரிமை பெற்ற அல்லது சிஸ்டம் ஆப்ஸால் சிஸ்டம் கேமராவைப் பயன்படுத்தி எப்போது வேண்டுமானாலும் படங்களை எடுக்கவோ வீடியோக்களை ரெக்கார்டு செய்யவோ முடியும். android.permission.CAMERA அனுமதியும் ஆப்ஸிற்குத் தேவை</string>
-    <string name="permdesc_transmitIr">டேப்லெட்டின் அகச்சிவப்பு டிரான்ஸ்மிட்டரைப் பயன்படுத்த, ஆப்ஸை அனுமதிக்கிறது.</string>
+    <string name="permdesc_transmitIr">தொலைபேசியின் அகச்சிவப்பு டிரான்ஸ்மிட்டரைப் பயன்படுத்த, ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_turnScreenOn">திரையைக் காட்ட ஆப்ஸை அனுமதிக்கும்.</string>
     <string name="permdesc_uninstall_shortcut">பயனரின் அனுமதி இல்லாமல் முகப்புத்திரையின் குறுக்குவழிகளை அகற்ற ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">பயனர் நடவடிக்கை இல்லாமல் ஏற்கெனவே நிறுவப்பட்ட ஆப்ஸைப் புதுப்பிக்க ஹோல்டரை அனுமதிக்கும்</string>
@@ -1510,12 +1547,13 @@
     <string name="permdesc_vibrate">அதிர்வைக் கட்டுப்படுத்தப் ஆப்ஸை அனுமதிக்கிறது.</string>
     <string name="permdesc_vibrator_state">அதிர்வு நிலையை அணுக ஆப்ஸை அனுமதிக்கும்.</string>
     <string name="permdesc_videoWrite">உங்களின் வீடியோ தொகுப்பை மாற்ற ஆப்ஸை அனுமதிக்கும்.</string>
-    <string name="permdesc_wakeLock">உறக்கநிலைக்குச் செல்லாமல் டேப்லெட்டைத் தடுக்க ஆப்ஸை அனுமதிக்கிறது.</string>
-    <string name="permdesc_writeCalendar">இந்த ஆப்ஸ் உங்கள் டேப்லெட்டில் கேலெண்டர் நிகழ்வுகளைச் சேர்க்கலாம், அகற்றலாம் அல்லது மாற்றலாம். இந்த ஆப்ஸ் கேலெண்டர் உரிமையாளர்கள் அனுப்பியது போல் தோன்றும் செய்திகளை அனுப்பலாம் அல்லது உரிமையாளர்களிடம் தெரிவிக்காமலே கேலெண்டரில் நிகழ்வுகளை மாற்றலாம்.</string>
-    <string name="permdesc_writeCallLog">உள்வரும் மற்றும் வெளிச்செல்லும் அழைப்புகள் குறித்த தகவல் உள்பட உங்கள் டேப்லெட்டின் அழைப்புப் பதிவைத் திருத்துவதற்குப் ஆப்ஸை அனுமதிக்கிறது. உங்கள் அழைப்பின் பதிவை அழிக்க அல்லது திருத்த தீங்கு விளைவிக்கும் ஆப்ஸ் இதைப் பயன்படுத்தலாம்.</string>
-    <string name="permdesc_writeContacts">உங்கள் டேப்லெட்டில் சேமித்துள்ள தொடர்புகள் பற்றிய தரவை மாற்ற ஆப்ஸை அனுமதிக்கும். இது தொடர்புத் தரவை நீக்கவும் ஆப்ஸை அனுமதிக்கும்.</string>
+    <string name="permdesc_wakeLock">உறக்கநிலைக்குச் செல்லாமல் மொபைலைத் தடுக்க ஆப்ஸை அனுமதிக்கிறது.</string>
+    <string name="permdesc_writeCalendar">இந்த ஆப்ஸ் உங்கள் மொபைலில் கேலெண்டர் நிகழ்வுகளைச் சேர்க்கலாம், அகற்றலாம் அல்லது மாற்றலாம். இந்த ஆப்ஸ் கேலெண்டர் உரிமையாளர்கள் அனுப்பியது போல் தோன்றும் செய்திகளை அனுப்பலாம் அல்லது உரிமையாளர்களிடம் தெரிவிக்காமலே கேலெண்டரில் நிகழ்வுகளை மாற்றலாம்.</string>
+    <string name="permdesc_writeCallLog">உள்வரும் மற்றும் வெளிச்செல்லும் அழைப்புகள் குறித்த தகவல் உள்பட உங்கள் மொபைல் அழைப்புப் பதிவைத் திருத்துவதற்குப் ஆப்ஸை அனுமதிக்கிறது. உங்கள் அழைப்பின் பதிவை அழிக்க அல்லது திருத்த தீங்கு விளைவிக்கும் ஆப்ஸ் இதைப் பயன்படுத்தலாம்.</string>
+    <string name="permdesc_writeContacts">உங்கள் மொபைலில் சேமித்துள்ள தொடர்புகள் பற்றிய தரவை மாற்ற ஆப்ஸை அனுமதிக்கும். இது தொடர்புத் தரவை நீக்கவும் ஆப்ஸை அனுமதிக்கும்.</string>
     <string name="permdesc_writeSettings">முறைமையின் அமைப்பு தரவைத் திருத்த, ஆப்ஸை அனுமதிக்கிறது. தீங்குவிளைவிக்கும் ஆப்ஸ், முறைமையின் உள்ளமைவைச் சிதைக்கலாம்.</string>
     <string name="permdesc_writeSyncSettings">கணக்கிற்கான ஒத்திசைவு அமைப்புகளைத் திருத்த ஆப்ஸை அனுமதிக்கிறது. எடுத்துக்காட்டாக, பீப்பிள் ஆப்ஸைக் கணக்குடன் ஒத்திசைவை இயக்குவதற்கு இது பயன்படுத்தப்படலாம்.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">பிற ஆப்ஸ் வாங்கிய E2EE தொடர்புக் கீகளின் சரிபார்ப்பு நிலைகளை மாற்ற ஆப்ஸை அனுமதிக்கும்</string>
     <string name="permgroupdesc_activityRecognition">உடல் செயல்பாட்டைக் கண்காணிக்கும்</string>
     <string name="permgroupdesc_calendar">கேலெண்டரை அணுகலாம்</string>
     <string name="permgroupdesc_calllog">மொபைல் அழைப்புப் பதிவைப் படிக்கும், எழுதும்</string>
@@ -1556,7 +1594,9 @@
     <string name="permlab_accessCoarseLocation">முன்புலத்தில் இயங்கும்போது மட்டும் தோராயமான இருப்பிடத்தைக் கண்டறிதல்</string>
     <string name="permlab_accessDrmCertificates">DRM சான்றிதழ்களை அணுகுதல்</string>
     <string name="permlab_accessFineLocation">முன்புலத்தில் இயங்கும்போது மட்டும் துல்லியமான இருப்பிடத்தைக் கண்டறிதல்</string>
+    <string name="permlab_accessHiddenProfile">மறைக்கப்பட்ட சுயவிவரங்களை அணுகுதல்</string>
     <string name="permlab_accessImsCallService">IMS அழைப்புச் சேவையை அணுகுதல்</string>
+    <string name="permlab_accessLastKnownCellId">கடைசியாகக் கண்டறிந்த மொபைல் அடையாளத்தை அணுகுதல்.</string>
     <string name="permlab_accessLocationExtraCommands">கூடுதல் இட வழங்குநரின் கட்டளைகளின் அணுகல்</string>
     <string name="permlab_accessNetworkConditions">பிணைய நிலைகள் பற்றிய அறிவிப்புகளைக் கவனித்தல்</string>
     <string name="permlab_accessNetworkState">நெட்வொர்க் இணைப்புகளைக் காட்டு</string>
@@ -1588,6 +1628,7 @@
     <string name="permlab_callCompanionApp">சிஸ்டம் மூலமாக அழைப்புகளைப் பார்த்தலும் கட்டுப்படுத்துதலும்.</string>
     <string name="permlab_callPhone">தொலைபேசி எண்களை நேரடியாக அழைத்தல்</string>
     <string name="permlab_camera">படங்கள் மற்றும் வீடியோக்களை எடுத்தல்</string>
+    <string name="permlab_cameraHeadlessSystemUser">காட்சி இடைமுகமற்ற சிஸ்டம் பயனராகக் கேமராவை அணுக ஆப்ஸையோ சேவையையோ அனுமதியுங்கள்.</string>
     <string name="permlab_cameraOpenCloseListener">கேமரா சாதனங்கள் திறக்கப்படும்போதோ மூடப்படும்போதோ அது குறித்த கால்பேக்குகளைப் பெற ஒரு ஆப்ஸையோ சேவையையோ அனுமதிக்கவும்.</string>
     <string name="permlab_changeNetworkState">பிணைய இணைப்புத்தன்மையை மாற்றுதல்</string>
     <string name="permlab_changeTetherState">இணைக்கப்பட்ட இணைப்புநிலையை மாற்றுதல்</string>
@@ -1612,6 +1653,7 @@
     <string name="permlab_foregroundServiceHealth">\"health\" எனும் வகையைக் கொண்ட முன்புலச் சேவையை இயக்குதல்</string>
     <string name="permlab_foregroundServiceLocation">\"location\" எனும் வகையைக் கொண்ட முன்புலச் சேவையை இயக்குதல்</string>
     <string name="permlab_foregroundServiceMediaPlayback">\"mediaPlayback\" எனும் வகையைக் கொண்ட முன்புலச் சேவையை இயக்குதல்</string>
+    <string name="permlab_foregroundServiceMediaProcessing">\"mediaProcessing\" எனும் வகையைக் கொண்ட முன்புலச் சேவையை இயக்குதல்</string>
     <string name="permlab_foregroundServiceMediaProjection">\"mediaProjection\" எனும் வகையைக் கொண்ட முன்புலச் சேவையை இயக்குதல்</string>
     <string name="permlab_foregroundServiceMicrophone">\"microphone\" எனும் வகையைக் கொண்ட முன்புலச் சேவையை இயக்குதல்</string>
     <string name="permlab_foregroundServicePhoneCall">\"phoneCall\" எனும் வகையைக் கொண்ட முன்புலச் சேவையை இயக்குதல்</string>
@@ -1641,6 +1683,7 @@
     <string name="permlab_mount_unmount_filesystems">SD அட்டை கோப்புமுறையை அமைக்கவும்</string>
     <string name="permlab_nearby_wifi_devices">அருகிலுள்ள வைஃபை சாதனங்களுடன் தொடர்பு கொள்ளுதல்</string>
     <string name="permlab_nfc">குறுகிய இடைவெளி தகவல்பரிமாற்றத்தைக் கட்டுப்படுத்துதல்</string>
+    <string name="permlab_nfcTransactionEvent">பாதுகாப்பு உறுப்பில் நிகழ்கின்ற பணப் பரிமாற்ற நிகழ்வு</string>
     <string name="permlab_observeCompanionDevicePresence">துணைச் சாதனத்தின் இருப்பைக் கண்காணித்தல்</string>
     <string name="permlab_persistentActivity">ஆப்ஸை எப்போதும் இயங்குமாறு செய்தல்</string>
     <string name="permlab_postNotification">அறிவிப்புகளைக் காட்டுதல்</string>
@@ -1710,12 +1753,13 @@
     <string name="permlab_uwb_ranging">அருகிலுள்ள அல்ட்ரா-வைடுபேண்ட் சாதனங்களுக்கிடையிலான தூரத்தைத் தீர்மானித்தல்</string>
     <string name="permlab_vibrate">அதிர்வைக் கட்டுப்படுத்துதல்</string>
     <string name="permlab_videoWrite">வீடியோ தொகுப்பை மாற்றுதல்</string>
-    <string name="permlab_wakeLock">டேப்லெட் உறக்க நிலைக்குச் செல்வதைத் தடுத்தல்</string>
+    <string name="permlab_wakeLock">தொலைபேசி உறக்கநிலைக்குச் செல்வதைத் தடுத்தல்</string>
     <string name="permlab_writeCalendar">உரிமையாளருக்குத் தெரியாமல் கேலெண்டர் நிகழ்வுகளைச் சேர்த்தல் அல்லது மாற்றுதல் மற்றும் விருந்தினர்களுக்கு மின்னஞ்சல் அனுப்புதல்</string>
     <string name="permlab_writeCallLog">அழைப்புப் பதிவை எழுதுதல்</string>
     <string name="permlab_writeContacts">உங்கள் தொடர்புகளை மாற்றுதல்</string>
     <string name="permlab_writeSettings">சாதன அமைப்புகளை மாற்றுதல்</string>
     <string name="permlab_writeSyncSettings">ஒத்திசைவை இயக்குவதையும், முடக்குவதையும் மாற்றுதல்</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">பிற ஆப்ஸ் வாங்கிய E2EE தொடர்புக் கீகளின் சரிபார்ப்பு நிலைகளை மாற்றுதல்</string>
     <string name="perms_description_app">%1$s வழங்கியது.</string>
     <string name="perms_new_perm_prefix"><font fgcolor="#ff33b5e5" size="12">புதியது: </font></string>
     <string name="personal_apps_suspended_turn_profile_on">ஆன் செய்</string>
@@ -1753,10 +1797,10 @@
     <string name="policydesc_limitPassword">திரைப் பூட்டின் கடவுச்சொற்கள் மற்றும் பின்களில் அனுமதிக்கப்படும் நீளத்தையும் எழுத்துக்குறிகளையும் கட்டுப்படுத்தும்.</string>
     <string name="policydesc_resetPassword">திரைப் பூட்டை மாற்றும்.</string>
     <string name="policydesc_setGlobalProxy">கொள்கை இயக்கப்பட்டிருக்கும்போது பயன்படுத்த வேண்டிய சாதன குளோபல் ப்ராக்ஸியை அமைக்கவும். சாதன உரிமையாளரால் மட்டுமே குளோபல் ப்ராக்ஸியை அமைக்க முடியும்.</string>
-    <string name="policydesc_watchLogin">திரையைத் திறக்கும்போது உள்ளிட்ட தவறான கடவுச்சொற்களின் எண்ணிக்கையைக் கண்காணிக்கும், மேலும் கடவுச்சொற்கள் பலமுறை தவறாக உள்ளிட்டிருந்தால், டேப்லெட்டைப் பூட்டும் அல்லது டேப்லெட்டின் எல்லா தரவையும் அழிக்கும்.</string>
-    <string name="policydesc_watchLogin_secondaryUser">திரையைத் திறக்கும் போது, எத்தனை முறை தவறான கடவுச்சொல்லை உள்ளிட்டீர்கள் என்பதைக் கண்காணிக்கிறது மற்றும் கடவுச்சொற்களைப் பல முறை தவறாக உள்ளிட்டால், டேப்லெட்டைப் பூட்டும் அல்லது இந்தப் பயனரின் எல்லா தரவையும் அழிக்கும்.</string>
-    <string name="policydesc_wipeData">ஆரம்பநிலைத் தரவு மீட்டமைப்பின் மூலம் எச்சரிக்கை வழங்காமல் டேப்லெட்டின் தரவை அழிக்கலாம்.</string>
-    <string name="policydesc_wipeData_secondaryUser">எச்சரிக்கை எதுவுமின்றி, டேப்லெட்டில் உள்ள இந்தப் பயனரின் தரவை அழிக்கும்.</string>
+    <string name="policydesc_watchLogin">திரையைத் திறக்கும்போது உள்ளிட்ட தவறான கடவுச்சொற்களின் எண்ணிக்கையைக் கண்காணிக்கும், மேலும் கடவுச்சொற்கள் பலமுறை தவறாக உள்ளிட்டிருந்தால், மொபைலைப் பூட்டும் அல்லது மொபைலின் எல்லா தரவையும் அழிக்கும்.</string>
+    <string name="policydesc_watchLogin_secondaryUser">திரையைத் திறக்கும் போது, எத்தனை முறை தவறான கடவுச்சொல்லை உள்ளிட்டீர்கள் என்பதைக் கண்காணிக்கிறது மற்றும் கடவுச்சொற்களைப் பல முறை தவறாக உள்ளிட்டால், ஃபோனைப் பூட்டும் அல்லது இந்தப் பயனரின் எல்லா தரவையும் அழிக்கும்.</string>
+    <string name="policydesc_wipeData">ஆரம்பநிலைத் தரவு மீட்டமைப்பின் மூலம் எச்சரிக்கை வழங்காமல் மொபைலின் தரவை அழிக்கலாம்.</string>
+    <string name="policydesc_wipeData_secondaryUser">எச்சரிக்கை எதுவுமின்றி, ஃபோனில் உள்ள இந்தப் பயனரின் தரவை அழிக்கும்.</string>
     <string name="policylab_disableCamera">கேமராக்களை முடக்கு</string>
     <string name="policylab_disableKeyguardFeatures">திரைப் பூட்டின் சில அம்சங்களை முடக்குதல்</string>
     <string name="policylab_encryptedStorage">சேமிப்பிட முறைமையாக்கலை அமை</string>
@@ -1765,7 +1809,7 @@
     <string name="policylab_limitPassword">கடவுச்சொல் விதிகளை அமைக்கவும்</string>
     <string name="policylab_resetPassword">திரைப் பூட்டை மாற்றுதல்</string>
     <string name="policylab_setGlobalProxy">சாதன குளோபல் ப்ராக்ஸியை அமை</string>
-    <string name="policylab_watchLogin">திரையை அன்லாக் செய்வதற்கான முயற்சிகளைக் கண்காணி</string>
+    <string name="policylab_watchLogin">திரையை அன்லாக் செய்வதற்கான முயற்சிகளைக் கண்காணித்தல்</string>
     <string name="policylab_wipeData">எல்லா டேட்டாவையும் அழித்தல்</string>
     <string name="policylab_wipeData_secondaryUser">பயனர் தரவை அழி</string>
     <string name="popup_window_default_title">பாப்அப் சாளரம்</string>
@@ -1773,7 +1817,7 @@
     <string name="postalTypeHome">வீடு</string>
     <string name="postalTypeOther">மற்றவை</string>
     <string name="postalTypeWork">அலுவலகம்</string>
-    <string name="power_dialog">டேப்லெட் விருப்பங்கள்</string>
+    <string name="power_dialog">தொலைபேசி விருப்பங்கள்</string>
     <string name="power_off">பவர் ஆஃப்</string>
     <string name="prepend_shortcut_label">மெனு+</string>
     <string name="preposition_for_date">%s அன்று</string>
@@ -1783,9 +1827,21 @@
     <string name="print_service_installed_title">%s சேவை நிறுவப்பட்டது</string>
     <string name="printing_disabled_by">பிரிண்ட் செய்வதை %s தடுத்துள்ளது.</string>
     <string name="private_dns_broken_detailed">தனிப்பட்ட DNS சேவையகத்தை அணுக இயலாது</string>
+    <string name="private_profile_label_badge">தனிப்பட்ட %1$s</string>
+    <string name="private_space_biometric_prompt_title">ரகசிய இடம்</string>
+    <string name="private_space_deleted_by_admin">ரகசிய இடம் அகற்றப்பட்டது</string>
+    <string name="private_space_deleted_by_admin_details">இந்த நிர்வகிக்கப்படும் சாதனத்தில் ரகசிய இடங்களை உங்கள் நிறுவனம் அனுமதிப்பதில்லை.</string>
+    <string name="private_space_set_up_screen_lock_message">ரகசிய இடத்தைப் பயன்படுத்த, சாதனத்தில் திரைப் பூட்டை அமையுங்கள்</string>
     <string name="profile_encrypted_detail">பணிக் கணக்கு பூட்டியுள்ளது</string>
     <string name="profile_encrypted_message">பணிக் கணக்கை அன்லாக் செய்யத் தட்டுக</string>
     <string name="profile_encrypted_title">சில செயலுக்கு கட்டுப்பாடு இருக்கலாம்</string>
+    <string name="profile_label_clone">குளோன்</string>
+    <string name="profile_label_communal">பொது</string>
+    <string name="profile_label_private">இரகசியமானவை</string>
+    <string name="profile_label_test">பரிசோதனை</string>
+    <string name="profile_label_work">பணி</string>
+    <string name="profile_label_work_2">பணி 2</string>
+    <string name="profile_label_work_3">பணி 3</string>
     <string name="progress_erasing">பகிர்ந்த சேமிப்பகத்தை அழிக்கிறது…</string>
     <string name="progress_erasing_usbhost">USB சேமிப்பகத்தை வடிவமைக்கிறது…</string>
     <string name="progress_unmounting">SD அட்டையை நீக்குகிறது…</string>
@@ -1803,6 +1859,8 @@
     <string name="reboot_to_update_reboot">மீண்டும் தொடங்குகிறது…</string>
     <string name="reboot_to_update_title">Android முறைமை புதுப்பிப்பு</string>
     <string name="recent_tasks_title">சமீபத்தியவை</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">உணர்வுபூர்வமான அறிவிப்பு உள்ளடக்கம் மறைக்கப்பட்டது</string>
     <string name="redo">மீண்டும்செய்</string>
     <string name="reduce_bright_colors_feature_name">மிகக் குறைவான வெளிச்சம்</string>
     <string name="region_picker_section_all">எல்லா மண்டலங்களும்</string>
@@ -1880,12 +1938,36 @@
     <string name="safe_media_volume_warning">"பரிந்துரைத்த அளவை விட ஒலியை அதிகரிக்கவா?
 
 நீண்ட நேரத்திற்கு அதிகளவில் ஒலி கேட்பது கேட்கும் திறனைப் பாதிக்கலாம்."</string>
+    <string name="satellite_notification_how_it_works">இது செயல்படும் விதம்</string>
+    <string name="satellite_notification_manual_summary">மொபைல்/வைஃபை நெட்வொர்க் இல்லாமல் மெசேஜ்களை அனுப்பலாம், பெறலாம்</string>
+    <string name="satellite_notification_manual_title">சாட்டிலைட் மெசேஜிங்கைப் பயன்படுத்தவா?</string>
+    <string name="satellite_notification_open_message">Messages ஆப்ஸைத் திறக்கவும்</string>
+    <string name="satellite_notification_summary">மொபைல்/வைஃபை நெட்வொர்க் இல்லாமல் நீங்கள் மெசேஜ்களை அனுப்பலாம் பெறலாம்</string>
+    <string name="satellite_notification_title">சாட்டிலைட்டுடன் தானாக இணைக்கப்பட்டது</string>
+    <string name="scCellularNetworkSecuritySummary">என்க்ரிப்ஷன், என்க்ரிப்ஷன் செய்யப்படாத நெட்வொர்க்குகளுக்கான அறிவிப்புகள்</string>
+    <string name="scCellularNetworkSecurityTitle">மொபைல் நெட்வொர்க் பாதுகாப்பு</string>
+    <string name="scIdentifierDisclosureIssueSummary">"%1$sக்கு, உங்கள் %2$s சிம்மைப் பயன்படுத்தும்போது அருகிலுள்ள நெட்வொர்க் உங்கள் சாதனத்தின் தனிப்பட்ட ஐடியை (IMSI அல்லது IMEI) ரெக்கார்டு செய்துள்ளது.
+
+அதாவது உங்கள் இருப்பிடம், செயல்பாடு அல்லது அடையாளம் பதிவுசெய்யப்பட்டுள்ளது. இது பொதுவான நடைமுறையாகும். ஆனால் தனியுரிமை பற்றிய அக்கறை கொண்டவர்களுக்கு இது ஒரு பிரச்சனையாக இருக்கலாம்."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">%1$sக்கு, உங்கள் %2$s சிம்மைப் பயன்படுத்தும்போது அருகிலுள்ள நெட்வொர்க் உங்கள் சாதனத்தின் தனிப்பட்ட ஐடியை (IMSI அல்லது IMEI) ரெக்கார்டு செய்துள்ளது</string>
+    <string name="scIdentifierDisclosureIssueTitle">சாதன ஐடி அணுகப்பட்டது</string>
+    <string name="scNullCipherIssueActionGotIt">சரி</string>
+    <string name="scNullCipherIssueActionLearnMore">மேலும் அறிக</string>
+    <string name="scNullCipherIssueActionSettings">மொபைல் நெட்வொர்க் பாதுகாப்பு அமைப்புகள்</string>
+    <string name="scNullCipherIssueEncryptedSummary">%1$s சிம் இணைப்பு இப்போது மிகவும் பாதுகாப்பானது</string>
+    <string name="scNullCipherIssueEncryptedTitle">என்க்ரிப்ஷன் செய்யப்பட்ட நெட்வொர்க் %1$s உடன் இணைக்கப்பட்டுள்ளது</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"உங்கள் %1$s சிம்மைப் பயன்படுத்தும்போது அழைப்புகள், மெசேஜ்கள், தரவு ஆகியவை தற்போது மிக எளிதாகப் பாதிப்புக்குள்ளாகலாம்.
+
+உங்கள் இணைப்பு மீண்டும் என்க்ரிப்ஷன் செய்யப்பட்டவுடன், மற்றொரு அறிவிப்பைப் பெறுவீர்கள்."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">உங்கள் %1$s சிம்மைப் பயன்படுத்தும்போது அழைப்புகள், மெசேஜ்கள், தரவு ஆகியவை தற்போது மிக எளிதாகப் பாதிப்புக்குள்ளாகலாம்</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">என்க்ரிப்ஷன் செய்யப்படாத நெட்வொர்க்குடன் இணைக்கப்பட்டுள்ளது</string>
     <string name="screen_compat_mode_hint">சிஸ்டம் அமைப்பு > ஆப்ஸ் > பதிவிறக்கம் என்பதில் இதை மீண்டும் இயக்கவும்.</string>
     <string name="screen_compat_mode_scale">அளவு</string>
     <string name="screen_compat_mode_show">எப்போதும் காட்டு</string>
     <string name="screen_lock">திரைப் பூட்டு</string>
     <string name="screen_lock_app_setting_name">திரைப் பூட்டைப் பயன்படுத்து</string>
     <string name="screen_lock_dialog_default_subtitle">தொடர்வதற்கு உங்கள் திரைப் பூட்டை உள்ளிடுங்கள்</string>
+    <string name="screen_not_shared_sensitive_content">பாதுகாப்பிற்காக, திரைப் பகிர்வில் இருந்து ஆப்ஸ் உள்ளடக்கம் மறைக்கப்பட்டுள்ளது</string>
     <string name="screenshot_edit">திருத்து</string>
     <string name="search_hint">தேடு...</string>
     <string name="search_language_hint">மொழி பெயரை உள்ளிடுக</string>
@@ -1929,6 +2011,8 @@
     <string name="serviceErased">அழித்தல் வெற்றியடைந்தது.</string>
     <string name="serviceNotProvisioned">சேவை ஒதுக்கப்படவில்லை.</string>
     <string name="serviceRegistered">பதிவுசெய்தல் வெற்றியடைந்தது.</string>
+    <string name="set_up_screen_lock_action_label">திரைப் பூட்டை அமை</string>
+    <string name="set_up_screen_lock_title">திரைப் பூட்டை அமையுங்கள்</string>
     <string name="sha1_fingerprint">SHA-1 ஃபிங்கர்பிரிண்ட்:</string>
     <string name="sha256_fingerprint">SHA-256 ஃபிங்கர்பிரிண்ட்:</string>
     <string name="share">பகிர்</string>
@@ -1945,7 +2029,7 @@
     <string name="shortcut_restore_unknown_issue">ஷார்ட்கட்டை மீட்டமைக்க முடியவில்லை</string>
     <string name="shortcut_restored_on_lower_version">ஆப்ஸ் முந்தையப் பதிப்பிற்கு மாற்றப்பட்டது, அல்லது இந்த ஷார்ட்கட் வேலை செய்யவில்லை</string>
     <string name="show_ime">கைமுறை கீபோர்டு இயக்கத்தில் இருக்கும் போது IMEஐ திரையில் வைத்திரு</string>
-    <string name="shutdown_confirm">உங்கள் டேப்லெட் முடக்கப்படும்.</string>
+    <string name="shutdown_confirm">உங்கள் தொலைபேசி முடக்கப்படும்.</string>
     <string name="shutdown_confirm_question">மூட விரும்புகிறீர்களா?</string>
     <string name="shutdown_progress">முடங்குகிறது…</string>
     <string name="silent_mode">சைலன்ட் பயன்முறை</string>
@@ -2043,6 +2127,7 @@
     <string name="twilight_service">Twilight சேவை</string>
     <string name="ui_translation_accessibility_translated_text">%1$s மொழிபெயர்க்கப்பட்டது.</string>
     <string name="ui_translation_accessibility_translation_finished">%1$s மொழியிலிருந்து %2$s மொழிக்கு மெசேஜ் மொழிபெயர்க்கப்பட்டது.</string>
+    <string name="unarchival_session_app_label">நிலுவையிலுள்ளது...</string>
     <string name="undo">செயல்தவிர்</string>
     <string name="unpin_specific_target">%1$s ஐப் பின் நீக்கு</string>
     <string name="unpin_target">பின்னை அகற்று</string>
@@ -2115,7 +2200,7 @@
     <string name="user_switched">நடப்பு பயனர் %1$s.</string>
     <string name="user_switching_message">%1$sக்கு மாறுகிறது…</string>
     <string name="validity_period">செல்லுபடியாகும் காலம்:</string>
-    <string name="vdm_camera_access_denied">உங்கள் %1$s சாதனத்திலிருந்து டேப்லெட்டின் கேமராவை அணுக முடியாது</string>
+    <string name="vdm_camera_access_denied">உங்கள் %1$s சாதனத்திலிருந்து மொபைலின் கேமராவை அணுக முடியாது</string>
     <string name="vdm_pip_blocked">ஸ்ட்ரீம் செய்யும்போது பிக்ச்சர்-இன்-பிக்ச்சர் அம்சத்தைப் பயன்படுத்த முடியாது</string>
     <string name="vdm_secure_window">ஸ்ட்ரீமின்போது இதை அணுக முடியாது. அதற்குப் பதிலாக உங்கள் மொபைலில் பயன்படுத்திப் பார்க்கவும்.</string>
     <string name="view_and_control_notification_content">%s சேவையால் உங்கள் திரையைப் பார்க்கவும் கட்டுப்படுத்தவும் முடியும். பார்க்கத் தட்டவும்.</string>
@@ -2234,7 +2319,13 @@
     <string name="zen_mode_feature_name">தொந்தரவு செய்யாதே</string>
     <string name="zen_mode_forever">ஆஃப் செய்யும் வரை</string>
     <string name="zen_mode_forever_dnd">"'தொந்தரவு செய்யாதே' என்பதை முடக்கும் வரை"</string>
+    <string name="zen_mode_implicit_activated">ஆன்</string>
+    <string name="zen_mode_implicit_deactivated">ஆஃப்</string>
+    <string name="zen_mode_implicit_trigger_description">நிர்வகிப்பது: %1$s</string>
     <string name="zen_mode_rule_name_combination">%1$s / %2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">ஏதேனும் கேலெண்டர்</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s - %2$s</string>
     <string name="zen_mode_until">%1$s வரை</string>
     <string name="zen_mode_until_next_day">%1$s வரை</string>
     <string name="zen_upgrade_notification_content">எவற்றையெல்லாம் தடுக்கிறது என்பதைப் பார்க்க, தட்டவும்.</string>

@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Bixbyతో మాట్లాడండి</string>
     <string name="accessibility_corner_action_type_zoom_in">జూమ్ ఇన్</string>
     <string name="accessibility_corner_action_type_zoom_out">జూమ్ అవుట్</string>
+    <string name="accessibility_dialog_button_allow_samsung">అనుమతించు</string>
+    <string name="accessibility_dialog_button_deny_samsung">తిరస్కరించు</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">అన్‌ఇన్‌స్టాల్ చేయి</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">పవర్ కీ మరియు వాల్యూమ్ పెంచే కీలను త్వరగా నొక్కడం వలన కింది విధులు ఆన్ లేదా ఆఫ్ చేయబడతాయి:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">ప్రక్కన ఉన్న మరియు వాల్యూమ్ పెంపు బటన్‌లను వెంటవెంటనే నొక్కితే, కింది విధులు ఆన్ లేదా ఆఫ్ అవుతాయి:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">పవర్ కీ మరియు వాల్యూమ్ పెంచే కీలను త్వరగా నొక్కడం వలన %s ఆన్ లేదా ఆఫ్ చేయబడుతుంది.</string>
@@ -117,6 +120,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">భద్రతా విధానం ఈ ఖాతాని జోడించడాన్ని నిరోధిస్తుంది.</string>
     <string name="account_removal_restrict">భద్రతా విధానం ఈ ఖాతాని తీసివేయడాన్ని నిరోధిస్తుంది.</string>
+    <string name="action_bar_up_description">ఎగువకు నావిగేట్ చేయి</string>
     <string name="action_menu_overflow_description">మరిన్ని ఎంపికలు</string>
     <string name="adb_active_notification_message">USB డీబగ్గింగ్ డిసేబుల్ చేసేందుకు ఎన్నుకోండి.</string>
     <string name="adb_active_notification_title">USB డీబగ్గింగ్ కనెక్ట్ చేయబడింది.</string>
@@ -125,6 +129,9 @@
     <string name="advance_wifi_sharing_msg">అందుబాటులో ఉన్న Wi-Fi నెట్‌వర్క్ గుర్తించబడింది. మీ మొబైల్ హాట్‌స్పాట్ కోసం మొబైల్ డేటాకి బదులుగా Wi-Fi భాగస్వామ్యాన్ని ఉపయోగించడానికి కనెక్ట్ చేయండి.</string>
     <string name="airplanemode_restrict">భద్రతా విధానం విమానం మోడ్‌ని ప్రారంభించడాన్ని నిరోధిస్తుంది.</string>
     <string name="allow_settings_changes">భద్రతా విధానం సెట్టింగ్‌లను మార్చడాన్ని నిరోధిస్తుంది.</string>
+    <string name="always_allow">ఎల్లప్పుడూ అనుమతించు</string>
+    <string name="app_block_button_open">తెరువు</string>
+    <string name="app_block_content">%1$s అప్లికేషన్ %2$s అప్లికేషన్‌ను తెరవాలనుకుంటోంది.</string>
     <string name="app_clone_storage">అంతర్గత నిల్వ (డ్యూయల్ మెసెంజర్)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">అప్లికేషన్‌లను ఎంచుకోండి</string>
     <string name="app_continuity_guide_cling_button_not_now">ఇప్పుడు కాదు</string>
@@ -139,31 +146,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">మీరు ఈ రోజు కోసం మీ మొత్తం %sని ఉపయోగించారు. మీరు దీన్ని సెట్టింగ్‌లలో మార్చవచ్చు.</string>
     <string name="app_restricted_message_concentration_mode">ఏకాగ్రత మోడ్‌లో %s నిరోధించబడింది. మరింత తెలుసుకోవడానికి మీ IT నిర్వాహకుడిని సంప్రదించండి.</string>
     <string name="app_updating_message">%s అప్‌డేట్ చేయబడుతోంది. తర్వాత మళ్లీ ప్రయత్నించండి.</string>
-    <string name="appblock_block_subtitle1_phone">మీ ఫోన్ మరియు వ్యక్తిగత డేటాని రక్షించడానికి, ఈ అప్లికేషన్ మోసపూరితమైనదిగా అనుమానించబడినందున దీన్ని ఇన్‌స్టాల్ చేయలేరు.</string>
-    <string name="appblock_block_subtitle1_tablet">మీ టాబ్లెట్ మరియు వ్యక్తిగత డేటాని రక్షించడానికి, ఈ అప్లికేషన్ మోసపూరితమైనదిగా అనుమానించబడినందున దీన్ని ఇన్‌స్టాల్ చేయలేరు.</string>
-    <string name="appblock_block_subtitle2">ఈ అప్లికేషన్ మోసపూరితమైనదిగా నివేదించబడినందున దీన్ని ఇన్‌స్టాల్ చేయలేరు.</string>
-    <string name="appblock_block_text1">ఈ అప్లికేషన్ ధృవీకరించబడిన మూలం నుండి రాలేదు మరియు మీ వ్యక్తిగత డేటాను దొంగిలించడానికి లేదా లీక్ చేయడానికి ఉపయోగించే సున్నితమైన అనుమతులు అవసరం కావచ్చు.</string>
-    <string name="appblock_block_text2">"హానికరమైన అప్లికేషన్‌లు మీ వ్యక్తిగత డేటాను దొంగిలించడానికి, మీ గుర్తింపు వలె నటించడానికి లేదా మీ ఆర్థిక ఖాతాలను ప్రాప్యత చేయడానికి సున్నితమైన అనుమతులను ఉపయోగించవచ్చు.
-
-చట్టబద్ధమైన ఆర్థిక సంస్థలకు ZIP ఫైల్‌లు, APK ఫైల్‌లు లేదా ఫైల్ నిర్వాహికి అప్లికేషన్‌లను ఇన్‌స్టాలేషన్ చేయాల్సిన అవసరం లేదు.
-
-మీరు ఇన్‌స్టాల్ చేసే అప్లికేషన్‌లు విశ్వసనీయ మూలం నుండి వచ్చాయని ఎల్లప్పుడూ నిర్ధారించుకోండి."</string>
-    <string name="appblock_warn_subtitle">ఈ అప్లికేషన్ మీ వ్యక్తిగత సమాచారాన్ని దొంగిలించవచ్చు లేదా లీక్ చేయవచ్చు.</string>
+    <string name="appblock_block_text_phone">ఈ అప్లికేషన్ మోసపూరితమైనదిగా నివేదించబడినదున లేదా మోసపూరితమైనదిగా నివేదించబడిన అప్లికేషన్‌కు సారూప్యంగా ఉన్నందున దీన్ని ఇన్‌స్టాల్ చేయలేరు. ఫిషింగ్ వంటి నేరాల్లో ఈ అప్లికేషన్ ఉపయోగించబడే అవకాశం ఉంది. మీ ఫోన్ మరియు డేటాని సురక్షితంగా ఉంచడానికి, ఈ పరిమితి దాటవేయలేరు.</string>
+    <string name="appblock_block_text_tablet">ఈ అప్లికేషన్ మోసపూరితమైనదిగా నివేదించబడినదున లేదా మోసపూరితమైనదిగా నివేదించబడిన అప్లికేషన్‌కు సారూప్యంగా ఉన్నందున దీన్ని ఇన్‌స్టాల్ చేయలేరు. ఫిషింగ్ వంటి నేరాల్లో ఈ అప్లికేషన్ ఉపయోగించబడే అవకాశం ఉంది. మీ టాబ్లెట్ మరియు డేటాని సురక్షితంగా ఉంచడానికి, ఈ పరిమితి దాటవేయలేరు.</string>
+    <string name="appblock_link_text">మరింత తెలుసుకోండి</string>
     <string name="appblock_warn_text1">"ధృవీకరించని మూలాల నుండి అప్లికేషన్‌లను ఇన్‌స్టాల్ చేయడం వలన మీ వ్యక్తిగత సమాచారాన్ని సేకరించడానికి లేదా మీ కార్యాచరణని ట్రాక్ చేయడానికి అప్లికేషన్‌లను అనుమతించవచ్చు.
 
 ఈ అప్లికేషన్‌ను ఇన్‌స్టాల్ చేయడం సిఫార్సు చేయబడలేదు.
 
 ఏమైనప్పటికీ మీరు దీన్ని ఇన్‌స్టాల్ చేయాలనుకుంటే, అప్లికేషన్ యొక్క గోప్యతా నోటీస్‌ను జాగ్రత్తగా సమీక్షించండి మరియు మీరు అవసరమైన అనుమతులను మాత్రమే అనుమతించారని నిర్ధారించుకోండి."</string>
-    <string name="appblock_warn_text2">"మోసపూరితమైన అప్లికేషన్‌లు తరచుగా పరిచయాలు, SMS మరియు ఫోటోల అనుమతులను ఉపయోగించి మీ వ్యక్తిగత సమాచారాన్ని పొందడానికి ప్రయత్నిస్తాయి.
-
-ఈ అప్లికేషన్‌ను ఇన్‌స్టాల్ చేయడం సిఫార్సు చేయబడలేదు.\\n
-ఏమైనప్పటికీ మీరు ఈ అప్లికేషన్‌ని ఇన్‌స్టాల్ చేయాలనుకుంటే, ఇది మీరు విశ్వసించే మూలం నుండి వచ్చిందని నిర్ధారించుకోండి మరియు మీ డేటాకు అనుమతులు లేదా ఇతర ప్రాప్యతను అనుమతించడం గురించి జాగ్రత్తగా ఉండండి."</string>
     <string name="application_default_restrict">పరికర నిర్వాహకుడు మరో అప్లికేషన్‌ను డిఫాల్ట్‌గా సెట్ చేసారు.</string>
     <string name="auto_click_paused">స్వీయ క్లిక్ పాజ్ చేయబడింది.</string>
     <string name="auto_click_resumed">స్వీయ క్లిక్ పునఃప్రారంభించబడింది.</string>
     <string name="autofill_never_use_for_this_app">ఈ అప్లికేషన్ కోసం ఎప్పటికీ %sని ఉపయోగించవద్దు</string>
     <string name="autofill_save_cancel">రద్దు చేయి</string>
     <string name="autofill_save_never_OK">సరే</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">భద్రతా విధానం బ్యాకప్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="badPin2">PIN2 చెల్లదు. మళ్లీ ప్రయత్నించండి.</string>
     <string name="badPuk2">మీరు నమోదు చేసిన PUK2 సరైనది కాదు.</string>
@@ -174,8 +171,6 @@
     <string name="bluetooth_a2dp_restrict">భద్రతా విధానం బ్లూటూత్ మీడియా ఆడియో ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="bluetooth_avrcp_restrict">భద్రతా విధానం బ్లూటూత్ ఆడియో/వీడియో నియంత్రణ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="bluetooth_bpp_restrict">భద్రతా విధానం బ్లూటూత్ ద్వారా ముద్రించడాన్ని నిరోధిస్తుంది.</string>
-    <string name="bluetooth_china_popup_message">%2$sను ఉపయోగించడానికి %1$s అనుమతిని అభ్యర్థిస్తోంది. అనుమతించాలా?</string>
-    <string name="bluetooth_china_popup_title">బ్లూటూత్</string>
     <string name="bluetooth_data_transfer_restrict">భద్రతా విధానం బ్లూటూత్ ద్వారా డేటాని బదిలీ చేయడాన్ని నిరోధిస్తుంది.</string>
     <string name="bluetooth_desktop_restrict">భద్రతా విధానం బ్లూటూత్ ద్వారా మీ డెస్క్‌టాప్‌కు కనెక్ట్ చేయడాన్ని నిరోధిస్తుంది.</string>
     <string name="bluetooth_device_restrict">భద్రతా విధానం ఈ బ్లూటూత్ పరికరంతో జత చేయడాన్ని నిరోధిస్తుంది.</string>
@@ -186,7 +181,6 @@
     <string name="bluetooth_outgoing_call_restrict">భద్రతా విధానం బ్లూటూత్ ద్వారా అవుట్‌గోయింగ్ కాల్‌లు చేయడాన్ని నిరోధిస్తుంది.</string>
     <string name="bluetooth_pairing_restrict">భద్రతా విధానం బ్లూటూత్‌ని జత చేయడాన్ని నిరోధిస్తుంది.</string>
     <string name="bluetooth_pbap_restrict">భద్రతా విధానం బ్లూటూత్ చిరునామా పుస్తక ఉపయోగాన్ని నిరోధిస్తుంది.</string>
-    <string name="bluetooth_permission_request">బ్లూటూత్ అనుమతి అభ్యర్థన</string>
     <string name="bluetooth_restrict">భద్రతా విధానం బ్లూటూత్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="bluetooth_sap_restrict">భద్రతా విధానం బ్లూటూత్ ద్వారా మీ SIM కార్డ్‌ని ప్రాప్తి చేయడాన్ని నిరోధిస్తుంది.</string>
     <string name="bluetooth_security_mode_disable">భద్రతా విధానం బ్లూటూత్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
@@ -249,11 +243,8 @@
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">అనుమతించిన పరికరాలు</string>
     <string name="data_call_restriction">భద్రతా విధానం మీడియా డేటా యొక్క వాడకాన్ని నియంత్రిస్తుంది.</string>
-    <string name="data_usage_disable_mobile">మొబైల్ డేటా కనెక్షన్ను నిలిపివేయాలా?</string>
-    <string name="data_usage_enable_mobile_warning">ప్యాకెట్ డేటా ద్వారా కనెక్ట్ చేస్తే అదనపు ఛార్జీలు వర్తించవచ్చు. కొనసాగాలా?</string>
     <string name="data_usage_limit_body">మీ బిల్లింగ్ సైకిల్ ముగింపు వరకు మొబైల్ డేటా పాజ్ చేయబడింది.</string>
     <string name="data_usage_mobile_limit_snoozed_title">మీ మొబైల్ డేటా పరిమితి పై</string>
-    <string name="data_usage_mobile_limit_title">మొబైల్ డేటా పరిమితిని చేరుకున్నారు</string>
     <string name="data_usage_rapid_app_body">%s, సాధారణం కంటే ఎక్కువ డేటాను ఉపయోగించారు.</string>
     <string name="data_usage_rapid_body">మీ అప్లికేషన్‌లు సాధారణం కంటే ఎక్కువ డేటాని ఉపయోగించాయి.</string>
     <string name="data_usage_rapid_title">ఎక్కువ మొబైల్ డేటా ఉపయోగం</string>
@@ -264,6 +255,7 @@
     <string name="data_usage_warning_title_offpeak_chn">ఉపయోగించిన రద్దీ రహిత డేటా యొక్క %s</string>
     <string name="data_usage_warning_title_unlimited_chn">మొబైల్ డేటా వేగం పరిమితికి చేరుకున్నారు</string>
     <string name="device_disabled">పరికరం నిలిపివేయబడింది. IT నిర్వాహకుడిని సంప్రదించండి.</string>
+    <string name="device_info_not_available">అందుబాటులో లేదు.</string>
     <string name="dex_cant_change_user_profile">Samsung DeX మోడ్‌లో ఉన్నప్పుడు వినియోగదారు ప్రొఫైల్‌ను మార్చలేరు.</string>
     <string name="dex_dialog_launch_toast">అప్లికేషన్‌లను తెరువు మూసివేయబడవచ్చు. Samsung DeXను ప్రారంభించడానికి లేదా నిష్క్రమించడానికి ముందు మీ డేటాను సేవ్ చేయండి.</string>
     <string name="dex_disconnected_from_device">%s నుండి DeX డిస్‌కనెక్ట్ చేయబడింది. మీ TVలో నెట్‌వర్క్ కనెక్షన్‌ని తనిఖీ చేయండి.</string>
@@ -272,9 +264,6 @@
     <string name="dex_launcher_mode_change">Samsung DeXకు మారడానికి %s మూసివేయబడింది.</string>
     <string name="dex_mirroring_jit_msg">మీరు మీ టాబ్లెట్‌లో Samsung DeXని అమలు చేసినప్పుడు, మీరు పెద్ద వీక్షణ కోసం ఏదైనా HDMI-కనెక్ట్ చేసిన డిస్‌ప్లేలో స్క్రీన్‌ని మిర్రర్ చేయవచ్చు.</string>
     <string name="dex_mirroring_jit_title">పెద్ద స్క్రీన్‌లో DeXని మిర్రర్ చేయండి</string>
-    <string name="dex_restart_app_dialog_button_positive">పునఃప్రారం.</string>
-    <string name="dex_restart_app_dialog_message">ఈ అప్లికేషన్ ఇప్పటికే మరొక ప్రదర్శనలో అమలు అవుతోంది. దీన్ని ఇక్కడ తెరవడానికి, అప్లికేషన్‌ని పునఃప్రారంభించాలి. మీరు దీన్ని పునఃప్రారంభించడానికి ముందు ముఖ్యమైన వాటిని సేవ్ చేయండి.</string>
-    <string name="dex_restart_app_dialog_title">%sని పునఃప్రారంభించాలా?</string>
     <string name="dex_restriction_blockerMessage">భద్రతా విధానం Samsung DeX ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="dex_restriction_ethernetOnly">భద్రతా విధానం DeXలో Wi-Fi డేటా, మొబైల్ డేటా మరియు టీథరింగ్ యొక్క ఉపయోగాన్ని నిషేధిస్తుంది. నెట్‌వర్క్ ఫీచర్‌ల కోసం వైర్డ్ కనెక్షన్ అవసరం.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">భద్రతా విధానం కారణంగా, Samsung DeX నుండి నిష్క్రమించడానికి బాహ్య ప్రదర్శనని డిస్‌కనెక్ట్ చేయండి.</string>
@@ -299,7 +288,6 @@
     <string name="digital_signature_failure_user_notification">వినియోగదారు %d కోసం డిజిటల్ సంతకం చెల్లుబాటు కాదు</string>
     <string name="disableupdate_application_restrict">భద్రతా విధానం ఈ అప్లికేషన్‌ని అప్‌డేట్ చేడాన్ని నిరోధిస్తుంది.</string>
     <string name="display_chooser_button_positive">పునఃప్రారం.</string>
-    <string name="display_chooser_dont_show_again">మళ్లీ చూపవద్దు</string>
     <string name="dlg_confirm_kill_storage_users_text">USB నిల్వను కనెక్ట్ చేయడం వలన ఉపయోగంలో ఉన్న కొన్ని అప్లికేషన్‌లను ఆపివేయబడుతాయి. USB నిల్వను మీరు డిస్కనెక్ట్ చేసే వరకు వాళ్లు లభ్యంలోఉండకపోవచ్చు.</string>
     <string name="dlg_confirm_kill_storage_users_title">నిల్వను PC కు కనెక్ట్ చేయి</string>
     <string name="dlg_error_title">USB చర్య విజయవంతం కాలేదు</string>
@@ -314,7 +302,7 @@
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">మల్టీ విండో వీక్షణలో ఈ అప్లికేషన్‌ను ఉపయోగించలేరు.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">మల్టీ విండో వీక్షణలో ఈ ఫీచర్‌ని ఉపయోగించలేరు.</string>
     <string name="edit_contact_at_sim_restriction">భద్రతా విధానం SIM కార్డ్ పరిచయాలను సవరించడాన్ని నిరోధిస్తుంది.</string>
-    <string name="edm_policy_not_allow_open_wifiap">అనుమతించిన పరికరాలు</string>
+    <string name="edm_policy_not_allow_open_wifiap">భద్రతా విధానం హాట్‌స్పాట్ కోసం సురక్షితంకాని టెథరింగ్ వాడకాన్ని పరిమితం చేస్తుంది.</string>
     <string name="emergency_calls_only">అత్యవసర కాల్‌లు మాత్రమే</string>
     <string name="ethernet_cable_connected_notification_message">సెటప్ చేసేందుకు నొక్కండి.</string>
     <string name="ethernet_cable_connected_notification_title">ఈథర్నెట్ కేబుల్ కనెక్ట్ చేయబడింది.</string>
@@ -334,7 +322,7 @@
     <string name="ext_media_unsupported_notification_message">ఈ పరికరంలో ఈ %sకు మద్దతు లేదు. మద్దతు ఉన్న ఆకృతిలో సెటప్ చేయడానికి నొక్కండి.</string>
     <string name="ext_media_unsupported_notification_title">మద్దతు లేని %s</string>
     <string name="ext_storage_bad_removal_button">మళ్లీ ప్రారంభించండి</string>
-    <string name="ext_storage_bad_removal_title">మీ టాబ్లెట్‌ని పునఃప్రారంభించండి</string>
+    <string name="ext_storage_bad_removal_title">మీ ఫోన్‌ని పునఃప్రారంభించండి</string>
     <string name="extmedia_format_button_format">ఫార్మాట్</string>
     <string name="extmedia_format_message_usbhost">మీ USB నిల్వలో నిల్వ చేసిన అన్ని ఫైల్‌లు ఎరేజ్ చేయబడతాయి. ఈ చర్యను రద్దు చేసి పూర్వ స్థితికి తీసుకురావడం సాధ్యపడదు!</string>
     <string name="extmedia_format_title_usbhost">USB నిల్వను ఫార్మాట్ చేయాలా?</string>
@@ -405,12 +393,13 @@
     <string name="globalactions_unable_restart_msg_fmm">నా మొబైల్ వెతుకు ద్వారా రిమోట్‌గా లాక్ చేయబడినందున ఫోన్‌ను రీస్టార్ట్ చేయలేరు.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">నా మొబైల్ వెతుకు ద్వారా రిమోట్‌గా లాక్ చేయబడినందున టాబ్లెట్‌ను రీస్టార్ట్ చేయలేరు.</string>
     <string name="globalactions_unable_restart_msg_securelock">లాక్ చేసినప్పుడు ఫోన్‌ని పునఃప్రారంభించలేరు. ఫోన్‌ని పునఃప్రారంభించడానికి కవర్‌ని తెరిచి, అన్‌లాక్ చేయండి.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">SIM కార్డ్ లాక్ చేయబడిన సమయంలో ఫోన్‌ను పునఃప్రారంభించలేరు.</string>
     <string name="hardware_key_restrict">భద్రతా విధానం ఈ హార్డ్‌వేర్ కీ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="hardware_sec">ఆన్-స్క్రీన్ కీబోర్డ్</string>
     <string name="hbd_translate">టెక్స్ట్‌ని అనువదించు</string>
     <string name="hdmi_connect">బాహ్య స్క్రీన్‌కు కనెక్ట్ చేయబడింది.</string>
     <string name="hdmi_disconnect">బాహ్య స్క్రీన్ నుండి డిస్‌కనెక్ట్ చేయబడింది.</string>
-    <string name="headset">హెడ్సెట్</string>
+    <string name="headset">హెడ్‌సెట్</string>
     <string name="home_key_restrict">భద్రతా విధానం హోమ్ స్క్రీన్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="hot_key_assigned_message">%s కేటాయించబడింది.</string>
     <string name="hot_key_guide_title">ఈ కీకి ఏ అప్లికేషన్ కేటాయించబడలేదు</string>
@@ -474,16 +463,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">నిర్వహణ మోడ్‌ను ఆఫ్ చేయడానికి మీరు మీ టాబ్లెట్‌ను అన్‌లాక్ చేయాల్సి ఉంటుంది.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">నిర్వహణ మోడ్ ఆన్‌లో ఉన్న సమయంలో సంభవించేటటువంటి డౌన్‌లోడ్ చేయబడిన డేటా, అప్లికేషన్ ఇన్‌స్టాలేషన్‌లు లేదా సెట్టింగ్‌ల మార్పుల వంటివి ఏవీ సేవ్ చేయబడవు.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">స్క్రీన్ లాక్‌ని సెట్ చేయండి</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">లాగ్ సృష్టించకుండా పునఃప్రారంభించు</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">లాగ్ సృష్టించి, పునఃప్రారంభించండి</string>
     <string name="maintenance_mode_intro_dialog_message_phone">మెయింటెనెన్స్ మోడ్‌ని ఆన్ చేయడానికి మీ ఫోన్ పునఃప్రారంభించాలి.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">ముందుగా స్క్రీన్ లాక్‌ని సెట్ చేయండి.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">మెయింటెనెన్స్ మోడ్‌ని ఆన్ చేయడానికి మీ టాబ్లెట్‌ను పునఃప్రారంభించాలి.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"మీ ఫోన్‌లో ఉన్న ఏవైనా సమస్యలను విశ్లేషించడంలో మా మద్దతు బృందానికి సహాయపడటానికి, నిర్వహణ మోడ్‌ని ప్రారంభించడానికి ముందు సిస్టమ్ లాగ్ సృష్టించమని మేము సిఫార్సు చేస్తున్నాము.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"మీ ఫోన్‌లో ఏవైనా సమస్యలను గుర్తించి, విశ్లేషించడంలో మా సహాయక సిబ్బందికి సహాయం చేయడానికి, నిర్వహణ మోడ్‌ను ప్రారంభించే ముందు సిస్టమ్ లాగ్‌ను సృష్టించమని మేము సిఫార్సు చేస్తున్నాము.
 
-లాగ్ అనేది ఇటీవల ఉపయోగించిన అప్లికేషన్‌లను మరియు ఇటీవల సంభవించిన దోషాలను చూపుతుంది, కానీ ఏ ఇతర వ్యక్తిగత సమాచారాన్ని చేర్చదు. లాగ్ అనేది సమస్యలను విశ్లేషించడానికి మాత్రమే ఉపయోగించబడుతుంది, మరే ప్రయోజనం కోసం కాదు. సాధారణంగా లాగ్‌ని సృష్టించడానికి 2 నిమిషాల సమయం పడుతుంది."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"మీ టాబ్లెట్‌లో ఉన్న ఏవైనా సమస్యలను విశ్లేషించడంలో మా మద్దతు బృందానికి సహాయపడటానికి, నిర్వహణ మోడ్‌ని ప్రారంభించడానికి ముందు సిస్టమ్ లాగ్ సృష్టించమని మేము సిఫార్సు చేస్తున్నాము.
+మీ ఫోన్‌ను మరమ్మత్తు చేయడానికి అవసరమైన అప్లికేషన్‌లు, ఇటీవల సంభవించిన దోషాలు, నిరోధించిన ఫోన్ నంబర్‌లు మరియు ఫైల్ నిల్వ సామర్థ్యం వంటి సమాచారాన్ని మాత్రమే లాగ్ కలిగి ఉంటుంది. లాగ్ అనేది సమస్యలను నిర్ధారించడానికి మరియు విశ్లేషించడానికి మాత్రమే ఉపయోగించబడుతుంది, మరే ప్రయోజనం కోసం కాదు. సాధారణంగా లాగ్‌ని సృష్టించడానికి 2 నిమిషాల సమయం పడుతుంది."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"మీ టాబ్లెట్‌లో ఏవైనా సమస్యలను గుర్తించి, విశ్లేషించడంలో మా సహాయక సిబ్బందికి సహాయం చేయడానికి, నిర్వహణ మోడ్‌ను ప్రారంభించే ముందు సిస్టమ్ లాగ్‌ను సృష్టించమని మేము సిఫార్సు చేస్తున్నాము.
 
-లాగ్ అనేది ఇటీవల ఉపయోగించిన అప్లికేషన్‌లను మరియు ఇటీవల సంభవించిన దోషాలను చూపుతుంది, కానీ ఏ ఇతర వ్యక్తిగత సమాచారాన్ని చేర్చదు. లాగ్ అనేది సమస్యలను విశ్లేషించడానికి మాత్రమే ఉపయోగించబడుతుంది, మరే ప్రయోజనం కోసం కాదు. సాధారణంగా లాగ్‌ని సృష్టించడానికి 2 నిమిషాల సమయం పడుతుంది."</string>
+మీ టాబ్లెట్‌ను మరమ్మత్తు చేయడానికి అవసరమైన అప్లికేషన్‌లు, ఇటీవల సంభవించిన దోషాలు, నిరోధించిన ఫోన్ నంబర్‌లు మరియు ఫైల్ నిల్వ సామర్థ్యం వంటి సమాచారాన్ని మాత్రమే లాగ్ కలిగి ఉంటుంది. లాగ్ అనేది సమస్యలను నిర్ధారించడానికి మరియు విశ్లేషించడానికి మాత్రమే ఉపయోగించబడుతుంది, మరే ప్రయోజనం కోసం కాదు. సాధారణంగా లాగ్‌ని సృష్టించడానికి 2 నిమిషాల సమయం పడుతుంది."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">నిల్వని విశ్లేషించు</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">మీ ఫోన్ అంతర్గత నిల్వ దాదాపు పూర్తిగా నిండింది. మీ నిల్వ స్థలం అయిపోతుంటే, కొన్ని అప్లికేషన్‌లు మరియు ఫీచర్‌లు సరిగ్గా పని చేయకపోవచ్చు. మీరు ఇకపై ఉపయోగించని మరికొన్ని ఫైల్‌లు మరియు అప్లికేషన్‌లను తొలగించడానికి ప్రయత్నించండి. తొలగించిన తర్వాత, ట్రాష్‌ని ఖాళీ చేయడాన్ని మర్చిపోవద్దు.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">మీ టాబ్లెట్ అంతర్గత నిల్వ దాదాపు పూర్తిగా నిండింది. మీ నిల్వ స్థలం అయిపోతుంటే, కొన్ని అప్లికేషన్‌లు మరియు ఫీచర్‌లు సరిగ్గా పని చేయకపోవచ్చు. మీరు ఇకపై ఉపయోగించని మరికొన్ని ఫైల్‌లు మరియు అప్లికేషన్‌లను తొలగించడానికి ప్రయత్నించండి. తొలగించిన తర్వాత, ట్రాష్‌ని ఖాళీ చేయడాన్ని మర్చిపోవద్దు.</string>
@@ -505,10 +494,17 @@
     <string name="maintenance_mode_outro_label">నిర్వహణ మోడ్‌ని నిష్క్రమించండి</string>
     <string name="maintenance_mode_outro_textview_message_phone">నిర్వహణ మోడ్‌ని ఆఫ్ చేయడానికి మీరు మీ ఫోన్‌ని అన్‌లాక్ చేయాల్సి ఉంటుంది. మీరు ఇలా చేసినప్పుడు, నిర్వహణ మోడ్‌ని మొదట ఆన్ చేసినప్పుడు ప్రతిదీ తిరిగి వస్తుంది. డౌన్‌లోడ్ చేసిన డేటా, ఇన్‌స్టాల్ చేసిన అప్లికేషన్‌లు లేదా సెట్టింగ్‌ల మార్పులు వంటి నిర్వహణ మోడ్ ఆన్‌లో ఉన్నప్పుడు చేసిన మార్పులు సేవ్ చేయబడవు.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">నిర్వహణ మోడ్‌ని ఆఫ్ చేయడానికి మీరు మీ టాబ్లెట్‌ని అన్‌లాక్ చేయాల్సి ఉంటుంది. మీరు ఇలా చేసినప్పుడు, నిర్వహణ మోడ్‌ని మొదట ఆన్ చేసినప్పుడు ప్రతిదీ తిరిగి వస్తుంది. డౌన్‌లోడ్ చేసిన డేటా, ఇన్‌స్టాల్ చేసిన అప్లికేషన్‌లు లేదా సెట్టింగ్‌ల మార్పులు వంటి నిర్వహణ మోడ్ ఆన్‌లో ఉన్నప్పుడు చేసిన మార్పులు సేవ్ చేయబడవు.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">%s సక్రియంగా ఉన్నప్పుడు నిర్వహణ మోడ్‌ని ఉపయోగించలేరు.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">పరిమిత అప్లికేషన్‌లు మరియు హోమ్ స్క్రీన్‍‌తో శక్తి ఆదా ఆన్‌లో ఉన్న సమయంలో నిర్వహణ మోడ్‌ను ఉపయోగించలేరు.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">నిర్వహణ మోడ్‌కి ఈ ఫోన్‌లో మద్దతు లేదు.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">నిర్వహణ మోడ్‌కి ఈ టాబ్లెట్‌లో మద్దతు లేదు.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s పరికర యజమానిచే మాత్రమే ఉపయోగించబడుతుంది.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">మీ డేటాని బ్యాకప్ చేడాన్ని ఆపివేసి, నిర్వహణ మోడ్‌ని ఆన్ చేయాలా?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">నిర్వహణ మోడ్‌ని ఆన్ చేయడానికి, మీరు మీ అసంపూర్ణ బ్యాకప్‌ని పూర్తి చేయాలి లేదా తొలగించాలి.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">నిర్వహణ మోడ్‌ని ఆన్ చేయడానికి, మీరు మీ ప్రస్తుత బ్యాకప్‌ని ఆపివేయాలి.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">నిర్వహణ మోడ్‌ని ఆన్ చేయడానికి, మీరు మీ బ్యాకప్ డేటాని పునరుద్ధరించడాన్ని ఆపివేయాలి.</string>
+    <string name="maintenance_mode_toast_text_device_admin">పరికర నిర్వాహక అప్లికేషన్</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">లాగ్‌ని సృష్టిస్తోంది…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">దీనికి సాధారణంగా 2 నిమిషాల సమయం పడుతుంది. లాగ్ సృష్టించబడిన తర్వాత, మీ ఫోన్ నిర్వహణ మోడ్‌లో ప్రారంభం అవుతుంది మరియు మీరు మీ ఫోన్‌ని సురక్షితంగా నిర్వహణ కోసం అప్పగించవచ్చు.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">దీనికి సాధారణంగా 2 నిమిషాల సమయం పడుతుంది. లాగ్ సృష్టించబడిన తర్వాత, మీ టాబ్లెట్ నిర్వహణ మోడ్‌లో ప్రారంభం అవుతుంది మరియు మీరు మీ టాబ్లెట్‌ని సురక్షితంగా నిర్వహణ కోసం అప్పగించవచ్చు.</string>
@@ -531,13 +527,8 @@
     <string name="media_checking_usbhost">USB నిల్వ ప్రస్తుతం తనిఖీ చేయబడుతోంది.</string>
     <string name="media_unknown_state">బాహ్య మీడియా తెలియని రాష్ట్రంలో ఉంది.</string>
     <string name="mediaplayer_restrict">భద్రతా విధానం MTP మీడియా ప్లేయర్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
+    <string name="message_on_crash">స్వీయ నిరోధకం ద్వారా నిరోధించబడుతుంది</string>
     <string name="microphone_restrict">భద్రతా విధానం మైక్రోఫోన్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
-    <string name="miniresolver_call">కాల్</string>
-    <string name="miniresolver_call_in_work">కార్యాలయ అప్లికేషన్ నుండి కాల్ చేయాలా?</string>
-    <string name="miniresolver_call_information">కార్యాలయ అప్లికేషన్‌ల నుండి కాల్‌లు చేయడానికి మాత్రమే మీ సంస్థ మిమ్మల్ని అనుమతిస్తుంది.</string>
-    <string name="miniresolver_sms_information">కార్యాలయ అప్లికేషన్‌ల నుండి సందేశాలను పంపడానికి మాత్రమే మీ సంస్థ మిమ్మల్ని అనుమతిస్తుంది.</string>
-    <string name="miniresolver_switch">మార్చు</string>
-    <string name="miniresolver_switch_to_work">కార్యాలయ అప్లికేషన్‌కు మారాలా?</string>
     <string name="mmcc_authentication_reject_name_template">%s అనుమతించబడలేదు</string>
     <string name="mmcc_illegal_me_name_template">%s అనుమతించబడలేదు</string>
     <string name="mmcc_illegal_ms_name_template">%s అనుమతించబడలేదు</string>
@@ -549,30 +540,6 @@
     <string name="mock_location_reminder_disable">ఆఫ్ చేయి</string>
     <string name="mock_location_reminder_title">మాక్ స్థానం ఆన్‌లో ఉంది</string>
     <string name="more_apps">మరిన్ని అప్లికేషన్‌లు</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s సేవకు మద్దతు లేదు. కస్టమర్ సేవలను సంప్రదించండి.</string>
-    <string name="mptcp_message_address_type_not_supported">%s కనెక్షన్ బాగా లేదు. అందుబాటులో ఉన్న నెట్‌వర్క్‌ల ద్వారా తిరిగి కనెక్ట్ అవుతోంది…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s కనెక్షన్ బాగా లేదు. అందుబాటులో ఉన్న నెట్‌వర్క్‌ల ద్వారా తిరిగి కనెక్ట్ అవుతోంది…</string>
-    <string name="mptcp_message_cmd_not_supported">%s నెట్‌వర్క్ తాత్కాలికంగా అందుబాటులో లేదు. అందుబాటులో ఉన్న నెట్‌వర్క్‌ల ద్వారా తిరిగి కనెక్ట్ చేస్తోంది…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s కనెక్షన్ బాగా లేదు. అందుబాటులో ఉన్న నెట్‌వర్క్‌ల ద్వారా తిరిగి కనెక్ట్ అవుతోంది…</string>
-    <string name="mptcp_message_connection_refused">%s కనెక్షన్ బాగా లేదు. అందుబాటులో ఉన్న నెట్‌వర్క్‌ల ద్వారా తిరిగి కనెక్ట్ అవుతోంది…</string>
-    <string name="mptcp_message_data_usage_limit">డేటా ఉపయోగ పరిమితిని చేరుకున్నారు. డేటా ఉపయోగ పరిమితిని మార్చడం కోసం, సెట్టింగ్‌లకు వెళ్లండి.</string>
-    <string name="mptcp_message_host_unreachable">%s కనెక్షన్ బాగా లేదు. అందుబాటులో ఉన్న నెట్‌వర్క్‌ల ద్వారా తిరిగి కనెక్ట్ అవుతోంది…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">%sను ప్రారంభించడం సాధ్యం కాదు. LTE నెట్‌వర్క్‌కి పరికరం కనెక్ట్ చేయబడలేదు.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">అంతర్జాతీయ రోమింగ్‌లో ఉన్నప్పుడు %sను ప్రారంభించడం సాధ్యం కాదు.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">మొబైల్ హాట్‌స్పాట్ లేదా USB టీథరింగ్ ప్రారంభించబడినప్పుడు %sను ప్రారంభించడం సాధ్యం కాదు.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Wi-Fi Direct ప్రారంభించబడినప్పుడు %sను ప్రారంభించడం సాధ్యం కాదు.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">విమానం మోడ్ ప్రారంభించబడినప్పుడు %sను ప్రారంభించడం సాధ్యం కాదు.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">మొబైల్ డేటా ఆఫ్ చేయబడినప్పుడు %sను ప్రారంభించడం సాధ్యం కాదు.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">సేవా ప్రదాత ప్రతిస్పందించడం లేదు.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">%1$sని ప్రారంభించడం సాధ్యం కాదు. మీ ఇంటర్నెట్ ప్యాకేజీతో %2$s అందుబాటులో లేదు లేదా %3$s సర్వర్ నుండి ఎటువంటి ప్రతిస్పందన రాలేదు.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">%s యాక్టివేషన్ అభ్యర్థనను పంపడం విఫలమైంది. అందుబాటులో ఉన్న నెట్‌వర్క్‌ల ద్వారా డిస్‌కనెక్ట్ చేయబడుతోంది…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">%sను ప్రారంభించడం సాధ్యం కాదు. చెల్లని SIM కార్డ్ చొప్పించబడింది.</string>
-    <string name="mptcp_message_network_unreachable">%s కనెక్షన్ బాగా లేదు. అందుబాటులో ఉన్న నెట్‌వర్క్‌ల ద్వారా తిరిగి కనెక్ట్ అవుతోంది…</string>
-    <string name="mptcp_message_non_mptcp_plan">Giga బహుళ-పథాన్ని ప్రారంభించడం సాధ్యం కాదు. డేటా ప్లాన్ ద్వారా విధికి మద్దతు లేదు.</string>
-    <string name="mptcp_message_operation_disabled_overheating">పరికరం వేడెక్కడాన్ని తగ్గించడానికి %s నిలిపివేయబడింది. బదులుగా మొబైల్ నెట్‌వర్క్ ద్వారా డౌన్‌లోడ్ అవుతోంది…</string>
-    <string name="mptcp_message_server_error">%s కనెక్షన్ బాగా లేదు. అందుబాటులో ఉన్న నెట్‌వర్క్‌ల ద్వారా తిరిగి కనెక్ట్ అవుతోంది…</string>
-    <string name="mptcp_message_setting_disabled_overheating">%sను ప్రారంభించడం సాధ్యం కాదు. పరికరం ఎక్కువ వేడెక్కింది. పరికరం చల్లబడే వరకు వేచి ఉండి, మళ్లీ ప్రయత్నించండి.</string>
-    <string name="mptcp_message_ttl_expired">%s నెట్‌వర్క్ తాత్కాలికంగా అందుబాటులో లేదు. అందుబాటులో ఉన్న నెట్‌వర్క్‌ల ద్వారా తిరిగి కనెక్ట్ చేస్తోంది…</string>
     <string name="multi_user_capability_restrict">భద్రతా విధానం మీ పరికరంలో బహుళ వినియోగదారు సామర్థ్యాన్ని నిరోధిస్తుంది.</string>
     <string name="multi_user_creation_restrict">భద్రతా విధానం మీ పరికరంలో కొత్త వినియోగదారు ఖాతాలను సృష్టించడాన్ని నిరోధిస్తుంది.</string>
     <string name="multi_user_removal_restrict">భద్రతా విధానం మీ పరికరం నుండి వినియోగదారు ఖాతాలను తీసివేయడాన్ని నిరోధిస్తుంది.</string>
@@ -591,24 +558,22 @@
     <string name="multisound_sound_via_bluetooth_multiselection">ధ్వని మీ బ్లూటూత్ ఆడియో పరికరంలో ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి</string>
     <string name="multisound_sound_via_headphone">మీ ఫోన్ హెడ్‌ఫోన్‌ల ద్వారా %s ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
     <string name="multisound_sound_via_headphone_multiselection">మీ హెడ్‌ఫోన్‌ల ద్వారా ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
-    <string name="multisound_sound_via_phone_speaker">మీ టాబ్లెట్ స్పీకర్ ద్వారా %s ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">మీ టాబ్లెట్ స్పీకర్ ద్వారా ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
+    <string name="multisound_sound_via_phone_speaker">మీ ఫోన్ స్పీకర్ ద్వారా %s ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">మీ ఫోన్ స్పీకర్ ద్వారా ధ్వని ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
     <string name="multisound_sound_via_usb_audio">%s ధ్వని మీ USB ఆడియో పరికరంలో ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">ధ్వని మీ USB ఆడియో పరికరంలో ప్లే చేయబడుతోంది. దీన్ని ఆఫ్ చేయడానికి ఇక్కడ ట్యాప్ చేయండి.</string>
     <string name="multisound_title">వేరొక అప్లికేషన్ ధ్వని</string>
     <string name="multisound_turn_off_multisound">ఆఫ్ చేయి</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeXలో %s అమలు కాదు. టాబ్లెట్ మోడ్‌లో అమలు చేయడానికి ప్రయత్నించండి.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeXలో %s అమలు కాదు. ఇది టాబ్లెట్ హోమ్ స్క్రీన్‌ల కోసం రూపొందించబడింది.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">కొన్ని గేమ్‌లు టచ్ స్క్రీన్‌లలో మాత్రమే పని చేస్తాయి. మౌస్ నియంత్రణలు Samsung DeXలో పని చేయకుంటే, బదులుగా టాబ్లెట్ మోడ్‌లో ప్రయత్నించండి.</string>
-    <string name="my_device">ఈ టాబ్లెట్</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeXలో %s అమలు కాదు. ఫోన్ మోడ్‌లో అమలు చేయడానికి ప్రయత్నించండి.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%sని Samsung DeXలో అమలు చేయడం సాధ్యం కాదు. ఇది ఫోన్ హోమ్ స్క్రీన్‌ల కోసం రూపొందించబడింది.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">కొన్ని గేమ్‌లు టచ్ స్క్రీన్‌లలో మాత్రమే పని చేస్తాయి. మౌస్ నియంత్రణలు Samsung DeXలో పని చేయకుంటే, బదులుగా ఫోన్ మోడ్‌లో ప్రయత్నించండి.</string>
+    <string name="my_device">ఈ ఫోన్</string>
     <string name="network_locked_sim_dialog_message_ais">మీ SIM కార్డ్ మీ సభ్యత్వం నిబంధనలు మరియు షరతులకు అనుగుణంగా లేనందున ఈ ఫోన్‌లో ఇది పూర్తిగా పనిచేయదు. మీకు ఏవైనా ప్రశ్నలు ఉంటే లేదా ఈ విషయం గురించి మరింత సమాచారం అవసరమైతే, దయచేసి ఈ ఉత్పత్తులను మీకు విక్రయించిన స్యామ్‌సంగ్ కస్టమర్ సేవా స్థానం లేదా స్టోర్‌ని సంప్రదించండి.</string>
     <string name="network_locked_sim_notification_text">నెట్‌వర్క్ లాక్ చేయబడింది SIM కార్డ్ చొప్పించబడింది.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">మీ డిఫాల్ట్ హోమ్ యాప్‌ను One UI Homeకి మార్చండి.</string>
     <string name="nfc_restrict">భద్రతా విధానం NFC ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="nosim_limited_service">పరిమిత సేవ</string>
-    <string name="not_support_ai_key">AI కీ ఇప్పటికీ మీ టాబ్లెట్‌తో పని చేయడం లేదు. అప్‌డేట్ త్వరలో అందుబాటులో ఉంటుంది.</string>
-    <string name="notification_app_name_settings">సెట్టింగులు</string>
     <string name="notification_channel_dex_policy">Samsung DeX విధానం</string>
     <string name="ntfs_usb_storage_readonly_mount_message">ఈ నిల్వ NTFS ఫార్మాట్‌ని ఉపయోగిస్తున్నందున ఇది చదవడానికి మాత్రమే.</string>
     <string name="ntfs_usb_storage_readonly_mount_title">చదవడానికి మాత్రమే USB నిల్వ జోడించబడింది</string>
@@ -783,7 +748,6 @@
     <string name="permlab_scheduleExactAlarm">అలారంలు మరియు రిమైండర్‌లను సెట్ చేయి</string>
     <string name="permlab_spdControl">భద్రతా విధానం అప్‌డేట్‌లను నిర్వహించండి</string>
     <string name="permlab_ucsPlugin">సార్వజనీన ప్రమాణ నిర్వహణ ప్లగిన్</string>
-    <string name="personal_apps_suspended_turn_profile_on">ఆన్ చేయి</string>
     <string name="phoneTypeConference">కాన్ఫరెన్స్</string>
     <string name="policydesc_allow_bluetoothmode">బ్లూటూత్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="policydesc_allow_browser">ఇంటర్నెట్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
@@ -791,7 +755,7 @@
     <string name="policydesc_allow_desktopsync">డెస్క్‌టాప్ సమకాలీకరణ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="policydesc_allow_internetsharing">మొబైల్ హాట్‌స్పాట్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="policydesc_allow_irda">IrDA ఉపయోగాన్ని నిరోధిస్తుంది.</string>
-    <string name="policydesc_allow_popimapemail">టాబ్లెట్‌లో POP మరియు IMAP ఇమెయిల్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
+    <string name="policydesc_allow_popimapemail">ఫోన్‌లో POP మరియు IMAP ఇమెయిల్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="policydesc_allow_storagecard">SD కార్డ్‌ల ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="policydesc_allow_textmessaging">టెక్స్ట్ మరియు మల్టీమీడియా మెసేజింగ్ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="policydesc_allow_thirdParty">మూడవ-పక్ష అప్లికేషన్‌లను అమలు చేయకుండా ఈ అప్లికేషన్ నిరోధించగలదు.</string>
@@ -837,7 +801,7 @@
     <string name="pwd_change_enforced">మీ పాస్‌వర్డ్‌ని మీరే మార్చడం భద్రతా విధానానికి అవసరం.</string>
     <string name="recording_fail">మైక్‌ని %2$sలో ఉపయోగిస్తున్నప్పుడు దాన్ని %1$sలో ఉపయోగించలేరు.</string>
     <string name="recording_popup">%s మైక్రోఫోన్‌ని ఉపయోగిస్తోంది.</string>
-    <string name="recording_popup_device">టాబ్లెట్</string>
+    <string name="recording_popup_device">ఫోన్</string>
     <string name="recording_popup_with_bluetooth">%s బ్లూటూత్ మైక్రోఫోన్‌ని ఉపయోగిస్తోంది.</string>
     <string name="recording_popup_with_device">%1$s %2$s యొక్క మైక్రోఫోన్ ఉపయోగిస్తోంది.</string>
     <string name="redo">చర్య పునరావృతం చేయి</string>
@@ -902,12 +866,12 @@
     <string name="screencapture_restrict">భద్రతా విధానం స్క్రీన్ సంగ్రహణ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="sd_card_unavailable_message">వేరొక వినియోగదారు ప్రొఫైల్ ఉపయోగంలో ఉన్నప్పుడు చొప్పించిన కారణంగా మీరు SD కార్డ్‌ని ఉపయోగించలేరు.</string>
     <string name="sd_card_unavailable_title">SD కార్డ్ అందుబాటులో లేదు</string>
-    <string name="sdcard_bad_removal_message">SD కార్డ్ అసురక్షితంగా తీసివేయబడింది. అనుకోకుండా మీ టాబ్లెట్ పునఃప్రారంభం కావడాన్ని నివారించడానికి, సేవ్ చేయని డేటాని సేవ్ చేసి, ఇప్పుడు పునఃప్రారంభించండి.</string>
+    <string name="sdcard_bad_removal_message">SD కార్డ్ అసురక్షితంగా తీసివేయబడింది. అనుకోకుండా మీ ఫోన్ పునఃప్రారంభం కావడాన్ని నివారించడానికి, సేవ్ చేయని డేటాని సేవ్ చేసి, ఇప్పుడు పునఃప్రారంభించండి.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD కార్డును డిక్రిప్ట్ చేయి</string>
     <string name="sdcard_batch_decrypt_noti_title">SD కార్డ్ డిక్రిప్షన్</string>
     <string name="sdcard_batch_decrypt_popup_content">ఇప్పటికే ఉపయోగించే ముందు ఎన్‌క్రిప్ట్ అయిన SD కార్డ్ తప్పక డిక్రిప్ట్ కావాలి. డిక్రిప్షన్ ఒక గంట లేదా మరింత సమయం తీసుకోవచ్చు. డిక్రిప్షన్ పూర్తి అయ్యే వరకు ఛార్జ్ చేయబడిన బ్యాటరీతో ప్రారంభించండి మరియు పరికరంను ప్లగ్ ఇన్ గా ఉంచండి. డిక్రిప్షన్ పనిని అంతరాయం చేయడం వలన కొంత లేదా మొత్తం డేటా కోల్పోవచ్చు.</string>
     <string name="sdcard_decrypt_err_notification">SD కార్డ్ డిక్రిప్షన్ లోపం ఏర్పడింది.</string>
-    <string name="sdcard_decrypt_error_otherdevice">మీ SD కార్డ్‌లోని కొన్ని ఫైల్‌లు మరో పరికరంలో ఎన్‌క్రిప్ట్ చేయబడ్డాయి మరియు ఈ టాబ్లెట్‌లో ఉపయోగించలేరు.</string>
+    <string name="sdcard_decrypt_error_otherdevice">మీ SD కార్డ్‌లోని కొన్ని ఫైల్‌లు మరో పరికరంలో ఎన్‌క్రిప్ట్ చేయబడ్డాయి మరియు ఈ ఫోన్‌లో ఉపయోగించలేరు.</string>
     <string name="sdcard_decrypt_notification">SD కార్డ్ డిక్రిప్ట్ చేయబడింది.</string>
     <string name="sdcard_decrypt_title_notification">SD కార్డ్ డిక్రిప్షన్</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD కార్డ్‌ని డీక్రిప్ట్ చేస్తోంది…</string>
@@ -924,14 +888,6 @@
     <string name="sdcard_unmount_policy_noti_title">IT విధానం కారణంగా SD కార్డ్ అన్‌మౌంట్ చేయబడింది.</string>
     <string name="sdhms_nr_control_low_battery">మీ ఫోన్ 15% కంటే తక్కువ బ్యాటరీని కలిగి ఉన్నప్పుడు బ్యాటరీని ఆదా చేయడానికి 5Gని ఆఫ్ చేయండి.</string>
     <string name="sec_bluetooth_airplane_mode_toast">విమానం మోడ్‌లో బ్లూటూత్ ఆన్‌లో ఉంటుంది.</string>
-    <string name="sec_immersive_cling_button_ok">సరే</string>
-    <string name="sec_immersive_cling_guide_text_gesture">ఈ అప్లికేషన్ పూర్తి స్క్రీన్‌ని ఉపయోగిస్తోంది. నావిగేషన్ కోసం సంజ్ఞలు స్థితి బార్‌ని చూపుతాయి. నావిగేట్ చేయడానికి, స్థితి బార్ కనిపించినప్పుడు మళ్లీ స్వైప్ చేయండి.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"ఈ అప్లికేషన్ పూర్తి స్క్రీన్‌ని ఉపయోగిస్తోంది. పరధ్యానాలను తగ్గించడానికి మరియు అనుకోకుండా అప్లికేషన్ నుండి మీరు నిష్క్రమించకుండా నివారించడానికి హోమ్, వెనుకకు మరియు ఇటీవల బటన్‌లు దాచబడ్డాయి.
-
-మీరు ఫోన్‌ని తిప్పినా కూడా, ఛార్జింగ్ పోర్ట్ ప్రక్కన బటన్‌లను ఎప్పుడూ చూడవచ్చు. బాణం ద్వారా చూపినట్లుగా స్క్రీన్ అంచు నుండి లోపలికి స్వైప్ చేయడం ద్వారా మీరు బటన్‌లు మళ్లీ కనిపించేలా చేయవచ్చు."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"ఈ అప్లికేషన్ పూర్తి స్క్రీన్‌ని ఉపయోగిస్తోంది. పరధ్యానాలను తగ్గించడానికి మరియు అనుకోకుండా అప్లికేషన్ నుండి మీరు నిష్క్రమించకుండా నివారించడానికి హోమ్, వెనుకకు మరియు ఇటీవలి బటన్‌లు దాచబడ్డాయి.
-
-బటన్‌లను మళ్లీ కనిపించేలా చేయడానికి, బాణం ద్వారా చూపినట్లుగా స్క్రీన్ దిగువ నుండి ఎగువకు స్వైప్ చేయండి."</string>
     <string name="sec_monotype_default">డిఫాల్ట్</string>
     <string name="sec_ringtone_category_brand_sound">స్యామ్‌సంగ్ బ్రాండ్ ధ్వని</string>
     <string name="sec_ringtone_category_calm">ప్రశాంతంగా</string>
@@ -941,6 +897,10 @@
     <string name="sec_ringtone_category_open_theme">ప్రస్తుతం డిఫాల్ట్ థీమ్ ఉంది</string>
     <string name="sec_ringtone_category_retro">రెట్రో</string>
     <string name="sec_ringtone_silent">నిశ్శబ్దం</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">రద్దు చేయి</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">శాటిలైట్‌కు కనెక్ట్ చేయడానికి, మీ నెట్‌వర్క్ ఆపరేటర్‌ని “స్వయంచాలకంగా ఎంచుకోండి”కు సెట్ చేయాలి.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">ఆన్ చేయి</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">స్వయంచాలక నెట్‌వర్క్ ఎంపికను ఆన్ చేయాలా?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">మాట్లాడటానికి మైక్రోఫోన్ ప్రాప్యతని ఆన్ చేయండి.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">%sని ఉపయోగించడానికి కెమెరా ప్రాప్యతని ఆన్ చేయండి.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">%sని ఉపయోగించడానికి మైక్రోఫోన్ ప్రాప్యతని ఆన్ చేయండి.</string>
@@ -1036,6 +996,8 @@
     <string name="sem_face_error_already_in_use_by_VT">వీడియో కాల్‌ల సమయంలో ముఖ గుర్తింపుని ఉపయోగించలేరు.</string>
     <string name="sem_face_error_camera_access_off">కెమెరా ప్రాప్యత ఆఫ్ చేయబడినందున ముఖ గుర్తింపుని ఉపయోగించలేరు</string>
     <string name="sem_face_error_camera_fail">కెమెరాని తెరవలేరు. మళ్లీ ప్రయత్నించండి.</string>
+    <string name="sem_face_error_lockout">చాలా ఎక్కువ చెల్లని ప్రయత్నాల వలన బయోమెట్రిక్ ధృవీకరణ అందుబాటులో లేదు.</string>
+    <string name="sem_face_error_lockout_permanent">చాలా ఎక్కువ చెల్లని ప్రయత్నాల వలన బయోమెట్రిక్ ధృవీకరణ అందుబాటులో లేదు.</string>
     <string name="sem_face_error_ppp_timeout">మీరు మీ గుర్తింపును ధృవీకరించి కొంత కాలం అవుతోంది. మీ ముఖాన్ని నమోదు చేయడానికి మీరు మళ్లీ ప్రారంభించాల్సి ఉంటుంది.</string>
     <string name="sem_face_error_too_dark">ముఖాన్ని గుర్తించడానికి చాలా చీకటిగా ఉంది</string>
     <string name="sem_face_error_too_dark_to_enroll">చాలా చీకటిగా ఉంది. లైట్‌ని ఆన్ చేయడానికి లేదా వెలుతురు ఉన్న ఎక్కడికైనా వెళ్లడానికి ప్రయత్నించండి.</string>
@@ -1051,13 +1013,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">మీ వేలిముద్రను స్కాన్ చేయడానికి స్క్రీన్ నుండి దూరంగా మీ S Pen యొక్క కొనను కదిలించండి.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">వేలిముద్రలను ఉపయోగించడానికి, ముందుగా సురక్షిత స్క్రీన్ లాక్ రకాన్ని (నమూనా, PIN లేదా పాస్‌వర్డ్‌) సెట్ చేయండి.</string>
+    <string name="sem_fingerprint_error_lockout">చాలా ఎక్కువ చెల్లని ప్రయత్నాల వలన బయోమెట్రిక్ ధృవీకరణ అందుబాటులో లేదు.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">చాలా ఎక్కువ చెల్లని ప్రయత్నాల వలన బయోమెట్రిక్ ధృవీకరణ అందుబాటులో లేదు.</string>
     <string name="sem_fingerprint_error_onehand_mode">ఒక-చేతి మోడ్‌లో వేలిముద్ర స్కానర్‌ని ఉపయోగించలేరు.</string>
     <string name="sem_fingerprint_error_smart_view">%sని ఉపయోగించేటప్పుడు వేలిముద్రని స్కాన్ చేయలేరు.</string>
+    <string name="sem_fingerprint_error_system_failure">వేలిముద్ర సెన్సార్ ప్రతిస్పందించడం లేదు. తర్వాత మళ్లీ ప్రయత్నించండి. ఇది కొనసాగినట్లయితే, మీ ఫోన్‌ను పునఃప్రారంభించడానికి ప్రయత్నించండి.</string>
+    <string name="sem_fingerprint_error_template_corrupt">వేలిముద్ర డేటా పాడైంది. మీ వేలిముద్రలను మళ్లీ జోడించండి.</string>
     <string name="sem_fingerprint_error_wireless_charger">మీ వేలిముద్రని ఉపయోగించడానికి వైర్‌లెస్ ఛార్జర్ నుండి డిస్‌కనెక్ట్ చేయండి</string>
     <string name="sem_fingerprint_name_template">వేలిముద్ర %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">తర్వాత</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">ఇప్పుడు కాదు</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">తీసివేయి మరియు నమోదు చేయి</string>
+    <string name="sem_fingerprint_register_dialog_message">తాజా సాఫ్ట్‌వేర్ అప్‌డేట్‌లో వేలిముద్ర గుర్తింపు మెరుగుపరచబడింది. మీరు మీ వేలిముద్రలను తీసివేసి, వాటిని మళ్లీ నమోదు చేసేంత వరకు వేలిముద్ర గుర్తింపుని ఉపయోగించలేరు.</string>
     <string name="sem_fingerprint_register_dialog_title">వేలిముద్రలను మళ్లీ నమోదు చేయండి</string>
     <string name="sem_fingerprint_result_failed">సరిపోలలేదు.</string>
     <string name="sem_fingerprint_result_retry">మళ్లీ ప్రయత్నించండి.</string>
@@ -1077,7 +1044,7 @@
     <string name="sem_resolver_button_always_accessibility">ఎల్లప్పుడూ ఎంచుకున్న అప్లికేషన్‌ను ఉపయోగించండి</string>
     <string name="sem_resolver_button_just_once_accessibility">ఎంచుకున్న అప్లికేషన్‌ను ఒక్కసారి మాత్రమే ఉపయోగించండి</string>
     <string name="sem_resolver_choose_what_to_do">ఏమి చేయాలో ఎంచుకోండి</string>
-    <string name="sem_resolver_go_to_settings_tips_description">మీ డిఫాల్ట్ అప్లికేషన్ సెట్టింగ్‌లను మార్చడానికి, సెట్టింగ్‌లు > అప్లికేషన్‌లు > డిఫాల్ట్ అప్లికేషన్‌లను ఎంచుకోండికి వెళ్లండి.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">ఈ రకం ఫైల్‌ని తెరవడానికి ఉపయోగించే డిఫాల్ట్ అప్లికేషన్‌ని మార్చడానికి, సెట్టింగ్‌లు > అప్లికేషన్‌లకు వెళ్లి, ప్రస్తుత డిఫాల్ట్ అప్లికేషన్‌ని ఎంచుకుని, ఆపై “డిఫాల్ట్ వలె సెట్ చేయి” > డిఫాల్ట్‌లను క్లియర్ చేయిని నొక్కండి.</string>
     <string name="sem_resolver_icon_content_description">సమాచారం</string>
     <string name="sem_resolver_personal_tab_accessibility">వ్యక్తిగతం</string>
     <string name="sem_resolver_share_live_default_text">సమీపంలోని వ్యక్తులతో వెంటనే భాగస్వామ్యం చేయండి. వ్యక్తులు కనిపించేలా చేసిన వారి పరికరాలు ఇక్కడ చూపబడతాయి.</string>
@@ -1089,9 +1056,6 @@
     <string name="sem_resolver_work_tab_accessibility">కార్యాలయం</string>
     <string name="sem_switch_off">ఆఫ్</string>
     <string name="sem_switch_on">ఆన్</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">అన్ని అప్లికేషన్‌ల కోసం కెమెరా ప్రాప్యత ఆఫ్ చేయబడింది</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">ఆన్ చేయి</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">అన్ని అప్లికేషన్‌ల కోసం మైక్రోఫోన్ ప్రాప్యత ఆఫ్ చేయబడింది</string>
     <string name="serviceErased">చెరపడం విజయవంతమైంది.</string>
     <string name="serviceModeAll">అన్నీ</string>
     <string name="serviceModeAllConditional">షరతులతో.</string>
@@ -1101,6 +1065,7 @@
     <string name="serviceModeUnconditional">బేషరతుగా.</string>
     <string name="serviceisDisabled">సర్వీస్ నిలిపివేయబడింది.</string>
     <string name="serviceisEnabled">సర్వీస్ ప్రారంభించబడింది.</string>
+    <string name="settings">సెట్టింగ్‌లు</string>
     <string name="sf_quick_switch_not_supported">ఈ పరిస్థితిలో త్వరిత మార్పుకి మద్దతు లేదు.</string>
     <string name="sf_quick_switch_securefolder_view">%sకు మార్చబడింది.</string>
     <string name="share">భాగస్వామ్యం</string>
@@ -1109,26 +1074,30 @@
     <string name="sharelist_restrict">భద్రతా విధానం డేటా భాగస్వామ్యాన్ని నిరోధిస్తుంది.</string>
     <string name="show_keyboard_button">కీబోర్డ్ బటన్‌ను చూపు</string>
     <string name="show_keyboard_button_description">నావిగేషన్ బార్‌లో %sని చూపుతుంది.</string>
+    <string name="showing_esc_dialog">మీరు వెనుకకు బటన్ వలె పని చేయడానికి Esc కీని సెట్ చేయవచ్చు.</string>
     <string name="showing_touch_sensitivity_noti_action">ఆన్ చేయి</string>
     <string name="showing_touch_sensitivity_noti_text">మరింత ఖచ్చితమైన టచ్ ప్రతిస్పందన కోసం Privacy Screen లేదా Notepaper Screenని ఉపయోగిస్తున్నప్పుడు టచ్ సున్నితత్వాన్ని ఆన్ చేస్తుంది.</string>
     <string name="showing_touch_sensitivity_noti_title">టచ్ సున్నితత్వాన్ని పెంచు</string>
+    <string name="side_key_double_press_archived_app">అప్లికేషన్ ఆర్కైవ్ చేయబడింది. మరేదైనా ఎంచుకోండి.</string>
     <string name="side_key_double_press_deleted_app">అప్లికేషన్ అన్‌ఇన్‌స్టాల్ చేయబడింది. మరేదైనా ఎంచుకోండి.</string>
     <string name="side_key_double_press_disabled_app">%s నిలిపివేయబడింది. మరేదైనా ఎంచుకోండి.</string>
     <string name="signature_identity_toast">వీరు %sకి సంతకం చేసారు</string>
     <string name="simRefresh">SIM డేటాను రిఫ్రెష్ చేస్తోంది</string>
     <string name="simReset">SIM డేటా అప్‌డేట్ అవుతోంది…</string>
     <string name="sim_check_old_sim_message">పాత లేదా పాడైన SIM కార్డ్‌లు నెట్‌వర్క్ కనెక్షన్ సమస్యలను కలిగించవచ్చు. మీ సేవా ప్రదాతను సంప్రదించండి లేదా దాన్ని భర్తీ చేయాల్సి ఉందేమో తనిఖీ చేయడానికి వారి స్టోర్‌లలో ఒకదాన్ని సందర్శించండి.</string>
+    <string name="sim_check_old_sim_message_skt">పాత లేదా దెబ్బతిన్న SIM కార్డులు నెట్‌వర్క్ కనెక్షన్ సమస్యలను కలిగించవచ్చు. మీ సేవా ప్రదాతని సంప్రదించండి లేదా దాన్ని భర్తీ చేయాల్సి ఉందేమో తనిఖీ చేయడానికి వారి స్టోర్‌లలో ఒకదాన్ని సందర్శించండి.</string>
     <string name="sim_check_old_sim_title">మీ SIMని భర్తీ చేయాల్సి ఉండవచ్చు</string>
+    <string name="sim_check_old_sim_title_skt">మీ SIMని భర్తీ చేయాల్సి ఉండవచ్చు</string>
     <string name="sim_count_mismatched_ds_to_ss">SIM కార్డ్ మోడ్ డ్యూయల్ SIM నుండి ఏకైక SIMకు మార్చబడింది. ఈ సెట్టింగ్‌ని వర్తింప చేయడానికి, పరికరం దాని ఫ్యాక్టరీ డిఫాల్ట్ సెట్టింగ్‌లకు రీసెట్ చేయబడి, పునఃప్రారంభించబడుతుంది.</string>
     <string name="sim_count_mismatched_ss_to_ds">SIM కార్డ్ మోడ్ ఏకైక SIM నుండి డ్యూయల్ SIMకు మార్చబడింది. ఈ సెట్టింగ్‌ని వర్తింప చేయడానికి, పరికరం దాని ఫ్యాక్టరీ డిఫాల్ట్ సెట్టింగ్‌లకు రీసెట్ చేయబడి, పునఃప్రారంభించబడుతుంది.</string>
     <string name="sim_count_mismatched_title">SIM కార్డ్ మోడ్ మార్చబడింది</string>
-    <string name="sim_imsreg_error_message_lgt">మీ ఫోన్ SIM కార్డ్‌ను గుర్తించలేనందున అది వాయిస్ కాల్‌లు చేయలేదు. SIM కార్డ్‌ను తీసివేసి, దాన్ని మళ్లీ చొప్పించడానికి ప్రయత్నించండి. ఈ సమస్య కొనసాగినట్లయితే, మీరు మీ SIM కార్డ్‌ను భర్తీ చేయాల్సి ఉండవచ్చు. సహాయం కోసం, LG U+ స్టోర్‌ను సందర్శించండి లేదా 1544-0010లో LG U+ కస్టమర్ సర్వీస్‌ను సంప్రదించండి.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">మీ టాబ్లెట్ SIM కార్డ్‌ను గుర్తించలేనందున అది వాయిస్ కాల్‌లను చేయలేదు. మీ SIM కార్డ్‌ను తీసివేసి, దాన్ని మళ్లీ చొప్పించడానికి ప్రయత్నించండి. ఈ సమస్య కొనసాగినట్లయితే, మీరు మీ SIM కార్డ్‌ను భర్తీ చేయాల్సి ఉండవచ్చు. సహాయం కోసం, LG U+ స్టోర్‌ను సందర్శించండి లేదా 1544-0010లో LG U+ కస్టమర్ సర్వీస్‌ను సంప్రదించండి.</string>
+    <string name="sim_imsreg_error_message_lgt">మీ ఫోన్ SIM కార్డ్‌ను గుర్తించలేనందున అది వాయిస్ కాల్‌లు చేయలేదు. SIM కార్డ్‌ను తీసివేసి, దాన్ని మళ్లీ చొప్పించడానికి ప్రయత్నించండి. ఈ సమస్య కొనసాగినట్లయితే, మీరు మీ SIM కార్డ్‌ను LG U+​ స్టోర్‌లో భర్తీ చేయాల్సి ఉండవచ్చు.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">మీ టాబ్లెట్ SIM కార్డ్‌ను గుర్తించలేనందున అది వాయిస్ కాల్‌లు చేయలేదు. SIM కార్డ్‌ను తీసివేసి, దాన్ని మళ్లీ చొప్పించడానికి ప్రయత్నించండి. ఈ సమస్య కొనసాగినట్లయితే, మీరు మీ SIM కార్డ్‌ను LG U+​ స్టోర్‌లో భర్తీ చేయాల్సి ఉండవచ్చు.</string>
     <string name="sim_off_noti_message">అన్ని SIMలు ఆఫ్ చేయబడినప్పుడు మీరు కాల్‌లు చేయలేరు, సందేశాలు పంపలేరు లేదా డేటాను ఉపయోగించలేరు. SIMలను ఆన్ చేయడానికి ఇక్కడ నొక్కండి.</string>
     <string name="sim_off_noti_title">అన్ని SIMలు ఆఫ్ చేయబడ్డాయి</string>
     <string name="sim_off_toast_message">మీరు చొప్పించిన SIM కార్డ్ ఆఫ్‌లో ఉంది. దాన్ని ఉపయోగించడానికి, సెట్టింగ్‌లు > కనెక్షన్‌లు > SIM నిర్వాహకుడుకి వెళ్లి, ఆపై దాన్ని ఆన్ చేయండి.</string>
     <string name="sim_recognize_error_message_kt">మీ SIM కార్డ్ గుర్తించబడలేదు. SIM కార్డ్‌ను తీసివేసి, దాన్ని మళ్లీ చొప్పించడానికి ప్రయత్నించండి. ఈ సమస్య కొనసాగినట్లయితే, మీరు మీ SIM కార్డ్‌ను భర్తీ చేయాల్సి ఉండవచ్చు. సహాయం కోసం, KT స్టోర్‌ను సందర్శించండి లేదా 1588-0010లో KT కస్టమర్ సర్వీస్‌ను సంప్రదించండి.</string>
-    <string name="sim_recognize_error_message_lgt">మీ SIM కార్డ్ గుర్తించబడలేదు. SIM కార్డ్‌ను తీసివేసి, దాన్ని మళ్లీ చొప్పించడానికి ప్రయత్నించండి. ఈ సమస్య కొనసాగినట్లయితే, మీరు మీ SIM కార్డ్‌ను భర్తీ చేయాల్సి ఉండవచ్చు. సహాయం కోసం, LG U+ స్టోర్‌ను సందర్శించండి లేదా 1544-0010లో LG U+ కస్టమర్ సర్వీస్‌ను సంప్రదించండి.</string>
+    <string name="sim_recognize_error_message_lgt">మీ SIM కార్డ్ గుర్తించబడలేదు. మీ SIM కార్డ్‌ను తీసివేసి, దాన్ని మళ్లీ చొప్పించడానికి ప్రయత్నించండి. ఈ సమస్య కొనసాగినట్లయితే, మీరు మీ SIM కార్డ్‌ను LG U+​ స్టోర్‌లో భర్తీ చేయాల్సి ఉండవచ్చు.</string>
     <string name="sim_recognize_error_message_skt">SIM కార్డ్‌ను చదవలేరు. కొన్ని అప్లికేషన్‌లు మరియు ఫీచర్‌లు పని చేయకపోవచ్చు. మీ SIM కార్డ్‌ని తీసివేసి, మళ్లీ చొప్పించి, ఆపై మీ ఫోన్‌ని పునఃప్రారంభించండి. ఇలా చేయడం వల్ల సమస్య పరిష్కరించబడకుంటే, మీ ఫోన్ మరియు SIM కార్డ్‌ని కస్టమర్ సేవా ప్రాంతానికి తీసుకుని వెళ్లండి.</string>
     <string name="sim_recognize_error_message_skt_tablet">SIM కార్డ్‌ను చదవలేరు. కొన్ని అప్లికేషన్‌లు మరియు ఫీచర్‌లు పని చేయకపోవచ్చు. మీ SIM కార్డ్‌ని తీసివేసి, మళ్లీ చొప్పించి, ఆపై మీ టాబ్లెట్‌ని పునఃప్రారంభించండి. ఇలా చేయడం వల్ల సమస్య పరిష్కరించబడకుంటే, మీ టాబ్లెట్ మరియు SIM కార్డ్‌ని కస్టమర్ సేవా ప్రాంతానికి తీసుకుని వెళ్లండి.</string>
     <string name="sim_recognize_error_title_lgt">USIM కార్డ్‌ని గుర్తించలేరు</string>
@@ -1138,10 +1107,8 @@
     <string name="sim_removed_message_hotswap_us_tablet">Wi-Fi నెట్‌వర్క్‌కు కనెక్ట్ చేయండి లేదా మొబైల్ డేటాను ఉపయోగించడానికి SIM కార్డ్‌ను చొప్పించండి.</string>
     <string name="sim_removed_title_hotswap">SIM కార్డ్ చొప్పించబడలేదు</string>
     <string name="sim_removed_title_hotswap_us_tablet">SIM కార్డ్ చొప్పించు</string>
+    <string name="smart_tip_action_click_hint_text">మూసివేయి</string>
     <string name="smartclip_restrict">సులభ క్లిప్ ఉపయోగాన్ని భద్రతా విధానం నివారిస్తుంది.</string>
-    <string name="sms_short_code_remember_undo_instruction">మీరు దీన్ని తర్వాత సెట్టింగ్‌లు > అప్లికేషన్‌లకు వెళ్లడం ద్వారా మార్చవచ్చు</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">మీరు తర్వాత సెట్టింగ్‌లు > అప్లికేషన్‌లు > మరిన్ని ఎంపికల బటన్ > ప్రత్యేక ప్రాప్యత > ప్రీమియం టెక్స్ట్ సందేశ సేవలను ఉపయోగించండికి వెళ్లి, దీన్ని మార్చవచ్చు</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">మీరు “ఎప్పటికీ అనుమతించవద్దు”ని నొక్కితే, ఈ అప్లికేషన్ కోసం టెక్స్ట్ సందేశాలను పంపు అనుమతి అనుమతించబడినా కూడా ఇది నేపథ్యంలో సందేశాలను పంపలేదు.</string>
     <string name="ss_do_not_show_again_us">మళ్లీ చూపించవద్దు</string>
     <string name="sss_translate">అనువదించు</string>
     <string name="ssu_lock_body_vzw">క్షమించండి, ప్రస్తుతం మీ పరికరాన్ని మరో క్యారియర్ నెట్‌వర్క్‌లో సక్రియం చేయలేరు. సహాయం కోసం, Verizonని %1$s లేదా %2$sలో (ప్రీపెయిడ్ ప్లాన్‌లు) సంప్రదించండి</string>
@@ -1172,7 +1139,6 @@
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">మొబైల్ హాట్‌స్పాట్</string>
     <string name="title_dialog_check_rotate_or_not">స్వీయ స్క్రీన్ రొటేషన్‌ను ఆఫ్ చేయాలా?</string>
-    <string name="title_uds">అసాధారణ డేటా ఆదా మోడ్</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">మీ ఫోన్‌ను సెటప్ చేసేటప్పుడు Bixbyను ఉపయోగించలేరు.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">మీ టాబ్లెట్‌ను సెటప్ చేసేటప్పుడు Bixbyను ఉపయోగించలేరు.</string>
     <string name="toast_warning_pattern_lock">భౌగోళిక స్విచ్‌తో నమూనా లాక్‌ని ఉపయోగించలేరు. మొదట వేరొక లాక్ రకానికి మార్చండి.</string>
@@ -1212,9 +1178,13 @@
     <string name="unknown_install_blocked_esm_title">తెలియని అప్లికేషన్ నిరోధించబడింది</string>
     <string name="unknown_install_dlg_desc">ఈ అప్లికేషన్ ఆమోదిత స్టోర్ నుండి డౌన్‌లోడ్ చేయబడలేదు. ఈ అప్లికేషన్‌ని ఇన్‌స్టాల్ చేయడం వల్ల మీ భద్రత మరియు గోప్యతకు ప్రమాదం కలగవచ్చు. అప్లికేషన్ మీ వ్యక్తిగత సమాచారాన్ని సేకరించవచ్చు లేదా మీ డేటాని కోల్పోయేలా చేయవచ్చు.</string>
     <string name="unknown_install_dlg_desc2">ఈ అప్లికేషన్ తాజా భద్రతా ఫీచర్‌లకు మద్దతు ఇవ్వదు. ఈ అప్లికేషన్‌ని ఇన్‌స్టాల్ చేయడం వల్ల కింది భద్రతా ప్రమాదాలు సంభవించవచ్చు:</string>
+    <string name="unknown_install_dlg_desc_global_phone">ఈ అప్లికేషన్ ఇన్‌స్టాలేషన్ ఫైల్ సురక్షితమైనది కాకపోవచ్చు. ఇది క్లెయిమ్ చేస్తున్న అప్లికేషన్ కాకపోవచ్చు. మీ ఫోన్ మరియు వ్యక్తిగత డేటాను రక్షించడానికి, బదులుగా మీరు విశ్వసించే అప్లికేషన్ స్టోర్ నుండి అప్లికేషన్‌ను ఇన్‌స్టాల్ చేయండి.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">ఈ అప్లికేషన్ ఇన్‌స్టాలేషన్ ఫైల్ సురక్షితమైనది కాకపోవచ్చు. ఇది క్లెయిమ్ చేస్తున్న అప్లికేషన్ కాకపోవచ్చు. మీ టాబ్లెట్ మరియు వ్యక్తిగత డేటాను రక్షించడానికి, బదులుగా మీరు విశ్వసించే అప్లికేషన్ స్టోర్ నుండి అప్లికేషన్‌ను ఇన్‌స్టాల్ చేయండి.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">ఈ అప్లికేషన్ మోసపూరితమైనదిగా ఉందని అనుమానించబడింది మరియు మీ ఫోన్ మరియు డేటాను ప్రమాదంలో పడవేయవచ్చు. ఈ అప్లికేషన్‌ను ఇన్‌స్టాల్ చేయడం సిఫార్సు చేయబడలేదు.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">ఈ అప్లికేషన్ మోసపూరితమైనదిగా ఉందని అనుమానించబడింది మరియు మీ టాబ్లెట్ మరియు డేటాను ప్రమాదంలో పడవేయవచ్చు. ఈ అప్లికేషన్‌ను ఇన్‌స్టాల్ చేయడం సిఫార్సు చేయబడలేదు.</string>
-    <string name="unknown_install_dlg_general_title">ఈ అప్లికేషన్ తెలియని మూలం నుండి వచ్చింది</string>
+    <string name="unknown_install_dlg_desc_phone">ఈ అప్లికేషన్ అధీకృత అప్లికేషన్ స్టోర్ నుండి రాలేదు. మీ ఫోన్ మరియు వ్యక్తిగత సమాచారాన్ని రక్షించడానికి, ప్లే స్టోర్ లేదా Galaxy Store వంటి అధీకృత స్టోర్ నుండి అప్లికేషన్‌ని ఇన్‌స్టాల్ చేయండి.</string>
+    <string name="unknown_install_dlg_desc_tablet">ఈ అప్లికేషన్ అధీకృత అప్లికేషన్ స్టోర్ నుండి రాలేదు. మీ టాబ్లెట్ మరియు వ్యక్తిగత సమాచారాన్ని రక్షించడానికి, ప్లే స్టోర్ లేదా Galaxy Store వంటి అధీకృత స్టోర్ నుండి అప్లికేషన్‌ని ఇన్‌స్టాల్ చేయండి.</string>
+    <string name="unknown_install_dlg_general_title">ఈ అప్లికేషన్‌ను ఇన్‌స్టాల్ చేయడం సిఫార్సు చేయబడలేదు</string>
     <string name="unknown_install_dlg_negative_button">ఇన్‌స్టాల్ చేయవద్దు</string>
     <string name="unknown_install_dlg_perm_desc1">అప్లికేషన్ మీరు స్వీకరించే టెక్స్ట్ సందేశాల నుండి ధృవీకరణ కోడ్‌లను అడ్డగించవచ్చు.</string>
     <string name="unknown_install_dlg_perm_desc2">మీకు తెలియకుండానే వేరే ఫోన్ నంబర్‌కు అవుట్‌గోయింగ్ కాల్‌లు దారిమళ్లించబడతాయి.</string>
@@ -1233,7 +1203,7 @@
     <string name="usb_abnormal_reset_title">USB కనెక్షన్ స్థిరంగా లేదు</string>
     <string name="usb_abnormal_reset_toast">USB కనెక్షన్ స్థిరంగా లేదు. కేబుల్‌ను అన్‌ప్లగ్ చేసి మళ్లీ ప్లగ్‌ఇన్ చేయండి లేదా వేరే కేబుల్‌ను ప్రయత్నించండి.</string>
     <string name="usb_accessory_notification_title">USB ఉపసాధనం కు కనెక్టయింది</string>
-    <string name="usb_bad_removal_message">USB నిల్వ పరికరం అసురక్షితంగా తీసివేయబడింది. అనుకోకుండా మీ టాబ్లెట్ పునఃప్రారంభం కావడాన్ని నివారించడానికి, సేవ్ చేయని డేటాని సేవ్ చేసి, ఇప్పుడు పునఃప్రారంభించండి.</string>
+    <string name="usb_bad_removal_message">USB నిల్వ పరికరం అసురక్షితంగా తీసివేయబడింది. అనుకోకుండా మీ ఫోన్ పునఃప్రారంభం కావడాన్ని నివారించడానికి, సేవ్ చేయని డేటాని సేవ్ చేసి, ఇప్పుడు పునఃప్రారంభించండి.</string>
     <string name="usb_blocked_by_emergency_mode">అత్యవసర మోడ్‌లో కొన్ని USB విధులు అందుబాటులో ఉండవు.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">అసాధారణ శక్తి ఆదా మోడ్ ప్రారంభించబడినప్పుడు కనెక్ట్ చేయబడిన USB పరికరానికి సంబంధించిన విధులను ఉపయోగించడం సాధ్యం కాదు.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">గరిష్ట శక్తి ఆదా మోడ్ ఆన్ చేయబడినప్పుడు కొన్ని USB విధులు పరిమితం చేయబడతాయి.</string>
@@ -1242,13 +1212,15 @@
     <string name="usb_camera_connected_notification_title">మీడియా పరికరం కనెక్ట్ చేయబడింది</string>
     <string name="usb_camera_disconnected_notification_title">మీడియా పరికరం డిస్‌కనెక్ట్ చేయబడింది</string>
     <string name="usb_cd_installer_notification_title">సాఫ్ట్‌వేర్ అప్‌డేట్</string>
-    <string name="usb_charing_only_notification_title">కనెక్ట్ చేయబడింది</string>
+    <string name="usb_charing_only_notification_title">USB ఛార్జింగ్</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">గరిష్ట పరిమితులతో స్వీయ నిరోధకం ఆన్‌లో ఉంది.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB కనెక్షన్ నిరోధించబడింది</string>
     <string name="usb_debugging_only_notification_title">డీబగ్గింగ్ మాత్రమే</string>
-    <string name="usb_host_resource_exceed_message">మీ టాబ్లెట్ USB కంట్రోలర్ ఈ పరికరంకు కనెక్ట్ అవడానికి తగినన్ని వనరులు కలిగి లేదు. పరికరాన్ని డిస్‌కనెక్ట్ చేసి, దీన్ని మళ్లీ కనెక్ట్ చేయడానికి ప్రయత్నించండి.</string>
+    <string name="usb_host_resource_exceed_message">మీ ఫోన్ USB కంట్రోలర్ ఈ పరికరంకు కనెక్ట్ అవడానికి తగినన్ని వనరులు కలిగి లేదు. పరికరాన్ని డిస్‌కనెక్ట్ చేసి, దీన్ని మళ్లీ కనెక్ట్ చేయడానికి ప్రయత్నించండి.</string>
     <string name="usb_host_resource_exceed_title">తగినన్ని USB నియంత్రించబడదగిన వనరులు లేవు</string>
-    <string name="usb_hub_depth_exceed_message">మీ టాబ్లెట్ ఒకేసారి 5 USB హబ్ కనెక్షన్‌లకు మాత్రమే మద్దతుఇవ్వగలదు.</string>
+    <string name="usb_hub_depth_exceed_message">మీ ఫోన్ ఒకేసారి 5 USB హబ్ కనెక్షన్‌లకు మాత్రమే మద్దతుఇవ్వగలదు.</string>
     <string name="usb_hub_depth_exceed_title">గరిష్ట USB హబ్ కనెక్షన్‌లు</string>
-    <string name="usb_hub_power_exceed_message">మీ టాబ్లెట్ ఈ USB పరికరం తగినంత శక్తిని అందించలేదు. స్వశక్తి కలిగిన USB హబ్‌కు మీ టాబ్లెట్‌ను కనెక్ట్ చేయకముందు పరికరంను కనెక్ట్ చేయండి.</string>
+    <string name="usb_hub_power_exceed_message">మీ ఫోన్ ఈ USB పరికరం తగినంత శక్తిని అందించలేదు. స్వశక్తి కలిగిన USB హబ్‌కు మీ ఫోన్‌ను కనెక్ట్ చేయకముందు పరికరంను కనెక్ట్ చేయండి.</string>
     <string name="usb_increase_battery_usage">USB కనెక్షన్ వల్ల బ్యాటరీ ఉపయోగం పెరగవచ్చు.</string>
     <string name="usb_mass_storage_restrict">భద్రతా విధానం USB మాస్ నిల్వ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
     <string name="usb_midi_notification_title">MIDI కోసం USB</string>
@@ -1274,8 +1246,9 @@
     <string name="usb_storage_stop_title">USB నిల్వ ఉపయోగంలో ఉంది.</string>
     <string name="usb_storage_title">USB కనెక్ట్ అయ్యింది.</string>
     <string name="usb_type_c_supply_power_notification_title">USB ఛార్జింగ్ కనెక్ట్ చేసిన పరికరం</string>
-    <string name="usb_unblock_by_screen_unlock">కనెక్ట్ చేయబడిన USB పరికరాన్ని ఉపయోగించడానికి మీ టాబ్లెట్‌ను అన్‌లాక్ చేయండి.</string>
-    <string name="usb_unsupport_accessory_message">మీ టాబ్లెట్‌లో ఈ USBకి మద్దతు లేదు.</string>
+    <string name="usb_unblock_by_screen_unlock">కనెక్ట్ చేయబడిన USB పరికరాన్ని ఉపయోగించడానికి మీ ఫోన్‌ను అన్‌లాక్ చేయండి.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USB పరికరాన్ని ఉపయోగించడానికి, మీ ఫోన్‌ను అన్‌లాక్ చేసి, USB పరికరాన్ని తిరిగి కనెక్ట్ చేయండి.</string>
+    <string name="usb_unsupport_accessory_message">మీ ఫోన్‌లో ఈ USBకి మద్దతు లేదు.</string>
     <string name="usb_unsupport_accessory_title">USB పరికరానికి మద్దతు లేదు</string>
     <string name="usb_unsupported_device">కనెక్ట్ చేసిన USB పరికరానికి మద్దతు లేదు.</string>
     <string name="usb_unsupported_device_title">పరికరానికి మద్దతు లేదు</string>
@@ -1293,19 +1266,19 @@
     <string name="usb_water_dialg_method_2_desc_2">మీరు పోర్ట్ వైపు ఫ్యాన్ లేదా డ్రయర్‌ని (చల్లని గాలి మాత్రమే) ఉంచడం ద్వారా వేగంగా పొడిగా అయ్యేలా చేయండి.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"మేము మీ ఛార్జింగ్/USB పోర్ట్‌లో తేమ లేదా బయటి అంశాలు కనుగొన్నాము.
 
-దుమ్ము లేదా చెత్త వంటి ఏదైనా బయటి అంశాల కోసం మీ ఛార్జింగ్/USB పోర్ట్‌ను తనిఖీ చేయండి. మీ టాబ్లెట్‌కు కలిగే హానిని నివారించడానికి, ఛార్జింగ్ పోర్ట్ శుభ్రంగా ఉండి, తేమ పోయే వరకు ఏదీ ప్లగిన్ చేయవద్దు.
+దుమ్ము లేదా చెత్త వంటి ఏదైనా బయటి అంశాల కోసం మీ ఛార్జింగ్/USB పోర్ట్‌ను తనిఖీ చేయండి. మీ ఫోన్‌కు కలిగే హానిని నివారించడానికి, ఛార్జింగ్ పోర్ట్ శుభ్రంగా ఉండి, తేమ పోయే వరకు ఏదీ ప్లగిన్ చేయవద్దు.
 
 పోర్ట్‌ను పొడిగా ఉంచడానికి, తేమ బయటకు వచ్చేలా కదిలించి, ఆపై అది ఆరేంత వరకు వేచి ఉండండి, దీనికి కొన్ని గంటల సమయం పట్టవచ్చు. మీరు పోర్ట్ వైపు ఫ్యాన్ లేదా డ్రయర్‌ని (చల్లని గాలి మాత్రమే) ఉంచడం ద్వారా వేగంగా పొడిగా అయ్యేలా చేయవచ్చు."</string>
     <string name="usb_water_dialg_positive_button">సరే</string>
     <string name="usb_water_dialg_support_wireless_charging">"మేము మీ ఛార్జింగ్/USB పోర్ట్‌లో తేమ లేదా బయటి అంశాలు కనుగొన్నాము.
 
-దుమ్ము లేదా చెత్త వంటి ఏదైనా బయటి అంశాల కోసం మీ ఛార్జింగ్/USB పోర్ట్‌ను తనిఖీ చేయండి. మీ టాబ్లెట్‌కు కలిగే హానిని నివారించడానికి, ఛార్జింగ్ పోర్ట్ శుభ్రమయ్యి, తేమ పోయే వరకు ఏదీ ప్లగ్‌లో పెట్టవద్దు.
+దుమ్ము లేదా చెత్త వంటి ఏదైనా బయటి అంశాల కోసం మీ ఛార్జింగ్/USB పోర్ట్‌ను తనిఖీ చేయండి. మీ ఫోన్‌కు కలిగే హానిని నివారించడానికి, ఛార్జింగ్ పోర్ట్ శుభ్రంగా ఉండి, తేమ పోయే వరకు ఏదీ ప్లగిన్ చేయవద్దు.
 
-పోర్ట్‌ను పొడిగా ఉంచడానికి, తేమ బయటకు వచ్చేలా కుదిపి, ఆపై అది ఆరేంత వరకు వేచి ఉండండి, దీనికి కొన్ని గంటల సమయం పట్టవచ్చు. మీరు పోర్ట్ వైపు ఫ్యాన్ లేదా డ్రయర్‌ని (చల్లని గాలి మాత్రమే) ఉంచడం ద్వారా వేగంగా పొడిగా అయ్యేలా చేయవచ్చు.
+పోర్ట్‌ను పొడిగా ఉంచడానికి, తేమ బయటకు వచ్చేలా కదిలించి, ఆపై అది ఆరేంత వరకు వేచి ఉండండి, దీనికి కొన్ని గంటల సమయం పట్టవచ్చు. మీరు పోర్ట్ వైపు ఫ్యాన్ లేదా డ్రయర్‌ని (చల్లని గాలి మాత్రమే) ఉంచడం ద్వారా వేగంగా పొడిగా అయ్యేలా చేయవచ్చు.
 
-అదే సమయంలో, మీరు మీ టాబ్లెట్‌ను వైర్‌లెస్‌గా ఛార్జ్ చేయవచ్చు."</string>
+అదే సమయంలో మీరు మీ ఫోన్‌ని వైర్‌లెస్‌గా ఛార్జ్ చేయవచ్చు."</string>
     <string name="usb_water_notification_content">మీ ఛార్జింగ్/USB పోర్ట్‌లో తేమ లేదా బయటి పదార్థం ఉంది. ఛార్జ్ చేయడానికి ముందు తనిఖీ చేయండి.</string>
-    <string name="usb_water_notification_message">మీ ఛార్జర్/USB పోర్ట్‌లో తేమ గుర్తించబడింది. మీ టాబ్లెట్‌ని ఛార్జ్ చేయడానికి ముందు అది పూర్తిగా పొడిగా ఉందని నిర్ధారించుకోండి. ఇది పూర్తిగా పొడిగా అవ్వడానికి కొంత సమయం పట్టవచ్చు.</string>
+    <string name="usb_water_notification_message">మీ ఛార్జర్/USB పోర్ట్‌లో తేమ గుర్తించబడింది. మీ ఫోన్‌ని ఛార్జ్ చేయడానికి ముందు అది పూర్తిగా పొడిగా ఉందని నిర్ధారించుకోండి. ఇది పూర్తిగా పొడిగా అవ్వడానికి కొంత సమయం పట్టవచ్చు.</string>
     <string name="usb_water_notification_message_button">వివరాలు</string>
     <string name="usb_water_notification_title">ఛార్జర్/USB పోర్ట్‌ని తనిఖీ చేయండి</string>
     <string name="usbhostStorage_restrict">భద్రతా విధానం USB హోస్ట్ నిల్వ ఉపయోగాన్ని నిరోధిస్తుంది.</string>
@@ -1318,6 +1291,8 @@
     <string name="vpn_allowOnlySecureConnection">VPN ప్రొఫైల్ సురక్షితమైనది కాదు.</string>
     <string name="vpn_error_text">VPNకు మళ్లీ అనుసంధానించేందుకు ప్రయత్నించడానికి నొక్కండి.</string>
     <string name="vpn_error_title">VPN అనుసంధాన లోపం</string>
+    <string name="vpn_fail_text_long">%sకు కనెక్ట్ చేయడం సాధ్యం కాలేదు. ఈ VPNను నిర్వహించడానికి నొక్కండి.</string>
+    <string name="vpn_fail_title">VPN కనెక్ట్ చేయబడలేదు</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">టాబ్లెట్‌ని చల్లబరచడానికి అప్లికేషన్‌లను మూసివేయడం</string>
     <string name="vzw_cooldown_mode_ok">సరే</string>
@@ -1380,6 +1355,7 @@
     <string name="wifi_network_available_detailed">ఓపెన్ Wi-Fi నెట్‌వర్క్ అందుబాటులో ఉంది.</string>
     <string name="wifi_networks_available">Wi-Fi నెట్‌వర్క్‌లు అందుబాటులో ఉన్నాయి</string>
     <string name="wifi_networks_available_detailed">ఓపెన్ Wi-Fi నెట్‌వర్క్‌లు అందుబాటులో ఉన్నాయి.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">మీ WLAN కనెక్షన్ నెమ్మదిగా లేదా అస్థిరంగా ఉన్నందున %s మొబైల్ డేటాను ఉపయోగిస్తోంది.</string>
     <string name="wifi_notification_switch_wifi_detail">Wi-Fi నెట్‌వర్క్ అస్థిరంగా ఉన్నందున మీ ఫోన్ మొబైల్ డేటాకు మారింది.</string>
     <string name="wifi_notification_switch_wifi_title">మొబైల్ డేటాకు మార్చబడింది</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">అత్యవసర నోటిఫికేషన్‌లు</string>
@@ -1411,9 +1387,5 @@
     <string name="work_profile_on_message">ఇది కార్యాలయ అప్లికేషన్‌లు, నోటిఫికేషన్‌లు, డేటా మరియు ఇతర కార్యాలయ ప్రొఫైల్ ఫీచర్‌లను ప్రాప్యత చేయడానికి మిమ్మల్ని అనుమతిస్తుంది.</string>
     <string name="work_profile_on_title">కార్యాలయ ప్రొఫైల్‌ని ఆన్ చేయాలా?</string>
     <string name="work_profile_restricted">గరిష్ట పరిమితులతో స్వీయ నిరోధకం ఆన్‌లో ఉంది. మీ భద్రతను రక్షించడానికి, కార్యాలయ ప్రొఫైల్‌లను సృష్టించలేరు.</string>
-    <string name="work_profile_telephony_paused_text">మీరు మీ కార్యాలయ అప్లికేషన్‌లను పాజ్ చేసారు. మీరు వాటి నుండి ఫోన్ కాల్‌లు లేదా టెక్స్ట్ సందేశాలను స్వీకరించరు.</string>
-    <string name="work_profile_telephony_paused_title">కాల్‌లు మరియు సందేశాలు ఆఫ్ చేయబడ్డాయి</string>
-    <string name="work_profile_telephony_paused_turn_on_button">పని ప్రొఫైల్‌ని ఆన్ చేయాలా?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">నేను దీన్ని ఆఫ్ చేసే వరకు</string>
 </resources>

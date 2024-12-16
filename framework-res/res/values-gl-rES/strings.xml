@@ -87,6 +87,9 @@ txt. plano"</string>
     <string name="accessibility_corner_action_type_talk_to_bixby">Falar con Bixby</string>
     <string name="accessibility_corner_action_type_zoom_in">Ampliar o zoom</string>
     <string name="accessibility_corner_action_type_zoom_out">Afastar o zoom</string>
+    <string name="accessibility_dialog_button_allow_samsung">Permitir</string>
+    <string name="accessibility_dialog_button_deny_samsung">Denegar</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Desinsta.</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Premendo rapidamente os botóns Acendido e Subir volume actívanse e desactívanse as funcións seguintes:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Ao premer rapidamente os botóns Función e Subir volume actívanse e desactívanse as funcións seguintes:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Premendo rapidamente os botóns Acendido e Subir volume actívase e desactívase %s.</string>
@@ -118,6 +121,7 @@ txt. plano"</string>
     <string name="accessibility_sticky_keys_shift">Maiús</string>
     <string name="account_addition_restrict">A política de seguridade impide a adición desta conta.</string>
     <string name="account_removal_restrict">A política de seguridade impide a eliminación desta conta.</string>
+    <string name="action_bar_up_description">Navega cara a arriba</string>
     <string name="action_menu_overflow_description">Máis opcións</string>
     <string name="adb_active_notification_message">Seleccionar para activar a eliminación de fallos do USB</string>
     <string name="adb_active_notification_title">Eliminación de fallos do USB conectado</string>
@@ -126,6 +130,9 @@ txt. plano"</string>
     <string name="advance_wifi_sharing_msg">Detectouse unha rede Wi-Fi dispoñible. Conéctate para utilizar o uso compartido mediante Wi-Fi en lugar dos datos móbiles para a Conexión compartida.</string>
     <string name="airplanemode_restrict">A política de seguridade impide a activación do modo Avión.</string>
     <string name="allow_settings_changes">A política de seguridade impide o cambio dos axustes.</string>
+    <string name="always_allow">Permitir sempre</string>
+    <string name="app_block_button_open">Abrir</string>
+    <string name="app_block_content">%1$s quere abrir a aplicación %2$s.</string>
     <string name="app_clone_storage">Almacenamento interno (Dual Messenger)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Escoller aplicacións</string>
     <string name="app_continuity_guide_cling_button_not_now">Agora non</string>
@@ -140,32 +147,21 @@ txt. plano"</string>
     <string name="app_paused_dialog_by_digital_wellbeing">Usaches todo o tempo que tiñas hoxe para %s. Podes cambiar isto en Axustes.</string>
     <string name="app_restricted_message_concentration_mode">%s está bloqueada durante Modo de concentración. Ponte en contacto co teu administrador de TI para obter máis información.</string>
     <string name="app_updating_message">%s está sendo actualizado. Téntao de novo máis tarde.</string>
-    <string name="appblock_block_subtitle1_phone">Para protexer o teu teléfono e os datos persoais, esta aplicación non se pode instalar porque se sospeita que é maliciosa.</string>
-    <string name="appblock_block_subtitle1_tablet">Para protexer a túa tableta e os datos persoais, esta aplicación non se pode instalar porque se sospeita que é maliciosa.</string>
-    <string name="appblock_block_subtitle2">Esta aplicación non se pode instalar porque se denunciou como aplicación maliciosa.</string>
-    <string name="appblock_block_text1">Esta aplicación non provén dunha fonte verificada e require permisos de contidos sensibles que se poden usar para roubar ou filtrar os teus datos persoais.</string>
-    <string name="appblock_block_text2">"As aplicacións maliciosas poden usar permisos de contidos sensibles para roubar os teus datos persoais, facerse pasar por ti ou acceder ás túas contas financeiras.
-
-As entidades financeiras lexítimas non requiren a instalación de aplicacións de arquivos ZIP, arquivos APK ou xestor de arquivos.
-
-Asegúrate sempre de que as aplicacións que instales proveñan dunha fonte de confianza."</string>
-    <string name="appblock_warn_subtitle">Esta aplicación pode roubar ou filtrar a túa información persoal.</string>
-    <string name="appblock_warn_text1">"Instalar aplicacións de fontes non verificadas pode permitir que as aplicacións recompilen a túa información persoal ou fagan un seguimento da túa actividade.
+    <string name="appblock_block_text_phone">Esta aplicación non se pode instalar porque se denunciou como maliciosa ou é similar a unha aplicación denunciada como maliciosa. É probable que se use en delitos como a suplantación da identidade. Para protexer o teléfono e os datos, non se pode ignorar esta restrición.</string>
+    <string name="appblock_block_text_tablet">Esta aplicación non se pode instalar porque se denunciou como maliciosa ou é similar a unha aplicación denunciada como maliciosa. É probable que se use en delitos como a suplantación da identidade. Para protexer a tableta e os datos, non se pode ignorar esta restrición.</string>
+    <string name="appblock_link_text">Máis información</string>
+    <string name="appblock_warn_text1">"Instalar aplicacións de fontes non verificadas pode permitir que estas recompilen a túa información persoal ou fagan un seguimento da túa actividade.
 
 Recoméndase non instalar esta aplicación.
 
 Se decides instalala igualmente, revisa con atención o Aviso de privacidade da aplicación e asegúrate de só conceder os permisos que sexan necesarios."</string>
-    <string name="appblock_warn_text2">"As aplicacións maliciosas tentan obter a túa información persoal con frecuencia usando os permisos de Contactos, SMS e Fotos.
-
-Recoméndase non instalar esta aplicación.
-
-Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que confías e ten coidado á hora de conceder permisos ou calquera outro acceso aos teus datos."</string>
     <string name="application_default_restrict">Outra aplicación definida como predeterminada polo administrador do dispositivo.</string>
     <string name="auto_click_paused">Clic automático púxose en pausa.</string>
     <string name="auto_click_resumed">Retomouse Clic automático.</string>
     <string name="autofill_never_use_for_this_app">Non usar nunca %s para esta aplicación</string>
     <string name="autofill_save_cancel">Cancelar</string>
     <string name="autofill_save_never_OK">Aceptar</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">A política de seguridade impide o uso da Copia de seguridade.</string>
     <string name="badPin2">O PIN2 é incorrecto. Téntao de novo.</string>
     <string name="badPuk2">O PUK2 inserido é incorrecto</string>
@@ -176,8 +172,6 @@ Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que c
     <string name="bluetooth_a2dp_restrict">A política de seguridade impide o uso de audio multimedia Bluetooth.</string>
     <string name="bluetooth_avrcp_restrict">A política de seguridade impide o uso do control de son/vídeo Bluetooth.</string>
     <string name="bluetooth_bpp_restrict">A política de seguridade impide a impresión a través de Bluetooth.</string>
-    <string name="bluetooth_china_popup_message">%1$s está a solicitar permiso para utilizar %2$s. Desexas permitilo?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">A política de seguridade impide as transferencias de datos a través de Bluetooth.</string>
     <string name="bluetooth_desktop_restrict">A política de seguridade impide a conexión ao teu escritorio a través de Bluetooth.</string>
     <string name="bluetooth_device_restrict">A política de seguridade impide a vinculación con este dispositivo Bluetooth.</string>
@@ -188,7 +182,6 @@ Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que c
     <string name="bluetooth_outgoing_call_restrict">A política de seguridade impide a realización de chamadas saíntes a través de Bluetooth.</string>
     <string name="bluetooth_pairing_restrict">A política de seguridade impide a vinculación por Bluetooth.</string>
     <string name="bluetooth_pbap_restrict">A política de seguridade impide o uso da axenda telefónica Bluetooth.</string>
-    <string name="bluetooth_permission_request">Solicitude de permiso para Bluetooth</string>
     <string name="bluetooth_restrict">A política de seguridade impide o uso do Bluetooth.</string>
     <string name="bluetooth_sap_restrict">A política de seguridade impide o acceso á túa tarxeta SIM a través de Bluetooth.</string>
     <string name="bluetooth_security_mode_disable">A política de seguridade impide o uso do Bluetooth.</string>
@@ -251,11 +244,8 @@ Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que c
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">Dispositivos permitidos</string>
     <string name="data_call_restriction">A política de seguridade limita o uso de datos móbiles</string>
-    <string name="data_usage_disable_mobile">Desactivar conexión de datos móbil?</string>
-    <string name="data_usage_enable_mobile_warning">Conectarse a través do paquete de datos pode carrexar custos adicionais. Continuar?</string>
     <string name="data_usage_limit_body">Os datos móbiles detivéronse ata o final do ciclo de facturación.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Por riba do límite de datos</string>
-    <string name="data_usage_mobile_limit_title">Alcanzouse límite de datos móbiles</string>
     <string name="data_usage_rapid_app_body">%s usou máis datos do habitual.</string>
     <string name="data_usage_rapid_body">As túas aplicacións usaron máis datos do habitual.</string>
     <string name="data_usage_rapid_title">Uso elevado dos datos do móbil</string>
@@ -266,6 +256,7 @@ Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que c
     <string name="data_usage_warning_title_offpeak_chn">%s datos baixa actividade usados</string>
     <string name="data_usage_warning_title_unlimited_chn">Límite velocidade datos acadado</string>
     <string name="device_disabled">Dispositivo desactivado. Contacte co administrador informático.</string>
+    <string name="device_info_not_available">Non dispoñible</string>
     <string name="dex_cant_change_user_profile">Non se pode cambiar o perfil do usuario no modo Samsung DeX.</string>
     <string name="dex_dialog_launch_toast">É posible que as aplicacións abertas se pechen. Garda os teus datos antes de iniciar ou pechar Samsung DeX.</string>
     <string name="dex_disconnected_from_device">Desconectouse DeX de %s. Comproba a conexión de rede do televisor.</string>
@@ -274,9 +265,6 @@ Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que c
     <string name="dex_launcher_mode_change">%s pechouse para cambiar a Samsung DeX.</string>
     <string name="dex_mirroring_jit_msg">Cando executas Samsung DeX na tableta, podes duplicar a pantalla en calquera pantalla conectada por HDMI para ter unha vista máis grande.</string>
     <string name="dex_mirroring_jit_title">Duplicar DeX nunha pantalla maior</string>
-    <string name="dex_restart_app_dialog_button_positive">Reiniciar</string>
-    <string name="dex_restart_app_dialog_message">Esta aplicación xa se está executando noutra pantalla. Para abrila aquí, tes que reiniciala. Antes diso, garda calquera cousa importante.</string>
-    <string name="dex_restart_app_dialog_title">Queres reiniciar %s?</string>
     <string name="dex_restriction_blockerMessage">A política de seguridade impide o uso de Samsung DeX.</string>
     <string name="dex_restriction_ethernetOnly">A política de seguridade impide o uso de datos Wi-Fi, datos móbiles e módem Bluetooth/USB en DeX. Precísase unha conexión con cable para as funcións de rede.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Debido á política de seguridade, desconecta a pantalla externa para saír de Samsung DeX.</string>
@@ -301,7 +289,6 @@ Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que c
     <string name="digital_signature_failure_user_notification">A sinatura dixital non é válida para o usuario %d</string>
     <string name="disableupdate_application_restrict">A política de seguridade impide a actualización desta aplicación.</string>
     <string name="display_chooser_button_positive">Reiniciar</string>
-    <string name="display_chooser_dont_show_again">Non mostrar de novo</string>
     <string name="dlg_confirm_kill_storage_users_text">Se conectas o almacenamento do USB, pararanse algunhas aplicacións que estás usando. Pode que non estean dispoñibles ata que desconectes o almacenamento do USB.</string>
     <string name="dlg_confirm_kill_storage_users_title">Conectar almacenamento ao PC</string>
     <string name="dlg_error_title">Produciuse un erro na operación do USB</string>
@@ -316,7 +303,7 @@ Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que c
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Non se pode usar esta aplicación na vista Multiwindow.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Non se pode usar esta función na vista Multiwindow.</string>
     <string name="edit_contact_at_sim_restriction">A política de seguridade impide a edición de contactos da tarxeta SIM.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Dispositivos permitidos</string>
+    <string name="edm_policy_not_allow_open_wifiap">A política de seguridade limita o uso da función de módem non segura para a conexión compartida</string>
     <string name="emergency_calls_only">Só chamadas de urxencia</string>
     <string name="ethernet_cable_connected_notification_message">Toca para configurar</string>
     <string name="ethernet_cable_connected_notification_title">Cable de Ethernet conectado.</string>
@@ -336,7 +323,7 @@ Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que c
     <string name="ext_media_unsupported_notification_message">Este dispositivo non admite esta %s. Toca aquí para configurar un formato compatible.</string>
     <string name="ext_media_unsupported_notification_title">%s non compatible</string>
     <string name="ext_storage_bad_removal_button">Reiniciar</string>
-    <string name="ext_storage_bad_removal_title">Reinicia a tableta</string>
+    <string name="ext_storage_bad_removal_title">Reinicia o teléfono</string>
     <string name="extmedia_format_button_format">Formato</string>
     <string name="extmedia_format_message_usbhost">Borraranse todos os ficheiros gardados no teu almacenamento USB. Esta acción non se pode desfacer.</string>
     <string name="extmedia_format_title_usbhost">Queres formatar o almacenamento USB?</string>
@@ -407,6 +394,7 @@ Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que c
     <string name="globalactions_unable_restart_msg_fmm">Non se pode reiniciar porque o teléfono foi bloqueado remotamente por Buscar o meu móbil.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Non se pode reiniciar porque a tableta foi bloqueada remotamente por Buscar o meu móbil.</string>
     <string name="globalactions_unable_restart_msg_securelock">Non se pode reiniciar o teléfono mentres está bloqueado. Abre a tapa e desbloquéao para reinicialo.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Non se pode reiniciar o teléfono coa tarxeta SIM bloqueada.</string>
     <string name="hardware_key_restrict">A política de seguridade impide o uso desta clave de hardware.</string>
     <string name="hardware_sec">Teclado en pantalla</string>
     <string name="hbd_translate">Traducir texto escrito</string>
@@ -476,16 +464,16 @@ Se decides instalala igualmente, asegúrate de que proveña dunha fonte na que c
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Desbloquea a tableta para desactivar o modo Mantemento.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Non se gardará nada do que ocorra mentres o modo Mantemento estea activado, como datos descargados, instalacións de aplicacións ou cambios de axustes.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Definir bloqueo pantalla</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Reiniciar sen crear rexistro</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Crear rexistro e reiniciar</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Reinicia o teléfono para activar o modo Mantemento.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Primeiro define un bloqueo de pantalla.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Reinicia a tableta para activar o modo Mantemento.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Para axudar ao noso persoal de asistencia a analizar os problemas do teu teléfono, recomendámosche que crees un rexistro do sistema antes de iniciar o modo Mantemento.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Para axudar ao noso persoal de asistencia a diagnosticar e analizar os problemas do teu teléfono, recomendámosche que crees un rexistro do sistema antes de iniciar o modo Mantemento.
 
-O rexistro amosa que aplicacións se usaron e os erros producidos recentemente, se os houbese, mais non inclúe ningunha outra información persoal. O rexistro só se usará para analizar problemas, non para ningún outro fin. Normalmente tárdase sobre 2 minutos en crealo."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Para axudar ao noso persoal de asistencia a analizar os problemas da túa tableta, recomendámosche que crees un rexistro do sistema antes de iniciar o modo Mantemento.
+O rexistro só inclúe información esencial para reparar o teléfono, como que aplicacións se usaron, os erros producidos recentemente, os números de teléfono bloqueados e a capacidade de almacenamento de arquivos. Só se usará para diagnosticar e analizar problemas, e para ningún outro fin. Normalmente tárdase sobre 2 minutos en crealo."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Para axudar ao noso persoal de asistencia a diagnosticar e analizar os problemas da túa tableta, recomendámosche que crees un rexistro do sistema antes de iniciar o modo Mantemento.
 
-O rexistro amosa que aplicacións se usaron e os erros producidos recentemente, se os houbese, mais non inclúe ningunha outra información persoal. O rexistro só se usará para analizar problemas, non para ningún outro fin. Normalmente tárdase sobre 2 minutos en crealo."</string>
+O rexistro só inclúe información esencial para reparar a tableta, como que aplicacións se usaron, os erros producidos recentemente, os números de teléfono bloqueados e a capacidade de almacenamento de arquivos. Só se usará para diagnosticar e analizar problemas, e para ningún outro fin. Normalmente tárdase sobre 2 minutos en crealo."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Analizar almacenamento</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">O almacenamento interno do teléfono está case cheo. Se quedas sen espazo, é posible que algunhas aplicacións e funcións deixen de funcionar correctamente. Proba a borrar arquivos e aplicacións que xa non precises. Así que as borres, non esquezas baleirar a Papeleira.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">O almacenamento interno da tableta está case cheo. Se quedas sen espazo, é posible que algunhas aplicacións e funcións deixen de funcionar correctamente. Proba a borrar arquivos e aplicacións que xa non precises. Así que as borres, non esquezas baleirar a Papeleira.</string>
@@ -507,10 +495,17 @@ O rexistro amosa que aplicacións se usaron e os erros producidos recentemente, 
     <string name="maintenance_mode_outro_label">Saír do modo Mantemento</string>
     <string name="maintenance_mode_outro_textview_message_phone">Tes que desbloquear o teléfono para desactivar o modo Mantemento. Cando o fagas, todo volverá a como estaba cando se activou o modo Mantemento. Non se gardan os cambios que se fixesen co modo Mantemento activado, como os datos descargados, as aplicacións instaladas ou as modificacións de axustes.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Tes que desbloquear a tableta para desactivar o modo Mantemento. Cando o fagas, todo volverá a como estaba cando se activou o modo Mantemento. Non se gardan os cambios que se fixesen co modo Mantemento activado, como os datos descargados, as aplicacións instaladas ou as modificacións de axustes.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">O modo Mantemento non se pode usar se a función %s está activa.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Non se pode usar o modo Mantemento con Aforro de enerxía activado con aplicacións e pantalla Inicio limitadas.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Este teléfono non admite o modo Mantemento.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Esta tableta non admite o modo Mantemento.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s só pode ser utilizado polo propietario do dispositivo</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Queres deixar de facer copias de seguridade dos teus datos e activar o modo Mantemento?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Para activar o modo Mantemento, tes que finalizar ou eliminar a copia de seguridade incompleta.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Para activar o modo Mantemento, tes que deter a copia de seguridade en curso.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Para activar o modo Mantemento, tes que deixar de restaurar os datos da copia de seguridade.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Aplicación de administración do dispositivo</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Creando rexistro…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Isto normalmente tarda sobre 2 minutos. Unha vez creado, o teléfono reiniciarase no modo Mantemento e poderás entregalo de forma segura para o mantemento.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Isto normalmente tarda sobre 2 minutos. Unha vez creado, a tableta reiniciarase no modo Mantemento e poderás entregala de forma segura para o mantemento.</string>
@@ -533,13 +528,8 @@ A tableta reiniciarase axiña."</string>
     <string name="media_checking_usbhost">Estase comprobando o almacenamento USB.</string>
     <string name="media_unknown_state">Soporte externo en estado descoñecido</string>
     <string name="mediaplayer_restrict">A política de seguridade impide o uso do reprodutor multimedia MTP.</string>
+    <string name="message_on_crash">Bloqueado por Bloqueador automático</string>
     <string name="microphone_restrict">A política de seguridade impide o uso do micrófono.</string>
-    <string name="miniresolver_call">Chamar</string>
-    <string name="miniresolver_call_in_work">Queres chamar desde a aplicación de traballo?</string>
-    <string name="miniresolver_call_information">A túa organización só che permite facer chamadas desde aplicacións de traballo.</string>
-    <string name="miniresolver_sms_information">A túa organización só che permite enviar mensaxes desde aplicacións de traballo.</string>
-    <string name="miniresolver_switch">Cambiar</string>
-    <string name="miniresolver_switch_to_work">Queres cambiar a unha aplicación de traballo?</string>
     <string name="mmcc_authentication_reject_name_template">Non se permite %s</string>
     <string name="mmcc_illegal_me_name_template">Non se permite %s</string>
     <string name="mmcc_illegal_ms_name_template">Non se permite %s</string>
@@ -551,30 +541,6 @@ A tableta reiniciarase axiña."</string>
     <string name="mock_location_reminder_disable">Desactivar</string>
     <string name="mock_location_reminder_title">Localización ficticia activada</string>
     <string name="more_apps">Máis aplicac.</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s non é compatible. Contacta cos servizos de atención ao cliente.</string>
-    <string name="mptcp_message_address_type_not_supported">A conexión %s é deficiente. Volvendo conectar a través da rede dispoñible…</string>
-    <string name="mptcp_message_busy_ntime_wait">A conexión %s é deficiente. Volvendo conectar a través da rede dispoñible…</string>
-    <string name="mptcp_message_cmd_not_supported">%s non dispoñible temporalmente. Volvendo conectar a través da rede dispoñible…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">A conexión %s é deficiente. Volvendo conectar a través da rede dispoñible…</string>
-    <string name="mptcp_message_connection_refused">A conexión %s é deficiente. Volvendo conectar a través da rede dispoñible…</string>
-    <string name="mptcp_message_data_usage_limit">Alcanzouse o límite de uso de datos. Para cambiar o límite de uso de datos, vai a Axustes.</string>
-    <string name="mptcp_message_host_unreachable">A conexión %s é deficiente. Volvendo conectar a través da rede dispoñible…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Non se pode activar %s. Dispositivo non conectado á rede LTE.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Non se pode activar %s mentres se está utilizando a itinerancia internacionalmente.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Non se pode activar %s con Conexión compartida ou Módem USB activado.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Non se pode activar %s mentres Wi-Fi Direct está activado.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Non se pode activar %s co modo Avión activado.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Non se pode activar %s cos datos móbiles desactivados.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Non hai resposta do provedor de servizos.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Non se pode activar %1$s. %2$s non está dispoñible co teu paquete de Internet ou non se recibiu ningunha resposta do servidor de %3$s.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Non se puido enviar a solicitude de activación de %s. Volvendo conectar a través de redes dispoñibles…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Non se pode activar %s. Inseriuse unha tarxeta SIM incorrecta.</string>
-    <string name="mptcp_message_network_unreachable">A conexión %s é deficiente. Volvendo conectar a través da rede dispoñible…</string>
-    <string name="mptcp_message_non_mptcp_plan">Non se pode activar Giga Multi-Path. Función non admitida polo plan de datos.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s desactivado para evitar que o dispositivo se quente demasiado. Descargando a través da rede móbil no seu lugar…</string>
-    <string name="mptcp_message_server_error">A conexión %s é deficiente. Volvendo conectar a través da rede dispoñible…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Non se pode activar %s. O dispositivo está demasiado quente. Agarda a que se arrefríe o dispositivo e téntao outra vez.</string>
-    <string name="mptcp_message_ttl_expired">%s non dispoñible temporalmente. Volvendo conectar a través da rede dispoñible…</string>
     <string name="multi_user_capability_restrict">A política de seguridade impide a funcionalidade de varios usuarios no teu dispositivo.</string>
     <string name="multi_user_creation_restrict">A política de seguridade impide a creación de contas de usuario novas no teu dispositivo.</string>
     <string name="multi_user_removal_restrict">A política de seguridade impide a eliminación de contas de usuario do teu dispositivo.</string>
@@ -593,24 +559,22 @@ A tableta reiniciarase axiña."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">O son está reproducíndose no teu dispositivo de audio Bluetooth. Pulsa aquí para desactivar esta opción</string>
     <string name="multisound_sound_via_headphone">O son de %s está reproducíndose a través dos auriculares. Toca aquí para desactivar esta opción.</string>
     <string name="multisound_sound_via_headphone_multiselection">O son está reproducíndose a través dos auriculares. Pulsa aquí para desactivar esta opción.</string>
-    <string name="multisound_sound_via_phone_speaker">O son de %s está reproducíndose a través do altofalante da tableta. Toca aquí para desactivar esta opción.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">O son está reproducíndose a través do altofalante da tableta. Pulsa aquí para desactivar esta opción.</string>
+    <string name="multisound_sound_via_phone_speaker">O son de %s está reproducíndose a través do altofalante do teléfono. Toca aquí para desactivar esta opción.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">O son está reproducíndose a través do altofalante do teléfono. Pulsa aquí para desactivar esta opción.</string>
     <string name="multisound_sound_via_usb_audio">O son de %s está reproducíndose a través do dispositivo de audio USB. Toca aquí para desactivar esta opción.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">O son está reproducíndose a través do dispositivo de audio USB. Pulsa aquí para desactivar esta opción.</string>
     <string name="multisound_title">Separar son da aplicación</string>
     <string name="multisound_turn_off_multisound">Desactivar</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s non se pode executar en Samsung DeX. Tenta executalo no modo tableta.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s non se pode executar en Samsung DeX porque está deseñada para as pantallas Inicio das tabletas.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Algúns xogos só funcionan en pantallas táctiles. Se os controis do rato non funcionan en Samsung DeX, tenta xogar no modo Tableta no seu lugar.</string>
-    <string name="my_device">Esta tableta</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s non se pode executar en Samsung DeX. Tenta executalo no modo Teléfono.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s non se pode executar en Samsung DeX porque está deseñada para as pantallas Inicio dos teléfonos.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Algúns xogos só funcionan en pantallas táctiles. Se os controis do rato non funcionan en Samsung DeX, tenta xogar no modo Teléfono no seu lugar.</string>
+    <string name="my_device">Este teléfono</string>
     <string name="network_locked_sim_dialog_message_ais">A túa tarxeta SIM non está plenamente operativa neste teléfono porque non é conforme cos termos e condicións da túa subscrición. Se tes preguntas ou precisas máis información ao respecto, ponte en contacto coa tenda ou centro de atención ao cliente de Samsung que che vendeu estes produtos.</string>
     <string name="network_locked_sim_notification_text">Tarx. SIM bloq. para rede inserida</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Cambia a túa aplicación de Inicio predeterminada a Inicio de One UI.</string>
     <string name="nfc_restrict">A política de seguridade impide o uso de NFC.</string>
     <string name="nosim_limited_service">Servizo limitado</string>
-    <string name="not_support_ai_key">A tecla IA aínda non funciona coa túa tableta. Haberá unha actualización dispoñible proximamente.</string>
-    <string name="notification_app_name_settings">Axustes</string>
     <string name="notification_channel_dex_policy">Política de Samsung DeX</string>
     <string name="ntfs_usb_storage_readonly_mount_message">Este almacenamento é de só lectura porque utiliza o formato NTFS.</string>
     <string name="ntfs_usb_storage_readonly_mount_title">Engadiuse almac USB de só lectura</string>
@@ -785,7 +749,6 @@ VOLVE A"</string>
     <string name="permlab_scheduleExactAlarm">Definir alarmas e recordatorios</string>
     <string name="permlab_spdControl">Xestionar actualizacións das políticas de seguridade</string>
     <string name="permlab_ucsPlugin">Complemento de Xestión de credenciais universal</string>
-    <string name="personal_apps_suspended_turn_profile_on">Activar</string>
     <string name="phoneTypeConference">Conferencia</string>
     <string name="policydesc_allow_bluetoothmode">Evita o uso do Bluetooth.</string>
     <string name="policydesc_allow_browser">Evita o uso compartido de Internet.</string>
@@ -793,7 +756,7 @@ VOLVE A"</string>
     <string name="policydesc_allow_desktopsync">Evita o uso da sincronización do escritorio.</string>
     <string name="policydesc_allow_internetsharing">Evita o uso de Conexión compartida.</string>
     <string name="policydesc_allow_irda">Evita o uso de IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Evita o uso de correo electrónico POP e IMAP na tableta.</string>
+    <string name="policydesc_allow_popimapemail">Evita o uso de correo electrónico POP e IMAP no teléfono.</string>
     <string name="policydesc_allow_storagecard">Evita o uso de tarxetas SD.</string>
     <string name="policydesc_allow_textmessaging">Evita o uso de mensaxería de texto e multimedia.</string>
     <string name="policydesc_allow_thirdParty">Esta aplicación pode evitar a execución de aplicacións de terceiros.</string>
@@ -839,7 +802,7 @@ VOLVE A"</string>
     <string name="pwd_change_enforced">A política de seguridade esíxete que cambies o contrasinal</string>
     <string name="recording_fail">Non se pode usar o micrófono en %1$s mentres se estea usando en %2$s.</string>
     <string name="recording_popup">%s está usando o micrófono.</string>
-    <string name="recording_popup_device">Tableta</string>
+    <string name="recording_popup_device">Teléfono</string>
     <string name="recording_popup_with_bluetooth">%s está usando o micrófono Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s está usando o micrófono de %2$s.</string>
     <string name="redo">Refacer</string>
@@ -904,12 +867,12 @@ VOLVE A"</string>
     <string name="screencapture_restrict">A política de seguridade impide o uso da captura de pantalla.</string>
     <string name="sd_card_unavailable_message">Non podes usar a tarxeta SD porque foi inserida mentres se usaba un perfil de usuario diferente.</string>
     <string name="sd_card_unavailable_title">Tarxeta SD non dispoñible</string>
-    <string name="sdcard_bad_removal_message">Retirouse unha tarxeta SD de forma non segura. Para impedir que a tableta se reinicie inesperadamente, garda os datos que aínda non gardases e reinicia agora.</string>
+    <string name="sdcard_bad_removal_message">Retirouse unha tarxeta SD de forma non segura. Para impedir que o teléfono se reinicie inesperadamente, garda os datos que aínda non gardases e reinicia agora.</string>
     <string name="sdcard_batch_decrypt_noti_content">Descifrar tarxeta SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Descifrado da tarxeta SD</string>
     <string name="sdcard_batch_decrypt_popup_content">A tarxeta SD cifrada debe descifrarse antes de utilizarse. O descifrado pode tardar unha hora ou máis en completarse. Iníciao cunha batería cargada e mantén o dispositivo enchufado á corrente ata que se complete o descifrado. A interrupción do proceso de descifrado pode provocar a perda dalgúns ou de todos os datos.</string>
     <string name="sdcard_decrypt_err_notification">Produciuse un erro ao descifrar a tarxeta SD</string>
-    <string name="sdcard_decrypt_error_otherdevice">Algúns arquivos da tarxeta SD foron cifrados noutro dispositivo e non se poden usar nesta tableta.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Algúns arquivos da tarxeta SD foron cifrados noutro dispositivo e non se poden usar neste teléfono.</string>
     <string name="sdcard_decrypt_notification">Tarxeta SD descifrada</string>
     <string name="sdcard_decrypt_title_notification">Descifrado da tarxeta SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Descifrando tarxeta SD…</string>
@@ -926,14 +889,6 @@ VOLVE A"</string>
     <string name="sdcard_unmount_policy_noti_title">Tarxeta SD retirada debido á política de TI</string>
     <string name="sdhms_nr_control_low_battery">Desactiva 5G para aforrar batería cando ao teléfono lle quede menos do 15% de carga.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth seguirá activado en modo Avión.</string>
-    <string name="sec_immersive_cling_button_ok">Aceptar</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Esta aplicación está a usar a pantalla completa. Os xestos de pasar o dedo para a navegación amosarán a barra de estado. Para navegar, volve pasar o dedo mentres se amose a barra de estado.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Esta aplicación está a empregar a pantalla completa. Os botóns Inicio, Atrás e Recentes están ocultos para reducir as distraccións e evitar que saias da aplicación accidentalmente.
-
-Aínda que xires o teléfono, os botóns estarán sempre a carón do porto de carga. Para que os botóns volvan aparecer, pasa o dedo cara a dentro desde o bordo da pantalla como indica a frecha."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Esta aplicación está usando a pantalla completa. Os botóns Inicio, Atrás e Recentes están ocultos para minimizar as distraccións e evitar que saias da aplicación accidentalmente.
-
-Para que se volvan amosar os botóns, pasa o dedo cara arriba como indica a frecha."</string>
     <string name="sec_monotype_default">Predeterminada</string>
     <string name="sec_ringtone_category_brand_sound">Son da marca Samsung</string>
     <string name="sec_ringtone_category_calm">Calma</string>
@@ -943,6 +898,10 @@ Para que se volvan amosar os botóns, pasa o dedo cara arriba como indica a frec
     <string name="sec_ringtone_category_open_theme">Axustes predeterminados do tema actual</string>
     <string name="sec_ringtone_category_retro">Retro</string>
     <string name="sec_ringtone_silent">Silencioso</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Cancelar</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Para conectarte a un satélite, cómpre que o teu operador de rede estea definido en Seleccionar automaticamente.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Activar</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Queres activar a selección automática de rede?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Activa o acceso a Micrófono para falar.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Activa o acceso a Cámara para usar %s.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Activa o acceso a Micrófono para usar %s.</string>
@@ -1038,6 +997,8 @@ Para que se volvan amosar os botóns, pasa o dedo cara arriba como indica a frec
     <string name="sem_face_error_already_in_use_by_VT">Non se pode utilizar o recoñecemento de cara durante as videochamadas.</string>
     <string name="sem_face_error_camera_access_off">Non se pode utilizar o recoñecemento de cara porque o acceso á cámara está desactivado</string>
     <string name="sem_face_error_camera_fail">Non se puido abrir a cámara. Téntao outra vez.</string>
+    <string name="sem_face_error_lockout">A verificación biométrica non está dispoñible debido a demasiados intentos incorrectos.</string>
+    <string name="sem_face_error_lockout_permanent">A verificación biométrica non está dispoñible debido a demasiados intentos incorrectos.</string>
     <string name="sem_face_error_ppp_timeout">Hai tempo que non verificas a túa identidade. Terás que comezar de novo para rexistrar a cara.</string>
     <string name="sem_face_error_too_dark">Demasiado escuro para detectar a cara</string>
     <string name="sem_face_error_too_dark_to_enroll">Demasiado escuro. Proba a prender a luz ou ir a un sitio con máis claridade.</string>
@@ -1053,13 +1014,18 @@ Para que se volvan amosar os botóns, pasa o dedo cara arriba como indica a frec
     <string name="sem_fingerprint_acquired_tsp_block">Afasta da pantalla a punta do S Pen para escanear a túa impresión dixital.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Para usar as impresións dixitais, primeiro define un tipo de bloqueo de pantalla seguro (patrón, PIN ou contrasinal).</string>
+    <string name="sem_fingerprint_error_lockout">A verificación biométrica non está dispoñible debido a demasiados intentos incorrectos.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">A verificación biométrica non está dispoñible debido a demasiados intentos incorrectos.</string>
     <string name="sem_fingerprint_error_onehand_mode">Non se pode usar o escáner de impresións dixitais no modo Unha man.</string>
     <string name="sem_fingerprint_error_smart_view">Non se pode escanear a impresión dixital mentres se usa %s.</string>
+    <string name="sem_fingerprint_error_system_failure">O sensor de impresións dixitais non responde. Téntao de novo máis tarde e, se o problema continúa, proba a reiniciar o teléfono.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Os datos das impresións dixitais danáronse. Volve engadir as túas impresións dixitais.</string>
     <string name="sem_fingerprint_error_wireless_charger">Desconecta do cargador sen fíos para usar a impresión dixital</string>
     <string name="sem_fingerprint_name_template">Impresión dixital %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Despois</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Agora non</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Eliminar e rexistrar</string>
+    <string name="sem_fingerprint_register_dialog_message">Na última actualización de software mellorouse o recoñecemento de impresións dixitais. Non poderás usalo ata que elimines as túas impresións dixitais e volvas rexistralas.</string>
     <string name="sem_fingerprint_register_dialog_title">Rexistrar impresións dix de novo</string>
     <string name="sem_fingerprint_result_failed">Non hai coincidencias.</string>
     <string name="sem_fingerprint_result_retry">Téntao outra vez.</string>
@@ -1079,7 +1045,7 @@ Para que se volvan amosar os botóns, pasa o dedo cara arriba como indica a frec
     <string name="sem_resolver_button_always_accessibility">Usar sempre aplicación seleccionada</string>
     <string name="sem_resolver_button_just_once_accessibility">Usar aplicación seleccionada só unha vez</string>
     <string name="sem_resolver_choose_what_to_do">Escolle que queres facer</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Para cambiar os axustes de aplicación predeterminada, vai a Axustes > Aplicacións > Escoller apps predeterminadas.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Para cambiar a aplicación predeterminada usada para abrir este tipo de arquivo, vai a Axustes > Aplicacións, selecciona a aplicación predeterminada actual e pulsa Definir como predeterminado > Borrar predeterminados.</string>
     <string name="sem_resolver_icon_content_description">Información</string>
     <string name="sem_resolver_personal_tab_accessibility">Persoal</string>
     <string name="sem_resolver_share_live_default_text">Comparte ao momento coa xente que teñas preto. Aquí amosaranse as persoas que teñen os dispositivos en estado visible.</string>
@@ -1091,9 +1057,6 @@ Para que se volvan amosar os botóns, pasa o dedo cara arriba como indica a frec
     <string name="sem_resolver_work_tab_accessibility">Traballo</string>
     <string name="sem_switch_off">Desactivado</string>
     <string name="sem_switch_on">Activado</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Acceso Cámara desactivado para todas as apps</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Activar</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Acceso Micrófono desactivado para todas apps</string>
     <string name="serviceErased">O borrado realizouse correctamente</string>
     <string name="serviceModeAll">Todos</string>
     <string name="serviceModeAllConditional">condicionalmente</string>
@@ -1103,6 +1066,7 @@ Para que se volvan amosar os botóns, pasa o dedo cara arriba como indica a frec
     <string name="serviceModeUnconditional">incondicionalmente</string>
     <string name="serviceisDisabled">O servizo está desactivado</string>
     <string name="serviceisEnabled">O servizo está activado</string>
+    <string name="settings">Axustes</string>
     <string name="sf_quick_switch_not_supported">Nesta situación non se admite Cambio rápido.</string>
     <string name="sf_quick_switch_securefolder_view">Cambiouse a %s.</string>
     <string name="share">Compartir</string>
@@ -1111,26 +1075,30 @@ Para que se volvan amosar os botóns, pasa o dedo cara arriba como indica a frec
     <string name="sharelist_restrict">A política de seguridade impide o uso compartido de datos.</string>
     <string name="show_keyboard_button">Mostrar botón Teclado</string>
     <string name="show_keyboard_button_description">Mostra %s na barra de navegación.</string>
+    <string name="showing_esc_dialog">Podes definir a tecla Esc para que funcione como o botón Atrás.</string>
     <string name="showing_touch_sensitivity_noti_action">Activar</string>
     <string name="showing_touch_sensitivity_noti_text">Activa Sensibilidade táctil cando uses Privacy Screen ou Notepaper Screen para ter unha capacidade de resposta táctil máis precisa.</string>
     <string name="showing_touch_sensitivity_noti_title">Aumentar a sensibilidade táctil</string>
+    <string name="side_key_double_press_archived_app">Arquivouse a aplicación. Escolle outra cousa.</string>
     <string name="side_key_double_press_deleted_app">Desinstalouse a aplicación. Escolle outra cousa.</string>
     <string name="side_key_double_press_disabled_app">A aplicación %s está desactivada. Escolle outra cousa.</string>
     <string name="signature_identity_toast">%s asinado por</string>
     <string name="simRefresh">Actualizando datos da SIM</string>
     <string name="simReset">Actualizando datos da SIM…</string>
     <string name="sim_check_old_sim_message">As tarxetas SIM antigas ou danadas poden provocar problemas de conexión de rede. Ponte en contacto coa túa operadora ou visita unha das súas tendas para saber se hai que substituíla.</string>
+    <string name="sim_check_old_sim_message_skt">As tarxetas SIM antigas ou danadas poden provocar problemas de conexión de rede. Ponte en contacto coa túa operadora ou visita unha das súas tendas para saber se hai que substituíla.</string>
     <string name="sim_check_old_sim_title">É posible que haxa que substituír a SIM</string>
+    <string name="sim_check_old_sim_title_skt">É posible que haxa que substituír a SIM</string>
     <string name="sim_count_mismatched_ds_to_ss">O modo de tarxeta SIM cambiouse de Dual SIM a SIM única. Para aplicar este axuste, restableceranse os axustes predeterminados de fábrica do dispositivo e reiniciarase.</string>
     <string name="sim_count_mismatched_ss_to_ds">O modo de tarxeta SIM cambiouse de SIM única a Dual SIM. Para aplicar este axuste, restableceranse os axustes predeterminados de fábrica do dispositivo e reiniciarase.</string>
     <string name="sim_count_mismatched_title">Modo de tarxeta SIM cambiado</string>
-    <string name="sim_imsreg_error_message_lgt">O teléfono non poderá facer chamadas de voz porque non recoñece a tarxeta SIM. Proba a retirala e volver inserila. Se o problema continúa, pode que teñas que substituíla. Para obter axuda, visita unha tenda de LG U+ ou contacta co servizo de atención ao cliente de LG U+ no 1544-0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">A tableta non poderá facer chamadas de voz porque non recoñece a tarxeta SIM. Proba a retirala e volver inserila. Se o problema continúa, pode que teñas que substituíla. Para obter axuda, visita unha tenda de LG U+ ou contacta co servizo de atención ao cliente de LG U+ no 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">O teléfono non poderá facer chamadas de voz porque non recoñece a tarxeta SIM. Proba a retirala e volver inserila. Se o problema continúa, pode que teñas que substituíla nunha tenda de LG U+.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">A tableta non poderá facer chamadas de voz porque non recoñece a tarxeta SIM. Proba a retirala e volver inserila. Se o problema continúa, pode que teñas que substituíla nunha tenda de LG U+.</string>
     <string name="sim_off_noti_message">Non podes facer chamadas, enviar mensaxes nin usar datos cando todas as SIM están desactivadas. Pulsa aquí para activalas.</string>
     <string name="sim_off_noti_title">Todas as SIM están desactivadas</string>
     <string name="sim_off_toast_message">A tarxeta SIM que inseriches está desactivada. Para usala, vai a Axustes > Conexións > Administrador de SIM e actívaa.</string>
     <string name="sim_recognize_error_message_kt">Non se recoñeceu a tarxeta SIM. Proba a retirala e volver inserila. Se o problema continúa, pode que teñas que substituíla. Para obter axuda, visita unha tenda de KT ou contacta co servizo de atención ao cliente de KT no 1588-0010.</string>
-    <string name="sim_recognize_error_message_lgt">Non se recoñeceu a tarxeta SIM. Proba a retirala e volver inserila. Se o problema continúa, pode que teñas que substituíla. Para obter axuda, visita unha tenda de LG U+ ou contacta co servizo de atención ao cliente de LG U+ no 1544-0010.</string>
+    <string name="sim_recognize_error_message_lgt">Non se recoñeceu a tarxeta SIM. Proba a retirala e volver inserila. Se o problema continúa, pode que teñas que substituíla nunha tenda de LG U+.</string>
     <string name="sim_recognize_error_message_skt">Non se pode ler a tarxeta SIM. É posible que non funcionen algunhas aplicacións e funcións. Retira e volve inserir a tarxeta SIM e, a continuación, reinicia o teléfono. Se así non se resolve o problema, leva o teléfono e a tarxeta SIM a un centro do Servizo de atención ao cliente.</string>
     <string name="sim_recognize_error_message_skt_tablet">Non se pode ler a tarxeta SIM. É posible que non funcionen algunhas aplicacións e funcións. Retira e volve inserir a tarxeta SIM e, a continuación, reinicia a tableta. Se así non se resolve o problema, leva a tableta e a tarxeta SIM a un centro do Servizo de atención ao cliente.</string>
     <string name="sim_recognize_error_title_lgt">Non se pode recoñecer a tarxeta USIM</string>
@@ -1140,10 +1108,8 @@ Para que se volvan amosar os botóns, pasa o dedo cara arriba como indica a frec
     <string name="sim_removed_message_hotswap_us_tablet">Conéctate a unha rede Wi-Fi ou insire unha tarxeta SIM para usar os datos móbiles.</string>
     <string name="sim_removed_title_hotswap">Tarxeta SIM non inserida</string>
     <string name="sim_removed_title_hotswap_us_tablet">Insire a tarxeta SIM</string>
+    <string name="smart_tip_action_click_hint_text">Pechar</string>
     <string name="smartclip_restrict">A política de seguridade impide o uso de Easy clip.</string>
-    <string name="sms_short_code_remember_undo_instruction">Podes cambiar isto máis tarde en Axustes > Aplicacións</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Podes cambiar isto máis tarde en Axustes > Aplicacións > botón Máis opcións > Acceso especial > Usar servizos de mensaxes de texto premium</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Se tocas NON PERMITIR NUNCA, esta aplicación non poderá enviar mensaxes en segundo plano mesmo se se lle concedeu o permiso Enviar mensaxes de texto.</string>
     <string name="ss_do_not_show_again_us">Non volver amosar</string>
     <string name="sss_translate">Traducir</string>
     <string name="ssu_lock_body_vzw">Sentímolo, mais o teu dispositivo non se pode activar agora na rede doutro operador. Para solicitar axuda, ponte en contacto con Verizon no %1$s ou no %2$s (plans prepago)</string>
@@ -1174,7 +1140,6 @@ Para que se volvan amosar os botóns, pasa o dedo cara arriba como indica a frec
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">Conexión compartida</string>
     <string name="title_dialog_check_rotate_or_not">Queres desactivar Rotar a pantalla autom.?</string>
-    <string name="title_uds">Modo Aforro datos ultra</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Non se pode usar Bixby mentres se configura o teléfono.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Non se pode usar Bixby mentres se configura a tableta.</string>
     <string name="toast_warning_pattern_lock">O bloqueo por padrón non se pode usar con Acción personalizable. Cambia primeiro a outro tipo de bloqueo.</string>
@@ -1214,9 +1179,13 @@ Para eliminar esta protección, vai a Axustes > Seguridade e privacidade > Bloqu
     <string name="unknown_install_blocked_esm_title">Aplicacións descoñecidas bloqueadas</string>
     <string name="unknown_install_dlg_desc">Esta aplicación non se descargou dunha tenda aprobada. Instalala pode poñer en risco a túa seguridade e privacidade, pois podería recompilar a túa información persoal ou facer que perdeses datos.</string>
     <string name="unknown_install_dlg_desc2">Esta aplicación non admite as funcións de seguridade máis recentes. Instalala pode carrexar os riscos de seguridade seguintes:</string>
+    <string name="unknown_install_dlg_desc_global_phone">É posible que este arquivo de instalación da aplicación non sexa seguro. Pode que non sexa a aplicación que afirma ser. Para protexer o teléfono e os datos persoais, instala a aplicación desde unha tenda de aplicacións na que confíes.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">É posible que este arquivo de instalación da aplicación non sexa seguro. Pode que non sexa a aplicación que afirma ser. Para protexer a tableta e os datos persoais, instala a aplicación desde unha tenda de aplicacións na que confíes.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Sospéitase que esta aplicación é maliciosa e pode pór en risco o teléfono e os teus datos. Recoméndase non instalala.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Sospéitase que esta aplicación é maliciosa e pode pór en risco a tableta e os teus datos. Recoméndase non instalala.</string>
-    <string name="unknown_install_dlg_general_title">Esta aplicación procede dunha fonte descoñecida</string>
+    <string name="unknown_install_dlg_desc_phone">Esta aplicación non é dunha tenda de aplicacións autorizada. Para protexer o teléfono e a información persoal, instálaa desde unha tenda autorizada como Play Store ou Galaxy Store.</string>
+    <string name="unknown_install_dlg_desc_tablet">Esta aplicación non é dunha tenda de aplicacións autorizada. Para protexer a tableta e a información persoal, instálaa desde unha tenda autorizada como Play Store ou Galaxy Store.</string>
+    <string name="unknown_install_dlg_general_title">Non se recomenda instalar esta aplicación</string>
     <string name="unknown_install_dlg_negative_button">Non instalar</string>
     <string name="unknown_install_dlg_perm_desc1">É posible que a aplicación intercepte códigos de verificación incluídos en mensaxes de texto que recibas.</string>
     <string name="unknown_install_dlg_perm_desc2">É posible que as chamadas saíntes se redirixan a outro número de teléfono sen que o saibas.</string>
@@ -1235,7 +1204,7 @@ Para eliminar esta protección, vai a Axustes > Seguridade e privacidade > Bloqu
     <string name="usb_abnormal_reset_title">A conexión USB é inestable</string>
     <string name="usb_abnormal_reset_toast">A conexión USB non é estable. Desenchufa o cable e volve enchufalo, ou proba con outro diferente.</string>
     <string name="usb_accessory_notification_title">Conectado a un accesorio USB</string>
-    <string name="usb_bad_removal_message">Retirouse un dispositivo de almacenamento USB de forma non segura. Para impedir que a tableta se reinicie inesperadamente, garda os datos que aínda non gardases e reinicia agora.</string>
+    <string name="usb_bad_removal_message">Retirouse un dispositivo de almacenamento USB de forma non segura. Para impedir que o teléfono se reinicie inesperadamente, garda os datos que aínda non gardases e reinicia agora.</string>
     <string name="usb_blocked_by_emergency_mode">Algunhas funcións USB deixan de estar dispoñibles no modo Urxencia.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Non se poden usar funcións relacionadas co dispositivo USB conectado co modo Aforro de enerxía máximo activado.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Algunhas funcións USB estarán limitadas se está activado o modo Aforro de enerxía máximo.</string>
@@ -1244,13 +1213,15 @@ Para eliminar esta protección, vai a Axustes > Seguridade e privacidade > Bloqu
     <string name="usb_camera_connected_notification_title">Dispositivo multimedia conectado</string>
     <string name="usb_camera_disconnected_notification_title">Dispositivo multimedia desconectado</string>
     <string name="usb_cd_installer_notification_title">Actualización de software</string>
-    <string name="usb_charing_only_notification_title">Conectado</string>
+    <string name="usb_charing_only_notification_title">Carga USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Bloqueador automático está activado con restricións máximas.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">Conexión USB bloqueada</string>
     <string name="usb_debugging_only_notification_title">Só depuración</string>
-    <string name="usb_host_resource_exceed_message">O controlador USB da túa tableta non dispón de recursos abondo para conectar este dispositivo. Proba a desconectalo e conectalo de novo.</string>
+    <string name="usb_host_resource_exceed_message">O controlador USB do teu teléfono non dispón de recursos abondo para conectar este dispositivo. Proba a desconectalo e conectalo de novo.</string>
     <string name="usb_host_resource_exceed_title">Non hai recursos de controlador USB abondo</string>
-    <string name="usb_hub_depth_exceed_message">A túa tableta só admite 5 conexións de hub USB á vez.</string>
+    <string name="usb_hub_depth_exceed_message">O teu teléfono só admite 5 conexións de hub USB á vez.</string>
     <string name="usb_hub_depth_exceed_title">Máximo de conexións de hub USB</string>
-    <string name="usb_hub_power_exceed_message">A túa tableta non pode facilitar enerxía abondo para este dispositivo USB. Conecta o dispositivo a un hub USB autónomo antes de conectalo á tableta.</string>
+    <string name="usb_hub_power_exceed_message">O teu teléfono non pode facilitar enerxía abondo para este dispositivo USB. Conecta o dispositivo a un hub USB autónomo antes de conectalo ao teléfono.</string>
     <string name="usb_increase_battery_usage">A conexión USB pode incrementar o consumo de batería.</string>
     <string name="usb_mass_storage_restrict">A política de seguridade impide o uso do almacenamento masivo USB.</string>
     <string name="usb_midi_notification_title">USB para MIDI</string>
@@ -1276,8 +1247,9 @@ Para eliminar esta protección, vai a Axustes > Seguridade e privacidade > Bloqu
     <string name="usb_storage_stop_title">O espazo de almacenamento do USB está en uso</string>
     <string name="usb_storage_title">USB conectado</string>
     <string name="usb_type_c_supply_power_notification_title">Cargando dispos. conectado por USB</string>
-    <string name="usb_unblock_by_screen_unlock">Desbloquea a tableta para usar o dispositivo USB conectado.</string>
-    <string name="usb_unsupport_accessory_message">Este dispositivo USB non é compatible coa túa tableta.</string>
+    <string name="usb_unblock_by_screen_unlock">Desbloquea o teléfono para usar o dispositivo USB conectado.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">Para usar un dispositivo USB, desbloquea o teléfono e volve conectar o dispositivo USB.</string>
+    <string name="usb_unsupport_accessory_message">Este dispositivo USB non é compatible co teu teléfono.</string>
     <string name="usb_unsupport_accessory_title">Dispositivo USB non admitido</string>
     <string name="usb_unsupported_device">Non se admite o dispositivo USB conectado.</string>
     <string name="usb_unsupported_device_title">Dispositivo non admitido</string>
@@ -1295,31 +1267,33 @@ Para eliminar esta protección, vai a Axustes > Seguridade e privacidade > Bloqu
     <string name="usb_water_dialg_method_2_desc_2">Acelera o secado dirixindo o ventilador ou secador (só aire frío) cara ao porto.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Detectamos humidade ou materiais estraños no porto de carga/USB.
 
-Comproba o porto de carga/USB para ver se hai materiais estraños como po ou lixo. Para evitar danar a tableta, non conectes nada ata que o porto de carga estea limpo e non haxa humidade.
+Comproba o porto de carga/USB para ver se hai materiais estraños como po ou lixo. Para evitar danar o teléfono, non conectes nada ata que o porto de carga estea limpo e non haxa humidade.
 
-Para secar o porto, sacude a humidade e agarda ata que se seque (isto pode demorar varias horas). Para que se seque antes, podes poñer o porto diante dun ventilador ou secador (só aire frío)."</string>
+Para secar o porto, sacude a humidade e agarda ata que se seque (isto pode demorar varias horas). Para que se seque antes, podes usar un ventilador ou secador de pelo (só aire frío)."</string>
     <string name="usb_water_dialg_positive_button">Aceptar</string>
     <string name="usb_water_dialg_support_wireless_charging">"Detectamos humidade ou materiais estraños no porto de carga/USB.
 
-Comproba o porto de carga/USB para ver se hai materiais estraños como po ou lixo. Para evitar danar a tableta, non conectes nada ata que o porto de carga estea limpo e non haxa humidade.
+Comproba o porto de carga/USB para ver se hai materiais estraños como po ou lixo. Para evitar danar o teléfono, non conectes nada ata que o porto de carga estea limpo e non haxa humidade.
 
-Para secar o porto, sacude a humidade e agarda ata que se seque (isto pode demorar varias horas). Para que se seque antes, podes poñer o porto diante dun ventilador ou secador (só aire frío).
+Para secar o porto, sacude a humidade e agarda ata que se seque (isto pode demorar varias horas). Para que se seque antes, podes usar un ventilador ou secador de pelo (só aire frío).
 
-Namentres, podes cargar a tableta de modo sen fíos."</string>
+Namentres, podes cargar o teléfono de modo sen fíos."</string>
     <string name="usb_water_notification_content">Hai humidade ou materiais estraños no porto de carga/USB. Compróbao antes de cargar.</string>
-    <string name="usb_water_notification_message">Detectouse humidade no porto cargador/USB. Asegúrate de que estea seco antes de cargar a tableta. É posible que tarde algún tempo en secar por completo.</string>
+    <string name="usb_water_notification_message">Detectouse humidade no porto cargador/USB. Asegúrate de que estea seco antes de cargar o teléfono. É posible que tarde algún tempo en secar por completo.</string>
     <string name="usb_water_notification_message_button">Detalles</string>
     <string name="usb_water_notification_title">Comprobar o porto do cargador/USB</string>
     <string name="usbhostStorage_restrict">A política de seguridade impide o uso do almacenamento host USB.</string>
     <string name="usbmemory_added_notification_title">Engadiuse almacenamento USB</string>
     <string name="usbmemory_readonly_mount_notification_message">O teu dispositivo de almacenamento USB non está funcionando correctamente e definiuse en só lectura para evitar a perda de datos. Recoméndase que fagas unha copia de datos do teu dispositivo de almacenamento USB.</string>
-    <string name="usbmemory_readonly_mount_notification_title">Non se pode escribir no almac. USB</string>
+    <string name="usbmemory_readonly_mount_notification_title">Non se pode escribir no almac USB</string>
     <string name="user_encrypted_title_phone">Teléfono reiniciado</string>
     <string name="user_encrypted_title_tablet">Tableta reiniciada</string>
     <string name="voice_to_text_message_guide_toast">Para usar esta función, establece Teclado Samsung como predeterminado.</string>
     <string name="vpn_allowOnlySecureConnection">O perfil VPN non é seguro.</string>
     <string name="vpn_error_text">Toca para tentar volver conectarte coa VPN</string>
     <string name="vpn_error_title">Erro na conexión VPN</string>
+    <string name="vpn_fail_text_long">Non se puido conectar a %s. Pulsa para xestionar esta VPN.</string>
+    <string name="vpn_fail_title">VPN non conectada</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Pechando aplicacións para arrefriar a tableta</string>
     <string name="vzw_cooldown_mode_ok">Aceptar</string>
@@ -1382,6 +1356,7 @@ Namentres, podes cargar a tableta de modo sen fíos."</string>
     <string name="wifi_network_available_detailed">Hai unha rede Wi-Fi aberta dispoñible.</string>
     <string name="wifi_networks_available">Redes Wi-Fi dispoñibles</string>
     <string name="wifi_networks_available_detailed">Hai redes Wi-Fi abertas dispoñibles.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s está usando os datos móbiles porque a túa conexión WLAN é lenta ou inestable.</string>
     <string name="wifi_notification_switch_wifi_detail">O teu teléfono cambiou a datos móbiles debido a que a rede Wi-Fi era inestable.</string>
     <string name="wifi_notification_switch_wifi_title">Cambiouse a datos móbiles</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Notificacións de urxencia</string>
@@ -1413,9 +1388,5 @@ Namentres, podes cargar a tableta de modo sen fíos."</string>
     <string name="work_profile_on_message">Isto permitirache acceder ás aplicacións de traballo, ás notificacións, aos datos e a outras funcións do perfil de traballo.</string>
     <string name="work_profile_on_title">Queres activar Perfil de traballo?</string>
     <string name="work_profile_restricted">Bloqueador automático está activado con Restricións máximas. Para protexer a túa seguridade, non se poden crear perfís de traballo.</string>
-    <string name="work_profile_telephony_paused_text">Pausaches as aplicacións de traballo. Non recibirás chamadas telefónicas nin mensaxes de texto delas.</string>
-    <string name="work_profile_telephony_paused_title">Chamadas e mensaxes desactivadas</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Queres activar o perfil de traballo?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">Esperar a que o apague</string>
 </resources>

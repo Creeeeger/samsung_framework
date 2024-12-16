@@ -54,7 +54,6 @@
         <item>com.tencent.av.ui.VideoInviteLock</item>
         <item>com.tencent.mobileqq.activity.QQLSActivity</item>
         <item>com.tencent.mobileqq.activity.SplashActivity</item>
-        <item>com.samsung.android.support.senl.nt.composer.main.screenoff.ScreenOffAnimatorActivity</item>
     </string-array>
     <string-array name="as_bt_game_latency_deny_list">
         <item>com.miHoYo.GenshinImpact</item>
@@ -698,10 +697,10 @@
     <string-array name="config_Display_Solution_Scale_Factor_Value">
         <item>1.00</item>
     </string-array>
-    <string-array name="config_Dmb_App_Launcher">
-        <item>com.sec.android.app.dmb</item>
-        <item>com.samsung.android.app.dtv.dmb</item>
-        <item>com.samsung.android.app.dtv.sbtvd</item>
+    <string-array name="config_Display_Solution_Vision_Booster_Lux_Value">
+        <item>5000</item>
+        <item>10000</item>
+        <item>50000</item>
     </string-array>
     <integer-array name="config_EadLuxHysteresisInput_Brightening">
         <item>0</item>
@@ -731,6 +730,7 @@
         <item>200</item>
         <item>400</item>
         <item>700</item>
+        <item>1000</item>
     </integer-array>
     <integer-array name="config_EadLuxHysteresisInput_Darkening">
         <item>0</item>
@@ -788,6 +788,7 @@
         <item>300</item>
         <item>500</item>
         <item>1500</item>
+        <item>999999</item>
     </integer-array>
     <integer-array name="config_EadLuxHysteresisOutput_Darkening">
         <item>-1</item>
@@ -841,6 +842,104 @@
         <item>6700</item>
         <item>7000</item>
     </integer-array>
+    <string-array name="config_EadWhiteRGB_Offset">
+        <item>255,231,201</item>
+        <item>255,232,203</item>
+        <item>255,233,206</item>
+        <item>255,234,208</item>
+        <item>255,236,210</item>
+        <item>255,238,211</item>
+        <item>255,240,214</item>
+        <item>255,241,217</item>
+        <item>255,242,220</item>
+        <item>255,243,224</item>
+        <item>255,244,226</item>
+        <item>255,245,228</item>
+        <item>255,246,231</item>
+        <item>255,247,233</item>
+        <item>255,248,235</item>
+        <item>255,249,237</item>
+        <item>255,250,239</item>
+        <item>255,251,242</item>
+        <item>255,252,244</item>
+        <item>255,253,246</item>
+        <item>255,254,248</item>
+        <item>255,255,251</item>
+        <item>255,255,253</item>
+        <item>255,255,255</item>
+    </string-array>
+    <string-array name="config_EadWhiteRGB_Offset_Natural">
+        <item>255,229,197</item>
+        <item>255,230,199</item>
+        <item>255,231,201</item>
+        <item>255,232,203</item>
+        <item>255,233,206</item>
+        <item>255,234,208</item>
+        <item>255,236,210</item>
+        <item>255,238,211</item>
+        <item>255,240,214</item>
+        <item>255,241,217</item>
+        <item>255,242,220</item>
+        <item>255,243,224</item>
+        <item>255,244,226</item>
+        <item>255,245,228</item>
+        <item>255,246,231</item>
+        <item>255,247,233</item>
+        <item>255,248,235</item>
+        <item>255,249,237</item>
+        <item>255,250,239</item>
+        <item>255,251,242</item>
+        <item>255,252,244</item>
+    </string-array>
+    <string-array name="config_EadWhiteRGB_Offset_Sub">
+        <item>255,210,147</item>
+        <item>255,213,153</item>
+        <item>255,216,158</item>
+        <item>255,219,164</item>
+        <item>255,221,169</item>
+        <item>255,223,173</item>
+        <item>255,226,179</item>
+        <item>255,227,183</item>
+        <item>255,229,188</item>
+        <item>255,231,193</item>
+        <item>255,233,197</item>
+        <item>255,235,202</item>
+        <item>255,237,207</item>
+        <item>255,239,211</item>
+        <item>255,240,216</item>
+        <item>255,242,221</item>
+        <item>255,244,227</item>
+        <item>255,245,232</item>
+        <item>255,247,236</item>
+        <item>255,249,241</item>
+        <item>255,250,246</item>
+        <item>255,252,250</item>
+        <item>255,254,253</item>
+        <item>255,255,255</item>
+    </string-array>
+    <string-array name="config_EadWhiteRGB_Offset_Sub_Natural">
+        <item>255,204,139</item>
+        <item>255,207,143</item>
+        <item>255,210,147</item>
+        <item>255,213,153</item>
+        <item>255,216,158</item>
+        <item>255,219,164</item>
+        <item>255,221,169</item>
+        <item>255,223,173</item>
+        <item>255,226,179</item>
+        <item>255,227,183</item>
+        <item>255,229,188</item>
+        <item>255,231,193</item>
+        <item>255,233,197</item>
+        <item>255,235,202</item>
+        <item>255,237,207</item>
+        <item>255,239,211</item>
+        <item>255,240,216</item>
+        <item>255,242,221</item>
+        <item>255,244,227</item>
+        <item>255,245,232</item>
+        <item>255,247,236</item>
+    </string-array>
     <integer-array name="config_EadWhiteRGB_TargetCCT">
         <item>4700</item>
         <item>4800</item>
@@ -867,161 +966,28 @@
         <item>6900</item>
         <item>7000</item>
     </integer-array>
-    <integer-array name="config_EadWhiteRGB_offsetB">
-        <item>196</item>
-        <item>199</item>
-        <item>202</item>
-        <item>205</item>
-        <item>208</item>
-        <item>211</item>
-        <item>214</item>
-        <item>217</item>
-        <item>220</item>
-        <item>224</item>
-        <item>226</item>
-        <item>228</item>
-        <item>231</item>
-        <item>233</item>
-        <item>235</item>
-        <item>237</item>
-        <item>239</item>
-        <item>242</item>
-        <item>244</item>
-        <item>246</item>
-        <item>248</item>
-        <item>251</item>
-        <item>253</item>
-        <item>255</item>
-    </integer-array>
-    <integer-array name="config_EadWhiteRGB_offsetB_Sub">
-        <item>147</item>
-        <item>153</item>
-        <item>158</item>
-        <item>164</item>
-        <item>169</item>
-        <item>173</item>
-        <item>179</item>
-        <item>183</item>
-        <item>188</item>
-        <item>193</item>
-        <item>197</item>
-        <item>202</item>
-        <item>207</item>
-        <item>211</item>
-        <item>216</item>
-        <item>221</item>
-        <item>227</item>
-        <item>232</item>
-        <item>236</item>
-        <item>241</item>
-        <item>246</item>
-        <item>250</item>
-        <item>253</item>
-        <item>255</item>
-    </integer-array>
-    <integer-array name="config_EadWhiteRGB_offsetG">
-        <item>233</item>
-        <item>234</item>
-        <item>235</item>
-        <item>236</item>
-        <item>237</item>
-        <item>238</item>
-        <item>240</item>
-        <item>241</item>
-        <item>242</item>
-        <item>243</item>
-        <item>244</item>
-        <item>245</item>
-        <item>246</item>
-        <item>247</item>
-        <item>248</item>
-        <item>249</item>
-        <item>250</item>
-        <item>251</item>
-        <item>252</item>
-        <item>253</item>
-        <item>254</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-    </integer-array>
-    <integer-array name="config_EadWhiteRGB_offsetG_Sub">
-        <item>210</item>
-        <item>213</item>
-        <item>216</item>
-        <item>219</item>
-        <item>221</item>
-        <item>223</item>
-        <item>226</item>
-        <item>227</item>
-        <item>229</item>
-        <item>231</item>
-        <item>233</item>
-        <item>235</item>
-        <item>237</item>
-        <item>239</item>
-        <item>240</item>
-        <item>242</item>
-        <item>244</item>
-        <item>245</item>
-        <item>247</item>
-        <item>249</item>
-        <item>250</item>
-        <item>252</item>
-        <item>254</item>
-        <item>255</item>
-    </integer-array>
-    <integer-array name="config_EadWhiteRGB_offsetR">
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-    </integer-array>
-    <integer-array name="config_EadWhiteRGB_offsetR_Sub">
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
-        <item>255</item>
+    <integer-array name="config_EadWhiteRGB_TargetCCT_Natural">
+        <item>4500</item>
+        <item>4600</item>
+        <item>4700</item>
+        <item>4800</item>
+        <item>4900</item>
+        <item>5000</item>
+        <item>5100</item>
+        <item>5200</item>
+        <item>5300</item>
+        <item>5400</item>
+        <item>5500</item>
+        <item>5600</item>
+        <item>5700</item>
+        <item>5800</item>
+        <item>5900</item>
+        <item>6000</item>
+        <item>6100</item>
+        <item>6200</item>
+        <item>6300</item>
+        <item>6400</item>
+        <item>6500</item>
     </integer-array>
     <string-array name="config_Ebook_App_Launcher">
         <item>com.google.android.apps.books</item>
@@ -1351,54 +1317,6 @@
         <item>1.00</item>
     </string-array>
     <array name="config_Overheat_Control_Support_App_List" />
-    <string-array name="config_SNS_App_Launcher">
-        <item>com.google.android.apps.photos</item>
-        <item>com.facebook.katana</item>
-        <item>com.facebook.orca</item>
-        <item>com.instagram.android</item>
-        <item>com.twitter.android</item>
-        <item>com.snapchat.android</item>
-        <item>com.pinterest</item>
-        <item>lt.flickrfeed.jzplius</item>
-        <item>com.tencent.mobileqq</item>
-        <item>com.tencent.mm</item>
-        <item>com.weico.international</item>
-        <item>com.sina.weibo</item>
-        <item>com.kakao.talk</item>
-        <item>com.campmobile.snow</item>
-        <item>com.whatsapp</item>
-        <item>com.tumblr</item>
-        <item>com.google.android.apps.tachyon</item>
-        <item>org.telegram.messenger</item>
-        <item>com.facebook.lite</item>
-        <item>in.mohalla.sharechat</item>
-        <item>com.cyberlink.youperfect</item>
-        <item>com.nick.apps.beauty.camera</item>
-        <item>com.taobao.taobao</item>
-        <item>com.tmall.wireless</item>
-        <item>com.meitu.meiyancamera</item>
-        <item>com.mt.mtxx.mtxx</item>
-        <item>com.nhn.android.band</item>
-        <item>jp.naver.line.android</item>
-        <item>com.linecorp.b612.android</item>
-        <item>com.picsart.studio</item>
-        <item>com.vsco.cam</item>
-        <item>com.niksoftware.snapseed</item>
-        <item>com.linecorp.foodcam.android</item>
-        <item>com.cardinalblue.piccollage.google</item>
-        <item>com.lightricks.facetune.free</item>
-        <item>jp.naver.linecamera.android</item>
-        <item>com.adobe.lrmobile</item>
-        <item>com.adobe.psmobile</item>
-        <item>com.adobe.premiererush.videoeditor.samsung</item>
-        <item>com.adobe.premiererush.videoeditor</item>
-        <item>com.roidapp.photogrid</item>
-        <item>com.snowcorp.soda.android</item>
-        <item>com.magicv.airbrush</item>
-        <item>com.cyworld.camera</item>
-        <item>com.google.android.talk</item>
-        <item>com.baidu.searchbox</item>
-    </string-array>
     <string-array name="config_SamsungVideo_App_Display_Solution_Brightness_Value">
         <item>1.00</item>
     </string-array>
@@ -1852,6 +1770,8 @@
         <item>com.skb.smartrc</item>
         <item>pl.locon.br.pc</item>
         <item>com.disney.disneyplus</item>
+        <item>ru.kinopoisk</item>
+        <item>ru.kinopoisk.dev</item>
     </string-array>
     <string-array name="config_Video_Enhancer_Display_Solution_Brightness_Value">
         <item>1.50</item>
@@ -1860,7 +1780,6 @@
     <integer-array name="config_XrgbTableValue">
         <item>0</item>
     </integer-array>
-    <array name="config_accessibility_allowed_install_source" />
     <string-array name="config_adaptiveControlValues">
         <item>0</item>
         <item>1</item>
@@ -1885,18 +1804,10 @@
     <array name="config_ambientThresholdLevels" />
     <array name="config_ambientThresholdsOfPeakRefreshRate" />
     <array name="config_aodBrightnessValues" />
-    <integer-array name="config_apfEthTypeBlackList">
-        <item>0x000088A2</item>
-        <item>0x000088A4</item>
-        <item>0x000088B8</item>
-        <item>0x000088CD</item>
-        <item>0x000088E3</item>
-    </integer-array>
     <array name="config_autoBrightnessButtonBacklightValues" />
     <array name="config_autoBrightnessDisplayValuesNits" />
     <array name="config_autoBrightnessDisplayValuesNitsIdle" />
     <array name="config_autoBrightnessDisplayValuesNits_doze" />
-    <array name="config_autoBrightnessKeyboardBacklightValues" />
     <integer-array name="config_autoBrightnessLcdBacklightValues">
         <item>6</item>
         <item>6</item>
@@ -1929,6 +1840,21 @@
     </integer-array>
     <array name="config_autoBrightnessLevelsIdle" />
     <array name="config_autoBrightnessLevels_doze" />
+    <integer-array name="config_autoKeyboardBacklightBrightnessValues">
+        <item>102</item>
+        <item>153</item>
+        <item>0</item>
+    </integer-array>
+    <integer-array name="config_autoKeyboardBacklightDecreaseLuxThreshold">
+        <item>-1</item>
+        <item>40</item>
+        <item>150</item>
+    </integer-array>
+    <integer-array name="config_autoKeyboardBacklightIncreaseLuxThreshold">
+        <item>55</item>
+        <item>200</item>
+        <item>-1</item>
+    </integer-array>
     <integer-array name="config_autoRotationTiltTolerance">
         <item>-25</item>
         <item>70</item>
@@ -2015,6 +1941,8 @@
         <item>333</item>
         <item>353</item>
     </string-array>
+    <array name="config_cameraPrivacyLightAlsLuxThresholds" />
+    <array name="config_cameraPrivacyLightColors" />
     <array name="config_cdma_dun_supported_types" />
     <array name="config_cdma_international_roaming_indicators" />
     <array name="config_cell_retries_per_error_code" />
@@ -2030,9 +1958,13 @@
         <item>com.samsung.android.smartmirroring</item>
         <item>com.samsung.android.smartmirroring</item>
     </string-array>
+    <array name="config_companionPermSyncEnabledCerts" />
+    <array name="config_companionPermSyncEnabledPackages" />
+    <array name="config_concurrentDisplayDeviceStates" />
     <array name="config_convert_to_emergency_number_map" />
     <array name="config_coverSdrHdrMapHdrNits" />
     <array name="config_coverSdrHdrMapSdrNits" />
+    <array name="config_defaultAllowlistLaunchOnPrivateDisplayPackages" />
     <string-array name="config_defaultAmbientContextServices">
         <item>@string/config_defaultAmbientContextDetectionService</item>
         <item>@string/config_defaultWearableSensingService</item>
@@ -2079,14 +2011,15 @@
         <item>@string/config_mainBuiltInDisplayCutout</item>
         <item>@string/config_secondaryBuiltInDisplayCutout</item>
     </string-array>
+    <array name="config_displayCutoutSideOverrideArray">
+        <item>@array/config_mainBuiltInDisplayCutoutSideOverride</item>
+        <item>@array/config_secondaryBuiltInDisplayCutoutSideOverride</item>
+    </array>
     <string-array name="config_displayShapeArray">
         <item>@string/config_mainDisplayShape</item>
         <item>@string/config_secondaryDisplayShape</item>
     </string-array>
     <array name="config_displayUniqueIdArray" />
-    <string-array name="config_displayUsiVersionArray">
-        <item></item>
-    </string-array>
     <array name="config_displayWhiteBalanceAmbientColorTemperatures" />
     <array name="config_displayWhiteBalanceBaseThresholds">
         <item>0.0</item>
@@ -2121,7 +2054,9 @@
         <item>1</item>
     </integer-array>
     <array name="config_displayWhiteBalanceHighLightAmbientBiases" />
+    <array name="config_displayWhiteBalanceHighLightAmbientBiasesStrong" />
     <array name="config_displayWhiteBalanceHighLightAmbientBrightnesses" />
+    <array name="config_displayWhiteBalanceHighLightAmbientBrightnessesStrong" />
     <array name="config_displayWhiteBalanceIncreaseThresholds">
         <item>0.1</item>
     </array>
@@ -2129,7 +2064,15 @@
         <item>0.0</item>
         <item>1.0</item>
     </array>
+    <array name="config_displayWhiteBalanceLowLightAmbientBiasesStrong">
+        <item>0.0</item>
+        <item>1.0</item>
+    </array>
     <array name="config_displayWhiteBalanceLowLightAmbientBrightnesses">
+        <item>10.0</item>
+        <item>10.0</item>
+    </array>
+    <array name="config_displayWhiteBalanceLowLightAmbientBrightnessesStrong">
         <item>10.0</item>
         <item>10.0</item>
     </array>
@@ -2148,7 +2091,6 @@
         <item>30</item>
     </integer-array>
     <array name="config_dozeTapSensorPostureMapping" />
-    <array name="config_dreamComplicationsEnabledByDefault" />
     <string-array name="config_dropboxLowPriorityTags">
         <item>data_app_strictmode</item>
         <item>data_app_wtf</item>
@@ -2225,12 +2167,8 @@
     </string-array>
     <array name="config_gnssParameters" />
     <array name="config_halfFoldedDeviceStates" />
-    <string-array name="config_healthConnectMigrationKnownSigners">
-        <item>B2C0A80E485934BFB08F902CA27505813DF3159E4E6DD4A4DF078D66CB1C2003</item>
-    </string-array>
-    <string-array name="config_healthConnectRestoreKnownSigners">
-        <item>56BE132B780656FE2444CD34326EB5D7AAC91D2096ABF0FE673A99270622EC87</item>
-    </string-array>
+    <array name="config_healthConnectMigrationKnownSigners" />
+    <array name="config_healthConnectRestoreKnownSigners" />
     <array name="config_hideWhenDisabled_packageNames" />
     <array name="config_highAmbientBrightnessThresholdsOfFixedRefreshRate" />
     <array name="config_highDisplayBrightnessThresholdsOfFixedRefreshRate" />
@@ -2277,6 +2215,7 @@
         <item>-98</item>
         <item>-44</item>
     </integer-array>
+    <array name="config_mainBuiltInDisplayCutoutSideOverride" />
     <array name="config_mainBuiltInDisplayWaterfallCutout">
         <item>@dimen/waterfall_display_left_edge_size</item>
         <item>@dimen/waterfall_display_top_edge_size</item>
@@ -2328,7 +2267,24 @@
         <item>0,1</item>
         <item>1,3</item>
     </string-array>
-    <array name="config_network_type_tcp_buffers" />
+    <string-array name="config_network_type_tcp_buffers">
+        <item>NR_NSA:2097152,6291456,16777216,512000,2097152,8388608</item>
+        <item>NR_NSA_MMWAVE:2097152,6291456,16777216,512000,2097152,8388608</item>
+        <item>NR_SA:2097152,6291456,16777216,512000,2097152,8388608</item>
+        <item>NR_SA_MMWAVE:2097152,6291456,16777216,512000,2097152,8388608</item>
+        <item>LTE:2097152,4194304,8388608,524288,1572864,2097152</item>
+        <item>LTE_CA:2097152,4194304,8388608,4096,1048576,2097152</item>
+        <item>UMTS:4094,87380,1220608,4096,16384,1220608</item>
+        <item>HSPA:4094,87380,1220608,4096,16384,1220608</item>
+        <item>HSUPA:4094,87380,1220608,4096,16384,1220608</item>
+        <item>HSDPA:4094,87380,1220608,4096,16384,1220608</item>
+        <item>HSPA+:4094,87380,1220608,4096,16384,1220608</item>
+        <item>EDGE:4093,26280,35040,4096,16384,35040</item>
+        <item>GPRS:4092,8760,11680,4096,8760,11680</item>
+        <item>EvDo_0:4094,87380,524288,4096,16384,262144</item>
+        <item>EvDo_A:4094,87380,524288,4096,16384,262144</item>
+        <item>EvDo_B:4094,87380,524288,4096,16384,262144</item>
+    </string-array>
     <string-array name="config_nightDisplayColorTemperatureCoefficients">
         <item>0.0</item>
         <item>0.0</item>
@@ -2424,6 +2380,9 @@
         <item>ntp://cn.pool.ntp.org</item>
     </string-array>
     <array name="config_oemUsbModeOverride" />
+    <string-array name="config_oem_enabled_satellite_country_codes">
+        <item>US</item>
+    </string-array>
     <array name="config_openDeviceStates" />
     <array name="config_packagesExemptFromSuspension" />
     <array name="config_perDeviceStateRotationLockDefaults" />
@@ -2454,10 +2413,17 @@
         <item>-0.2434077725</item>
         <item>0.9809063061</item>
     </string-array>
+    <integer-array name="config_requestVibrationParamsForUsages">
+        <item>17</item>
+        <item>33</item>
+        <item>49</item>
+        <item>65</item>
+    </integer-array>
     <array name="config_restrictedImagesServices" />
     <string-array name="config_restricted_package_list">
         <item>com.sec.android.gallery3d</item>
         <item>com.sec.android.app.fm</item>
+        <item>com.samsung.android.dialer</item>
     </string-array>
     <array name="config_ringtoneEffectUris" />
     <array name="config_roundedCornerBottomRadiusAdjustmentArray">
@@ -2618,7 +2584,6 @@
     <array name="config_sdrHdrMapHdrNits" />
     <array name="config_sdrHdrMapSdrNits" />
     <string-array name="config_secNonBlockableNotificationPackages">
-        <item>com.sec.android.app.voicenote</item>
         <item>com.sec.android.app.samsungapps:galaxy_apps_urgent_notification_channel_id</item>
         <item>com.samsung.android.app.routines:routine_channel_id_action_notifications</item>
         <item>com.samsung.android.incallui:Ongoing_call</item>
@@ -2627,12 +2592,14 @@
         <item>com.samsung.android.app.reminder:REMINDER_CHANNEL_ID_CONNECTED_DEVICES</item>
         <item>com.samsung.android.calendar:calendar_noti_ch_id_ringtone</item>
     </string-array>
+    <array name="config_secondaryBuiltInDisplayCutoutSideOverride" />
     <array name="config_secondaryBuiltInDisplayWaterfallCutout">
         <item>@dimen/secondary_waterfall_display_left_edge_size</item>
         <item>@dimen/secondary_waterfall_display_top_edge_size</item>
         <item>@dimen/secondary_waterfall_display_right_edge_size</item>
         <item>@dimen/secondary_waterfall_display_bottom_edge_size</item>
     </array>
+    <array name="config_securityStatePackages" />
     <array name="config_serialPorts" />
     <string-array name="config_serviceStateLocationAllowedPackages">
         <item>com.android.phone</item>
@@ -2645,6 +2612,7 @@
     </string-array>
     <array name="config_sfps_sensor_props" />
     <array name="config_sharedLibrariesLoadedAfterApp" />
+    <array name="config_smallAreaDetectionAllowlist" />
     <array name="config_sms_enabled_locking_shift_tables" />
     <array name="config_sms_enabled_single_shift_tables" />
     <string-array name="config_statusBarIcons">
@@ -2734,7 +2702,31 @@
     <string-array name="config_toastCrossUserPackages">
         <item>android</item>
         <item>com.android.systemui</item>
-        <item>com.android.server.telecom</item>
+    </string-array>
+    <string-array name="config_trustedAccessibilityServices">
+        <item>com.samsung.android.accessibility.talkback/com.samsung.android.marvin.talkback.TalkBackService</item>
+        <item>com.samsung.accessibility/com.samsung.accessibility.universalswitch.UniversalSwitchService</item>
+        <item>com.samsung.accessibility/com.samsung.accessibility.assistantmenu.serviceframework.AssistantMenuService</item>
+    </string-array>
+    <string-array name="config_tvExternalInputLoggingDeviceBrandNames">
+        <item>Chromecast</item>
+        <item>SHIELD</item>
+        <item>Roku</item>
+        <item>Apple</item>
+        <item>Fire TV</item>
+        <item>PlayStation</item>
+        <item>Nintendo</item>
+    </string-array>
+    <string-array name="config_tvExternalInputLoggingDeviceOnScreenDisplayNames">
+        <item>Chromecast</item>
+        <item>Chromecast HD</item>
+        <item>SHIELD</item>
+        <item>Roku</item>
+        <item>Roku Express 4</item>
+        <item>Home Theater</item>
+        <item>Fire TV Stick</item>
+        <item>PlayStation 5</item>
+        <item>NintendoSwitch</item>
     </string-array>
     <array name="config_twoDigitNumberPattern" />
     <string-array name="config_udfps_enroll_stage_thresholds">
@@ -2749,6 +2741,9 @@
         <item>1,1,1.0,0,1</item>
         <item>1,1,1.0,.4,1</item>
         <item>1,1,1.0,.15,15</item>
+        <item>0,0,0.7,0,1</item>
+        <item>0,0,0.83333,0,1</item>
+        <item>0,0,1.1667,0,1</item>
     </string-array>
     <array name="config_usbHostDenylist" />
     <integer-array name="config_valuesOfDcMotorDefaultTouchMagnitudeLevel">
@@ -4472,6 +4467,7 @@
     <string-array name="cross_profile_apps">
         <item>com.samsung.android.calendar</item>
     </string-array>
+    <array name="default_wallpaper_component_per_device_color" />
     <string-array name="demo_device_provisioning_known_signers">
         <item>@string/config_retailDemoPackageSignature</item>
     </string-array>
@@ -4501,10 +4497,7 @@
     </string-array>
     <array name="dial_string_replace" />
     <array name="disallowed_apps_managed_device" />
-    <string-array name="disallowed_apps_managed_profile">
-        <item>com.google.android.apps.tachyon</item>
-        <item>com.nttdocomo.android.atf</item>
-    </string-array>
+    <array name="disallowed_apps_managed_profile" />
     <array name="disallowed_apps_managed_user" />
     <array name="face_acquired_vendor" />
     <array name="face_error_vendor" />
@@ -4520,23 +4513,6 @@
         <item>Other</item>
         <item>Custom</item>
     </string-array>
-    <string-array name="immersive_confirmation_disable_packages">
-        <item>com.samsung.android.video</item>
-        <item>com.samsung.android.app.dtv.dmb</item>
-        <item>com.samsung.android.app.dtv.sbtvd</item>
-        <item>com.samsung.android.app.notes</item>
-        <item>com.sec.android.app.kidshome</item>
-        <item>com.sec.android.app.launcher</item>
-        <item>com.sec.android.app.premiumwatch</item>
-        <item>com.sec.android.gallery3d</item>
-        <item>com.android.systemui</item>
-        <item>com.sec.enterprise.knox.cloudmdm.smdms</item>
-        <item>com.sec.knox.kccagent</item>
-        <item>com.samsung.android.incallui</item>
-        <item>com.samsung.android.emergency</item>
-        <item>com.samsung.android.setupindiaservicestnc</item>
-        <item>com.samsung.android.app.omcagent</item>
-    </string-array>
     <integer-array name="maps_starting_lat_lng">
         <item>36149777</item>
         <item>-95993398</item>
@@ -4546,9 +4522,26 @@
     </integer-array>
     <string-array name="networkAttributes">
         <item>wifi,1,1,1,-1,true</item>
+        <item>mobile,0,0,0,-1,true</item>
+        <item>mobile_mms,2,0,2,240000,true</item>
+        <item>mobile_supl,3,0,2,60000,true</item>
+        <item>mobile_dun,4,0,2,60000,true</item>
+        <item>mobile_hipri,5,0,3,60000,true</item>
         <item>bluetooth,7,7,0,-1,true</item>
+        <item>ethernet,9,9,2,-1,true</item>
+        <item>mobile_fota,10,0,2,60000,true</item>
+        <item>mobile_ims,11,0,1,-1,true</item>
+        <item>mobile_cbs,12,0,2,60000,true</item>
         <item>wifi_p2p,13,1,0,-1,true</item>
-        <item>ethernet,9,9,2,-1,ture</item>
+        <item>mobile_ia,14,0,2,-1,true</item>
+        <item>mobile_emergency,15,0,2,-1,true</item>
+        <item>mobile_bip,23,0,2,60000,true</item>
+        <item>mobile_cas,24,0,3,60000,true</item>
+        <item>mobile_xcap,27,0,2,60000,true</item>
+        <item>mobile_ent1,28,0,2,-1,true</item>
+        <item>mobile_mcx,32,0,2,-1,true</item>
+        <item>mobile_foc,30,0,2,-1,true</item>
+        <item>mobile_rcs,31,0,2,-1,true</item>
     </string-array>
     <string-array name="network_switch_type_name">
         <item>mobile data</item>
@@ -4567,6 +4560,7 @@
         <item>20404;suffix;BAE0000000000000</item>
     </string-array>
     <array name="non_removable_euicc_slots" />
+    <array name="pause_wallpaper_render_when_state_change" />
     <array name="policy_exempt_apps" />
     <array name="preloaded_color_state_lists">
         <item>@color/primary_text_dark</item>
@@ -4627,8 +4621,7 @@
         <item>@drawable/fastscroll_label_right_material</item>
         <item>@drawable/fastscroll_thumb_material</item>
         <item>@drawable/fastscroll_track_material</item>
-        <item>@drawable/floating_popup_background_dark</item>
-        <item>@drawable/floating_popup_background_light</item>
+        <item>@drawable/floating_popup_background</item>
         <item>@drawable/ic_ab_back_material</item>
         <item>@drawable/ic_ab_back_material_dark</item>
         <item>@drawable/ic_ab_back_material_light</item>
@@ -4677,10 +4670,6 @@
         <item>@drawable/tab_indicator_material</item>
         <item>@drawable/text_cursor_material</item>
     </array>
-    <array name="preloaded_freeform_multi_window_drawables">
-        <item>@drawable/decor_maximize_button_dark</item>
-        <item>@drawable/decor_maximize_button_light</item>
-    </array>
     <string-array name="radioAttributes">
         <item>1,1</item>
         <item>0,1</item>
@@ -4705,7 +4694,7 @@
         <item>com.samsung.android.appseparation</item>
         <item>com.samsung.android.forest</item>
         <item>com.android.cellbroadcastreceiver</item>
-        <item>com.google.android.cellbroadcastreceiver</item>
+        <item>com.android.webview</item>
     </string-array>
     <string-array name="required_apps_managed_profile">
         <item>com.android.contacts</item>
@@ -4714,6 +4703,7 @@
         <item>com.android.providers.downloads</item>
         <item>com.android.providers.downloads.ui</item>
         <item>com.android.documentsui</item>
+        <item>com.android.webview</item>
         <item>com.samsung.android.samsungpass</item>
         <item>com.sec.keystringscreen</item>
         <item>com.sec.android.mimage.photoretouching</item>
@@ -4728,7 +4718,7 @@
         <item>com.android.providers.downloads</item>
         <item>com.android.providers.downloads.ui</item>
         <item>com.android.documentsui</item>
-        <item>com.samsung.android.forest</item>
+        <item>com.android.webview</item>
     </string-array>
     <string-array name="resolver_target_actions_pin">
         <item>@string/pin_target</item>
@@ -4738,7 +4728,6 @@
         <item>@string/unpin_target</item>
         <item>@string/app_info</item>
     </string-array>
-    <array name="screen_density_array" />
     <string-array name="sem_did_supported_locale">
         <item>en-DI</item>
     </string-array>
@@ -5348,6 +5337,8 @@
         <item>com.dti.telefonica</item>
         <item>com.dti.tracfone</item>
         <item>com.dti.att</item>
+        <item>com.aura.oobe.att</item>
+        <item>com.aura.jet.att</item>
         <item>com.LogiaGroup.LogiaDeck</item>
         <item>com.dti.attmx</item>
         <item>com.dti.millicom</item>
@@ -5369,6 +5360,7 @@
         <item>com.tims.rt</item>
     </string-array>
     <string-array name="vendor_disallowed_apps_managed_profile">
+        <item>com.samsung.android.da.daagent</item>
         <item>com.samsung.android.knox.analytics.uploader</item>
         <item>com.ampsvc.android</item>
         <item>com.sec.android.app.factorykeystring</item>
@@ -5621,10 +5613,7 @@
     <array name="vendor_disallowed_apps_managed_user" />
     <array name="vendor_policy_exempt_apps" />
     <array name="vendor_required_apps_managed_device" />
-    <string-array name="vendor_required_apps_managed_profile">
-        <item>com.android.permissioncontroller</item>
-        <item>com.google.android.googlequicksearchbox</item>
-    </string-array>
+    <array name="vendor_required_apps_managed_profile" />
     <array name="vendor_required_apps_managed_user" />
     <array name="vendor_required_attestation_certificates" />
     <string-array name="wfcOperatorErrorAlertMessages">

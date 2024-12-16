@@ -2,7 +2,7 @@
 <LinearLayout android:orientation="vertical" android:background="@color/maintenance_mode_background" android:paddingTop="@dimen/maintenance_mode_view_body_padding_top_bottom" android:paddingBottom="@dimen/maintenance_mode_view_body_padding_top_bottom" android:layout_width="fill_parent" android:layout_height="fill_parent"
   xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@id/maintenance_mode_view_dump_container" android:layout_width="fill_parent" android:layout_height="fill_parent">
-        <LinearLayout android:orientation="vertical" android:paddingBottom="@dimen/maintenance_mode_view_progress_padding_bottom" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <LinearLayout android:orientation="vertical" android:id="@id/maintenance_mode_view_dump_progressbar_container" android:paddingBottom="@dimen/maintenance_mode_view_progress_padding_bottom" android:layout_width="fill_parent" android:layout_height="wrap_content">
             <ProgressBar android:layout_gravity="center_horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:indeterminate="true" style="@style/Widget.DeviceDefault.ProgressBar.Large" />
         </LinearLayout>
         <ScrollView android:layout_width="fill_parent" android:layout_height="wrap_content">

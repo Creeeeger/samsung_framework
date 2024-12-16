@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Tablični računalnik ni stabilen, ker je bila kartica SD, na kateri so bile nameščene aplikacije, odstranjena. Tablični računalnik se bo znova zagnal čez %d sekund, da bo začel delovati kot običajno. Pred vnovičnim zagonom tabličnega računalnika shranite morebitne neshranjene podatke.</item>
+        <item quantity="other">Telefon ni stabilen, ker je bila kartica SD, na kateri so bile nameščene aplikacije, odstranjena. Telefon se bo znova zagnal čez %d sekund, da bo začel delovati kot običajno. Pred vnovičnim zagonom telefona shranite morebitne neshranjene podatke.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Tablični računalnik ni stabilen, ker je bila kartica SD, na kateri so bile nameščene aplikacije, odstranjena. Tablični računalnik se bo znova zagnal čez %d sekundo, da bo začel delovati kot običajno. Pred vnovičnim zagonom tabličnega računalnika shranite morebitne neshranjene podatke.</item>
-        <item quantity="two">Tablični računalnik ni stabilen, ker je bila kartica SD, na kateri so bile nameščene aplikacije, odstranjena. Tablični računalnik se bo znova zagnal čez %d sekundi, da bo začel delovati kot običajno. Pred vnovičnim zagonom tabličnega računalnika shranite morebitne neshranjene podatke.</item>
-        <item quantity="few">Tablični računalnik ni stabilen, ker je bila kartica SD, na kateri so bile nameščene aplikacije, odstranjena. Tablični računalnik se bo znova zagnal čez %d sekunde, da bo začel delovati kot običajno. Pred vnovičnim zagonom tabličnega računalnika shranite morebitne neshranjene podatke.</item>
+        <item quantity="one">Telefon ni stabilen, ker je bila kartica SD, na kateri so bile nameščene aplikacije, odstranjena. Telefon se bo znova zagnal čez %d sekundo, da bo začel delovati kot običajno. Pred vnovičnim zagonom telefona shranite morebitne neshranjene podatke.</item>
+        <item quantity="two">Telefon ni stabilen, ker je bila kartica SD, na kateri so bile nameščene aplikacije, odstranjena. Telefon se bo znova zagnal čez %d sekundi, da bo začel delovati kot običajno. Pred vnovičnim zagonom telefona shranite morebitne neshranjene podatke.</item>
+        <item quantity="few">Telefon ni stabilen, ker je bila kartica SD, na kateri so bile nameščene aplikacije, odstranjena. Telefon se bo znova zagnal čez %d sekunde, da bo začel delovati kot običajno. Pred vnovičnim zagonom telefona shranite morebitne neshranjene podatke.</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Tab. rač. se bo znova zagnal čez %d s</item>
+        <item quantity="other">Telefon se bo zn. zagn. čez %d sekund</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Tab. rač. se bo znova zagnal čez %d s</item>
-        <item quantity="two">Tab. rač. se bo znova zagnal čez %d s</item>
-        <item quantity="few">Tab. rač. se bo znova zagnal čez %d s</item>
+        <item quantity="one">Telef. se bo zn. zagn. čez %d sekundo</item>
+        <item quantity="two">Telef. se bo zn. zagn. čez %d sekundi</item>
+        <item quantity="few">Telef. se bo zn. zagn. čez %d sekunde</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="app_kills_content_v2_phone">
@@ -106,14 +106,6 @@
         <item quantity="one">%d element</item>
         <item quantity="two">%d elementa</item>
         <item quantity="few">%d elementi</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">Omrežje Wi-Fi, s katerim se želite povezati, je lahko povezano samo s/z %d napravami hkrati. Prekinite povezavo drugih naprav s tem omrežjem in poskusite znova.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">Omrežje Wi-Fi, s katerim se želite povezati, je lahko povezano samo z %d napravo hkrati. Prekinite povezavo drugih naprav s tem omrežjem in poskusite znova.</item>
-        <item quantity="two">Omrežje Wi-Fi, s katerim se želite povezati, je lahko povezano samo z %d napravama hkrati. Prekinite povezavo drugih naprav s tem omrežjem in poskusite znova.</item>
-        <item quantity="few">Omrežje Wi-Fi, s katerim se želite povezati, je lahko povezano samo s %d napravami hkrati. Prekinite povezavo drugih naprav s tem omrežjem in poskusite znova.</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="zen_mode_duration_time_hours">

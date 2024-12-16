@@ -18,4 +18,7 @@
     <dimen name="text_size_subtitle_material_toolbar">18.0dip</dimen>
     <dimen name="text_size_title_material">18.0sp</dimen>
     <dimen name="text_size_title_material_toolbar">18.0dip</dimen>
+    <dimen name="base_error_dialog_bottom_padding">64.0dip</dimen>
+    <dimen name="base_error_dialog_padding">5.0dip</dimen>
+    <dimen name="base_error_dialog_top_padding">26.0dip</dimen>
 </resources>

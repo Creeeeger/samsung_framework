@@ -607,6 +607,11 @@
         },
         {
             "opacity": 100,
+            "theme": "quickpanel_card_bg",
+            "uid": "4-2-6"
+        },
+        {
+            "opacity": 100,
             "theme": "actionbar_title",
             "uid": "4-21-9"
         },
@@ -734,11 +739,6 @@
             "opacity": 100,
             "theme": "black_white",
             "uid": "55-7-7-2"
-        },
-        {
-            "opacity": 20,
-            "theme": "#ffffff",
-            "uid": "61-1-1"
         },
         {
             "opacity": 100,
@@ -1059,6 +1059,21 @@
             "opacity": 10,
             "theme": "widget_bg_contents",
             "uid": "8-13-1"
+        },
+        {
+            "opacity": 100,
+            "theme": "widget_bg_contents",
+            "uid": "8-13-1-2"
+        },
+        {
+            "opacity": 100,
+            "theme": "widget_button_bg_off",
+            "uid": "8-14-1-3"
+        },
+        {
+            "opacity": 100,
+            "theme": "widget_button_bg_on",
+            "uid": "8-14-1-4"
         },
         {
             "opacity": 100,
@@ -1399,12 +1414,12 @@
         {
             "name": "appicon_bg",
             "colorLight": "accent1_400",
-            "colorDark": "accent1_800"
+            "colorDark": "accent1_500"
         },
         {
             "name": "appicon_fg",
             "colorLight": "#ffffff",
-            "colorDark": "accent1_100"
+            "colorDark": "#000000"
         },
         {
             "name": "keyboard_general",
@@ -1444,6 +1459,21 @@
             "name": "notification_header_color",
             "colorLight": "accent2_400",
             "colorDark": "accent2_400"
+        },
+        {
+            "name": "widget_button_bg_off",
+            "colorLight": "neutral1_300",
+            "colorDark": "neutral1_500"
+        },
+        {
+            "name": "widget_button_bg_on",
+            "colorLight": "accent1_700",
+            "colorDark": "accent1_700"
+        },
+        {
+            "name": "quickpanel_card_bg",
+            "colorLight": "accent1_600",
+            "colorDark": "accent1_900"
         }
     ]
 }

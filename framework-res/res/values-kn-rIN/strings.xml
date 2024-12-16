@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Bixbyಗೆ ಮಾತನಾಡಿ</string>
     <string name="accessibility_corner_action_type_zoom_in">ಜೂಮ್ ಇನ್</string>
     <string name="accessibility_corner_action_type_zoom_out">ಜೂಮ್ ಔಟ್</string>
+    <string name="accessibility_dialog_button_allow_samsung">ಅನುಮತಿಸಿ</string>
+    <string name="accessibility_dialog_button_deny_samsung">ನಿರಾಕರಿಸು</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">ಅಸ್ಥಾಪಿಸು</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">ಪವರ್ ಮತ್ತು ವಾಲ್ಯೂಮ್ ಹೆಚ್ಚಿಸುವಿಕೆ ಕೀಗಳನ್ನು ತ್ವರಿತವಾಗಿ ಒತ್ತುವುದರಿಂದ ಮುಂದಿನ ಕಾರ್ಯಗಳು ಆನ್ ಅಥವಾ ಆಫ್ ಆಗುತ್ತವೆ:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">ಸೈಡ್ ಮತ್ತು ವಾಲ್ಯೂಮ್ ಹೆಚ್ಚಿಸುವಿಕೆ ಬಟನ್‌ಗಳನ್ನು ತ್ವರಿತವಾಗಿ ಒತ್ತುವುದರಿಂದ ಮುಂದಿನ ಕಾರ್ಯಗಳು ಆನ್ ಅಥವಾ ಆಫ್ ಆಗುತ್ತವೆ:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">ಪವರ್ ಮತ್ತು ವಾಲ್ಯೂಮ್ ಹೆಚ್ಚಿಸುವಿಕೆ ಕೀಗಳನ್ನು ತ್ವರಿತವಾಗಿ ಒತ್ತುವುದರಿಂದ %s ಆನ್ ಅಥವಾ ಆಫ್ ಆಗುತ್ತದೆ.</string>
@@ -96,7 +99,7 @@
     <string name="accessibility_direct_access_warning_title_samsung_side_key">ಪ್ರವೇಶಿಸುವಿಕೆಗಾಗಿ ಸೈಡ್ ಮತ್ತು ವಾಲ್ಯೂಮ್ ಹೆಚ್ಚಿಸುವಿಕೆ ಬಟನ್‌ಗಳನ್ನು ಬಳಸುವುದೇ?</string>
     <string name="accessibility_direct_access_warning_title_samsung_side_key_talkback">%sಗಾಗಿ ಸೈಡ್ ಮತ್ತು ವಾಲ್ಯೂಮ್ ಹೆಚ್ಚಿಸುವಿಕೆ ಬಟನ್‌ಗಳನ್ನು ಬಳಸುವುದೇ?</string>
     <string name="accessibility_direct_access_warning_title_samsung_talkback">%sಗಾಗಿ ಪವರ್ ಮತ್ತು ವಾಲ್ಯೂಮ್ ಹೆಚ್ಚಿಸುವಿಕೆ ಕೀಗಳನ್ನು ಬಳಸುವುದೇ?</string>
-    <string name="accessibility_select_different_function">ನೀವು ಸಂಯೋಜನೆಗಳು > ಪ್ರವೇಶಿಸುವಿಕೆ > ಸುಧಾರಿಸಿದ ಸಂಯೋಜನೆಗಳು ಎಂಬಲ್ಲಿ ವಿಭಿನ್ನ ಕಾರ್ಯವನ್ನು ಆಯ್ಕೆಮಾಡಬಹುದು.</string>
+    <string name="accessibility_select_different_function">ನೀವು ಸೆಟ್ಟಿಂಗ್‌ಗಳು > ಪ್ರವೇಶಿಸುವಿಕೆ > ಸುಧಾರಿಸಿದ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಎಂಬಲ್ಲಿ ವಿಭಿನ್ನ ಕಾರ್ಯವನ್ನು ಆಯ್ಕೆಮಾಡಬಹುದು.</string>
     <string name="accessibility_shortcut_cannot_use_dex_mode">Samsung DeXನಲ್ಲಿ %s ರನ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಫೋನ್ ಮೋಡ್‌ನಲ್ಲಿ ರನ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="accessibility_shortcut_cannot_use_emergency_mode">ತುರ್ತುಸ್ಥಿತಿಯ ಮೋಡ್‌ನಲ್ಲಿ %s ಆನ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="accessibility_shortcut_cannot_use_fingerprint">ನಿಮ್ಮ ಫಿಂಗರ್‌ಪ್ರಿಂಟ್‌ಗಳನ್ನು ಬಳಸಿಕೊಂಡು ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ಅನ್‌ಲಾಕ್‌ಗೆ ಹೊಂದಿಸಿರುವಾಗ %s ಬಳಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
@@ -117,6 +120,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಈ ಖಾತೆಗೆ ಸೇರಿಸುವುದನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="account_removal_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಈ ಖಾತೆಯನ್ನು ತೆಗೆಯುವುದನ್ನು ತಡೆಯುತ್ತದೆ.</string>
+    <string name="action_bar_up_description">ಮೇಲೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿ</string>
     <string name="action_menu_overflow_description">ಹೆಚ್ಚು ಆಯ್ಕೆಗಳು</string>
     <string name="adb_active_notification_message">USB ಡಿಬಗ್ಗಿಂಗ್ ನಿಶಕ್ತಗೊಳಿಸಲು ಆರಿಸಿ.</string>
     <string name="adb_active_notification_title">USB ಡಿಬಗ್ಗಿಂಗ್ ಸಂಪರ್ಕಿತವಾಗಿದೆ.</string>
@@ -125,6 +129,9 @@
     <string name="advance_wifi_sharing_msg">ಲಭ್ಯ Wi-Fi ನೆಟ್‍ವರ್ಕ್ ಪತ್ತೆಯಾಗಿದೆ. ನಿಮ್ಮ ಮೊಬೈಲ್ ಹಾಟ್‍ಸ್ಪಾಟ್‍ಗೆ ಮೊಬೈಲ್ ಡೇಟಾವಿನ ಬದಲಿಗೆ Wi-Fi ಹಂಚಿಕೆಯನ್ನು ಬಳಸಲು ಸಂಪರ್ಕಿಸಿ.</string>
     <string name="airplanemode_restrict">ವಿಮಾನ ಮೋಡ್ ಶಕ್ತಗೊಳಿಸುವುದನ್ನು ಭದ್ರತೆ ನೀತಿಯು ತಡೆಗಟ್ಟುತ್ತದೆ.</string>
     <string name="allow_settings_changes">ಸುರಕ್ಷತಾ ನೀತಿಯು ಬದಲಾಗುತ್ತಿರುವ ಸಂಯೋಜನೆಗಳನ್ನು ತಡೆಯುತ್ತದೆ.</string>
+    <string name="always_allow">ಯಾವಾಗಲೂ ಅನುಮತಿಸಿ</string>
+    <string name="app_block_button_open">ತೆರೆಯಿರಿ</string>
+    <string name="app_block_content">%2$s ಆ್ಯಪ್ ತೆರೆಯಲು %1$s ಬಯಸುತ್ತದೆ.</string>
     <string name="app_clone_storage">ಆಂತರಿಕ ಸಂಗ್ರಹಣೆ (ಡ್ಯುಯಲ್ ಮೆಸೆಂಜರ್)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">ಆ್ಯಪ್‌ಗಳನ್ನು ಆರಿಸಿ</string>
     <string name="app_continuity_guide_cling_button_not_now">ಈಗ ಬೇಡ</string>
@@ -139,32 +146,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">ನೀವು ಇಂದಿನ %s ದಿನಕ್ಕಾಗಿ ನಿಮ್ಮ ಎಲ್ಲಾ ಸಮಯವನ್ನು ಬಳಸಿರುವಿರಿ. ನೀವು ಇದನ್ನು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಬದಲಾಯಿಸಬಹುದು.</string>
     <string name="app_restricted_message_concentration_mode">ಕಾನ್ಸನ್‌ಟ್ರೇಶನ್ ಮೋಡ್‌ನಲ್ಲಿ%s ಅನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ. ಹೆಚ್ಚು ತಿಳಿಯಲು ನಿಮ್ಮ IT ನಿರ್ವಾಹಕರನ್ನು ಸಂಪರ್ಕಿಸಿ.</string>
     <string name="app_updating_message">%s ಅನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾಗುತ್ತಿದೆ. ನಂತರ ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ.</string>
-    <string name="appblock_block_subtitle1_phone">ನಿಮ್ಮ ಫೋನ್ ಮತ್ತು ವೈಯಕ್ತಿಕ ಡೇಟಾವನ್ನು ರಕ್ಷಿಸುವುದಕ್ಕಾಗಿ, ಈ ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ ಏಕೆಂದರೆ ಅದು ದೋಷಪೂರಿತ ಎಂಬುದಾಗಿ ಶಂಕಿಸಲಾಗಿದೆ.</string>
-    <string name="appblock_block_subtitle1_tablet">ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಮತ್ತು ವೈಯಕ್ತಿಕ ಡೇಟಾವನ್ನು ರಕ್ಷಿಸುವುದಕ್ಕಾಗಿ, ಈ ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ ಏಕೆಂದರೆ ಅದು ದೋಷಪೂರಿತ ಎಂಬುದಾಗಿ ಶಂಕಿಸಲಾಗಿದೆ.</string>
-    <string name="appblock_block_subtitle2">ಈ ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ ಏಕೆಂದರೆ ಅದನ್ನು ದೋಷಪೂರಿತ ಎಂಬುದಾಗಿ ವರದಿ ಮಾಡಲಾಗಿದೆ.</string>
-    <string name="appblock_block_text1">ಈ ಆ್ಯಪ್ ದೃಢೀಕೃತ ಮೂಲದಿಂದ ಆಗಿಲ್ಲ ಮತ್ತು ಅದಕ್ಕೆ ಸೂಕ್ಷ್ಮ ಅನುಮತಿಗಳ ಅಗತ್ಯವಿರುತ್ತದೆ ಮತ್ತು ಅದನ್ನು ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಡೇಟಾ ಕದಿಯಲು ಅಥವಾ ಸೋರಿಕೆ ಮಾಡಲು ಬಳಸಬಹುದು.</string>
-    <string name="appblock_block_text2">"ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಡೇಟಾವನ್ನು ಕದಿಯಲು, ನೀವು ಎಂಬಂತೆಯೇ ನಟನೆ ಮಾಡಲು ಅಥವಾ ನಿಮ್ಮ ಹಣಕಾಸು ಖಾತೆಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ಸೂಕ್ಷ್ಮ ಅನುಮತಿಗಳನ್ನು ದೋಷಪೂರಿತ ಆ್ಯಪ್‌ಗಳು ಬಳಸಬಹುದು.
-
-ಕಾನೂನುಬದ್ಧ ಹಣಕಾಸು ಸಂಸ್ಥೆಗಳಿಗೆ ZIP ಫೈಲ್‌ಗಳು, APK ಫೈಲ್‌ಗಳು ಅಥವಾ ಫೈಲ್ ಮ್ಯಾನೇಜರ್ ಆ್ಯಪ್‌ಗಳ ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಅಗತ್ಯವಿರುವುದಿಲ್ಲ.
-
-ನೀವು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡುವ ಆ್ಯಪ್‌ಗಳು ವಿಶ್ವಾಸಾರ್ಹ ಮೂಲದಿಂದ ಆಗಿವೆ ಎಂಬುದನ್ನು ಯಾವಾಗಲೂ ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
-    <string name="appblock_warn_subtitle">ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ಈ ಆ್ಯಪ್ ಕದಿಯಬಹುದು ಅಥವಾ ಸೋರಿಕೆ ಮಾಡಬಹುದು.</string>
+    <string name="appblock_block_text_phone">ಈ ಆ್ಯಪ್ ಅನ್ನು ದೋಷಪೂರಿತ ಎಂಬುದಾಗಿ ಅಥವಾ ದೋಷಪೂರಿತ ಎಂಬುದಾಗಿ ವರದಿ ಮಾಡಲಾದ ಆ್ಯಪ್‌ನಂತಹ ರೀತಿಯದ್ದೇ ಎಂಬುದಾಗಿ ವರದಿ ಮಾಡಲಾಗಿರುವ ಕಾರಣದಿಂದ ಅದನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಈ ಆ್ಯಪ್‌ ಅನ್ನು ಫಿಶಿಂಗ್‌ನಂತಹ ಅಪರಾಧಗಳಲ್ಲಿ ಬಳಸಲಾಗುವ ಸಾಧ್ಯತೆ ಇದೆ. ನಿಮ್ಮ ಫೋನ್ ಮತ್ತು ಡೇಟಾವನ್ನು ಸುರಕ್ಷಿತವಾಗಿ ಇರಿಸುವುದಕ್ಕಾಗಿ, ಈ ನಿರ್ಬಂಧವನ್ನು ಬೈಪಾಸ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="appblock_block_text_tablet">ಈ ಆ್ಯಪ್ ಅನ್ನು ದೋಷಪೂರಿತ ಎಂಬುದಾಗಿ ಅಥವಾ ದೋಷಪೂರಿತ ಎಂಬುದಾಗಿ ವರದಿ ಮಾಡಲಾದ ಆ್ಯಪ್‌ನಂತಹ ರೀತಿಯದ್ದೇ ಎಂಬುದಾಗಿ ವರದಿ ಮಾಡಲಾಗಿರುವ ಕಾರಣದಿಂದ ಅದನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಈ ಆ್ಯಪ್‌ ಅನ್ನು ಫಿಶಿಂಗ್‌ನಂತಹ ಅಪರಾಧಗಳಲ್ಲಿ ಬಳಸಲಾಗುವ ಸಾಧ್ಯತೆ ಇದೆ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಮತ್ತು ಡೇಟಾವನ್ನು ಸುರಕ್ಷಿತವಾಗಿ ಇರಿಸುವುದಕ್ಕಾಗಿ, ಈ ನಿರ್ಬಂಧವನ್ನು ಬೈಪಾಸ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="appblock_link_text">ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ</string>
     <string name="appblock_warn_text1">"ದೃಢೀಕೃತವಲ್ಲದ ಮೂಲಗಳಿಂದ ಆ್ಯಪ್‌ಗಳನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡುವುದರಿಂದ ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ಸಂಗ್ರಹಿಸಲು ಅಥವಾ ನಿಮ್ಮ ಚಟುವಟಿಕೆಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಲು ಆ್ಯಪ್‌ಗಳಿಗೆ ಅನುಮತಿ ದೊರೆಯಬಹುದು.
 
 ಈ ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡುವುದನ್ನು ಶಿಫಾರಸು ಮಾಡಲಾಗಿಲ್ಲ.
 
 ಏನೇ ಆಗಲಿ ಈ ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲು ನೀವು ಆರಿಸಿಕೊಂಡರೆ, ಆ್ಯಪ್‌ನ ಗೌಪ್ಯತೆ ಸೂಚನೆಯನ್ನು ಎಚ್ಚರಿಕೆಯಿಂದ ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಅಗತ್ಯವಿರುವ ಅನುಮತಿಗಳನ್ನು ಮಾತ್ರ ನೀವು ಅನುಮತಿಸುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
-    <string name="appblock_warn_text2">"ಸಂಪರ್ಕಗಳು, SMS ಮತ್ತು ಫೋಟೋಗಳ ಅನುಮತಿಗಳನ್ನು ಬಳಸಿಕೊಂಡು ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ಪಡೆದುಕೊಳ್ಳಲು ದೋಷಪೂರಿತ ಆ್ಯಪ್‌ಗಳು ಆಗಾಗ್ಗೆ ಪ್ರಯತ್ನಿಸುತ್ತವೆ.
-
-ಈ ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡುವುದನ್ನು ಶಿಫಾರಸು ಮಾಡಲಾಗಿಲ್ಲ.
-
-ಏನೇ ಆಗಲಿ ಈ ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲು ನೀವು ಆರಿಸಿಕೊಂಡರೆ, ಅದು ನೀವು ನಂಬುವ ಮೂಲದ್ದಾಗಿದೆ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ ಮತ್ತು ನಿಮ್ಮ ಡೇಟಾಕ್ಕೆ ಅನುಮತಿಗಳು ಅಥವಾ ಇತರ ಪ್ರವೇಶಕ್ಕೆ ಅನುಮತಿಯನ್ನು ನೀಡುವುದರ ಕುರಿತು ಎಚ್ಚರದಿಂದಿರಿ."</string>
     <string name="application_default_restrict">ಸಾಧನ ನಿರ್ವಾಹಕರು ಮತ್ತೊಂದು ಅನ್ವಯಿಸುವಿಕೆಯನ್ನು ಡೀಫಾಲ್ಟ್ ಆಗಿ ಹೊಂದಿಸಿದ್ದಾರೆ.</string>
     <string name="auto_click_paused">ಸ್ವಯಂ ಕ್ಲಿಕ್ ನಿಂತಿದೆ.</string>
     <string name="auto_click_resumed">ಸ್ವಯಂ ಕ್ಲಿಕ್ ಮುಂದುವರಿದಿದೆ.</string>
     <string name="autofill_never_use_for_this_app">ಈ ಆ್ಯಪ್‌ಗಾಗಿ %s ಅನ್ನು ಎಂದಿಗೂ ಬಳಸಬೇಡಿ</string>
     <string name="autofill_save_cancel">ರದ್ದು</string>
     <string name="autofill_save_never_OK">ಸರಿ</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಬ್ಯಾಕ್‌ಅಪ್‌ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="badPin2">PIN2 ತಪ್ಪಾಗಿರುತ್ತದೆ. ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="badPuk2">ನೀವು ನಮೂದಿಸಿದ PUK2 ತಪ್ಪಾಗಿದೆ.</string>
@@ -175,8 +171,6 @@
     <string name="bluetooth_a2dp_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಬ್ಲೂಟೂತ್ ಮೀಡಿಯಾ ಆಡಿಯೋ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="bluetooth_avrcp_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಬ್ಲೂಟೂತ್ ಆಡಿಯೋ/ವೀಡಿಯೋ ನಿಯಂತ್ರಣದ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="bluetooth_bpp_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಬ್ಲೂಟೂತ್ ಮೂಲಕ ಮುದ್ರಿಸುವಿಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
-    <string name="bluetooth_china_popup_message">%1$s ಇದು %2$s ಬಳಸಲು ಅನುಮತಿ ಕೇಳುತ್ತಿದೆ. ಅನುಮತಿಸುವುದೇ?</string>
-    <string name="bluetooth_china_popup_title">ಬ್ಲೂಟೂತ್</string>
     <string name="bluetooth_data_transfer_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಬ್ಲೂಟೂತ್ ಮೂಲಕ ಡೇಟಾ ವರ್ಗಾವಣೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="bluetooth_desktop_restrict">ಬ್ಲೂಟೂತ್ ಮೂಲಕ ನಿಮ್ಮ ಡೆಸ್ಕ್‌ಟಾಪ್‌ಗೆ ಸಂಪರ್ಕಿಸುವುದನ್ನು ಸುರಕ್ಷತೆ ನೀತಿಯು ತಡೆಯುತ್ತದೆ.</string>
     <string name="bluetooth_device_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಈ ಬ್ಲೂಟೂತ್ ಸಾಧನದ ಮೂಲಕ ಜೋಡಿಸುವಿಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
@@ -187,7 +181,6 @@
     <string name="bluetooth_outgoing_call_restrict">ಬ್ಲೂಟೂತ್ ಮೂಲಕ ಹೊರಹೋಗುವ ಕರೆಗಳನ್ನು ಮಾಡುವುದನ್ನು ಸುರಕ್ಷತೆ ನೀತಿಯು ತಡೆಯುತ್ತದೆ.</string>
     <string name="bluetooth_pairing_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಬ್ಲೂಟೂತ್ ಜೋಡಿಯಾಗಿಸುವಿಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="bluetooth_pbap_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಬ್ಲೂಟೂತ್ ವಿಳಾಸ ಪುಸ್ತಕ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
-    <string name="bluetooth_permission_request">ಬ್ಲೂಟೂತ್ ಅನುಮತಿ ಕೋರಿಕೆ</string>
     <string name="bluetooth_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಬ್ಲೂಟೂತ್ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="bluetooth_sap_restrict">ಬ್ಲೂಟೂತ್ ಮೂಲಕ ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಪ್ರವೇಶಿಸಿದಂತೆ ಸುರಕ್ಷತೆ ನೀತಿಯು ತಡೆಯುತ್ತದೆ.</string>
     <string name="bluetooth_security_mode_disable">ಭದ್ರತೆ ನೀತಿಯು ಬ್ಲೂಟೂತ್ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
@@ -250,11 +243,8 @@
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">ಅನುಮತಿಸಿದ ಸಾಧನಗಳು</string>
     <string name="data_call_restriction">ಸುರಕ್ಷತಾ ನೀತಿಯು ಮೊಬೈಲ್ ಡಾಟಾವನ್ನು ನಿರ್ಬಂಧಿಸುತ್ತದೆ.</string>
-    <string name="data_usage_disable_mobile">ಮೊಬೈಲ್ ಡೇಟಾ ಸಂಪರ್ಕವನ್ನು ನಿಶಕ್ತಗೊಳಿಸುವುದೆ?</string>
-    <string name="data_usage_enable_mobile_warning">ಪ್ಯಾಕೆಟ್ ಡೇಟಾ ಮೂಲಕ ಸಂಪರ್ಕಿಸುವಿಕೆ ಹೆಚ್ಚಿನ ವೆಚ್ಚಗಳಿಗೆ ಈಡಾಗಬಹುದು. ಮುಂದುವರಿಯುವುದೆ?</string>
     <string name="data_usage_limit_body">ನಿಮ್ಮ ಬಿಲ್ಲಿಂಗ್ ಸೈಕಲ್ ಅಂತ್ಯದವರೆಗೆ ಮೊಬೈಲ್ ಡೇಟಾವನ್ನು ವಿರಾಮಗೊಳಿಸಲಾಗಿದೆ.</string>
     <string name="data_usage_mobile_limit_snoozed_title">ನಿಮ್ಮ ಮೊಬೈಲ್ ಡೇಟಾ ಮಿತಿಗಿಂತ ಹೆಚ್ಚು</string>
-    <string name="data_usage_mobile_limit_title">ಮೊಬೈಲ್ ಡೇಟಾ ಮಿತಿ ತಲುಪಿದೆ</string>
     <string name="data_usage_rapid_app_body">ಸಾಮಾನ್ಯಕ್ಕಿಂತ ಹೆಚ್ಚು ಡೇಟಾವನ್ನು %s ಬಳಸಿದೆ.</string>
     <string name="data_usage_rapid_body">ನಿಮ್ಮ ಆ್ಯಪ್‌ಗಳು ಸಾಮಾನ್ಯಕ್ಕಿಂತ ಹೆಚ್ಚಿನ ಡೇಟಾವನ್ನು ಬಳಸಿಕೊಂಡಿವೆ.</string>
     <string name="data_usage_rapid_title">ಹೆಚ್ಚು ಮೊಬೈಲ್ ಡೇಟಾ ಬಳಕೆ</string>
@@ -265,6 +255,7 @@
     <string name="data_usage_warning_title_offpeak_chn">ಬಳಸಲಾದ ಆಫ್-ಪೀಕ್ ಡೇಟಾದ %sರಷ್ಟು</string>
     <string name="data_usage_warning_title_unlimited_chn">ಮೊಬೈಲ್ ಡೇಟಾ ವೇಗ ಮಿತಿ ತಲುಪಿದೆ</string>
     <string name="device_disabled">ಸಾಧನ ನಿಶಕ್ತಗೊಳಿಸಲಾಗಿದೆ. IT ಆಡಳಿತಗಾರರನ್ನು ಸಂಪರ್ಕಿಸಿ.</string>
+    <string name="device_info_not_available">ಲಭ್ಯವಿಲ್ಲ.</string>
     <string name="dex_cant_change_user_profile">Samsung DeX ಮೋಡ್‌‌ನಲ್ಲಿ ಇರುವಾಗ ಬಳಕೆದಾರ ಪ್ರೊಫೈಲ್ ಬದಲಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="dex_dialog_launch_toast">ತೆರೆದಿರುವ ಅನ್ವಯಿಸುವಿಕೆಗಳು ಮುಚ್ಚಬಹುದು. Samsung DeX ಪ್ರಾರಂಭಿಸುವುದಕ್ಕೂ ಅಥವಾ ನಿರ್ಗಮಿಸುವುದಕ್ಕೂ ಮೊದಲು ನಿಮ್ಮ ಡೇಟಾ ಉಳಿಸಿ.</string>
     <string name="dex_disconnected_from_device">%sನಿಂದ DeX ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ. ನಿಮ್ಮ TVಯಲ್ಲಿ ನೆಟ್‌ವರ್ಕ್‌ ಸಂಪರ್ಕವನ್ನು ಪರೀಕ್ಷಿಸಿ.</string>
@@ -273,9 +264,6 @@
     <string name="dex_launcher_mode_change">Samsung DeXಗೆ ಬದಲಾಯಿಸಲು %s ಮುಚ್ಚಲಾಗಿದೆ.</string>
     <string name="dex_mirroring_jit_msg">ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ನಲ್ಲಿ ನೀವು Samsung DeX ರನ್ ಮಾಡಿದಾಗ, ದೊಡ್ಡದಾದ ವೀಕ್ಷಣೆಗಾಗಿ ಯಾವುದೇ HDMI-ಸಂಪರ್ಕಿತ ಪ್ರದರ್ಶನದಲ್ಲಿ ಸ್ಕ್ರೀನ್ ಅನ್ನು ನೀವು ಮಿರರ್ ಮಾಡಬಹುದು.</string>
     <string name="dex_mirroring_jit_title">ದೊಡ್ಡ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿ DeX ಅನ್ನು ಮಿರರ್ ಮಾಡಿ</string>
-    <string name="dex_restart_app_dialog_button_positive">ಮರುಪ್ರಾರಂಭ</string>
-    <string name="dex_restart_app_dialog_message">ಈ ಅನ್ವಯಿಸುವಿಕೆಯು ಈಗಾಗಲೇ ಬೇರೊಂದು ಡಿಸ್‌ಪ್ಲೇಯಲ್ಲಿ ರನ್ ಅಗುತ್ತಿದೆ. ಅದನ್ನು ಇಲ್ಲಿ ತೆರೆಯಲು, ಅನ್ವಯಿಸುವಿಕೆಯನ್ನು ಪುನಾರಂಭಿಸಬೇಕಿದೆ. ಅದನ್ನು ನೀವು ಪುನಾರಂಭಿಸುವ ಮೊದಲು ಯಾವುದೇ ಪ್ರಮುಖವಾದ ಸಂಗತಿಯನ್ನು ಉಳಿಸಿ.</string>
-    <string name="dex_restart_app_dialog_title">%s ಮರುಪ್ರಾರಂಭಿಸುವುದೇ?</string>
     <string name="dex_restriction_blockerMessage">ಸುರಕ್ಷತೆ ನೀತಿಯು Samsung DeX ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="dex_restriction_ethernetOnly">ಭದ್ರತೆ ನೀತಿಯು Wi-Fi ಡೇಟಾ ಬಳಕೆ, ಮೊಬೈಲ್ ಡೇಟಾ ಬಳಕೆ ಮತ್ತು DeXನಲ್ಲಿ ಟೆಥರಿಂಗ್ ಅನ್ನು ತಡೆಯುತ್ತದೆ. ನೆಟ್‍ವರ್ಕ್ ವೈಶಿಷ್ಟ್ಯಗಳಿಗೆ ತಂತಿ ಸಂಪರ್ಕದ ಅಗತ್ಯವಿದೆ.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">ಭದ್ರತೆ ನೀತಿ ಕಾರಣ, Samsung DeX ಮೂಲಕ ನಿರ್ಗಮಿಸಲು ಬಾಹ್ಯ ಡಿಸ್‍ಪ್ಲೇ ಸಂಪರ್ಕ ಕಡಿತಗೊಳಿಸಿ.</string>
@@ -300,7 +288,6 @@
     <string name="digital_signature_failure_user_notification">%d ಬಳಕೆದಾರರಿಗೆ ಡಿಜಿಟಲ್ ಸಹಿ ಮಾನ್ಯವಾಗಿರುವುದಿಲ್ಲ</string>
     <string name="disableupdate_application_restrict">ಈ ಅನ್ವಯಿಸುವಿಕೆ ನವೀಕರಿಸುವುದನ್ನು ಭದ್ರತೆ ನೀತಿಯು ತಡೆಗಟ್ಟುತ್ತದೆ.</string>
     <string name="display_chooser_button_positive">ಮರುಪ್ರಾರಂಭ</string>
-    <string name="display_chooser_dont_show_again">ಮತ್ತೊಮ್ಮೆ ತೋರಿಸಬೇಡ</string>
     <string name="dlg_confirm_kill_storage_users_text">USB ಸಂಗ್ರಹಣೆ ಸಂಪರ್ಕಿಸುವಿಕೆ ಬಳಕೆಯಲ್ಲಿರುವ ಕೆಲವು ಅನ್ವಯಿಸುವಿಕೆಗಳನ್ನು ನಿಲ್ಲಿಸುವುದು. ನೀವು USB ಸಂಗ್ರಹಣೆ ಸಂಪರ್ಕ ಕಡಿಯುವವರೆಗೆ ಅವು ಲಭ್ಯವಿಲ್ಲದಿರಬಹುದು.</string>
     <string name="dlg_confirm_kill_storage_users_title">PC ಗಾಗಿ ಸಂಗ್ರಹಣೆ ಸಂಪರ್ಕಿಸಿ</string>
     <string name="dlg_error_title">USB ಕಾರ್ಯಾಚರಣೆ ವಿಫಲವಾಗಿದೆ</string>
@@ -315,7 +302,7 @@
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">ಈ ಆ್ಯಪ್ ಅನ್ನು ಮಲ್ಟಿ ವಿಂಡೋ ವೀಕ್ಷಣೆಯಲ್ಲಿ ಬಳಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಮಲ್ಟಿ ವಿಂಡೋ ವೀಕ್ಷಣೆಯಲ್ಲಿ ಬಳಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="edit_contact_at_sim_restriction">SIM ಕಾರ್ಡ್ ಸಂಪರ್ಕಗಳನ್ನು ತಿದ್ದುವುದನ್ನು ಭದ್ರತೆ ನೀತಿಯು ತಡೆಗಟ್ಟುತ್ತದೆ.</string>
-    <string name="edm_policy_not_allow_open_wifiap">ಅನುಮತಿಸಿದ ಸಾಧನಗಳು</string>
+    <string name="edm_policy_not_allow_open_wifiap">ಹಾಟ್‌ಸ್ಪಾಟ್‌ಗೆ ಸುರಕ್ಷಿತವಲ್ಲದ ಟೆಥರಿಂಗ್ ಬಳಕೆಯನ್ನು ಸುರಕ್ಷತೆ ನೀತಿಯು ನಿರ್ಬಂಧಿಸುತ್ತದೆ.</string>
     <string name="emergency_calls_only">ತುರ್ತು ಕರೆಗಳು ಮಾತ್ರ</string>
     <string name="ethernet_cable_connected_notification_message">ಸೆಟ್ ಅಪ್ ಮಾಡಲು ತಟ್ಟಿ.</string>
     <string name="ethernet_cable_connected_notification_title">ಈಥರ್ನೆಟ್ ಕೇಬಲ್ ಸಂಪರ್ಕಿತವಾಗಿದೆ.</string>
@@ -335,7 +322,7 @@
     <string name="ext_media_unsupported_notification_message">ಈ %sಗೆ ಈ ಸಾಧನ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ. ಬೆಂಬಲಿತ ಸ್ವರೂಪದಲ್ಲಿ ಸೆಟಪ್ ಮಾಡಲು ತಟ್ಟಿ.</string>
     <string name="ext_media_unsupported_notification_title">%s ಬೆಂಬಲಿತವಾಗಿಲ್ಲ</string>
     <string name="ext_storage_bad_removal_button">ಮರುಪ್ರಾರಂಭ</string>
-    <string name="ext_storage_bad_removal_title">ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಮರುಪ್ರಾರಂಭಿಸಿ</string>
+    <string name="ext_storage_bad_removal_title">ನಿಮ್ಮ ಫೋನ್ ಪುನಾರಂಭಿಸಿ</string>
     <string name="extmedia_format_button_format">ಸ್ವರೂಪ</string>
     <string name="extmedia_format_message_usbhost">ನಿಮ್ಮ USB ಸಂಗ್ರಹಣೆಯಲ್ಲಿ ಸಂಗ್ರಹಿಸಲಾದ ಎಲ್ಲಾ ಫೈಲ್‌ಗಳನ್ನು ಅಳಿಸಿಹಾಕಲಾಗುವುದು. ಈ ಕ್ರಿಯೆಯನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ!</string>
     <string name="extmedia_format_title_usbhost">USB ಸಂಗ್ರಹಣೆಯನ್ನು ಫಾರ್ಮ್ಯಾಟ್ ಮಾಡುವುದೇ?</string>
@@ -406,6 +393,7 @@
     <string name="globalactions_unable_restart_msg_fmm">ನನ್ನ ಮೊಬೈಲ್ ಪತ್ತೆಮಾಡಿ ಮೂಲಕ ಫೋನ್ ಅನ್ನು ದೂರಸ್ಥವಾಗಿ ಲಾಕ್ ಮಾಡಲಾಗಿರುವ ಕಾರಣದಿಂದ ಪುನಾರಂಭಿಸಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">ನನ್ನ ಮೊಬೈಲ್ ಪತ್ತೆಮಾಡಿ ಮೂಲಕ ಟ್ಯಾಬ್ಲೆಟ್ ಅನ್ನು ದೂರಸ್ಥವಾಗಿ ಲಾಕ್ ಮಾಡಲಾಗಿರುವ ಕಾರಣದಿಂದ ಪುನಾರಂಭಿಸಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="globalactions_unable_restart_msg_securelock">ಲಾಕ್ ಆಗಿರುವಾಗ ಫೋನ್ ಮರುಪ್ರಾರಂಭಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ. ಕವರ್ ತೆರೆಯಿರಿ ಮತ್ತು ಫೋನ್ ಮರುಪ್ರಾರಂಭಿಸಲು ಅನ್‍ಲಾಕ್ ಮಾಡಿ.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">SIM ಕಾರ್ಡ್ ಲಾಕ್ ಆಗಿರುವಾಗ ನಿಮ್ಮ ಫೋನ್ ಪುನಾರಂಭಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="hardware_key_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಈ ಹಾರ್ಡ್ ವೇರ್ ಕೀ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="hardware_sec">ಆನ್-ಸ್ಕ್ರೀನ್ ಕೀಬೋರ್ಡ್</string>
     <string name="hbd_translate">ಭಾಷಾಂತರ ಇನ್‌ಪುಟ್ ಮಾಡಿ</string>
@@ -428,7 +416,7 @@
     <string name="isrb_alert_button_ok">ಓಕೆ</string>
     <string name="isrb_alert_button_update">ನವೀಕರಣಗಳಿಗೆ ಪರೀಕ್ಷಿಸಿ</string>
     <string name="isrb_alert_messag_contact_customer_support">ಆರಂಭಿಸುವ ಸಮಯದಲ್ಲಿ ಸಾಫ್ಟ್‌ವೇರ್ ಸಮಸ್ಯೆ ಪತ್ತೆಯಾಗಿದೆ. ಈ ಸಮಸ್ಯೆ ಹೀಗೆ ಮುಂದುವರಿದರೆ, ಗ್ರಾಹಕ ಬೆಂಬಲವನ್ನು ಸಂಪರ್ಕಿಸಿ.</string>
-    <string name="isrb_alert_messag_software_update">ಆರಂಭಿಸುವ ಸಮಯದಲ್ಲಿ ಸಾಫ್ಟ್‌ವೇರ್ ಸಮಸ್ಯೆ ಪತ್ತೆಯಾಗಿದೆ. ಸಿಸ್ಟಂ ಸಾಫ್ಟ್‌ವೇರ್ ನವೀಕರಣ ಪರೀಕ್ಷಿಸಿ, ಅದು ಈ ಸಮಸ್ಯೆ ಪರಿಹರಿಸಬಹುದು. ಯಾವುದೇ ಸಾಫ್ಟ್‌ವೇರ್ ನವೀಕರಣವಿಲ್ಲದಿದ್ದರೆ ಮತ್ತು ಈ ಸಮಸ್ಯೆ ಮುಂದುವರಿದರೆ, ಗ್ರಾಹಕ ಬೆಂಬಲ ಸಂಪರ್ಕಿಸಿ.</string>
+    <string name="isrb_alert_messag_software_update">ಆರಂಭಿಸುವ ಸಮಯದಲ್ಲಿ ಸಾಫ್ಟ್‌ವೇರ್ ಸಮಸ್ಯೆ ಪತ್ತೆಯಾಗಿದೆ. ಸಿಸ್ಟಂ ಸಾಫ್ಟ್‌ವೇರ್ ಅಪ್‌ಡೇಟ್‍ ಪರೀಕ್ಷಿಸಿ, ಅದು ಈ ಸಮಸ್ಯೆ ಪರಿಹರಿಸಬಹುದು. ಯಾವುದೇ ಸಾಫ್ಟ್‌ವೇರ್ ಅಪ್‌ಡೇಟ್‍ವಿಲ್ಲದಿದ್ದರೆ ಮತ್ತು ಈ ಸಮಸ್ಯೆ ಮುಂದುವರಿದರೆ, ಗ್ರಾಹಕ ಬೆಂಬಲ ಸಂಪರ್ಕಿಸಿ.</string>
     <string name="isrb_alert_title_issue_detected">ಗಂಭೀರ ಸಾಫ್ಟ್‌ವೇರ್ ಸಮಸ್ಯೆ ಪತ್ತೆಯಾಗಿದೆ</string>
     <string name="it_policy_not_allow_wifiap">ಸುರಕ್ಷತೆ ನೀತಿಯು ಮೊಬೈಲ್ ಹಾಟ್‍ಸ್ಪಾಟ್ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="keyboard_shortcut_camera_access_on">ಕ್ಯಾಮರಾ ಪ್ರವೇಶ ಆನ್ ಆಗಿದೆ.</string>
@@ -475,16 +463,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">ನಿರ್ವಹಣೆ ಮೋಡ್ ಅನ್ನು ಆಫ್ ಮಾಡುವುದಕ್ಕಾಗಿ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನ್ನು ನೀವು ಅನ್‌ಲಾಕ್ ಮಾಡಬೇಕಾಗುತ್ತದೆ.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾದ ಡೇಟಾ, ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲೇಶನ್‌ಗಳು ಅಥವಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳ ಬದಲಾವಣೆಗಳಂತಹ ನಿರ್ವಹಣೆ ಮೋಡ್ ಆನ್ ಆಗಿರುವಾಗ ಸಂಭವಿಸುವ ಏನನ್ನೂ ಉಳಿಸಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">ಸ್ಕ್ರೀನ್ ಲಾಕ್ ಹೊಂದಿಸಿ</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">ಲಾಗ್ ರಚಿಸದೆಯೇ ಪುನಾರಂಭಿಸಿ</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">ಲಾಗ್ ರಚಿಸಿ ಮತ್ತು ಪುನಾರಂಭಿಸಿ</string>
     <string name="maintenance_mode_intro_dialog_message_phone">ನಿರ್ವಹಣೆ ಮೋಡ್ ಅನ್ನು ಆನ್ ಮಾಡುವುದಕ್ಕಾಗಿ ನಿಮ್ಮ ಫೋನ್ ಪುನಾರಂಭಿಸಬೇಕಾಗುತ್ತದೆ.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">ಮೊದಲು ಸ್ಕ್ರೀನ್ ಲಾಕ್ ಹೊಂದಿಸಿ.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">ನಿರ್ವಹಣೆ ಮೋಡ್ ಅನ್ನು ಆನ್ ಮಾಡುವುದಕ್ಕಾಗಿ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಪುನಾರಂಭಿಸಬೇಕಾಗುತ್ತದೆ.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"ನಿಮ್ಮ ಫೋನ್ ಜೊತೆಗೆ ಇರುವ ಯಾವುದೇ ಸಮಸ್ಯೆಗಳನ್ನು ವಿಶ್ಲೇಷಣೆ ಮಾಡುವುದಕ್ಕಾಗಿ ನಮ್ಮ ಬೆಂಬಲ ಸಿಬ್ಬಂದಿಗೆ ಸಹಾಯ ಮಾಡಲು, ನಿರ್ವಹಣೆ ಮೋಡ್ ಅನ್ನು ಆರಂಭಿಸುವುದಕ್ಕೂ ಮೊದಲು ಸಿಸ್ಟಮ್ ಲಾಗ್ ರಚಿಸುವುದಕ್ಕೆ ನಾವು ಶಿಫಾರಸು ಮಾಡುತ್ತೇವೆ.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"ನಿಮ್ಮ ಫೋನ್ ಹೊಂದಿರುವ ಯಾವುದೇ ಸಮಸ್ಯೆಗಳನ್ನು ಪತ್ತೆ ಮಾಡಲು ಮತ್ತು ವಿಶ್ಲೇಷಣೆ ಮಾಡಲು ನಮ್ಮ ಬೆಂಬಲ ಸಿಬ್ಬಂದಿಗೆ ಸಹಾಯ ಮಾಡುವುದಕ್ಕಾಗಿ, ನಿರ್ವಹಣೆ ಮೋಡ್ ಆರಂಭಿಸುವುದಕ್ಕೂ ಮೊದಲು ಸಿಸ್ಟಂ ಲಾಗ್ ಅನ್ನು ರಚಿಸುವಂತೆ ನಾವು ಶಿಫಾರಸು ಮಾಡುತ್ತೇವೆ.
 
-ಯಾವ ಆ್ಯಪ್‌ಗಳನ್ನು ಬಳಸಲಾಗಿದೆ ಎಂಬುದನ್ನು ಮತ್ತು ಇತ್ತೀಚಿಗೆ ಸಂಭವಿಸಿದ ಯಾವುದೇ ದೋಷಗಳನ್ನು ಲಾಗ್ ತೋರಿಸುತ್ತದೆ, ಆದರೆ ಇತರ ಯಾವುದೇ ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ಒಳಗೊಂಡಿರುವುದಿಲ್ಲ. ಲಾಗ್ ಅನ್ನು ಸಮಸ್ಯೆಗಳನ್ನು ವಿಶ್ಲೇಷಣೆ ಮಾಡಲು ಮಾತ್ರ ಬಳಸಲಾಗುತ್ತದೆ ಮತ್ತು ಇತರ ಯಾವುದೇ ಉದ್ದೇಶಕ್ಕಾಗಿ ಅಲ್ಲ. ಲಾಗ್ ಅನ್ನು ರಚಿಸುವುದಕ್ಕಾಗಿ ಅದಕ್ಕೆ ಸಾಮಾನ್ಯವಾಗಿ 2 ನಿಮಿಷಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಜೊತೆಗೆ ಇರುವ ಯಾವುದೇ ಸಮಸ್ಯೆಗಳನ್ನು ವಿಶ್ಲೇಷಣೆ ಮಾಡುವುದಕ್ಕಾಗಿ ನಮ್ಮ ಬೆಂಬಲ ಸಿಬ್ಬಂದಿಗೆ ಸಹಾಯ ಮಾಡಲು, ನಿರ್ವಹಣೆ ಮೋಡ್ ಅನ್ನು ಆರಂಭಿಸುವುದಕ್ಕೂ ಮೊದಲು ಸಿಸ್ಟಮ್ ಲಾಗ್ ರಚಿಸುವುದಕ್ಕೆ ನಾವು ಶಿಫಾರಸು ಮಾಡುತ್ತೇವೆ.
+ಯಾವ ಆ್ಯಪ್‌ಗಳನ್ನು ಬಳಸಲಾಗಿದೆ, ಇತ್ತೀಚಿಗೆ ಸಂಭವಿಸಿದ ದೋಷಗಳು, ನಿರ್ಬಂಧಿಸಲಾದ ಫೋನ್ ಸಂಖ್ಯೆಗಳು ಮತ್ತು ಫೈಲ್ ಸಂಗ್ರಹಣೆ ಸಾಮರ್ಥ್ಯದಂತಹ ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ರಿಪೇರಿ ಮಾಡಲು ಅಗತ್ಯವಾಗಿರುವ ಮಾಹಿತಿಯನ್ನು ಮಾತ್ರ ಲಾಗ್ ಒಳಗೊಂಡಿರುತ್ತದೆ. ಲಾಗ್ ಅನ್ನು ಸಮಸ್ಯೆಗಳನ್ನು ಪತ್ತೆ ಮಾಡಲು ಮತ್ತು ವಿಶ್ಲೇಷಣೆ ಮಾಡಲು ಮಾತ್ರ ಬಳಸಲಾಗುತ್ತದೆ ಮತ್ತು ಇತರ ಯಾವುದೇ ಉದ್ದೇಶಕ್ಕಾಗಿ ಅಲ್ಲ. ಲಾಗ್ ಅನ್ನು ರಚಿಸುವುದಕ್ಕಾಗಿ ಸುಮಾರು 2 ನಿಮಿಷಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಹೊಂದಿರುವ ಯಾವುದೇ ಸಮಸ್ಯೆಗಳನ್ನು ಪತ್ತೆ ಮಾಡಲು ಮತ್ತು ವಿಶ್ಲೇಷಣೆ ಮಾಡಲು ನಮ್ಮ ಬೆಂಬಲ ಸಿಬ್ಬಂದಿಗೆ ಸಹಾಯ ಮಾಡುವುದಕ್ಕಾಗಿ, ನಿರ್ವಹಣೆ ಮೋಡ್ ಆರಂಭಿಸುವುದಕ್ಕೂ ಮೊದಲು ಸಿಸ್ಟಂ ಲಾಗ್ ಅನ್ನು ರಚಿಸುವಂತೆ ನಾವು ಶಿಫಾರಸು ಮಾಡುತ್ತೇವೆ.
 
-ಯಾವ ಆ್ಯಪ್‌ಗಳನ್ನು ಬಳಸಲಾಗಿದೆ ಎಂಬುದನ್ನು ಮತ್ತು ಇತ್ತೀಚಿಗೆ ಸಂಭವಿಸಿದ ಯಾವುದೇ ದೋಷಗಳನ್ನು ಲಾಗ್ ತೋರಿಸುತ್ತದೆ, ಆದರೆ ಇತರ ಯಾವುದೇ ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ಒಳಗೊಂಡಿರುವುದಿಲ್ಲ. ಲಾಗ್ ಅನ್ನು ಸಮಸ್ಯೆಗಳನ್ನು ವಿಶ್ಲೇಷಣೆ ಮಾಡಲು ಮಾತ್ರ ಬಳಸಲಾಗುತ್ತದೆ ಮತ್ತು ಇತರ ಯಾವುದೇ ಉದ್ದೇಶಕ್ಕಾಗಿ ಅಲ್ಲ. ಲಾಗ್ ಅನ್ನು ರಚಿಸುವುದಕ್ಕಾಗಿ ಅದಕ್ಕೆ ಸಾಮಾನ್ಯವಾಗಿ 2 ನಿಮಿಷಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ."</string>
+ಯಾವ ಆ್ಯಪ್‌ಗಳನ್ನು ಬಳಸಲಾಗಿದೆ, ಇತ್ತೀಚಿಗೆ ಸಂಭವಿಸಿದ ದೋಷಗಳು, ನಿರ್ಬಂಧಿಸಲಾದ ಫೋನ್ ಸಂಖ್ಯೆಗಳು ಮತ್ತು ಫೈಲ್ ಸಂಗ್ರಹಣೆ ಸಾಮರ್ಥ್ಯದಂತಹ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನ್ನು ರಿಪೇರಿ ಮಾಡಲು ಅಗತ್ಯವಾಗಿರುವ ಮಾಹಿತಿಯನ್ನು ಮಾತ್ರ ಲಾಗ್ ಒಳಗೊಂಡಿರುತ್ತದೆ. ಲಾಗ್ ಅನ್ನು ಸಮಸ್ಯೆಗಳನ್ನು ಪತ್ತೆ ಮಾಡಲು ಮತ್ತು ವಿಶ್ಲೇಷಣೆ ಮಾಡಲು ಮಾತ್ರ ಬಳಸಲಾಗುತ್ತದೆ ಮತ್ತು ಇತರ ಯಾವುದೇ ಉದ್ದೇಶಕ್ಕಾಗಿ ಅಲ್ಲ. ಲಾಗ್ ಅನ್ನು ರಚಿಸುವುದಕ್ಕಾಗಿ ಸುಮಾರು 2 ನಿಮಿಷಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">ಸಂಗ್ರಹಣೆಯನ್ನು ವಿಶ್ಲೇಷಣೆ ಮಾಡಿ</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">ನಿಮ್ಮ ಫೋನ್‌ನ ಆಂತರಿಕ ಸಂಗ್ರಹಣೆ ಬಹುತೇಕ ಸಂಪೂರ್ಣವಾಗಿ ತುಂಬಿದೆ. ನಿಮ್ಮ ಸಂಗ್ರಹಣೆ ಸ್ಥಳಾವಕಾಶ ಕಡಿಮೆಯಾಗಿದ್ದರೆ, ಕೆಲವು ಆ್ಯಪ್‌ಗಳು ಮತ್ತು ವೈಶಿಷ್ಟ್ಯಗಳು ಸರಿಯಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಬಹುದು. ನಿಮಗೆ ಇನ್ನು ಮುಂದೆ ಅಗತ್ಯವಿರದ ಕೆಲವು ಫೈಲ್‌ಗಳು ಅಥವಾ ಆ್ಯಪ್‌ಗಳನ್ನು ಅಳಿಸಲು ಪ್ರಯತ್ನಿಸಿ. ಅಳಿಸಿದ ನಂತರ, ಟ್ರ್ಯಾಶ್ ಅನ್ನು ಖಾಲಿ ಮಾಡಲು ಮರೆಯದಿರಿ.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ನ ಆಂತರಿಕ ಸಂಗ್ರಹಣೆ ಬಹುತೇಕ ಸಂಪೂರ್ಣವಾಗಿ ತುಂಬಿದೆ. ನಿಮ್ಮ ಸಂಗ್ರಹಣೆ ಸ್ಥಳಾವಕಾಶ ಕಡಿಮೆಯಾಗಿದ್ದರೆ, ಕೆಲವು ಆ್ಯಪ್‌ಗಳು ಮತ್ತು ವೈಶಿಷ್ಟ್ಯಗಳು ಸರಿಯಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದನ್ನು ನಿಲ್ಲಿಸಬಹುದು. ನಿಮಗೆ ಇನ್ನು ಮುಂದೆ ಅಗತ್ಯವಿರದ ಕೆಲವು ಫೈಲ್‌ಗಳು ಅಥವಾ ಆ್ಯಪ್‌ಗಳನ್ನು ಅಳಿಸಲು ಪ್ರಯತ್ನಿಸಿ. ಅಳಿಸಿದ ನಂತರ, ಟ್ರ್ಯಾಶ್ ಅನ್ನು ಖಾಲಿ ಮಾಡಲು ಮರೆಯದಿರಿ.</string>
@@ -506,10 +494,17 @@
     <string name="maintenance_mode_outro_label">ನಿರ್ವಹಣೆ ಮೋಡ್‌ನಿಂದ ನಿರ್ಗಮಿಸಿ</string>
     <string name="maintenance_mode_outro_textview_message_phone">ನಿರ್ವಹಣೆ ಮೋಡ್ ಅನ್ನು ಆಫ್ ಮಾಡುವುದಕ್ಕಾಗಿ ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ನೀವು ಅನ್‌ಲಾಕ್ ಮಾಡಬೇಕಾಗುತ್ತದೆ. ನೀವು ಮಾಡಿದಾಗ, ನಿರ್ವಹಣೆ ಮೋಡ್ ಅನ್ನು ಮೊದಲು ಆನ್ ಮಾಡಿದಾಗ ಇದ್ದ ರೀತಿಗೆ ಪ್ರತಿಯೊಂದು ಸಹ ಮರಳುತ್ತದೆ. ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾದ ಡೇಟಾ, ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲಾದ ಆ್ಯಪ್‌ಗಳು ಅಥವಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳ ಬದಲಾವಣೆಗಳಂತಹ ನಿರ್ವಹಣೆ ಮೋಡ್ ಆನ್ ಆಗಿರುವಾಗ ಮಾಡಿದ ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">ನಿರ್ವಹಣೆ ಮೋಡ್ ಅನ್ನು ಆಫ್ ಮಾಡುವುದಕ್ಕಾಗಿ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನ್ನು ನೀವು ಅನ್‌ಲಾಕ್ ಮಾಡಬೇಕಾಗುತ್ತದೆ. ನೀವು ಮಾಡಿದಾಗ, ನಿರ್ವಹಣೆ ಮೋಡ್ ಅನ್ನು ಮೊದಲು ಆನ್ ಮಾಡಿದಾಗ ಇದ್ದ ರೀತಿಗೆ ಪ್ರತಿಯೊಂದು ಸಹ ಮರಳುತ್ತದೆ. ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾದ ಡೇಟಾ, ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲಾದ ಆ್ಯಪ್‌ಗಳು ಅಥವಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳ ಬದಲಾವಣೆಗಳಂತಹ ನಿರ್ವಹಣೆ ಮೋಡ್ ಆನ್ ಆಗಿರುವಾಗ ಮಾಡಿದ ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಲಾಗಿಲ್ಲ.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">%s ಸಕ್ರಿಯವಾಗಿರುವಾಗ ನಿರ್ವಹಣೆ ಮೋಡ್ ಬಳಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">ಸೀಮಿತ ಆ್ಯಪ್‌ಗಳು ಮತ್ತು ಹೋಮ್ ಸ್ಕ್ರೀನ್ ಜೊತೆಗೆ ಪವರ್ ಸೇವಿಂಗ್ ಆನ್‌ನಲ್ಲಿ ಇರುವಾಗ ನಿರ್ವಹಣೆ ಮೋಡ್ ಬಳಸಲಾಗುವುದಿಲ್ಲ.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">ಈ ಫೋನ್‌ನಲ್ಲಿ ನಿರ್ವಹಣೆ ಮೋಡ್ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">ಈ ಟ್ಯಾಬ್ಲೆಟ್‌ನಲ್ಲಿ ನಿರ್ವಹಣೆ ಮೋಡ್ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s ಅನ್ನು ಕೇವಲ ಸಾಧನದ ಮಾಲಿಕರು ಮಾತ್ರವೇ ಬಳಕೆ ಮಾಡಬಹುದು.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">ನಿಮ್ಮ ಡೇಟಾ ಬ್ಯಾಕಪ್ ಮಾಡುವುದನ್ನು ನಿಲ್ಲಿಸುವುದೇ ಮತ್ತು ನಿರ್ವಹಣೆ ಮೋಡ್ ಅನ್ನು ಆನ್ ಮಾಡುವುದೇ?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">ನಿರ್ವಹಣೆ ಮೋಡ್ ಆನ್ ಮಾಡಲು, ನಿಮ್ಮ ಅಪೂರ್ಣ ಬ್ಯಾಕಪ್ ಅನ್ನು ನೀವು ಪೂರ್ಣಗೊಳಿಸಬೇಕಾಗುತ್ತದೆ ಅಥವಾ ಅಳಿಸಬೇಕಾಗುತ್ತದೆ.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">ನಿರ್ವಹಣೆ ಮೋಡ್ ಆನ್ ಮಾಡಲು, ನಿಮ್ಮ ಪ್ರಗತಿಯಲ್ಲಿರುವ ಬ್ಯಾಕಪ್ ಅನ್ನು ನೀವು ನಿಲ್ಲಿಸಬೇಕಾಗುತ್ತದೆ.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">ನಿರ್ವಹಣೆ ಮೋಡ್ ಆನ್ ಮಾಡಲು, ನಿಮ್ಮ ಬ್ಯಾಕಪ್ ಡೇಟಾ ಪುನಃಸ್ಥಾಪನೆಯನ್ನು ನೀವು ನಿಲ್ಲಿಸಬೇಕಾಗುತ್ತದೆ.</string>
+    <string name="maintenance_mode_toast_text_device_admin">ಸಾಧನ ನಿರ್ವಾಹಕ ಆ್ಯಪ್‌</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">ಲಾಗ್ ರಚಿಸಲಾಗುತ್ತಿದೆ…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">ಇದಕ್ಕೆ ಸಾಮಾನ್ಯವಾಗಿ ಸುಮಾರು 2 ನಿಮಿಷಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ. ಲಾಗ್ ಅನ್ನು ರಚಿಸಿದ ನಂತರ, ನಿರ್ವಹಣೆ ಮೋಡ್‌ನಲ್ಲಿ ನಿಮ್ಮ ಫೋನ್ ಪುನಾರಂಭಗೊಳ್ಳುತ್ತದೆ ಮತ್ತು ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ನಿರ್ವಹಣೆಗಾಗಿ ನೀವು ಸುರಕ್ಷಿತವಾಗಿ ಹಸ್ತಾಂತರಿಸಬಹುದು.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">ಇದಕ್ಕೆ ಸಾಮಾನ್ಯವಾಗಿ ಸುಮಾರು 2 ನಿಮಿಷಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ. ಲಾಗ್ ಅನ್ನು ರಚಿಸಿದ ನಂತರ, ನಿರ್ವಹಣೆ ಮೋಡ್‌ನಲ್ಲಿ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಪುನಾರಂಭಗೊಳ್ಳುತ್ತದೆ ಮತ್ತು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನ್ನು ನಿರ್ವಹಣೆಗಾಗಿ ನೀವು ಸುರಕ್ಷಿತವಾಗಿ ಹಸ್ತಾಂತರಿಸಬಹುದು.</string>
@@ -532,13 +527,8 @@
     <string name="media_checking_usbhost">USB ಸಂಗ್ರಹಣೆಯನ್ನು ಪ್ರಸ್ತುತ ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ.</string>
     <string name="media_unknown_state">ಬಾಹ್ಯ ಮೀಡಿಯಾ ಅಜ್ಞಾತ ಸ್ಥಿತಿಯಲ್ಲಿದೆ.</string>
     <string name="mediaplayer_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು MTP ಮೀಡಿಯಾ ಪ್ಲೇಯರ್‌ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
+    <string name="message_on_crash">ಆಟೋ ಬ್ಲಾಕರ್ ಮೂಲಕ ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ</string>
     <string name="microphone_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಮೈಕ್ರೋಫೋನ್‌ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
-    <string name="miniresolver_call">ಕರೆ</string>
-    <string name="miniresolver_call_in_work">ಕೆಲಸದ ಆ್ಯಪ್‌ನಿಂದ ಕರೆ ಮಾಡುವುದೇ?</string>
-    <string name="miniresolver_call_information">ಕೆಲಸದ ಆ್ಯಪ್‌ಗಳಿಂದ ಕರೆಗಳನ್ನು ಮಾಡಲು ಮಾತ್ರ ನಿಮ್ಮ ಸಂಸ್ಥೆಯು ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ.</string>
-    <string name="miniresolver_sms_information">ಕೆಲಸದ ಆ್ಯಪ್‌ಗಳಿಂದ ಸಂದೇಶಗಳನ್ನು ಕಳುಹಿಸಲು ಮಾತ್ರ ನಿಮ್ಮ ಸಂಸ್ಥೆಯು ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ.</string>
-    <string name="miniresolver_switch">ಬದಲಿಸಿ</string>
-    <string name="miniresolver_switch_to_work">ಕೆಲಸದ ಆ್ಯಪ್‌ಗೆ ಬದಲಾಯಿಸುವುದೇ?</string>
     <string name="mmcc_authentication_reject_name_template">%s ಅನುಮತಿಸಲಾಗಿಲ್ಲ</string>
     <string name="mmcc_illegal_me_name_template">%s ಅನುಮತಿಸಲಾಗಿಲ್ಲ</string>
     <string name="mmcc_illegal_ms_name_template">%s ಅನುಮತಿಸಲಾಗಿಲ್ಲ</string>
@@ -550,30 +540,6 @@
     <string name="mock_location_reminder_disable">ಆಫ್ ಮಾಡಿ</string>
     <string name="mock_location_reminder_title">ಅಣಕು ಸ್ಥಳ ಆನ್ ಆಗಿದೆ</string>
     <string name="more_apps">ಇನ್ನಷ್ಟು ಅನ್ವಯಿಸುವಿಕೆಗಳು</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s ಸೇವೆ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ. ಗ್ರಾಹಕ ಸೇವೆಗಳನ್ನು ಸಂಪರ್ಕಿಸಿ.</string>
-    <string name="mptcp_message_address_type_not_supported">%s ಸಂಪರ್ಕ ಕಳಪೆಯಾಗಿದೆ. ಲಭ್ಯ ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s ಸಂಪರ್ಕ ಕಳಪೆಯಾಗಿದೆ. ಲಭ್ಯ ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ…</string>
-    <string name="mptcp_message_cmd_not_supported">%s ನೆಟ್‌ವರ್ಕ್ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ. ಲಭ್ಯ ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s ಸಂಪರ್ಕ ಕಳಪೆಯಾಗಿದೆ. ಲಭ್ಯ ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ…</string>
-    <string name="mptcp_message_connection_refused">%s ಸಂಪರ್ಕ ಕಳಪೆಯಾಗಿದೆ. ಲಭ್ಯ ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ…</string>
-    <string name="mptcp_message_data_usage_limit">ಡೇಟಾ ಬಳಕೆಯ ಮಿತಿ ತಲುಪಿದೆ. ಡೇಟಾ ಬಳಕೆಯ ಮಿತಿಯನ್ನು ಬದಲಿಸಲು, ಸಂಯೋಜನೆಗಳಿಗೆ ಹೋಗಿ.</string>
-    <string name="mptcp_message_host_unreachable">%s ಸಂಪರ್ಕ ಕಳಪೆಯಾಗಿದೆ. ಲಭ್ಯ ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">%s ಶಕ್ತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಸಾಧನವು LTE ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಗೊಂಡಿಲ್ಲ.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">ಅಂತರರಾಷ್ಟ್ರೀಯ ರೋಮಿಂಗ್‌ನಲ್ಲಿರುವಾಗ %s ಶಕ್ತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">ಮೊಬೈಲ್ ಹಾಟ್‌ಸ್ಪೈಟ್ ಅಥವಾ USB ಟೆಥರಿಂಗ್ ಶಕ್ತಗೊಂಡಿರುವಾಗ %s ಶಕ್ತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Wi-Fi Direct ಶಕ್ತಗೊಂಡಿರುವಾಗ %s ಶಕ್ತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">ವಿಮಾನ ಮೋಡ್ ಶಕ್ತಗೊಂಡಿರುವಾಗ %s ಶಕ್ತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">ಮೊಬೈಲ್ ಡೇಟಾ ಆಫ್ ಆಗಿರುವಾಗ %s ಶಕ್ತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">ಸೇವಾ ಪೂರೈಕೆದಾರರಿಂದ ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆ ಇಲ್ಲ.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">%1$s ಶಕ್ತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ನಿಮ್ಮ ಇಂಟರ್ನೆಟ್ ಪ್ಯಾಕೇಜ್‍ನೊಂದಿಗೆ %2$s ಲಭ್ಯವಿಲ್ಲ ಅಥವಾ %3$s ಸರ್ವರ್‌ನಿಂದ ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ಸ್ವೀಕರಿಸಿಲ್ಲ.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">%s ಸಕ್ರಿಯಗೊಳಿಸುವಿಕೆ ವಿನಂತಿಯನ್ನು ಕಳುಹಿಸಲು ವಿಫಲವಾಗಿದೆ. ಲಭ್ಯ ನೆಟ್‌ವರ್ಕ್‌ಗಳ ಮೂಲಕ ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">%s ಶಕ್ತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ತಪ್ಪಾದ SIM ಕಾರ್ಡ್ ಸೇರಿಸಲಾಗಿದೆ.</string>
-    <string name="mptcp_message_network_unreachable">%s ಸಂಪರ್ಕ ಕಳಪೆಯಾಗಿದೆ. ಲಭ್ಯ ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ…</string>
-    <string name="mptcp_message_non_mptcp_plan">Giga ಮಲ್ಟಿ-ಪಾಥ್ ಶಕ್ತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಕಾರ್ಯಕ್ಕೆ ಡೇಟಾ ಯೋಜನೆಯು ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ.</string>
-    <string name="mptcp_message_operation_disabled_overheating">ಸಾಧನ ಬಿಸಿಯಾಗದಂತೆ ತಡೆಯಲು %s ನಿಶಕ್ತಗೊಳಿಸಲಾಗಿದೆ. ಬದಲಿಗೆ ಮೊಬೈಲ್ ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಡೌನ್‌ಲೋಡ್ ಮಾಡುತ್ತಿದೆ…</string>
-    <string name="mptcp_message_server_error">%s ಸಂಪರ್ಕ ಕಳಪೆಯಾಗಿದೆ. ಲಭ್ಯ ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ…</string>
-    <string name="mptcp_message_setting_disabled_overheating">%s ಶಕ್ತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಸಾಧನ ತುಂಬಾ ಬಿಸಿಯಾಗುತ್ತಿದೆ. ಸಾಧನ ತಣ್ಣಗಾಗುವವರೆಗೂ ಕಾಯಿರಿ ಹಾಗೂ ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ.</string>
-    <string name="mptcp_message_ttl_expired">%s ನೆಟ್‌ವರ್ಕ್ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ. ಲಭ್ಯ ನೆಟ್‌ವರ್ಕ್ ಮೂಲಕ ಮರುಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ…</string>
     <string name="multi_user_capability_restrict">ನಿಮ್ಮ ಸಾಧನದಲ್ಲಿ ಬಹು ಬಳಕೆದಾರರ ಸಾಮರ್ಥ್ಯವನ್ನು ಸುರಕ್ಷತೆ ನೀತಿಯು ತಡೆಯುತ್ತದೆ.</string>
     <string name="multi_user_creation_restrict">ಭದ್ರತೆ ನೀತಿಯು ನಿಮ್ಮ ಸಾಧನದಲ್ಲಿ ಹೊಸ ಬಳಕೆದಾರ ಖಾತೆಗಳ ರಚನೆಯನ್ನು ತಡೆಗಟ್ಟುತ್ತದೆ.</string>
     <string name="multi_user_removal_restrict">ಭದ್ರತೆ ನೀತಿಯು ನಿಮ್ಮ ಸಾಧನದಿಂದ ಬಳಕೆದಾರ ಖಾತೆಗಳ ತೆಗೆದುಹಾಕುವಿಕೆಯನ್ನು ತಡೆಗಟ್ಟುತ್ತದೆ.</string>
@@ -592,24 +558,22 @@
     <string name="multisound_sound_via_bluetooth_multiselection">ನಿಮ್ಮ ಬ್ಲೂಟೂತ್ ಆಡಿಯೊ ಸಾಧನದಲ್ಲಿ ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಇದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ</string>
     <string name="multisound_sound_via_headphone">ನಿಮ್ಮ ಹೆಡ್‍ಫೋನ್‍ಗಳ ಮೂಲಕ %s ದ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಅದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ತಟ್ಟಿ.</string>
     <string name="multisound_sound_via_headphone_multiselection">ನಿಮ್ಮ ಹೆಡ್‌ಫೋನ್‌ಗಳ ಮೂಲಕ ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಇದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
-    <string name="multisound_sound_via_phone_speaker">ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಸ್ಪೀಕರ್ ಮೂಲಕ %s ಶಬ್ಧ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಅದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ತಟ್ಟಿ.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಸ್ಪೀಕರ್ ಮೂಲಕ ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಇದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
+    <string name="multisound_sound_via_phone_speaker">ನಿಮ್ಮ ಫೋನ್ ಸ್ಪೀಕರ್ ಮೂಲಕ %s ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಅದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ತಟ್ಟಿ.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">ನಿಮ್ಮ ಫೋನ್ ಸ್ಪೀಕರ್ ಮೂಲಕ ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಇದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
     <string name="multisound_sound_via_usb_audio">ನಿಮ್ಮ USB ಆಡಿಯೋ ಸಾಧನದಲ್ಲಿ %s ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಅದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ತಟ್ಟಿ.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">ನಿಮ್ಮ USB ಆಡಿಯೊ ಸಾಧನದ ಮೂಲಕ ಧ್ವನಿ ಪ್ಲೇ ಆಗುತ್ತಿದೆ. ಇದನ್ನು ಆಫ್ ಮಾಡಲು ಇಲ್ಲಿ ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
-    <string name="multisound_title">ಪ್ರತ್ಯೇಖ ಅನ್ವಯಿಸುವಿಕೆ ಧ್ವನಿ</string>
+    <string name="multisound_title">ಪ್ರತ್ಯೇಕ ಆ್ಯಪ್‌ ಧ್ವನಿ</string>
     <string name="multisound_turn_off_multisound">ಆಫ್ ಮಾಡಿ</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeXನಲ್ಲಿ %s ರನ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಟ್ಯಾಬ್ಲೆಟ್ ಮೋಡ್‌ನಲ್ಲಿ ರನ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeXನಲ್ಲಿ %s ರನ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ ಅದನ್ನು. ಟ್ಯಾಬ್ಲೆಟ್ ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗಳಿಗೆಂದು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ಕೆಲವು ಆಟಗಳು ಟಚ್ ಸ್ಕ್ರೀನ್‌ಗಳಲ್ಲಿ ಮಾತ್ರವೇ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ. Samsung DeXನಲ್ಲಿ ಮೌಸ್ ನಿಯಂತ್ರಣಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸದಿದ್ದರೆ, ಬದಲಿಗೆ ಟ್ಯಾಬ್ಲೆಟ್ ಮೋಡ್‌ನಲ್ಲಿ ಆಟವಾಡಲು ಪ್ರಯತ್ನಿಸಿ.</string>
-    <string name="my_device">ಈ ಟ್ಯಾಬ್ಲೆಟ್</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeXನಲ್ಲಿ %s ರನ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಫೋನ್ ಮೋಡ್‌ನಲ್ಲಿ ರನ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeXನಲ್ಲಿ %s ರನ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಅದನ್ನು ಫೋನ್ ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗಳಿಗೆಂದು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ಕೆಲವು ಆಟಗಳು ಟಚ್ ಸ್ಕ್ರೀನ್‌ಗಳಲ್ಲಿ ಮಾತ್ರವೇ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ. Samsung DeXನಲ್ಲಿ ಮೌಸ್ ನಿಯಂತ್ರಣಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸದಿದ್ದರೆ, ಬದಲಿಗೆ ಫೋನ್ ಮೋಡ್‌ನಲ್ಲಿ ಆಟವಾಡಲು ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="my_device">ಈ ಫೋನ್</string>
     <string name="network_locked_sim_dialog_message_ais">ಈ ಫೋನ್ ಜೊತೆಗೆ ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಪೂರ್ಣವಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿಲ್ಲ ಏಕೆಂದರೆ ಅದು ನಿಮ್ಮ ಚಂದಾದಾರಿಕೆ ನಿಯಮಗಳು ಮತ್ತು ಷರತ್ತುಗಳನ್ನು ಅನುಸರಿಸುವುದಿಲ್ಲ. ನಿಮಗೇನಾದರೂ ಪ್ರಶ್ನೆಗಳಿದ್ದರೆ ಅಥವಾ ಈ ಸಂಗತಿಯ ಕುರಿತು ಹೆಚ್ಚಿನ ಮಾಹಿತಿ ಬೇಕಾಗಿದ್ದರೆ, ದಯವಿಟ್ಟು ಸ್ಯಾಮ್‌ಸಂಗ್ ಗ್ರಾಹಕ ಸೇವೆ ಸ್ಥಳವನ್ನು ಅಥವಾ ಈ ಉತ್ಪನ್ನಗಳನ್ನು ನಿಮಗೆ ಮಾರಾಟ ಮಾಡಿದ ಸ್ಟೋರ್ ಅನ್ನು ಸಂಪರ್ಕಿಸಿ.</string>
     <string name="network_locked_sim_notification_text">ನೆಟ್‌‌ವರ್ಕ್ ಲಾಕ್ ಆದ SIM ಕಾರ್ಡ್ ಸೇರಿಸಿದೆ.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">ನಿಮ್ಮ ಡೀಫಾಲ್ಟ್ ಹೋಮ್ ಆ್ಯಪ್ ಅನ್ನು One UI Homeಗೆ ಬದಲಿಸಿ.</string>
     <string name="nfc_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು NFC ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="nosim_limited_service">ಸೀಮಿತ ಸೇವೆ</string>
-    <string name="not_support_ai_key">ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಜೊತೆಗೆ ಇನ್ನೂ AI ಕೀ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ. ಅಪ್‌ಡೇಟ್ ಶೀಘ್ರದಲ್ಲಿಯೇ ಲಭ್ಯವಾಗಲಿದೆ.</string>
-    <string name="notification_app_name_settings">ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
     <string name="notification_channel_dex_policy">Samsung DeX ನೀತಿ</string>
     <string name="ntfs_usb_storage_readonly_mount_message">ಈ ಸಂಗ್ರಹಣೆಯು NTFS ಫಾರ್ಮ್ಯಾಟ್ ಬಳಸುವ ಕಾರಣದಿಂದ ಅದು ಓದಲು-ಮಾತ್ರ ಆಗಿದೆ.</string>
     <string name="ntfs_usb_storage_readonly_mount_title">ಓದಲು-ಮಾತ್ರ USB ಸಂಗ್ರಹಣೆ ಸೇರಿಸಲಾಗಿದೆ</string>
@@ -784,7 +748,6 @@
     <string name="permlab_scheduleExactAlarm">ಅಲಾರಂಗಳು ಮತ್ತು ರಿಮೈಂಡರ್‌ಗಳನ್ನು ಹೊಂದಿಸಿ</string>
     <string name="permlab_spdControl">ಸುರಕ್ಷತೆ ನೀತಿ ನವೀಕರಣಗಳನ್ನು ನಿರ್ವಹಿಸಿ</string>
     <string name="permlab_ucsPlugin">ಯುನಿವರ್ಸಲ್ ರುಜುವಾತು ನಿರ್ವಹಣೆ ಪ್ಲಗಿನ್</string>
-    <string name="personal_apps_suspended_turn_profile_on">ಆನ್ ಮಾಡಿ</string>
     <string name="phoneTypeConference">ಕಾನ್ಫರೆನ್ಸ್</string>
     <string name="policydesc_allow_bluetoothmode">ಬ್ಲುಟೂತ್ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
     <string name="policydesc_allow_browser">ಇಂಟರ್ನೆಟ್ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
@@ -792,7 +755,7 @@
     <string name="policydesc_allow_desktopsync">ಡೆಸ್ಕ್‌ಟಾಪ್‍‍ನ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
     <string name="policydesc_allow_internetsharing">ಮೊಬೈಲ್ ಹಾಟ್‍ಸ್ಪಾಟ್ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
     <string name="policydesc_allow_irda">IrDA ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
-    <string name="policydesc_allow_popimapemail">ಟ್ಯಾಬ್ಲೆಟ್‍ನಲ್ಲಿ POP ಮತ್ತು IMAP ಇಮೇಲ್ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
+    <string name="policydesc_allow_popimapemail">ಫೋನ್‍ನಲ್ಲಿ POP ಮತ್ತು IMAP ಇಮೇಲ್ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
     <string name="policydesc_allow_storagecard">SD ಕಾರ್ಡ್‍ಗಳ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
     <string name="policydesc_allow_textmessaging">ಪಠ್ಯ ಮತ್ತು ಮಲ್ಟಿಮೀಡಿಯಾ ಸಂದೇಶಿಸುವಿಕೆ ಬಳಕೆಯನ್ನು ತಡೆಗಟ್ಟಿ.</string>
     <string name="policydesc_allow_thirdParty">ಈ ಅನ್ವಯಿಸುವಿಕೆಯು ಮೂರನೇ-ವ್ಯಕ್ತಿಯ ಅನ್ವಯಿಸುವಿಕೆಗಳು ರನ್ ಆಗುವುದನ್ನು ತಡೆಯಬಹುದು.</string>
@@ -838,7 +801,7 @@
     <string name="pwd_change_enforced">ಸುರಕ್ಷತೆ ನೀತಿಯ ಪ್ರಕಾರ ನೀವು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಯಿಸುವುದು ಅಗತ್ಯವಾಗಿರುತ್ತದೆ.</string>
     <string name="recording_fail">ಮೈಕ್ %2$sನಲ್ಲಿ ಬಳಕೆಯಲ್ಲಿರುವಾಗ %1$sನಲ್ಲಿ ಅದನ್ನು ಬಳಸಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="recording_popup">%s ಮೈಕ್ರೋಫೋನ್ ಬಳಸುತ್ತಿದೆ.</string>
-    <string name="recording_popup_device">ಟ್ಯಾಬ್ಲೆಟ್</string>
+    <string name="recording_popup_device">ಫೋನ್</string>
     <string name="recording_popup_with_bluetooth">ಬ್ಲೂಟೂತ್ ಮೈಕ್ರೋಫೋನ್ ಅನ್ನು %s ಬಳಸುತ್ತಿದೆ.</string>
     <string name="recording_popup_with_device">%2$sನ ಮೈಕ್ರೋಫೋನ್ ಅನ್ನು %1$s ಬಳಸುತ್ತಿದೆ.</string>
     <string name="redo">ಮತ್ತೆಮಾಡಿ</string>
@@ -903,12 +866,12 @@
     <string name="screencapture_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಸ್ಕ್ರೀನ್ ಕ್ಯಾಪ್ಚರ್‌ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="sd_card_unavailable_message">ಬೇರೊಂದು ಬಳಕೆದಾರ ಪ್ರೊಫೈಲ್ ಬಳಕೆಯಲ್ಲಿದ್ದಾಗ SD ಕಾರ್ಡ್ ಸೇರಿಸಲಾಗಿರುವ ಕಾರಣದಿಂದ ಅದನ್ನು ನಿಮಗೆ ಬಳಸಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="sd_card_unavailable_title">SD ಕಾರ್ಡ್ ಲಭ್ಯವಿಲ್ಲ</string>
-    <string name="sdcard_bad_removal_message">ಅಸುರಕ್ಷಿತವಾಗಿ SD ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಪುನಾರಂಭಗೊಳ್ಳುವುದನ್ನು ತಡೆಯಲು, ಉಳಿಸದ ಡೇಟಾ ಉಳಿಸಿ ಮತ್ತು ಇದೀಗ ಪುನಾರಂಭಿಸಿ.</string>
+    <string name="sdcard_bad_removal_message">ಅಸುರಕ್ಷಿತವಾಗಿ SD ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ನಿಮ್ಮ ಫೋನ್ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಪುನಾರಂಭಗೊಳ್ಳುವುದನ್ನು ತಡೆಯಲು, ಉಳಿಸದ ಡೇಟಾ ಉಳಿಸಿ ಮತ್ತು ಇದೀಗ ಪುನಾರಂಭಿಸಿ.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಟ್ ಮಾಡಿ</string>
     <string name="sdcard_batch_decrypt_noti_title">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಶನ್</string>
     <string name="sdcard_batch_decrypt_popup_content">ಎನ್‌ಕ್ರಿಪ್ಟ್ ಆದ SD ಕಾರ್ಡ್‌ನ್ನು ಬಳಸುವ ಮೊದಲು ಡೀಕ್ರಿಪ್ಟ್ ಮಾಡಬೇಕು. ಡೀಕ್ರಿಪ್ಶನ್ ಒಂದು ಗಂಟೆ ಅಥವಾ ಹೆಚ್ಚು ತೆಗೆದುಕೊಳ್ಳಬಹುದು. ಚಾರ್ಜ್ ಆದ ಬ್ಯಾಟರಿಯೊಂದಿಗೆ ಆರಂಭಿಸಿ ಮತ್ತು ಡಿಕ್ರಿಪ್ಶನ್ ಪೂರ್ಣಗೊಳ್ಳುವವರೆಗೆ ಸಾಧನವನ್ನು ಪ್ಲಗ್‌ನಲ್ಲಿ ಇಡಿ. ಡೀಕ್ರಿಪ್ಶನ್ ಪ್ರಕ್ರಿಯೆಗೆ ಅಡಚಣೆ ಮಾಡುವಿಕೆ ಕೆಲವು ಅಥವಾ ಎಲ್ಲ ಡೇಟಾ ನಷ್ಟ ಮಾಡಬಹುದು.</string>
     <string name="sdcard_decrypt_err_notification">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಶನ್ ದೋಷ ಸಂಭವಿಸಿದೆ.</string>
-    <string name="sdcard_decrypt_error_otherdevice">ನಿಮ್ಮ SD ಕಾರ್ಡ್‌ನಲ್ಲಿರುವ ಕೆಲವು ಫೈಲ್‌ಗಳನ್ನು ಮತ್ತೊಂದು ಸಾಧನದಲ್ಲಿ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗಿದೆ ಮತ್ತು ಅವುಗಳನ್ನು ಈ ಟ್ಯಾಬ್ಲೆಟ್‌ನಲ್ಲಿ ಬಳಸಲಾಗುವುದಿಲ್ಲ.</string>
+    <string name="sdcard_decrypt_error_otherdevice">ನಿಮ್ಮ SD ಕಾರ್ಡ್‌ನಲ್ಲಿರುವ ಕೆಲವು ಫೈಲ್‌ಗಳನ್ನು ಮತ್ತೊಂದು ಸಾಧನದಲ್ಲಿ ಎನ್‌ಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗಿದೆ ಮತ್ತು ಅವುಗಳನ್ನು ಈ ಪೋನ್‌ನಲ್ಲಿ ಬಳಸಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="sdcard_decrypt_notification">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಟ್ ಆಗಿದೆ.</string>
     <string name="sdcard_decrypt_title_notification">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಶನ್</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD ಕಾರ್ಡ್ ಡೀಕ್ರಿಪ್ಟ್ ಮಾಡಲಾಗುತ್ತಿದೆ…</string>
@@ -925,14 +888,6 @@
     <string name="sdcard_unmount_policy_noti_title">IT ನೀತಿಯಿಂದಾಗಿ SD ಕಾರ್ಡ್ ಅನ್‌ಮೌಂಟ್‌ ಮಾಡಲಾಗಿದೆ.</string>
     <string name="sdhms_nr_control_low_battery">ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ 15%ಗಿಂತ ಕಡಿಮೆ ಬ್ಯಾಟರಿ ಉಳಿದಿರುವಾಗ ಬ್ಯಾಟರಿಯನ್ನು ಉಳಿಸಲು 5G ಆಫ್ ಮಾಡಿ.</string>
     <string name="sec_bluetooth_airplane_mode_toast">ವಿಮಾನ ಮೋಡ್‌ನಲ್ಲಿಯೇ ಬ್ಲೂಟೂತ್ ಇರುತ್ತದೆ.</string>
-    <string name="sec_immersive_cling_button_ok">ಓಕೆ</string>
-    <string name="sec_immersive_cling_guide_text_gesture">ಈ ಅನ್ವಯಿಸುವಿಕೆಯು ಪೂರ್ಣ ಪರದೆ ಬಳಸುತ್ತಿದೆ. ನ್ಯಾವಿಗೇಶನ್‌ಗಾಗಿ ಸ್ವೈಪ್ ಸನ್ನೆಗಳು ಸ್ಥಿತಿ ಪಟ್ಟಿಯನ್ನು ತೋರಿಸುತ್ತವೆ. ನ್ಯಾವಿಗೇಟ್ ಮಾಡಲು, ಸ್ಥಿತಿ ಪಟ್ಟಿಯು ಗೋಚರಿಸುವಾಗ ಮತ್ತೊಮ್ಮೆ ಸ್ವೈಪ್ ಮಾಡಿ.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"ಈ ಅನ್ವಯಿಸುವಿಕೆಯು ಪೂರ್ಣ ಪರದೆ ಬಳಸುತ್ತಿದೆ. ಅಡಚಣೆಗಳನ್ನು ಕಡಿಮೆ ಮಾಡಲು ಮತ್ತು ನೀವು ಆಕಸ್ಮಿಕವಾಗಿ ಅನ್ವಯಿಸುವಿಕೆಯನ್ನು ತೊರೆಯುವುದನ್ನು ತಡೆಗಟ್ಟಲು ಹೋಮ್, ಹಿಂದೆ ಮತ್ತು ಇತ್ತೀಚಿನವುಗಳು ಬಟನ್‌ಗಳನ್ನು ಮರೆಮಾಡಲಾಗಿದೆ.
-
-ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ನೀವು ತಿರುಗಿಸಿದರೂ ಸಹ, ಬಟನ್‌ಗಳು ಯಾವಾಗಲೂ ಚಾರ್ಜಿಂಗ್ ಪೋರ್ಟ್ ಪಕ್ಕದಲ್ಲಿರುತ್ತವೆ. ಬಾಣದ ಮೂಲಕ ತೋರಿಸಿದಂತೆ ಪರದೆಯ ಅಂಚಿನಿಂದ ಒಳಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡುವ ಮೂಲಕ ಬಟನ್‌ಗಳು ಮತ್ತೆ ಕಾಣುವಂತೆ ನೀವು ಮಾಡಬಹುದು."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"ಈ ಅನ್ವಯಿಸುವಿಕೆಯು ಪೂರ್ಣ ಪರದೆ ಬಳಸುತ್ತಿದೆ. ಅಡಚಣೆಗಳನ್ನು ಕಡಿಮೆ ಮಾಡಲು ಮತ್ತು ನೀವು ಆಕಸ್ಮಿಕವಾಗಿ ಅನ್ವಯಿಸುವಿಕೆಯನ್ನು ತೊರೆಯುವುದನ್ನು ತಡೆಗಟ್ಟಲು ಹೋಮ್, ಹಿಂದೆ ಮತ್ತು ಇತ್ತೀಚಿನವುಗಳು ಬಟನ್‌ಗಳನ್ನು ಮರೆಮಾಡಲಾಗಿದೆ.
-
-ಬಟನ್‌ಗಳು ಮತ್ತೆ ಕಾಣುವಂತೆ ಮಾಡಲು, ಬಾಣವು ತೋರಿಸಿದಂತೆ ಸ್ಕ್ರೀನ್ ಕೆಳಭಾಗದಿಂದ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ."</string>
     <string name="sec_monotype_default">ಡಿಫಾಲ್ಟ್</string>
     <string name="sec_ringtone_category_brand_sound">ಸ್ಯಾಮ್‌ಸಂಗ್ ಬ್ರ್ಯಾಂಡ್ ಧ್ವನಿ</string>
     <string name="sec_ringtone_category_calm">ಶಾಂತ</string>
@@ -941,7 +896,11 @@
     <string name="sec_ringtone_category_galaxy">ಗ್ಯಾಲಕ್ಸಿ</string>
     <string name="sec_ringtone_category_open_theme">ಪ್ರಸ್ತುತ ಥೀಮ್ ಡೀಫಾಲ್ಟ್</string>
     <string name="sec_ringtone_category_retro">ರೆಟ್ರೊ</string>
-    <string name="sec_ringtone_silent">ನಿಶ್ಯಬ್ದ</string>
+    <string name="sec_ringtone_silent">ಸೈಲೆಂಟ್</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">ರದ್ದು</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">ಸೆಟಲೈಟ್‌ಗೆ ಸಂಪರ್ಕಿಸಲು, ನಿಮ್ಮ ನೆಟ್‌ವರ್ಕ್ ಆಪರೇಟರ್ ಅನ್ನು “ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಆಯ್ಕೆಮಾಡಿ” ಎಂಬುದಕ್ಕೆ ಹೊಂದಿಸಬೇಕಾಗುತ್ತದೆ.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">ಆನ್ ಮಾಡಿ</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">ಸ್ವಯಂಚಾಲಿತ ನೆಟ್‌ವರ್ಕ್ ಆಯ್ಕೆಯನ್ನು ಆನ್ ಮಾಡುವುದೇ?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">ಮಾತನಾಡಲು ಮೈಕ್ರೋಫೋನ್ ಪ್ರವೇಶವನ್ನು ಆನ್ ಮಾಡಿ.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">%s ಅನ್ನು ಬಳಸಲು ಕ್ಯಾಮರಾ ಪ್ರವೇಶವನ್ನು ಆನ್ ಮಾಡಿ.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">%s ಅನ್ನು ಬಳಸಲು ಮೈಕ್ರೋಫೋನ್ ಪ್ರವೇಶವನ್ನು ಆನ್ ಮಾಡಿ.</string>
@@ -960,7 +919,7 @@
     <string name="select_physical_keyboard_type_notification_message">ಭಾಷೆ ಮತ್ತು ಲೇಔಟ್ ಆಯ್ಕೆಮಾಡಲು ಇಲ್ಲಿ ತಟ್ಟಿ.</string>
     <string name="select_physical_keyboard_type_notification_title">ದೈಹಿಕ ಕೀಬೋರ್ಡ್ ಸಂಯೋಜನೆಗಳು</string>
     <string name="sem_biometric_button_close">ಮುಚ್ಚಿ</string>
-    <string name="sem_biometric_button_settings">ಸಂಯೋಜನೆಗಳು</string>
+    <string name="sem_biometric_button_settings">ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
     <string name="sem_biometric_prompt_default_title">ನಿಮ್ಮ ಗುರುತು ಪರಿಶೀಲಿಸಿ</string>
     <string name="sem_chooser_button_extra_info_audio">ಆಡಿಯೊ</string>
     <string name="sem_chooser_button_extra_info_document">ಡಾಕ್ಯುಮೆಂಟ್</string>
@@ -1037,6 +996,8 @@
     <string name="sem_face_error_already_in_use_by_VT">ವೀಡಿಯೊ ಕರೆಗಳ ಸಮಯದಲ್ಲಿ ಮುಖ ಗುರುತಿಸುವಿಕೆ ಬಳಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="sem_face_error_camera_access_off">ಕ್ಯಾಮರಾ ಪ್ರವೇಶವು ಆಫ್ ಆಗಿರುವ ಕಾರಣದಿಂದ ಮುಖ ಗುರುತಿಸುವಿಕೆಯನ್ನು ಬಳಸಲು ಸಾಧ್ಯವಿಲ್ಲ</string>
     <string name="sem_face_error_camera_fail">ಕ್ಯಾಮರಾ ತೆರೆಯಲು ಸಾದ್ಯವಾಗುತ್ತಿಲ್ಲ. ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="sem_face_error_lockout">ತೀರಾ ಹೆಚ್ಚು ಸರಿಯಾಗಿಲ್ಲದ ಪ್ರಯತ್ನಗಳ ಕಾರಣದಿಂದ ಬಯೋಮೆಟ್ರಿಕ್ ಪರಿಶೀಲನೆ ಲಭ್ಯವಿಲ್ಲ.</string>
+    <string name="sem_face_error_lockout_permanent">ತೀರಾ ಹೆಚ್ಚು ಸರಿಯಾಗಿಲ್ಲದ ಪ್ರಯತ್ನಗಳ ಕಾರಣದಿಂದ ಬಯೋಮೆಟ್ರಿಕ್ ಪರಿಶೀಲನೆ ಲಭ್ಯವಿಲ್ಲ.</string>
     <string name="sem_face_error_ppp_timeout">ನಿಮ್ಮ ಗುರುತನ್ನು ನೀವು ಪರಿಶೀಲಿಸಿ ತುಂಬ ಕಾಲವಾಗಿದೆ. ನಿಮ್ಮ ಮುಖವನ್ನು ನೋಂದಾಯಿಸಲು ನೀವು ಮತ್ತೊಮ್ಮೆ ಆರಂಭಿಸಬೇಕಾಗುತ್ತದೆ.</string>
     <string name="sem_face_error_too_dark">ಮುಖ ಪತ್ತೆಮಾಡಲು ತುಂಬಾ ಕತ್ತಲಿದೆ</string>
     <string name="sem_face_error_too_dark_to_enroll">ತೀರಾ ಕತ್ತಲು. ದೀಪವನ್ನು ಆನ್ ಮಾಡಲು ಅಥವಾ ಪ್ರಕಾಶವಿರುವ ಬೇರೆ ಎಲ್ಲಿಯಾದರೂ ಹೋಗಲು ಪ್ರಯತ್ನಿಸಿ.</string>
@@ -1052,13 +1013,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">ನಿಮ್ಮ ಫಿಂಗರ್‌ಪ್ರಿಂಟ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಲು ಸ್ಕ್ರೀನ್‌ನಿಂದ ನಿಮ್ಮ S Pen ತುದಿಯನ್ನು ಸರಿಸಿ.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">ಫಿಂಗರ್‌ಪ್ರಿಂಟ್‍ಗಳನ್ನು ಬಳಸಲು, ಮೊದಲಿಗೆ ಸುರಕ್ಷಿತ ಸ್ಕ್ರೀನ್‌ ಲಾಕ್ ಪ್ರಕಾರವನ್ನು (ನಮೂನೆ, PIN ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್) ಹೊಂದಿಸಿ.</string>
+    <string name="sem_fingerprint_error_lockout">ತೀರಾ ಹೆಚ್ಚು ಸರಿಯಾಗಿಲ್ಲದ ಪ್ರಯತ್ನಗಳ ಕಾರಣದಿಂದ ಬಯೋಮೆಟ್ರಿಕ್ ಪರಿಶೀಲನೆ ಲಭ್ಯವಿಲ್ಲ.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">ತೀರಾ ಹೆಚ್ಚು ಸರಿಯಾಗಿಲ್ಲದ ಪ್ರಯತ್ನಗಳ ಕಾರಣದಿಂದ ಬಯೋಮೆಟ್ರಿಕ್ ಪರಿಶೀಲನೆ ಲಭ್ಯವಿಲ್ಲ.</string>
     <string name="sem_fingerprint_error_onehand_mode">ಒಂದು-ಕೈ ಮೋಡ್‌ನಲ್ಲಿ ಫಿಂಗರ್‌ಪ್ರಿಂಟ್ ಸ್ಕ್ಯಾನರ್ ಬಳಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="sem_fingerprint_error_smart_view">%s ಬಳಸುವಾಗ ಫಿಂಗರ್‌ಪ್ರಿಂಟ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="sem_fingerprint_error_system_failure">ಫಿಂಗರ್‌ಪ್ರಿಂಟ್ ಸೆನ್ಸಾರ್ ಪ್ರತಿಕ್ರಿಯಿಸುತ್ತಿಲ್ಲ. ನಂತರ ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ. ಇದು ಮುಂದುವರಿದರೆ, ನಿಮ್ಮ ಫೋನ್ ಪುನಾರಂಭಿಸಲು ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="sem_fingerprint_error_template_corrupt">ಫಿಂಗರ್‌ಪ್ರಿಂಟ್ ಡೇಟಾ ದೋಷಪೂರಿತಗೊಂಡಿದೆ. ನಿಮ್ಮ ಫಿಂಗರ್‌ಪ್ರಿಂಟ್‌ಗಳನ್ನು ಮತ್ತೊಮ್ಮೆ ಸೇರಿಸಿ.</string>
     <string name="sem_fingerprint_error_wireless_charger">ನಿಮ್ಮ ಫಿಂಗರ್‌ಪ್ರಿಂಟ್ ಬಳಸಲು ವೈರ್‌ಲೆಸ್ ಚಾರ್ಜರ್‌ನಿಂದ ಸಂಪರ್ಕ ಕಡಿತಗೊಳಿಸಿ</string>
     <string name="sem_fingerprint_name_template">ಬೆರಳಚ್ಚು %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">ನಂತರ</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">ಈಗ ಬೇಡ</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">ತೆಗೆದುಹಾಕಿ ಮತ್ತು ನೋಂದಾಯಿಸಿ</string>
+    <string name="sem_fingerprint_register_dialog_message">ಇತ್ತೀಚಿನ ಸಾಫ್ಟ್‌ವೇರ್ ನವೀಕರಣದಲ್ಲಿ ಫಿಂಗರ್‌ಪ್ರಿಂಟ್ ಗುರುತಿಸುವಿಕೆಯನ್ನು ಸುಧಾರಿಸಲಾಗಿದೆ. ನಿಮ್ಮ ಫಿಂಗರ್‌ಪ್ರಿಂಟ್‌ಗಳನ್ನು ನೀವು ತೆಗೆದುಹಾಕುವ ತನಕ ಮತ್ತು ಅವುಗಳನ್ನು ಮತ್ತೊಮ್ಮೆ ನೋಂದಾಯಿಸುವ ತನಕ ಫಿಂಗರ್‌ಪ್ರಿಂಟ್ ಗುರುತಿಸುವಿಕೆ ಬಳಸಲು ನಿಮಗೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.</string>
     <string name="sem_fingerprint_register_dialog_title">ಮತ್ತೆ ಫಿಂಗರ್‌ಪ್ರಿಂಟ್‌ಗಳನ್ನು ನೊಂದಾಯಿಸಿ</string>
     <string name="sem_fingerprint_result_failed">ಹೋಲಿಕೆಯಿಲ್ಲ.</string>
     <string name="sem_fingerprint_result_retry">ಮತ್ತೊಮ್ಮೆ ಪ್ರಯತ್ನಿಸಿ.</string>
@@ -1078,7 +1044,7 @@
     <string name="sem_resolver_button_always_accessibility">ಯಾವಾಗಲೂ ಆಯ್ಕೆಮಾಡಿದ ಆ್ಯಪ್ ಬಳಸಿ</string>
     <string name="sem_resolver_button_just_once_accessibility">ಕೇವಲ ಒಮ್ಮೆ ಆಯ್ಕೆಮಾಡಿದ ಆ್ಯಪ್ ಬಳಸಿ</string>
     <string name="sem_resolver_choose_what_to_do">ಏನು ಮಾಡಬೇಕೆಂದು ಆರಿಸಿ</string>
-    <string name="sem_resolver_go_to_settings_tips_description">ಡೀಫಾಲ್ಟ್ ಆ್ಯಪ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬದಲಿಸಲು, ಸೆಟ್ಟಿಂಗ್‌ಗಳು > ಆ್ಯಪ್‌ಗಳು > ಡೀಫಾಲ್ಟ್ ಆ್ಯಪ್‌ಗಳನ್ನು ಆರಿಸಿ ಎಂಬಲ್ಲಿಗೆ ಹೋಗಿ.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">ಈ ಪ್ರಕಾರದ ಫೈಲ್ ತೆರೆಯುವುದಕ್ಕಾಗಿ ಬಳಸಲಾಗುವ ಡೀಫಾಲ್ಟ್ ಆ್ಯಪ್ ಅನ್ನು ಬದಲಿಸಲು, ಸೆಟ್ಟಿಂಗ್‌ಗಳು > ಆ್ಯಪ್‌ಗಳು ಎಂಬಲ್ಲಿಗೆ ಹೋಗಿ, ಪ್ರಸ್ತುತ ಡೀಫಾಲ್ಟ್ ಆ್ಯಪ್ ಆಯ್ಕೆಮಾಡಿ, ನಂತರ “ಡೀಫಾಲ್ಟ್ ಆಗಿ ಹೊಂದಿಸಿ” > ಡೀಫಾಲ್ಟ್‌ಗಳನ್ನು ಕ್ಲಿಯರ್ ಮಾಡಿ ಅನ್ನು ತಟ್ಟಿ.</string>
     <string name="sem_resolver_icon_content_description">ಮಾಹಿತಿ</string>
     <string name="sem_resolver_personal_tab_accessibility">ವೈಯಕ್ತಿಕ</string>
     <string name="sem_resolver_share_live_default_text">ಹತ್ತಿರದ ಜನರೊಂದಿಗೆ ತ್ವರಿತವಾಗಿ ಹಂಚಿಕೊಳ್ಳಿ. ತಮ್ಮ ಸಾಧನಗಳಲ್ಲಿ ಗೋಚರಿಸುವಂತಹ ಜನರನ್ನು ಇಲ್ಲಿ ತೋರಿಸಲಾಗುತ್ತದೆ.</string>
@@ -1090,9 +1056,6 @@
     <string name="sem_resolver_work_tab_accessibility">ಕೆಲಸ</string>
     <string name="sem_switch_off">ಆಫ್</string>
     <string name="sem_switch_on">ಆನ್</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">ಎಲ್ಲ ಆ್ಯಪ್‌ಗಳಿಗೆ ಕ್ಯಾಮರಾ ಪ್ರವೇಶವನ್ನು ಆಫ್ ಮಾಡಲಾಗಿದೆ</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">ಆನ್ ಮಾಡಿ</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">ಎಲ್ಲ ಆ್ಯಪ್‌ಗಳಿಗೆ ಮೈಕ್ರೋಫೋನ್ ಪ್ರವೇಶವನ್ನು ಆಫ್ ಮಾಡಲಾಗಿದೆ</string>
     <string name="serviceErased">ಅಳಿಸುವಿಕೆ ಯಶಸ್ವಿಯಾಗಿತ್ತು.</string>
     <string name="serviceModeAll">ಎಲ್ಲಾ</string>
     <string name="serviceModeAllConditional">ಶರತ್ತುಗಳೊಡಗೂಡಿ.</string>
@@ -1102,6 +1065,7 @@
     <string name="serviceModeUnconditional">ಕರಾರಿಲ್ಲದೆ.</string>
     <string name="serviceisDisabled">ಸೇವೆ ನಿಶಕ್ತವಾಗಿದೆ.</string>
     <string name="serviceisEnabled">ಸೇವೆ ಶಕ್ತವಾಗಿದೆ.</string>
+    <string name="settings">ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
     <string name="sf_quick_switch_not_supported">ಈ ಸನ್ನಿವೇಶದಲ್ಲಿ ತ್ವರಿತ ಬದಲಾಯಿಸುವಿಕೆಯು ಬೆಂಬಲಿತವಾಗಿಲ್ಲ.</string>
     <string name="sf_quick_switch_securefolder_view">%sಗೆ ಬದಲಾಯಿಸಲಾಗಿದೆ.</string>
     <string name="share">ಹಂಚಿಕೊಳ್ಳಿ</string>
@@ -1110,26 +1074,30 @@
     <string name="sharelist_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು ಡೇಟಾ ಹಂಚಿಕೊಳ್ಳುವಿಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="show_keyboard_button">ಕೀಬೋರ್ಡ್ ಬಟನ್ ತೋರಿಸಿ</string>
     <string name="show_keyboard_button_description">ನ್ಯಾವಿಗೇಶನ್ ಪಟ್ಟಿಯಲ್ಲಿ %s ತೋರಿಸಿ.</string>
+    <string name="showing_esc_dialog">ಬ್ಯಾಕ್ ಬಟನ್ ಆಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸಲು ನೀವು Esc ಕೀ ಅನ್ನು ಹೊಂದಿಸಬಹುದು.</string>
     <string name="showing_touch_sensitivity_noti_action">ಆನ್ ಮಾಡಿ</string>
     <string name="showing_touch_sensitivity_noti_text">ಹೆಚ್ಚು ನಿಖರವಾದ ಸ್ಪರ್ಶ ಪ್ರತಿಕ್ರಿಯೆಗಾಗಿ Privacy Screen ಅಥವಾ Notepaper Screen ಬಳಸುವಾಗ ಸ್ಪರ್ಶ ಸೂಕ್ಷ್ಮತೆಯನ್ನು ಆನ್ ಮಾಡಿ.</string>
     <string name="showing_touch_sensitivity_noti_title">ಸ್ಪರ್ಶದ ಸೂಕ್ಷ್ಮತೆಯನ್ನು ಹೆಚ್ಚಿಸಿ</string>
+    <string name="side_key_double_press_archived_app">ಆ್ಯಪ್ ಅನ್ನು ಆರ್ಕೈವ್ ಮಾಡಲಾಗಿದೆ. ಬೇರೆ ಏನನ್ನಾದರೂ ಆರಿಸಿ.</string>
     <string name="side_key_double_press_deleted_app">ಆ್ಯಪ್‌ ಅನ್ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲಾಗಿದೆ. ಬೇರೆ ಏನನ್ನಾದರೂ ಆರಿಸಿ.</string>
     <string name="side_key_double_press_disabled_app">%s ನಿಶಕ್ತಗೊಳಿಸಲಾಗಿದೆ. ಬೇರೆ ಏನನ್ನಾದರೂ ಆರಿಸಿ.</string>
     <string name="signature_identity_toast">%s ಸೈನ್ ಮಾಡಿದವರು</string>
     <string name="simRefresh">SIM ಡೇಟಾ ರಿಫ್ರೆಶ್‌ ಮಾಡುತ್ತಿದೆ</string>
     <string name="simReset">SIM ಡೇಟಾ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತಿದೆ…</string>
     <string name="sim_check_old_sim_message">ಹಳೆಯ ಅಥವಾ ಹಾನಿಗೊಂಡ SIM ಕಾರ್ಡ್‌ಗಳು ನೆಟ್‌ವರ್ಕ್ ಸಂಪರ್ಕ ಸಮಸ್ಯೆಗಳನ್ನು ಉಂಟುಮಾಡಬಹುದು. ಅದನ್ನು ಬದಲಾಯಿಸಬೇಕೇ ಎಂಬುದನ್ನು ಪರೀಕ್ಷಿಸಲು ನಿಮ್ಮ ಸೇವಾ ಪೂರೈಕೆದಾರರನ್ನು ಸಂಪರ್ಕಿಸಿ ಅಥವಾ ಅವರ ಸ್ಟೋರ್‌ಗಳಲ್ಲಿ ಒಂದಕ್ಕೆ ಭೇಟಿ ನೀಡಿ.</string>
+    <string name="sim_check_old_sim_message_skt">ಹಳೆಯ ಅಥವಾ ಹಾನಿಗೊಳಗಾದ SIM ಕಾರ್ಡ್‌ಗಳು ನೆಟ್‌ವರ್ಕ್ ಸಂಪರ್ಕ ಸಮಸ್ಯೆಗಳನ್ನು ಉಂಟುಮಾಡಬಹುದು. ಅದನ್ನು ಬದಲಾಯಿಸಬೇಕೇ ಎಂಬುದನ್ನು ಪರೀಕ್ಷಿಸಲು ನಿಮ್ಮ ಸೇವಾ ಪೂರೈಕೆದಾರರನ್ನು ಸಂಪರ್ಕಿಸಿ ಅಥವಾ ಅವರ ಸ್ಟೋರ್‌ಗಳಲ್ಲಿ ಒಂದಕ್ಕೆ ಭೇಟಿ ನೀಡಿ.</string>
     <string name="sim_check_old_sim_title">ನಿಮ್ಮ SIM ಅನ್ನು ಬದಲಾಯಿಸಬೇಕಾಗಬಹುದು</string>
+    <string name="sim_check_old_sim_title_skt">ನಿಮ್ಮ SIM ಅನ್ನು ಬದಲಾಯಿಸಬೇಕಾಗಬಹುದು</string>
     <string name="sim_count_mismatched_ds_to_ss">ಡ್ಯುಯಲ್ SIM ಕಾರ್ಡ್‌ನಿಂದ ಸಿಂಗಲ್ SIMಗೆ SIM ಕಾರ್ಡ್ ಮೋಡ್ ಬದಲಿಸಲಾಗಿದೆ. ಈ ಸಂಯೋಜನೆಯನ್ನು ಅನ್ವಯಿಸಲು, ಸಾಧನವನ್ನು ಫ್ಯಾಕ್ಟರಿ ಡೀಫಾಲ್ಟ್ ಸಂಯೋಜನೆಗಳಿಗೆ ಮರುಹೊಂದಿಸಲಾಗುವುದು ಮತ್ತು ಮರುಪ್ರಾರಂಭಿಸಲಾಗುವುದು.</string>
     <string name="sim_count_mismatched_ss_to_ds">ಸಿಂಗಲ್ SIMನಿಂದ ಡ್ಯುಯಲ್ SIMಗೆ SIM ಕಾರ್ಡ್ ಮೋಡ್ ಬದಲಿಸಲಾಗಿದೆ. ಈ ಸಂಯೋಜನೆಯನ್ನು ಅನ್ವಯಿಸಲು, ಸಾಧನವನ್ನು ಫ್ಯಾಕ್ಟರಿ ಡೀಫಾಲ್ಟ್ ಸಂಯೋಜನೆಗಳಿಗೆ ಮರುಹೊಂದಿಸಲಾಗುವುದು ಮತ್ತು ಮರುಪ್ರಾರಂಭಿಸಲಾಗುವುದು.</string>
     <string name="sim_count_mismatched_title">SIM ಕಾರ್ಡ್ ಮೋಡ್ ಬದಿಸಲಾಗಿದೆ</string>
-    <string name="sim_imsreg_error_message_lgt">SIM ಕಾರ್ಡ್ ಗುರುತಿಸಲು ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಸಾಧ್ಯವಿಲ್ಲದ ಕಾರಣದಿಂದ ಧ್ವನಿ ಕರೆಗಳನ್ನು ಮಾಡಲು ಅದಕ್ಕೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ. SIM ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಲು ಹಾಗೂ ಮತ್ತೊಮ್ಮೆ ಅದನ್ನು ಸೇರಿಸಲು ಪ್ರಯತ್ನಿಸಿ. ಈ ಸಮಸ್ಯೆ ಹೀಗೆ ಮುಂದುವರಿದರೆ, ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಅನ್ನು ನೀವು ಬದಲಾಯಿಸಬೇಕಾಗಬಹುದು. ಸಹಾಯಕ್ಕಾಗಿ, LG U+ ಸ್ಟೋರ್‌ಗೆ ಭೇಟಿ ನೀಡಿ ಅಥವಾ 1544-0010 ಸಂಖ್ಯೆಯಲ್ಲಿ LG U+ ಗ್ರಾಹಕ ಸೇವೆಯನ್ನು ಸಂಪರ್ಕಿಸಿ.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">SIM ಕಾರ್ಡ್ ಗುರುತಿಸಲು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ಗೆ ಸಾಧ್ಯವಿಲ್ಲದ ಕಾರಣದಿಂದ ಧ್ವನಿ ಕರೆಗಳನ್ನು ಮಾಡಲು ಅದಕ್ಕೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ. SIM ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಲು ಹಾಗೂ ಮತ್ತೊಮ್ಮೆ ಅದನ್ನು ಸೇರಿಸಲು ಪ್ರಯತ್ನಿಸಿ. ಈ ಸಮಸ್ಯೆ ಹೀಗೆ ಮುಂದುವರಿದರೆ, ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಅನ್ನು ನೀವು ಬದಲಾಯಿಸಬೇಕಾಗಬಹುದು. ಸಹಾಯಕ್ಕಾಗಿ, LG U+ ಸ್ಟೋರ್‌ಗೆ ಭೇಟಿ ನೀಡಿ ಅಥವಾ 1544-0010 ಸಂಖ್ಯೆಯಲ್ಲಿ LG U+ ಗ್ರಾಹಕ ಸೇವೆಯನ್ನು ಸಂಪರ್ಕಿಸಿ.</string>
+    <string name="sim_imsreg_error_message_lgt">SIM ಕಾರ್ಡ್ ಗುರುತಿಸಲು ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಸಾಧ್ಯವಿಲ್ಲದ ಕಾರಣದಿಂದ ಧ್ವನಿ ಕರೆಗಳನ್ನು ಮಾಡಲು ಅದಕ್ಕೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ. SIM ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಲು ಹಾಗೂ ಮತ್ತೊಮ್ಮೆ ಅದನ್ನು ಸೇರಿಸಲು ಪ್ರಯತ್ನಿಸಿ. ಈ ಸಮಸ್ಯೆ ಹೀಗೆ ಮುಂದುವರಿದರೆ, ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಅನ್ನು ನೀವು LG U+ ಸ್ಟೋರ್‌ನಲ್ಲಿ ಬದಲಾಯಿಸಬೇಕಾಗಬಹುದು.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">SIM ಕಾರ್ಡ್ ಗುರುತಿಸಲು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ಗೆ ಸಾಧ್ಯವಿಲ್ಲದ ಕಾರಣದಿಂದ ಧ್ವನಿ ಕರೆಗಳನ್ನು ಮಾಡಲು ಅದಕ್ಕೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ. SIM ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಲು ಹಾಗೂ ಮತ್ತೊಮ್ಮೆ ಅದನ್ನು ಸೇರಿಸಲು ಪ್ರಯತ್ನಿಸಿ. ಈ ಸಮಸ್ಯೆ ಹೀಗೆ ಮುಂದುವರಿದರೆ, ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಅನ್ನು ನೀವು LG U+ ಸ್ಟೋರ್‌ನಲ್ಲಿ ಬದಲಾಯಿಸಬೇಕಾಗಬಹುದು.</string>
     <string name="sim_off_noti_message">ಎಲ್ಲ SIMಗಳನ್ನು ಆಫ್ ಮಾಡಿರುವಾಗ ಕರೆಗಳನ್ನು ಮಾಡಲು, ಸಂದೇಶಗಳನ್ನು ಕಳುಹಿಸಲು ಅಥವಾ ಡೇಟಾ ಬಳಸಲು ನಿಮಗೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ. SIMಗಳನ್ನು ಆನ್ ಮಾಡಲು ಇಲ್ಲಿ ತಟ್ಟಿ.</string>
     <string name="sim_off_noti_title">ಎಲ್ಲಾ SIMಗಳನ್ನು ಆಫ್ ಮಾಡಲಾಗಿದೆ</string>
     <string name="sim_off_toast_message">ನೀವು ಸೇರಿಸಿದ SIM ಕಾರ್ಡ್ ಆಫ್ ಆಗಿದೆ. ಅದನ್ನು ಬಳಸಲು, ಸೆಟ್ಟಿಂಗ್‌ಗಳು > ಸಂಪರ್ಕಗಳು > SIM ವ್ಯವಸ್ಥಾಪಕ ಎಂಬಲ್ಲಿಗೆ ಹೋಗಿ, ನಂತರ ಅದನ್ನು ಆನ್ ಮಾಡಿ.</string>
     <string name="sim_recognize_error_message_kt">ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಅನ್ನು ಗುರುತಿಸಲಾಗಿಲ್ಲ. SIM ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಲು ಹಾಗೂ ಮತ್ತೊಮ್ಮೆ ಅದನ್ನು ಸೇರಿಸಲು ಪ್ರಯತ್ನಿಸಿ. ಈ ಸಮಸ್ಯೆ ಹೀಗೆ ಮುಂದುವರಿದರೆ, ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಅನ್ನು ನೀವು ಬದಲಾಯಿಸಬೇಕಾಗಬಹುದು. ಸಹಾಯಕ್ಕಾಗಿ, KT ಸ್ಟೋರ್‌ಗೆ ಭೇಟಿ ನೀಡಿ ಅಥವಾ 1588-0010 ಸಂಖ್ಯೆಯಲ್ಲಿ KT ಗ್ರಾಹಕ ಸೇವೆಯನ್ನು ಸಂಪರ್ಕಿಸಿ.</string>
-    <string name="sim_recognize_error_message_lgt">ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಅನ್ನು ಗುರುತಿಸಲಾಗಿಲ್ಲ. SIM ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಲು ಹಾಗೂ ಮತ್ತೊಮ್ಮೆ ಅದನ್ನು ಸೇರಿಸಲು ಪ್ರಯತ್ನಿಸಿ. ಈ ಸಮಸ್ಯೆ ಹೀಗೆ ಮುಂದುವರಿದರೆ, ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಅನ್ನು ನೀವು ಬದಲಾಯಿಸಬೇಕಾಗಬಹುದು. ಸಹಾಯಕ್ಕಾಗಿ, LG U+ ಸ್ಟೋರ್‌ಗೆ ಭೇಟಿ ನೀಡಿ ಅಥವಾ 1544-0010 ಸಂಖ್ಯೆಯಲ್ಲಿ LG U+ ಗ್ರಾಹಕ ಸೇವೆಯನ್ನು ಸಂಪರ್ಕಿಸಿ.</string>
+    <string name="sim_recognize_error_message_lgt">ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಅನ್ನು ಗುರುತಿಸಲಾಗಿಲ್ಲ. SIM ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಲು ಹಾಗೂ ಮತ್ತೊಮ್ಮೆ ಅದನ್ನು ಸೇರಿಸಲು ಪ್ರಯತ್ನಿಸಿ. ಈ ಸಮಸ್ಯೆ ಹೀಗೆ ಮುಂದುವರಿದರೆ, ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ಅನ್ನು ನೀವು LG U+ ಸ್ಟೋರ್‌ನಲ್ಲಿ ಬದಲಾಯಿಸಬೇಕಾಗಬಹುದು.</string>
     <string name="sim_recognize_error_message_skt">SIM ಕಾರ್ಡ್ ರೀಡ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಕೆಲವು ಆ್ಯಪ್‌ಗಳು ಮತ್ತು ವೈಶಿಷ್ಟ್ಯಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸದಿರಬಹುದು. ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಿ ಮತ್ತು ಮರುಸೇರಿಸಿ, ನಂತರ ನಿಮ್ಮ ಫೋನ್ ಪುನಾರಂಭಿಸಿ. ಅದು ಸಮಸ್ಯೆಯನ್ನು ಪರಿಹರಿಸದೇ ಇದ್ದರೆ, ನಿಮ್ಮ ಫೋನ್ ಮತ್ತು SIM ಕಾರ್ಡ್ ಅನ್ನು ಗ್ರಾಹಕ ಸೇವೆ ಸ್ಥಳಕ್ಕೆ ತೆಗೆದುಕೊಂಡು ಹೋಗಿ.</string>
     <string name="sim_recognize_error_message_skt_tablet">SIM ಕಾರ್ಡ್ ರೀಡ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ಕೆಲವು ಆ್ಯಪ್‌ಗಳು ಮತ್ತು ವೈಶಿಷ್ಟ್ಯಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸದಿರಬಹುದು. ನಿಮ್ಮ SIM ಕಾರ್ಡ್ ತೆಗೆದುಹಾಕಿ ಮತ್ತು ಮರುಸೇರಿಸಿ, ನಂತರ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಪುನಾರಂಭಿಸಿ. ಅದು ಸಮಸ್ಯೆಯನ್ನು ಪರಿಹರಿಸದೇ ಇದ್ದರೆ, ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಮತ್ತು SIM ಕಾರ್ಡ್ ಅನ್ನು ಗ್ರಾಹಕ ಸೇವೆ ಸ್ಥಳಕ್ಕೆ ತೆಗೆದುಕೊಂಡು ಹೋಗಿ.</string>
     <string name="sim_recognize_error_title_lgt">USIM ಕಾರ್ಡ್ ಗುರುತಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ</string>
@@ -1139,10 +1107,8 @@
     <string name="sim_removed_message_hotswap_us_tablet">ಮೊಬೈಲ್ ಡೇಟಾ ಬಳಸಲು Wi-Fi ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಿ ಅಥವಾ SIM ಕಾರ್ಡ್ ಸೇರಿಸಿ.</string>
     <string name="sim_removed_title_hotswap">SIM ಕಾರ್ಡ್ ಸೇರಿಸಿಲ್ಲ</string>
     <string name="sim_removed_title_hotswap_us_tablet">SIM ಕಾರ್ಡ್ ಸೇರಿಸಿ</string>
+    <string name="smart_tip_action_click_hint_text">ಮುಚ್ಚಿ</string>
     <string name="smartclip_restrict">ಸುಲಭ ಕ್ಲಿಪ್‌ನ ಬಳಕೆಯನ್ನು ಸುರಕ್ಷತೆ ನೀತಿ ತಡೆಯುತ್ತದೆ.</string>
-    <string name="sms_short_code_remember_undo_instruction">ನೀವು ಇದನ್ನು ನಂತರದಲ್ಲಿ ಸಂಯೋಜನೆಗಳು > ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಇಲ್ಲಿಗೆ ಹೋಗುವ ಮೂಲಕ ಬದಲಾಯಿಸಬಹುದು</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">ನೀವು ನಂತರದಲ್ಲಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು > ಆ್ಯಪ್‌ಗಳು > ಇನ್ನಷ್ಟು ಆಯ್ಕೆಗಳ ಬಟನ್ > ವಿಶೇಷ ಪ್ರವೇಶ > ಪ್ರೀಮಿಯಂ ಪಠ್ಯ ಸಂದೇಶ ಸೇವೆಗಳನ್ನು ಬಳಸಿ ಎಂಬಲ್ಲಿ ಹೋಗುವ ಮೂಲಕ ಇದನ್ನು ಬದಲಿಸಬಹುದು</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">ನೀವು “ಎಂದಿಗೂ ಅನುಮತಿಸಬೇಡ” ತಟ್ಟಿದಾಗ, ಅದಕ್ಕಾಗಿ ಪಠ್ಯ ಸಂದೇಶವನ್ನು ಕಳುಹಿಸಲು ಅವಕಾಶ ನೀಡಿರುವಾಗಲೂ ಸಹ ಹಿನ್ನಲೆಯಲ್ಲಿ ಸಂದೇಶಗಳನ್ನು ಕಳುಹಿಸಲು ಈ ಅನ್ವಯಿಸುವಿಕೆಗೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.</string>
     <string name="ss_do_not_show_again_us">ಮತ್ತೊಮ್ಮೆ ತೋರಿಸಬೇಡ</string>
     <string name="sss_translate">ಭಾಷಾಂತರಿಸು</string>
     <string name="ssu_lock_body_vzw">ಕ್ಷಮಿಸಿ, ಇದೀಗ ನಿಮ್ಮ ಸಾಧನವನ್ನು ಬೇರೆ ವಾಹಕ ನೆಟ್‌ವರ್ಕ್‌‌ನಲ್ಲಿ ಸಕ್ರಿಯಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ. ಸಹಾಯಕ್ಕಾಗಿ, %1$s ಅಥವಾ %2$s (ಪೂರ್ವಪಾವತಿ ಯೋಜನೆಗಳು) Verizonಅನ್ನು ಸಂಪರ್ಕಿಸಿ</string>
@@ -1173,7 +1139,6 @@
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">ಮೊಬೈಲ್ ಹಾಟ್‌ಸ್ಪಾಟ್</string>
     <string name="title_dialog_check_rotate_or_not">ಸ್ವಯಂ ಸ್ಕ್ರೀನ್ ತಿರುಗುವಿಕೆ ಆಫ್ ಮಾಡುವುದೇ?</string>
-    <string name="title_uds">ಅಲ್ಟ್ರಾ ಡೇಟಾ ಸೇವಿಂಗ್ ಮೋಡ್</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">ನಿಮ್ಮ ಫೋನ್ ಸೆಟಪ್ ಮಾಡುತ್ತಿರುವ ಸಮಯದಲ್ಲಿ Bixby ಬಳಸಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಸೆಟಪ್ ಮಾಡುವ ಸಮಯದಲ್ಲಿ Bixby ಬಳಸಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="toast_warning_pattern_lock">ಯೂನಿವರ್ಸಲ್ ಸ್ವಿಚ್‍ನೊಂದಿಗೆ ಮಾದರಿ ಲಾಕ್ ಅನ್ನು ಬಳಸಲಾಗದು. ಮೊದಲು ಬೇರೆ ಲಾಕ್ ಪ್ರಕಾರಕ್ಕೆ ಬದಲಿಸಿ.</string>
@@ -1213,9 +1178,13 @@
     <string name="unknown_install_blocked_esm_title">ಅಪರಿಚಿತ ಆ್ಯಪ್ ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ</string>
     <string name="unknown_install_dlg_desc">ಅನುಮೋದಿತ ಸ್ಟೋರ್‌ನಿಂದ ಈ ಆ್ಯಪ್ ಅನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗಿಲ್ಲ. ಈ ಆ್ಯಪ್ ಸ್ಥಾಪನೆ ಮಾಡುವುದರಿಂದ ನಿಮ್ಮ ಸುರಕ್ಷತೆ ಮತ್ತು ಗೌಪ್ಯತೆಯನ್ನು ಅಪಾಯಕ್ಕೆ ತಳ್ಳಬಹುದು. ಆ್ಯಪ್ ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ಸಂಗ್ರಹಿಸಬಹುದು ಅಥವಾ ನಿಮ್ಮ ಡೇಟಾ ಕಳೆದುಹೋಗುವುದಕ್ಕೆ ಕಾರಣವಾಗಬಹುದು.</string>
     <string name="unknown_install_dlg_desc2">ಇತ್ತೀಚಿನ ಸುರಕ್ಷತೆ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಈ ಆ್ಯಪ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ. ಈ ಆ್ಯಪ್ ಸ್ಥಾಪಿಸುವುದು ಮುಂದಿನ ಸುರಕ್ಷತೆ ಅಪಾಯಗಳಿಗೆ ಕಾರಣವಾಗಬಹುದು:</string>
+    <string name="unknown_install_dlg_desc_global_phone">ಈ ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಫೈಲ್ ಸುರಕ್ಷಿತವಾಗಿಲ್ಲದಿರಬಹುದು. ಅದು ಕ್ಲೇಮ್ ಮಾಡಿರುವಂತಹ ಆ್ಯಪ್ ಅದಾಗಿಲ್ಲದಿರಬಹುದು. ನಿಮ್ಮ ಫೋನ್ ಮತ್ತು ವೈಯಕ್ತಿಕ ಡೇಟಾವನ್ನು ರಕ್ಷಿಸುವುದಕ್ಕಾಗಿ, ಬದಲಿಗೆ ನೀವು ನಂಬುವ ಆ್ಯಪ್ ಸ್ಟೋರ್‌ನಿಂದ ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">ಈ ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಫೈಲ್ ಸುರಕ್ಷಿತವಾಗಿಲ್ಲದಿರಬಹುದು. ಅದು ಕ್ಲೇಮ್ ಮಾಡಿರುವಂತಹ ಆ್ಯಪ್ ಅದಾಗಿಲ್ಲದಿರಬಹುದು. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಮತ್ತು ವೈಯಕ್ತಿಕ ಡೇಟಾವನ್ನು ರಕ್ಷಿಸುವುದಕ್ಕಾಗಿ, ಬದಲಿಗೆ ನೀವು ನಂಬುವ ಆ್ಯಪ್ ಸ್ಟೋರ್‌ನಿಂದ ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">ಈ ಆ್ಯಪ್ ದೋಷಪೂರಿತವಾಗಿರುವುದು ಎಂಬುದಾಗಿ ಶಂಕಿಸಲಾಗಿದೆ ಮತ್ತು ಇದು ನಿಮ್ಮ ಫೋನ್ ಮತ್ತು ಡೇಟಾವನ್ನು ಅಪಾಯಕ್ಕೆ ಒಡ್ಡಬಹುದು. ಈ ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡುವುದನ್ನು ಶಿಫಾರಸು ಮಾಡಲಾಗಿಲ್ಲ.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">ಈ ಆ್ಯಪ್ ದೋಷಪೂರಿತವಾಗಿರುವುದು ಎಂಬುದಾಗಿ ಶಂಕಿಸಲಾಗಿದೆ ಮತ್ತು ಇದು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಮತ್ತು ಡೇಟಾವನ್ನು ಅಪಾಯಕ್ಕೆ ಒಡ್ಡಬಹುದು. ಈ ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡುವುದನ್ನು ಶಿಫಾರಸು ಮಾಡಲಾಗಿಲ್ಲ.</string>
-    <string name="unknown_install_dlg_general_title">ಈ ಆ್ಯಪ್ ಅಪರಿಚಿತ ಮೂಲದ್ದಾಗಿದೆ</string>
+    <string name="unknown_install_dlg_desc_phone">ಈ ಆ್ಯಪ್ ದೃಢೀಕೃತ ಆ್ಯಪ್ ಸ್ಟೋರ್‌ನದ್ದು ಆಗಿಲ್ಲ. ನಿಮ್ಮ ಫೋನ್ ಮತ್ತು ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ರಕ್ಷಿಸಲು, Play Store ಅಥವಾ Galaxy Storeನಂತಹ ದೃಢೀಕೃತ ಸ್ಟೋರ್‌ನಿಂದ ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ.</string>
+    <string name="unknown_install_dlg_desc_tablet">ಈ ಆ್ಯಪ್ ದೃಢೀಕೃತ ಆ್ಯಪ್ ಸ್ಟೋರ್‌ನದ್ದು ಆಗಿಲ್ಲ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಮತ್ತು ವೈಯಕ್ತಿಕ ಮಾಹಿತಿಯನ್ನು ರಕ್ಷಿಸಲು, Play Store ಅಥವಾ Galaxy Storeನಂತಹ ದೃಢೀಕೃತ ಸ್ಟೋರ್‌ನಿಂದ ಆ್ಯಪ್ ಅನ್ನು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ.</string>
+    <string name="unknown_install_dlg_general_title">ಈ ಆ್ಯಪ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡುವುದನ್ನು ಶಿಫಾರಸು ಮಾಡಲಾಗಿಲ್ಲ</string>
     <string name="unknown_install_dlg_negative_button">ಸ್ಥಾಪನೆ ಮಾಡಬೇಡ</string>
     <string name="unknown_install_dlg_perm_desc1">ನೀವು ಸ್ವೀಕರಿಸುವ ಪಠ್ಯ ಸಂದೇಶಗಳಿಂದ ಪರಿಶೀಲನೆ ಕೋಡ್‌ಗಳನ್ನು ಆ್ಯಪ್ ಪ್ರತಿಬಂಧಿಸಬಹುದು.</string>
     <string name="unknown_install_dlg_perm_desc2">ಹೊರಹೋಗುವ ಕರೆಗಳನ್ನು ನಿಮ್ಮ ತಿಳುವಳಿಕೆ ಇಲ್ಲದೆಯೇ ಬೇರೆ ಫೋನ್ ಸಂಖ್ಯೆಗೆ ಮರುನಿರ್ದೇಶಿಸಲಾಗುತ್ತದೆ.</string>
@@ -1234,7 +1203,7 @@
     <string name="usb_abnormal_reset_title">USB ಸಂಪರ್ಕ ಸ್ಥಿರವಾಗಿಲ್ಲ</string>
     <string name="usb_abnormal_reset_toast">USB ಸಂಪರ್ಕ ಸ್ಥಿರವಾಗಿಲ್ಲ. ಕೇಬಲ್ ತೆಗೆದು, ಇನ್ನೊಮ್ಮೆ ಹಾಕಿ ನೋಡಿ ಅಥವಾ ಬೇರೆ ಕೇಬಲ್ ಬಳಸಿ ನೋಡಿ.</string>
     <string name="usb_accessory_notification_title">ಒಂದು USB ಉಪಕರಣಕ್ಕೆ ಸಂಪರ್ಕಿಸಿದೆ</string>
-    <string name="usb_bad_removal_message">ಅಸುರಕ್ಷಿತವಾಗಿ USB ಸಂಗ್ರಹ ಸಾಧನವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಪುನಾರಂಭಗೊಳ್ಳುವುದನ್ನು ತಡೆಯಲು, ಉಳಿಸದ ಡೇಟಾ ಉಳಿಸಿ ಮತ್ತು ಇದೀಗ ಪುನಾರಂಭಿಸಿ.</string>
+    <string name="usb_bad_removal_message">ಅಸುರಕ್ಷಿತವಾಗಿ USB ಸಂಗ್ರಹಣೆ ಸಾಧನವನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ. ನಿಮ್ಮ ಫೋನ್ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಪುನಾರಂಭಗೊಳ್ಳುವುದನ್ನು ತಡೆಯಲು, ಉಳಿಸದ ಡೇಟಾ ಉಳಿಸಿ ಮತ್ತು ಇದೀಗ ಪುನಾರಂಭಿಸಿ.</string>
     <string name="usb_blocked_by_emergency_mode">ತುರ್ತು ಮೋಡ್‌ನಲ್ಲಿ ಕೆಲವು USB ಕಾರ್ಯಗಳು ಲಭ್ಯವಿಲ್ಲ.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">ಗರಿಷ್ಠ ಪವರ್ ಸೇವಿಂಗ್ ಮೋಡ್ ಶಕ್ತಗೊಂಡಿರುವಾಗ ಸಂಪರ್ಕಿತ USB ಸಾಧನಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಕಾರ್ಯಗಳನ್ನು ಬಳಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">ಗರಿಷ್ಠ ಪವರ್ ಸೇವಿಂಗ್ ಮೋಡ್‌ ಆನ್ ಆಗಿರುವಾಗ ಕೆಲವು USB ಕಾರ್ಯಗಳನ್ನು ಸೀಮಿತಗೊಳಿಸಬಹುದು.</string>
@@ -1242,14 +1211,16 @@
     <string name="usb_blocked_by_ultra_power_saving_mode">ಅಲ್ಟ್ರಾ ಪವರ್ ಸೇವಿಂಗ್ ಮೋಡ್ ಶಕ್ತಗೊಂಡಿರುವಾಗ ಸಂಪರ್ಕಿತ USB ಸಾಧನಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಕಾರ್ಯಗಳನ್ನು ಬಳಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
     <string name="usb_camera_connected_notification_title">ಮೀಡಿಯಾ ಸಾಧನದ ಸಂಪರ್ಕಗೊಂಡಿದೆ</string>
     <string name="usb_camera_disconnected_notification_title">ಮೀಡಿಯಾ ಸಾಧನದ ಸಂಪರ್ಕ ಕಡಿತಗೊಂಡಿದೆ</string>
-    <string name="usb_cd_installer_notification_title">ಸಾಫ್ಟ್‌ವೇರ್ ನವೀಕರಣ</string>
-    <string name="usb_charing_only_notification_title">ಸಂಪರ್ಕಿಸಲಾಗಿದೆ</string>
+    <string name="usb_cd_installer_notification_title">ಸಾಫ್ಟ್‌ವೇರ್ ಅಪ್‌ಡೇಟ್‍</string>
+    <string name="usb_charing_only_notification_title">USB ಚಾರ್ಜಿಂಗ್</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">ಗರಿಷ್ಠ ನಿರ್ಬಂಧನೆಗಳೊಂದಿಗೆ ಆಟೋ ಬ್ಲಾಕರ್ ಆನ್ ಆಗಿದೆ.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB ಸಾಧನವನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ</string>
     <string name="usb_debugging_only_notification_title">ಡೀಬಗ್ಗಿಂಗ್ ಮಾತ್ರ</string>
-    <string name="usb_host_resource_exceed_message">ಈ ಸಾಧನಕ್ಕೆ ಸಂಪರ್ಕಿಸಲು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ನ USB ಕಂಟ್ರೋಲರ್ ಸಾಕಷ್ಟು ಸಂಪನ್ಮೂಲಗಳನ್ನು ಹೊಂದಿಲ್ಲ. ಸಾಧನ ಸಂಪರ್ಕಕಡಿತಗೊಳಿಸಲು ತದನಂತರ ಮತ್ತೆ ಅದನ್ನು ಸಂಪರ್ಕಿಸಲು ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="usb_host_resource_exceed_message">ಈ ಸಾಧನಕ್ಕೆ ಸಂಪರ್ಕಿಸಲು ನಿಮ್ಮ ಫೋನ್‌ನ USB ಕಂಟ್ರೋಲರ್ ಸಾಕಷ್ಟು ಸಂಪನ್ಮೂಲಗಳನ್ನು ಹೊಂದಿಲ್ಲ. ಸಾಧನ ಸಂಪರ್ಕಕಡಿತಗೊಳಿಸಲು ತದನಂತರ ಮತ್ತೆ ಅದನ್ನು ಸಂಪರ್ಕಿಸಲು ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="usb_host_resource_exceed_title">ಸಾಕಷ್ಟು USB ಕಂಟ್ರೋಲರ್ ಸಂಪನ್ಮೂಲಗಳಿಲ್ಲ</string>
-    <string name="usb_hub_depth_exceed_message">ಒಂದು ಬಾರಿಗೆ 5 USB ಹಬ್ ಸಂಪರ್ಕಗಳನ್ನು ಮಾತ್ರ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಬೆಂಬಲಿಸಬಹುದು.</string>
+    <string name="usb_hub_depth_exceed_message">ಒಂದು ಬಾರಿಗೆ 5 USB ಹಬ್ ಸಂಪರ್ಕಗಳನ್ನು ಮಾತ್ರ ನಿಮ್ಮ ಫೋನ್ ಬೆಂಬಲಿಸಬಹುದು.</string>
     <string name="usb_hub_depth_exceed_title">ಗರಿಷ್ಠ USB ಹಬ್ ಸಂಪರ್ಕಗಳು</string>
-    <string name="usb_hub_power_exceed_message">ಈ USB ಸಾಧನಕ್ಕೆ ಸಾಕಷ್ಟು ಪವರ್ ಅನ್ನು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಒದಗಿಸಲಾಗುವುದಿಲ್ಲ. ಸಾಧನವನ್ನು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ಗೆ ಸಂಪರ್ಕಿಸುವ ಮೊದಲು ಅದನ್ನು ಸ್ವಯಂ-ಸಾಮರ್ಥ್ಯದ USB ಹಬ್‌ಗೆ ಸಂಪರ್ಕಿಸಿ.</string>
+    <string name="usb_hub_power_exceed_message">ಈ USB ಸಾಧನಕ್ಕೆ ನಿಮ್ಮ ಫೋನ್ ಸಾಕಷ್ಟು ಪವರ್ ಒದಗಿಸುವುದಿಲ್ಲ. ಸಾಧನವನ್ನು ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಸಂಪರ್ಕಿಸುವ ಮೊದಲು ಅದನ್ನು ಸ್ವಯಂ-ಸಾಮರ್ಥ್ಯದ USB ಹಬ್‌ಗೆ ಸಂಪರ್ಕಿಸಿ.</string>
     <string name="usb_increase_battery_usage">USB ಸಂಪರ್ಕ ಬ್ಯಾಟರಿ ಬಳಕೆಯನ್ನು ಹೆಚ್ಚಿಸಬಹುದು.</string>
     <string name="usb_mass_storage_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು USB ಮಾಸ್‌ ಸಂಗ್ರಹಣೆ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
     <string name="usb_midi_notification_title">MIDIಗೆ USB</string>
@@ -1275,8 +1246,9 @@
     <string name="usb_storage_stop_title">USBಸಂಗ್ರಹಣೆ ಬಳಕೆಯಲ್ಲಿದೆ.</string>
     <string name="usb_storage_title">USB ಸಂಪರ್ಕಗೊಂಡಿದೆ.</string>
     <string name="usb_type_c_supply_power_notification_title">USB ಚಾರ್ಜಿಂಗ್ ಸಂಪರ್ಕಿತ ಸಾಧನ</string>
-    <string name="usb_unblock_by_screen_unlock">ಸಂಪರ್ಕಿತ USB ಸಾಧನವನ್ನು ಬಳಸುವುದಕ್ಕಾಗಿ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನ್‌ಲಾಕ್ ಮಾಡಿ.</string>
-    <string name="usb_unsupport_accessory_message">ಈ USB ಸಾಧನವನ್ನು ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ.</string>
+    <string name="usb_unblock_by_screen_unlock">ಸಂಪರ್ಕಿತ USB ಸಾಧನವನ್ನು ಬಳಸುವುದಕ್ಕಾಗಿ ನಿಮ್ಮ ಫೋನ್ ಅನ್‌ಲಾಕ್ ಮಾಡಿ.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USB ಸಾಧನ ಬಳಸಲು, ನಿಮ್ಮ ಫೋನ್ ಅನ್‌ಲಾಕ್ ಮಾಡಿ ಮತ್ತು USB ಕೇಬಲ್ ಮರುಸಂಪರ್ಕಿಸಿ.</string>
+    <string name="usb_unsupport_accessory_message">ಈ USB ಸಾಧನವನ್ನು ನಿಮ್ಮ ಫೋನ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ.</string>
     <string name="usb_unsupport_accessory_title">USB ಸಾಧನ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ</string>
     <string name="usb_unsupported_device">ಸಂಪರ್ಕಿತ USB ಸಾಧನ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ.</string>
     <string name="usb_unsupported_device_title">ಸಾಧನ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ</string>
@@ -1294,31 +1266,33 @@
     <string name="usb_water_dialg_method_2_desc_2">ನೀವು ಪೋರ್ಟ್ ಕಡೆಗೆ ಫ್ಯಾನ್ ಅಥವಾ ಡ್ರೈಯರ್ (ತಂಪಾದ ಗಾಳಿ ಮಾತ್ರ) ಪಾಯಿಂಟ್ ಮಾಡುವ ಮೂಲಕ ಒಣಗಿಸುವ ವೇಗವನ್ನು ಹೆಚ್ಚಿಸಬಹುದು.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್‌ನಲ್ಲಿ ನಾವು ತೇವಾಂಶವನ್ನು ಅಥವಾ ಬಾಹ್ಯ ವಸ್ತುವನ್ನು ಪತ್ತೆಹಚ್ಚಿದ್ದೇವೆ.
 
-ಧೂಳು ಅಥವಾ ಅವಶೇಷಗಳಂತಹ ಯಾವುದೇ ಬಾಹ್ಯ ವಸ್ತುವಿಗಾಗಿ ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್ ಪರೀಕ್ಷಿಸಿ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ಗೆ ಹಾನಿಯನ್ನು ತಡೆಗಟ್ಟಲು, ಚಾರ್ಜಿಂಗ್ ಪೋರ್ಟ್ ಸ್ವಚ್ಛವಾಗಿರುವ ಮತ್ತು ತೇವಾಂಶವು ಹೊರಟುಹೋಗುವ ತನಕ ಏನನ್ನೂ ಪ್ಲಗ್ ಮಾಡಬೇಡಿ.
+ಧೂಳು ಅಥವಾ ಅವಶೇಷಗಳಂತಹ ಯಾವುದೇ ಬಾಹ್ಯ ವಸ್ತುವಿಗಾಗಿ ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್ ಪರೀಕ್ಷಿಸಿ. ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಹಾನಿಯನ್ನು ತಡೆಗಟ್ಟಲು, ಚಾರ್ಜಿಂಗ್ ಪೋರ್ಟ್ ಸ್ವಚ್ಛವಾಗಿರುವ ಮತ್ತು ತೇವಾಂಶವು ಹೊರಟುಹೋಗುವ ತನಕ ಏನನ್ನೂ ಪ್ಲಗ್ ಮಾಡಬೇಡಿ.
 
 ಪೋರ್ಟ್ ಅನ್ನು ಒಣಗಿಸಲು, ಯಾವುದೇ ತೇವಾಂಶವನ್ನು ತೆಗೆದುಹಾಕಿ, ನಂತರ ಅದು ಒಣಗುವ ತನಕ ಕಾಯಿರಿ, ಇದು ಹಲವು ಗಂಟೆಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳಬಹುದು. ನೀವು ಪೋರ್ಟ್‌ನತ್ತ ಫ್ಯಾನ್ ಅಥವಾ ಡ್ರೈಯರ್ (ತಂಪಾದ ಗಾಳಿ ಮಾತ್ರ) ತಿರುಗಿಸುವ ಮೂಲಕ ಒಣಗಿಸುವ ವೇಗವನ್ನು ಹೆಚ್ಚಿಸಬಹುದು."</string>
     <string name="usb_water_dialg_positive_button">ಓಕೆ</string>
     <string name="usb_water_dialg_support_wireless_charging">"ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್‌ನಲ್ಲಿ ನಾವು ತೇವಾಂಶವನ್ನು ಅಥವಾ ಬಾಹ್ಯ ವಸ್ತುವನ್ನು ಪತ್ತೆಹಚ್ಚಿದ್ದೇವೆ.
 
-ಧೂಳು ಅಥವಾ ಅವಶೇಷಗಳಂತಹ ಯಾವುದೇ ಬಾಹ್ಯ ವಸ್ತುವಿಗಾಗಿ ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್ ಪರೀಕ್ಷಿಸಿ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್‌ಗೆ ಹಾನಿಯನ್ನು ತಡೆಗಟ್ಟಲು, ಚಾರ್ಜಿಂಗ್ ಪೋರ್ಟ್ ಸ್ವಚ್ಛವಾಗಿರುವ ಮತ್ತು ತೇವಾಂಶವು ಹೊರಟುಹೋಗುವ ತನಕ ಏನನ್ನೂ ಪ್ಲಗ್ ಮಾಡಬೇಡಿ.
+ಧೂಳು ಅಥವಾ ಅವಶೇಷಗಳಂತಹ ಯಾವುದೇ ಬಾಹ್ಯ ವಸ್ತುವಿಗಾಗಿ ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್ ಪರೀಕ್ಷಿಸಿ. ನಿಮ್ಮ ಫೋನ್‌ಗೆ ಹಾನಿಯನ್ನು ತಡೆಗಟ್ಟಲು, ಚಾರ್ಜಿಂಗ್ ಪೋರ್ಟ್ ಸ್ವಚ್ಛವಾಗಿರುವ ಮತ್ತು ತೇವಾಂಶವು ಹೊರಟುಹೋಗುವ ತನಕ ಏನನ್ನೂ ಪ್ಲಗ್ ಮಾಡಬೇಡಿ.
 
-ಪೋರ್ಟ್ ಅನ್ನು ಒಣಗಿಸಲು, ಯಾವುದೇ ತೇವಾಂಶವನ್ನು ತೆಗೆದುಹಾಕಿ, ನಂತರ ಅದು ಒಣಗುವ ತನಕ ಕಾಯಿರಿ, ಇದಕ್ಕೆ ಹಲವು ಗಂಟೆಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳಬಹುದು. ಪೋರ್ಟ್‌ನತ್ತ ಫ್ಯಾನ್ ಅಥವಾ ಡ್ರೈಯರ್ (ತಂಪಾದ ಗಾಳಿ ಮಾತ್ರ) ಅನ್ನು ತಿರುಗಿಸುವ ಮೂಲಕ ನೀವು ಒಣಗುವಿಕೆಯ ವೇಗ ಹೆಚ್ಚಿಸಬಹುದು.
+ಪೋರ್ಟ್ ಅನ್ನು ಒಣಗಿಸಲು, ಯಾವುದೇ ತೇವಾಂಶವನ್ನು ತೆಗೆದುಹಾಕಿ, ನಂತರ ಅದು ಒಣಗುವ ತನಕ ಕಾಯಿರಿ, ಇದು ಹಲವು ಗಂಟೆಗಳ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳಬಹುದು. ನೀವು ಪೋರ್ಟ್‌ನತ್ತ ಫ್ಯಾನ್ ಅಥವಾ ಡ್ರೈಯರ್ (ತಂಪಾದ ಗಾಳಿ ಮಾತ್ರ) ತಿರುಗಿಸುವ ಮೂಲಕ ಒಣಗಿಸುವ ವೇಗವನ್ನು ಹೆಚ್ಚಿಸಬಹುದು.
 
-ಈ ಮಧ್ಯೆ, ನೀವು ವೈರ್‌ಲೆಸ್ ಆಗಿ ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಅನ್ನು ಚಾರ್ಜ್ ಮಾಡಬಹುದು."</string>
+ಈ ಮಧ್ಯೆ, ನೀವು ವೈರ್‌ಲೆಸ್ ಆಗಿ ನಿಮ್ಮ ಫೋನ್ ಅನ್ನು ಚಾರ್ಜ್ ಮಾಡಬಹುದು."</string>
     <string name="usb_water_notification_content">ನಿಮ್ಮ ಚಾರ್ಜಿಂಗ್/USB ಪೋರ್ಟ್‌ನಲ್ಲಿ ತೇವಾಂಶ ಅಥವಾ ಬಾಹ್ಯ ವಸ್ತು ಇದೆ. ಚಾರ್ಜಿಂಗ್‌ಗೂ ಮೊದಲು ಪರೀಕ್ಷಿಸಿ.</string>
-    <string name="usb_water_notification_message">ನಿಮ್ಮ ಚಾರ್ಜರ್/USB ಪೋರ್ಟ್‍ನಲ್ಲಿ ಆರ್ದ್ರತೆ ಕಂಡುಬಂದಿದೆ. ನಿಮ್ಮ ಟ್ಯಾಬ್ಲೆಟ್ ಚಾರ್ಜ್ ಮಾಡುವುದಕ್ಕೂ ಮೊದಲು ಅದು ಸಂಪೂರ್ಣವಾಗಿ ಶುಷ್ಕವಾಗಿದೆಯೇ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಅದು ಸಂಪೂರ್ಣವಾಗಿ ಒಣಗಲು ಸ್ವಲ್ಪ ಸಮಯ ಬೇಕಾಗಬಹುದು.</string>
+    <string name="usb_water_notification_message">ನಿಮ್ಮ ಚಾರ್ಜರ್/USB ಪೋರ್ಟ್‍ನಲ್ಲಿ ಆರ್ದ್ರತೆ ಕಂಡುಬಂದಿದೆ. ನಿಮ್ಮ ಫೋನ್ ಚಾರ್ಜ್ ಮಾಡುವುದಕ್ಕೂ ಮೊದಲು ಅದು ಸಂಪೂರ್ಣವಾಗಿ ಶುಷ್ಕವಾಗಿದೆಯೇ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ. ಅದು ಸಂಪೂರ್ಣವಾಗಿ ಒಣಗಲು ಸ್ವಲ್ಪ ಸಮಯ ಬೇಕಾಗಬಹುದು.</string>
     <string name="usb_water_notification_message_button">ವಿವರಗಳು</string>
     <string name="usb_water_notification_title">ಚಾರ್ಜರ್/USB ಪೋರ್ಟ್ ಪರೀಕ್ಷಿಸಿ</string>
     <string name="usbhostStorage_restrict">ಸುರಕ್ಷತಾ ನೀತಿಯು USB ಹೋಸ್ಟ್‌ ಸಂಗ್ರಹಣೆ ಬಳಕೆಯನ್ನು ತಡೆಯುತ್ತದೆ.</string>
-    <string name="usbmemory_added_notification_title">USB ಸಂಗ್ರಹ ಸೇರಿಸಲಾಗಿದೆ</string>
-    <string name="usbmemory_readonly_mount_notification_message">ನಿಮ್ಮ USB ಸಂಗ್ರಹ ಸಾಧನ ಸರಿಯಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿಲ್ಲ ಹಾಗೂ ಡೇಟಾ ನಷ್ಟವನ್ನು ತಡೆಯಲು ಓದಲು-ಮಾತ್ರ ಹೊಂದಿಸಲಾಗಿದೆ. ಶಿಫಾರಸು ಮಾಡಲಾದ ನಿಮ್ಮ USB ಸಂಗ್ರಹ‌ ಸಾಧನದಲ್ಲಿ ಡೇಟಾ ಬ್ಯಾಕಪ್ ಮಾಡಲಾಗುತ್ತಿದೆ.</string>
-    <string name="usbmemory_readonly_mount_notification_title">USB ಸಂಗ್ರಹಣಕ್ಕೆ ಬರೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ</string>
+    <string name="usbmemory_added_notification_title">USB ಸಂಗ್ರಹಣೆ ಸೇರಿಸಲಾಗಿದೆ</string>
+    <string name="usbmemory_readonly_mount_notification_message">ನಿಮ್ಮ USB ಸಂಗ್ರಹಣೆ ಸಾಧನ ಸರಿಯಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿಲ್ಲ ಹಾಗೂ ಡೇಟಾ ನಷ್ಟವನ್ನು ತಡೆಯಲು ಓದಲು-ಮಾತ್ರ ಹೊಂದಿಸಲಾಗಿದೆ. ಶಿಫಾರಸು ಮಾಡಲಾದ ನಿಮ್ಮ USB ಸಂಗ್ರಹ‌ಣೆ ಸಾಧನದಲ್ಲಿ ಡೇಟಾ ಬ್ಯಾಕಪ್ ಮಾಡಲಾಗುತ್ತಿದೆ.</string>
+    <string name="usbmemory_readonly_mount_notification_title">USB ಸಂಗ್ರಹಣೆಗೆ ಬರೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ</string>
     <string name="user_encrypted_title_phone">ಫೋನ್ ಮರುಪ್ರಾರಂಭಿಸಲಾಗಿದೆ</string>
     <string name="user_encrypted_title_tablet">ಟ್ಯಾಬ್ಲೆಟ್ ಮರುಪ್ರಾರಂಭಿಸಲಾಗಿದೆ</string>
     <string name="voice_to_text_message_guide_toast">ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು, ನೀವು ಸ್ಯಾಮ್‌ಸಂಗ್ ಕೀಬೋರ್ಡ್ ಅನ್ನು ಡೀಫಾಲ್ಟ್ ಆಗಿ ಹೊಂದಿಸಬೇಕಾಗುತ್ತದೆ.</string>
     <string name="vpn_allowOnlySecureConnection">VPN ಪ್ರೋಫೈಲ್ ಸುರಕ್ಷಿತವಾಗಿಲ್ಲ.</string>
     <string name="vpn_error_text">VPNಗೆ ಮರುಸಂಪರ್ಕಿಸುವುದಕ್ಕೆ ಪ್ರಯತ್ನಿಸಲು ಒತ್ತಿ.</string>
     <string name="vpn_error_title">VPN ಸಂಪರ್ಕ ದೋಷ</string>
+    <string name="vpn_fail_text_long">‌%sಗೆ ಸಂಪರ್ಕಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ಈ VPN ನಿರ್ವಹಿಸಲು ತಟ್ಟಿ.</string>
+    <string name="vpn_fail_title">VPN ಸಂಪರ್ಕಗೊಂಡಿಲ್ಲ</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">ಟ್ಯಾಬ್ಲೆಟ್ ತಣ್ಣಗಾಗಿಸಲು ಅನ್ವಯಿಸುವಿಕೆಗಳನ್ನು ಮುಚ್ಚಲಾಗುತ್ತಿದೆ</string>
     <string name="vzw_cooldown_mode_ok">ಓಕೆ</string>
@@ -1381,6 +1355,7 @@
     <string name="wifi_network_available_detailed">ಮುಕ್ತ Wi-Fi ನೆಟ್‌ವರ್ಕ್‌ ಲಭ್ಯವಿದೆ.</string>
     <string name="wifi_networks_available">Wi-Fi ನೆಟ್‌ವ‌ರ್ಕ್‌ಗಳು ಲಭ್ಯವಿವೆ</string>
     <string name="wifi_networks_available_detailed">ಮುಕ್ತ Wi-Fi ನೆಟ್‌ವರ್ಕ್‌ಗಳು ಲಭ್ಯವಿವೆ.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">ನಿಮ್ಮ WLAN ಸಂಪರ್ಕ ನಿಧಾನವಾಗಿರುವ ಅಥವಾ ಅಸ್ಥಿರವಾಗಿರುವ ಕಾರಣದಿಂದ ನಿಮ್ಮ ಮೊಬೈಲ್ ಡೇಟಾವನ್ನು %s ಬಳಸುತ್ತಿದೆ.</string>
     <string name="wifi_notification_switch_wifi_detail">Wi-Fi ನೆಟ್‍ವರ್ಕ್ ಅಸ್ಥಿರವಾಗಿರುವ ಕಾರಣ ಮೊಬೈಲ್ ಡೇಟಾಕ್ಕೆ ನಿಮ್ಮ ಫೋನ್ ಬದಲಿಸಲಾಗಿದೆ.</string>
     <string name="wifi_notification_switch_wifi_title">ಮೊಬೈಲ್‌ ಡೇಟಾಗೆ ಬದಲಿಸಲಾಗಿದೆ</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">ತುರ್ತುಸ್ಥಿತಿ ಪ್ರಕಟಣೆಗಳು</string>
@@ -1412,9 +1387,5 @@
     <string name="work_profile_on_message">ಇದು ಕೆಲಸದ ಆ್ಯಪ್‌ಗಳು, ಪ್ರಕಟಣೆಗಳು, ಡೇಟಾ ಮತ್ತು ಇತರೆ ಕೆಲಸದ ಪ್ರೊಫೈಲ್ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ನಿಮಗೆ ಅವಕಾಶ ನೀಡುತ್ತದೆ.</string>
     <string name="work_profile_on_title">ಕಾರ್ಯ ಪ್ರೊಫೈಲ್ ಆನ್ ಮಾಡುವುದೇ?</string>
     <string name="work_profile_restricted">ಗರಿಷ್ಠ ನಿರ್ಬಂಧನೆಗಳೊಂದಿಗೆ ಆಟೋ ಬ್ಲಾಕರ್ ಆನ್ ಆಗಿದೆ. ನಿಮ್ಮ ಸುರಕ್ಷತೆಯನ್ನು ರಕ್ಷಿಸಲು, ಕೆಲಸದ ಪ್ರೊಫೈಲ್‌ಗಳನ್ನು ರಚಿಸಲಾಗುವುದಿಲ್ಲ.</string>
-    <string name="work_profile_telephony_paused_text">ನಿಮ್ಮ ಕೆಲಸದ ಆ್ಯಪ್‌ಗಳನ್ನು ನೀವು ನಿಲ್ಲಿಸಿದ್ದೀರಿ. ಅವರಿಂದ ನೀವು ಫೋನ್ ಕರೆಗಳು ಅಥವಾ ಪಠ್ಯ ಸಂದೇಶಗಳನ್ನು ಸ್ವೀಕರಿಸುವುದಿಲ್ಲ.</string>
-    <string name="work_profile_telephony_paused_title">ಕರೆಗಳು ಮತ್ತು ಸಂದೇಶಗಳನ್ನು ಆಫ್ ಮಾಡಲಾಗಿದೆ</string>
-    <string name="work_profile_telephony_paused_turn_on_button">ಕೆಲಸದ ಪ್ರೊಫೈಲ್ ಆನ್ ಮಾಡುವುದೇ?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">ನಾನು ಅದನ್ನು ಆಫ್ ಮಾಡುವ ತನಕ</string>
 </resources>

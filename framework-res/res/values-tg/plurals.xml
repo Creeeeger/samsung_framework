@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Планшети шумо бинобар бароварда шудани корти SD-и дорои барномаҳои насбшуда ноустувор кор мекунад. Планшет барои ба ҳолати муқаррарӣ баргаштан баъди %d сония аз нав ба кор дароварда мешавад. Ҳамаи иттилооти захира накардаатонро пеш аз дубора ба кор даромадани планшет захира кунед.</item>
+        <item quantity="other">Телефони шумо бинобар бароварда шудани корти SD-и дорои барномаҳои насбшуда ноустувор кор мекунад. Телефон барои ба ҳолати муқаррарӣ баргаштан баъди %d сония аз нав ба кор дароварда мешавад. Ҳамаи иттилооти захира накардаатонро пеш аз дубора ба кор даромадани телефон захира кунед.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Планшети шумо бинобар бароварда шудани корти SD-и дорои барномаҳои насбшуда ноустувор кор мекунад. Планшет барои ба ҳолати муқаррарӣ баргаштан баъди %d сония аз нав ба кор дароварда мешавад. Ҳамаи иттилооти захира накардаатонро пеш аз дубора ба кор даромадани планшет захира кунед.</item>
+        <item quantity="one">Телефони шумо бинобар бароварда шудани корти SD-и дорои барномаҳои насбшуда ноустувор кор мекунад. Телефон барои ба ҳолати муқаррарӣ баргаштан баъди %d сония аз нав ба кор дароварда мешавад. Ҳамаи иттилооти захира накардаатонро пеш аз дубора ба кор даромадани телефон захира кунед.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Плншт бъди %d сония аз нав ба кор мдрд</item>
+        <item quantity="other">Тел баъди %d сония аз нав ба кор мдрд</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Плншт бъди %d сония аз нав ба кор мдрд</item>
+        <item quantity="one">Тел баъди %d сония аз нав ба кор мдрд</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
@@ -100,14 +100,6 @@
         <item quantity="other">%d ҷузъ</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">%d ҷузъ</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">N/A</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">Ба он шабакаи Wi-Fi, ки пайваст шудан мехоҳед, якбора танҳо %d дастгоҳ пайваст кардан мумкин аст. Дигар дастгоҳҳоро аз ин шабака ҷудо карда, кӯшишро такрор кунед.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">Ба он шабакаи Wi-Fi, ки пайваст шудан мехоҳед, якбора танҳо %d дастгоҳ пайваст кардан мумкин аст. Дигар дастгоҳҳоро аз ин шабака ҷудо карда, кӯшишро такрор кунед.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

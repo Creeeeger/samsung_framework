@@ -87,6 +87,9 @@ thj. tekst"</string>
     <string name="accessibility_corner_action_type_talk_to_bixby">Fol me Bixby-n</string>
     <string name="accessibility_corner_action_type_zoom_in">Zoom zmadhues</string>
     <string name="accessibility_corner_action_type_zoom_out">Zoom zvogëlues</string>
+    <string name="accessibility_dialog_button_allow_samsung">Lejo</string>
+    <string name="accessibility_dialog_button_deny_samsung">Refuzo</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Çinstalo</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Duke shtypur shpejt Tastin Ndezës dhe Tastin Volumi lart, do të ndezësh ose do të fikësh funksionet e mëposhtme:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Shtypja shpejt e Butonit Anësor dhe Butonit Volumi lart, ndez ose fik funksionet e mëposhtme:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Duke shtypur shpejt Tastin Ndezës dhe Tastin Volumi lart, do të ndezësh ose do të fikësh %s.</string>
@@ -118,6 +121,7 @@ thj. tekst"</string>
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">Politika e sigurisë nuk e lejon shtimin e kësaj llogarie.</string>
     <string name="account_removal_restrict">Politika e sigurisë nuk e lejon heqjen e kësaj llogarie.</string>
+    <string name="action_bar_up_description">Drejtohu lart</string>
     <string name="action_menu_overflow_description">Opsione të tjera</string>
     <string name="adb_active_notification_message">Zgjidh për të çaktivizuar debug e USB-së.</string>
     <string name="adb_active_notification_title">Debug i USB-së u lidh.</string>
@@ -126,6 +130,9 @@ thj. tekst"</string>
     <string name="advance_wifi_sharing_msg">U gjet një rrjet Wi-Fi në dispozicion. Lidhu me të, për të përdorur përbashkimin Wi-Fi, në vend të së dhënave celulare për Shpërndarësen tënde celulare.</string>
     <string name="airplanemode_restrict">Politika e sigurisë nuk lejon aftësimin e regjimit Avion.</string>
     <string name="allow_settings_changes">Politika e sigurisë nuk lejon ndryshime në cilësimet.</string>
+    <string name="always_allow">Gjithnjë lejo</string>
+    <string name="app_block_button_open">Hap</string>
+    <string name="app_block_content">%1$s dëshiron të hapë app-in %2$s.</string>
     <string name="app_clone_storage">Magaz. e brendshme (Lajmëtari Dual)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Zgjidh app-et</string>
     <string name="app_continuity_guide_cling_button_not_now">Jo tani</string>
@@ -140,32 +147,21 @@ thj. tekst"</string>
     <string name="app_paused_dialog_by_digital_wellbeing">E ke përdorur gjithë kohën për %s sot. Mund ta ndryshosh këtë që nga Cilësimet.</string>
     <string name="app_restricted_message_concentration_mode">%s bllokohet gjatë regjimit Përqendrim. Lidhu me administratorin IT për të mësuar më shumë.</string>
     <string name="app_updating_message">%s po përditësohet. Provo sërish më vonë.</string>
-    <string name="appblock_block_subtitle1_phone">Për të mbrojtur telefonin tënd dhe të dhënat personale, ky app nuk mund të instalohet, sepse dyshohet si dëmtues.</string>
-    <string name="appblock_block_subtitle1_tablet">Për të mbrojtur tabletën tënde dhe të dhënat personale, ky app nuk mund të instalohet, sepse dyshohet si dëmtues.</string>
-    <string name="appblock_block_subtitle2">Ky app nuk mund të instalohet, sepse është raportuar si dëmtues.</string>
-    <string name="appblock_block_text1">Ky app nuk është nga një burim i verifikuar dhe kërkon leje me natyrë delikate, të cilat mund të përdoren për të vjedhur ose bërë të njohura të dhënat e tua personale.</string>
-    <string name="appblock_block_text2">"App-et dëmtuese mund të përdorin lejet me natyrë delikate për të vjedhur të dhënat e tua personale, për të personifikuar identitetin tënd ose për akses në llogaritë e tua financiare.
-
-Institucionet e ligjshme financiare nuk kërkojnë instalim të skedarëve ZIP, skedarëve APK ose app-eve menaxhere skedarësh.
-
-Gjithnjë verifiko që app-et që instalon janë nga një burim i besuar."</string>
-    <string name="appblock_warn_subtitle">Ky app mund të vjedhë ose të bëjë të njohur informacionin tënd personal.</string>
+    <string name="appblock_block_text_phone">Ky app nuk mund të instalohet sepse është raportuar si dëmtues ose i ngjan një app-i të raportuar si dëmtues. Ky app ka gjasë të përdoret në krime të tilla si phishing. Për të mbajtur telefonin dhe të dhënat e tua në siguri, ky kufizim nuk mund të anashkalohet.</string>
+    <string name="appblock_block_text_tablet">Ky app nuk mund të instalohet sepse është raportuar si dëmtues ose i ngjan një app-i të raportuar si dëmtues. Ky app ka gjasë të përdoret në krime të tilla si phishing. Për të mbajtur tabletën dhe të dhënat e tua në siguri, ky kufizim nuk mund të anashkalohet.</string>
+    <string name="appblock_link_text">Mëso më shumë</string>
     <string name="appblock_warn_text1">"Instalimi i app-eve nga burime të paverifikuara mund t’i lejojë app-et që të mbledhin informacionin tënd personal ose të gjurmojnë aktivitetin tënd.
 
 Instalimi i këtij app-i nuk rekomandohet.
 
 Nëse vendos që, megjithatë, ta instalosh, lexoje me kujdes Njoftimin e Privatësisë të app-it dhe sigurohu që të japësh vetëm lejet e nevojshme."</string>
-    <string name="appblock_warn_text2">"App-et dëmtuese shpesh përpiqen të marrin informacionin tënd personal duke përdorur lejet për Kontaktet, SMS dhe Fotot.
-
-Instalimi i këtij app-i nuk rekomandohet.
-
-Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim për ty i besuar dhe trego kujdes me lejet që jep dhe aksesin që ai ka në të dhënat e tua."</string>
     <string name="application_default_restrict">Ka një app tjetër të cilësuar si parazgjedhje nga administratori i pajisjes.</string>
     <string name="auto_click_paused">Klikimi auto në pauzë.</string>
     <string name="auto_click_resumed">Klikimi auto u rikthye.</string>
     <string name="autofill_never_use_for_this_app">Mos e përdor kurrë %s për këtë app</string>
     <string name="autofill_save_cancel">Anulo</string>
     <string name="autofill_save_never_OK">OK</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">Politika e sigurisë nuk lejon përdorimin e Rezervimit.</string>
     <string name="badPin2">PIN2 i pasaktë. Provo sërish.</string>
     <string name="badPuk2">Kodi PUK2 që fute është i gabuar</string>
@@ -176,8 +172,6 @@ Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim p�
     <string name="bluetooth_a2dp_restrict">Politika e sigurisë nuk e lejon përdorimin e audios Bluetooth për mediat.</string>
     <string name="bluetooth_avrcp_restrict">Politika e sigurisë nuk e lejon përdorimin e komandave audio/video Bluetooth.</string>
     <string name="bluetooth_bpp_restrict">Politika e sigurisë nuk e lejon printimin nëpërmjet Bluetooth.</string>
-    <string name="bluetooth_china_popup_message">%1$s po kërkon leje për të përdorur %2$s. Ta lejoj?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Politika e sigurisë nuk lejon transferime të dhënash nëpërmjet Bluetooth.</string>
     <string name="bluetooth_desktop_restrict">Politika e sigurisë nuk e lejon lidhjen me kompjuterin desktop nëpërmjet Bluetooth.</string>
     <string name="bluetooth_device_restrict">Politika e sigurisë nuk e lejon çiftimin me këtë pajisje Bluetooth.</string>
@@ -188,7 +182,6 @@ Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim p�
     <string name="bluetooth_outgoing_call_restrict">Politika e sigurisë nuk lejon thirrjet dalëse me Bluetooth.</string>
     <string name="bluetooth_pairing_restrict">Politika e sigurisë nuk e lejon çiftimin Bluetooth.</string>
     <string name="bluetooth_pbap_restrict">Politika e sigurisë nuk e lejon përdorimin e librit të adresave Bluetooth.</string>
-    <string name="bluetooth_permission_request">Kërkesë leje për Bluetooth</string>
     <string name="bluetooth_restrict">Politika e sigurisë nuk e lejon përdorimin e Bluetooth.</string>
     <string name="bluetooth_sap_restrict">Politika e sigurisë nuk lejon akses te karta jote SIM nëpërmjet Bluetooth.</string>
     <string name="bluetooth_security_mode_disable">Politika e sigurisë nuk e lejon përdorimin e Bluetooth.</string>
@@ -251,11 +244,8 @@ Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim p�
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">Pajisjet e lejuara</string>
     <string name="data_call_restriction">Rregullorja e sigurisë kufizon përdorimin e të dhënave celulare.</string>
-    <string name="data_usage_disable_mobile">Të çaktivizohet lidhja e të dhënave celulare?</string>
-    <string name="data_usage_enable_mobile_warning">Lidhja me shkëmbim paketash mund të kushtojë më shumë. Vazhdo?</string>
     <string name="data_usage_limit_body">Të dhënat celulare janë vënë në pauzë deri në fund të ciklit tënd të faturimit.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Mbi cakun e të dhënave celulare</string>
-    <string name="data_usage_mobile_limit_title">U arrit caku të dhëna celulare</string>
     <string name="data_usage_rapid_app_body">%s ka përdorur më shumë të dhëna se zakonisht.</string>
     <string name="data_usage_rapid_body">App-et e tua kanë përdorur më shumë të dhëna se zakonisht.</string>
     <string name="data_usage_rapid_title">Përdorim i lartë i të dhënave celulare</string>
@@ -266,6 +256,7 @@ Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim p�
     <string name="data_usage_warning_title_offpeak_chn">%s të dhëna off-peak përdorur</string>
     <string name="data_usage_warning_title_unlimited_chn">U arrit caku i shpejtësisë</string>
     <string name="device_disabled">Pajisja është paaftësuar. Lidhu me administratorin IT.</string>
+    <string name="device_info_not_available">I papërdorshëm.</string>
     <string name="dex_cant_change_user_profile">S’mund ta ndryshosh profilin e përdoruesit kur je në regjimin Samsung DeX.</string>
     <string name="dex_dialog_launch_toast">App-et e hapura mund të mbyllen. Ruaji të dhënat para se të nisësh Samsung DeX ose të dalësh që andej.</string>
     <string name="dex_disconnected_from_device">DeX është shkëputur nga %s. Kontrollo lidhjen e rrjetit në TV.</string>
@@ -274,9 +265,6 @@ Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim p�
     <string name="dex_launcher_mode_change">%s u mbyll, për të kaluar në Samsung DeX.</string>
     <string name="dex_mirroring_jit_msg">Kur e ekzekuton Samsung DeX-in në tabletë, mund ta pasqyrosh pamjen në një ekran më të madh, të lidhur me HDMI.</string>
     <string name="dex_mirroring_jit_title">Pasqyro DeX në ekran më të madh</string>
-    <string name="dex_restart_app_dialog_button_positive">Rinis</string>
-    <string name="dex_restart_app_dialog_message">Ky app po punon tashmë te një ekran tjetër. Për ta hapur këtu, app-i duhet rinisur. Ruaj çfarë të duhet, para se të rinisësh.</string>
-    <string name="dex_restart_app_dialog_title">Do ta rinisësh %s?</string>
     <string name="dex_restriction_blockerMessage">Politika e sigurisë nuk lejon përdorimin e Samsung DeX.</string>
     <string name="dex_restriction_ethernetOnly">Politika e sigurisë nuk lejon përdorimin e të dhënave Wi-Fi, të dhënave celulare dhe tetherimit në DeX. Për funksionalitetet e rrjetit duhet lidhje me kabllo.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Për shkak të politikës së sigurisë, shkëpute ekranin e jashtëm, për të dalë nga Samsung DeX.</string>
@@ -301,7 +289,6 @@ Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim p�
     <string name="digital_signature_failure_user_notification">Nënshkrimi dixhital është i pavlefshëm për përdoruesin %d</string>
     <string name="disableupdate_application_restrict">Politika e sigurisë nuk lejon përditësimin e këtij aplikacioni.</string>
     <string name="display_chooser_button_positive">Rinis</string>
-    <string name="display_chooser_dont_show_again">Mos e trego më</string>
     <string name="dlg_confirm_kill_storage_users_text">Lidhja e memories së brendshme do të ndalojë së punuari disa programe. Ato mund të mos disponohen derisa të shkëpusni memorien e brendshme.</string>
     <string name="dlg_confirm_kill_storage_users_title">Lidh pajisjen ruajtëse me kompjuterin</string>
     <string name="dlg_ics_security_policy">Rregullorja e sigurisë kufizon përdorimin e ndarjes së internetit.</string>
@@ -315,7 +302,7 @@ Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim p�
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">S’mund ta përdor këtë app në pamjen Multi-Window.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">S’mund ta përdor këtë funksionalitet në pamjen Multi-Window.</string>
     <string name="edit_contact_at_sim_restriction">Politika e sigurisë nuk lejon të redaktohen kontaktet në kartën SIM.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Pajisjet e lejuara</string>
+    <string name="edm_policy_not_allow_open_wifiap">Rregullorja e sigurisë nuk e lejon përdorimin e tetherit të pasiguruar për hotspot.</string>
     <string name="emergency_calls_only">Vetëm thirrje të urgjencës</string>
     <string name="ethernet_cable_connected_notification_message">Prek për ta konfiguruar.</string>
     <string name="ethernet_cable_connected_notification_title">Kablloja Eternet është lidhur.</string>
@@ -338,7 +325,7 @@ Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim p�
     <string name="ext_media_unsupported_notification_message">Kjo pajisje nuk e mbështet këtë %s. Trokit për të konfiguruar në një format të mbështetur.</string>
     <string name="ext_media_unsupported_notification_title">%s e pambështetur</string>
     <string name="ext_storage_bad_removal_button">Rinis</string>
-    <string name="ext_storage_bad_removal_title">Rinise tabletën</string>
+    <string name="ext_storage_bad_removal_title">Rinise telefonin</string>
     <string name="extmedia_format_button_format">Formato</string>
     <string name="extmedia_format_message">Vërtet dëshiron ta formatosh kartën SD? Të gjitha të dhënat në kartë do të humbasin.</string>
     <string name="extmedia_format_message_usbhost">Të gjithë skedarët e ruajtur në magazinën tënde USB do të fshihen. Ky veprim nuk mund të zhbëhet.</string>
@@ -411,6 +398,7 @@ Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim p�
     <string name="globalactions_unable_restart_msg_fmm">Nuk mund ta rinis, sepse telefoni është bllokuar në distancë nga Gjej celularin.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Nuk mund ta rinis, sepse tableta është bllokuar në distancë nga Gjej celularin.</string>
     <string name="globalactions_unable_restart_msg_securelock">S’mund ta rinisësh telefonin, kur është i bllokuar. Hape mbulesën dhe zhblloko, për ta rinisur telefonin.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">S’mund ta rinisësh telefonin ndërkohë që karta SIM është e kyçur.</string>
     <string name="hardware_key_restrict">Politika e sigurisë nuk lejon përdorimin e këtij tasti harduer.</string>
     <string name="hardware_sec">Tastiera në ekran</string>
     <string name="hbd_translate">Përkthe çfarë shkruhet</string>
@@ -480,16 +468,16 @@ Nëse vendos që, megjithatë, ta instalosh, sigurohu që vjen nga një burim p�
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Për ta fikur regjimin Mirëmbajtje, duhet të zhbllokosh tabletën.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Asgjë që ndodh gjatë kohës që është ndezur regjimi Mirëmbajtje nuk do të ruhet, përfshi të dhënat e shkarkuara, instalimet e app-eve ose ndryshimet në cilësimet.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Cilëso bll. e ekranit</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Rinis pa e krijuar logun</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Krijo logun dhe rinis</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Për ta ndezur regjimin Mirëmbajtje, telefoni duhet të riniset.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Më parë cilëso një bllokim ekrani.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Për ta ndezur regjimin Mirëmbajtje, tableta duhet të riniset.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Për ta ndihmuar personelin tonë të mbështetjes që të analizojë problemet që mund të ketë telefoni, rekomandojmë që të krijosh një log të sistemit, para se ta nisësh regjimin Mirëmbajtje.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Për ta ndihmuar personelin tonë të mbështetjes që të diagnostikojë dhe të analizojë problemet që mund të ketë telefoni, rekomandojmë që të krijosh një log të sistemit, para se ta nisësh regjimin Mirëmbajtje.
 
-Logu tregon se cilat app-e ishin përdorur dhe gabimet që mund të kenë ndodhur së fundi, por nuk përmban informacion personal tjetër. Logu do të përdoret vetëm për të analizuar problemet dhe jo për ndonjë qëllim tjetër. Normalisht do të duhen rreth 2 minuta për ta krijuar logun."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Për ta ndihmuar personelin tonë të mbështetjes që të analizojë problemet që mund të ketë tableta, rekomandojmë që të krijosh një log të sistemit, para se ta nisësh regjimin Mirëmbajtje.
+Logu përfshin vetëm informacion të nevojshëm për riparimin e telefonit, të tillë si cilat app-e ishin përdorur, gabimet që mund të kenë ndodhur së fundi, numrat e bllokuar të telefonit dhe kapaciteti i magazinës së skedarëve. Logu do të përdoret vetëm për të diagnostikuar dhe analizuar problemet dhe jo për ndonjë qëllim tjetër. Normalisht do të duhen rreth 2 minuta për ta krijuar logun."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Për ta ndihmuar personelin tonë të mbështetjes që të diagnostikojë dhe të analizojë problemet që mund të ketë tableta, rekomandojmë që të krijosh një log të sistemit, para se ta nisësh regjimin Mirëmbajtje.
 
-Logu tregon se cilat app-e ishin përdorur dhe gabimet që mund të kenë ndodhur së fundi, por nuk përmban informacion personal tjetër. Logu do të përdoret vetëm për të analizuar problemet dhe jo për ndonjë qëllim tjetër. Normalisht do të duhen rreth 2 minuta për ta krijuar logun."</string>
+Logu përfshin vetëm informacion të nevojshëm për riparimin e tabletës, të tillë si cilat app-e ishin përdorur, gabimet që mund të kenë ndodhur së fundi, numrat e bllokuar të telefonit dhe kapaciteti i magazinës së skedarëve. Logu do të përdoret vetëm për të diagnostikuar dhe analizuar problemet dhe jo për ndonjë qëllim tjetër. Normalisht do të duhen rreth 2 minuta për ta krijuar logun."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Analizo magazinën</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Magazina e brendshme e telefonit tënd është pothuajse plot. Po të mos ketë më vend në magazinë, disa app-e dhe funksionalitete mund të ndalojnë së punuari mirë. Provo të heqësh ndonjë skedar ose app që nuk të duhet më. Pasi ta heqësh, mos harro që ta zbrazësh edhe Koshin e mbeturinave.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Magazina e brendshme e tabletës sate është pothuajse plot. Po të mos ketë më vend në magazinë, disa app-e dhe funksionalitete mund të ndalojnë së punuari mirë. Provo të heqësh ndonjë skedar ose app që nuk të duhet më. Pasi ta heqësh, mos harro që ta zbrazësh edhe Koshin e mbeturinave.</string>
@@ -511,10 +499,17 @@ Logu tregon se cilat app-e ishin përdorur dhe gabimet që mund të kenë ndodhu
     <string name="maintenance_mode_outro_label">Dil nga regjimi Mirëmbajtje</string>
     <string name="maintenance_mode_outro_textview_message_phone">Për ta fikur Regjimin Mirëmbajtje, duhet ta zhbllokosh telefonin. Kur ta bësh këtë, gjithçka do të kthehet ashtu siç ishte kur u ndez për herë të parë Regjimi Mirëmbajtje. Ndryshimet e bëra kur Regjimi Mirëmbajtje ishte ndezur, të tilla si të dhënat e shkarkuara, app-et e instaluara ose ndryshimet në cilësimet, nuk do të ruhen.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Për ta fikur Regjimin Mirëmbajtje, duhet ta zhbllokosh tabletën. Kur ta bësh këtë, gjithçka do të kthehet ashtu siç ishte kur u ndez për herë të parë Regjimi Mirëmbajtje. Ndryshimet e bëra kur Regjimi Mirëmbajtje ishte ndezur, të tilla si të dhënat e shkarkuara, app-et e instaluara ose ndryshimet në cilësimet, nuk do të ruhen.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Regjimi Mirëmbajtje nuk mund të përdoret kur është ndezur %s.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Nuk mund të përdoret regjimi Mirëmbajtje, kur është ndezur Kursimi i energjisë me app-e dhe Ekran bazë të kufizuar.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Regjimi Mirëmbajtje nuk mbështetet në këtë telefon.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Regjimi Mirëmbajtje nuk mbështetet në këtë tabletë.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s mund të përdoret vetëm nga zotëruesi i pajisjes.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Të ndalet rezervimi i të dhënave të tua dhe të ndizet Regjimi Mirëmbajtje?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Për të ndezur regjimin Mirëmbajtje, duhet ta mbarosh ose ta heqësh rezervimin e papërfunduar.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Për të ndezur regjimin Mirëmbajtje, duhet ta ndalësh rezervimin që është duke u kryer.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Për të ndezur regjimin Mirëmbajtje, duhet ta ndalësh restaurimin e të dhënave të rezervimit.</string>
+    <string name="maintenance_mode_toast_text_device_admin">App i adminit të pajisjes</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Duke krijuar logun…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Kjo normalisht kërkon rreth 2 minuta. Pasi të krijohet logu, telefoni yt do të riniset në regjimin Mirëmbajtje dhe ti mund ta dorëzosh telefonin pa problem, për riparime.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Kjo normalisht kërkon rreth 2 minuta. Pasi të krijohet logu, tableta jote do të riniset në regjimin Mirëmbajtje dhe ti mund ta dorëzosh tabletën pa problem, për riparime.</string>
@@ -539,13 +534,8 @@ Tableta jote do të riniset së shpejti."</string>
     <string name="media_shared">Karta SD po përdoret nga kompjuteri.</string>
     <string name="media_unknown_state">Memoria e jashtme e medias në gjendje të panjohur.</string>
     <string name="mediaplayer_restrict">Politika e sigurisë nuk e lejon përdorimin e lexuesit media MTP.</string>
+    <string name="message_on_crash">Bllokuar nga Bllokuesi auto</string>
     <string name="microphone_restrict">Politika e sigurisë nuk lejon përdorimin e mikrofonit.</string>
-    <string name="miniresolver_call">Telefonatë</string>
-    <string name="miniresolver_call_in_work">Do të telefonosh nga app-i i punës?</string>
-    <string name="miniresolver_call_information">Organizata jote të lejon vetëm të telefonosh nga app-et e punës.</string>
-    <string name="miniresolver_sms_information">Organizata jote të lejon vetëm të dërgosh mesazhe nga app-et e punës.</string>
-    <string name="miniresolver_switch">Këmbeje</string>
-    <string name="miniresolver_switch_to_work">Të kalohet tek app-i i punës?</string>
     <string name="mmcc_authentication_reject_name_template">%s nuk lejohet</string>
     <string name="mmcc_illegal_me_name_template">%s nuk lejohet</string>
     <string name="mmcc_illegal_ms_name_template">%s nuk lejohet</string>
@@ -557,30 +547,6 @@ Tableta jote do të riniset së shpejti."</string>
     <string name="mock_location_reminder_disable">Fike</string>
     <string name="mock_location_reminder_title">Vendndodhja e rreme ndezur</string>
     <string name="more_apps">App-e të tjera</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">Shërbimi %s nuk mbështetet. Lidhu me shërbimin e klientëve.</string>
-    <string name="mptcp_message_address_type_not_supported">Lidhja %s e dobët. Po rilidhem përmes rrjetit në dispozicion…</string>
-    <string name="mptcp_message_busy_ntime_wait">Lidhja %s e dobët. Po rilidhem përmes rrjetit në dispozicion…</string>
-    <string name="mptcp_message_cmd_not_supported">Rrjeti %s përkohësisht nuk mund të përdoret. Po rilidhem përmes rrjetit në dispozicion…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">Lidhja %s e dobët. Po rilidhem përmes rrjetit në dispozicion…</string>
-    <string name="mptcp_message_connection_refused">Lidhja %s e dobët. Po rilidhem përmes rrjetit në dispozicion…</string>
-    <string name="mptcp_message_data_usage_limit">U arrit caku i përdorimit të së dhënave. Për ta ndryshuar cakun e përdorimit të së dhënave, shko te Cilësimet.</string>
-    <string name="mptcp_message_host_unreachable">Lidhja %s e dobët. Po rilidhem përmes rrjetit në dispozicion…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Nuk mund të aftësoj %s. Pajisja nuk është lidhur me rrjetin LTE.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Nuk mund të aftësoj %s kur jam në bredhje ndërkombëtare.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Nuk mund të aftësoj %s kur është aftësuar Shpërndarësja celulare ose tetherimi USB.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Nuk mund të aftësoj %s kur është aftësuar Wi-Fi Direct.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">S‘aftësoj dot %s kur është aftësuar regjimi Avion.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Nuk mund të aftësoj %s kur janë fikur Të dhënat celulare.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Nuk ka përgjigje nga ofruesi i shërbimit.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Nuk mund të aftësoj %1$s. %2$s nuk mund të përdoret me paketën tënde të Internetit ose nuk u mor ndonjë përgjigje nga serveri %3$s.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Dështova të dërgoj kërkesën e aktivizimit për %s. Po rilidhem përmes rrjeteve në dispozicion…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Nuk mund të aftësoj %s. Është futur një kartë SIM jokorrekte.</string>
-    <string name="mptcp_message_network_unreachable">Lidhja %s e dobët. Po rilidhem përmes rrjetit në dispozicion…</string>
-    <string name="mptcp_message_non_mptcp_plan">Nuk mund të aftësoj Giga Multi-Path. Funksioni nuk mbështetet nga plani i të dhënave.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s është paaftësuar për të mos lejuar mbinxehjen e pajisjes. Duke shkarkuar përmes rrjetit celular…</string>
-    <string name="mptcp_message_server_error">Lidhja %s e dobët. Po rilidhem përmes rrjetit në dispozicion…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Nuk mund të aftësoj %s. Pajisja po mbinxehet. Prit derisa të ftohet pajisja dhe provo sërish.</string>
-    <string name="mptcp_message_ttl_expired">Rrjeti %s përkohësisht nuk mund të përdoret. Po rilidhem përmes rrjetit në dispozicion…</string>
     <string name="multi_user_capability_restrict">Politika e sigurisë nuk lejon përdorues të shumëfishtë për pajisjen tënde.</string>
     <string name="multi_user_creation_restrict">Politika e sigurisë nuk lejon krijimin e llogarive të reja të përdoruesve në pajisjen tënde.</string>
     <string name="multi_user_removal_restrict">Politika e sigurisë nuk lejon largimin e llogarive të përdoruesve nga pajisja jote.</string>
@@ -599,24 +565,22 @@ Tableta jote do të riniset së shpejti."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Tingulli po luhet në pajisjen tënde audio Bluetooth. Trokit këtu për ta fikur këtë</string>
     <string name="multisound_sound_via_headphone">Tingulli %s po luhet përmes kufjeve. Trokit këtu për ta fikur këtë.</string>
     <string name="multisound_sound_via_headphone_multiselection">Tingulli po luhet përmes kufjeve. Trokit këtu për ta fikur këtë.</string>
-    <string name="multisound_sound_via_phone_speaker">Tingulli %s po luhet përmes altoparlantit të tabletës. Trokit këtu për ta fikur këtë.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Tingulli po luhet përmes altoparlantit të tabletës. Trokit këtu për ta fikur këtë.</string>
+    <string name="multisound_sound_via_phone_speaker">Tingulli %s po luhet përmes altoparlantit të telefonit. Trokit këtu për ta fikur këtë.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Tingulli po luhet përmes altoparlantit të telefonit. Trokit këtu për ta fikur këtë.</string>
     <string name="multisound_sound_via_usb_audio">Tingulli %s po luhet përmes pajisjes audio USB. Trokit këtu për ta fikur këtë.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Tingulli po luhet përmes pajisjes audio USB. Trokit këtu për ta fikur këtë.</string>
     <string name="multisound_title">Audio më vete për app-in</string>
     <string name="multisound_turn_off_multisound">Fik</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s nuk mund të punojë në Samsung DeX. Provoje me regjimin tabletë.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s nuk mund të punojë në Samsung DeX. Është dizajnuar për Ekrane bazë tabletash.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Disa lojëra punojnë vetëm me ekran me prekje. Në qoftë se komandat e miut nuk punojnë në Samsung DeX, atëherë provo të luash në regjimin tabletë.</string>
-    <string name="my_device">Kjo tabletë</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s nuk mund të punojë në Samsung DeX. Provoje me regjimin telefon.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s nuk mund të punojë në Samsung DeX. Është dizajnuar për Ekrane bazë telefonash.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Disa lojëra punojnë vetëm me ekran me prekje. Nëse komandat e miut nuk punojnë në Samsung DeX, atëherë provo të luash në regjimin telefon.</string>
+    <string name="my_device">Ky telefon</string>
     <string name="network_locked_sim_dialog_message_ais">Karta jote SIM nuk është tërësisht operative me këtë telefon, sepse nuk pajtohet me termat dhe kushtet e abonimit tënd. Po të kesh pyetje ose të kesh nevojë për më shumë informacion rreth kësaj çështjeje, lidhu me pikën ose dyqanin e Shërbimit të klientit Samsung, që t’i ka shitur këto produkte.</string>
     <string name="network_locked_sim_notification_text">Futur kartë SIM bllokuar nga rrjeti.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Ndryshoje App-in Bazë tënd të parazgjedhur në Baza e One UI.</string>
     <string name="nfc_restrict">Politika e sigurisë nuk lejon përdorimin e NFC.</string>
     <string name="nosim_limited_service">Shërbim i kufizuar</string>
-    <string name="not_support_ai_key">Tasti IA nuk funksionon ende me tabletën tënde. Një përditësim do të vihet në dispozicion së shpejti.</string>
-    <string name="notification_app_name_settings">Cilësimet</string>
     <string name="notification_channel_dex_policy">Politika e Samsung DeX</string>
     <string name="ntfs_usb_storage_readonly_mount_message">Kjo magazinë është Lexim-vetëm sepse përdor formatin NTFS.</string>
     <string name="ntfs_usb_storage_readonly_mount_title">Magazina USB Lexim-vetëm u shtua</string>
@@ -793,7 +757,6 @@ KTHEJE TE"</string>
     <string name="permlab_scheduleExactAlarm">Cilëso alarmet dhe përkujtesat</string>
     <string name="permlab_spdControl">Menaxho përditësimet e politikës së sigurisë</string>
     <string name="permlab_ucsPlugin">Plugin-i Menaxhimi Universal i Kredencialeve</string>
-    <string name="personal_apps_suspended_turn_profile_on">Ndize</string>
     <string name="phoneTypeConference">Konferencë</string>
     <string name="policydesc_allow_bluetoothmode">Mos lejo që të përdoret Bluetooth.</string>
     <string name="policydesc_allow_browser">Mos lejo që të përdoret Interneti.</string>
@@ -801,7 +764,7 @@ KTHEJE TE"</string>
     <string name="policydesc_allow_desktopsync">Mos lejo që të përdoret sinkronizimi desktop.</string>
     <string name="policydesc_allow_internetsharing">Mos lejo që të përdoret Shpërndarësja celulare.</string>
     <string name="policydesc_allow_irda">Mos lejo që të përdoret IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Mos lejo që të përdoret e-posta POP dhe IMAP në tabletë.</string>
+    <string name="policydesc_allow_popimapemail">Mos lejo që të përdoret e-posta POP dhe IMAP në telefon.</string>
     <string name="policydesc_allow_storagecard">Mos lejo që të përdoren kartat SD.</string>
     <string name="policydesc_allow_textmessaging">Mos lejo që të përdoret mesazhimi tekst dhe multimedia.</string>
     <string name="policydesc_allow_thirdParty">Ky aplikacion mund të mos lejojë ekzekutimin e aplikacioneve nga palë të treta.</string>
@@ -847,7 +810,7 @@ KTHEJE TE"</string>
     <string name="pwd_change_enforced">Rregullorja e sigurisë kërkon që të ta ndërrosh fjalëkalimin.</string>
     <string name="recording_fail">S’mund të përdorësh mikrofonin në %1$s kur po përdoret në %2$s.</string>
     <string name="recording_popup">%s po përdor mikrofonin.</string>
-    <string name="recording_popup_device">Tabletë</string>
+    <string name="recording_popup_device">Telefon</string>
     <string name="recording_popup_with_bluetooth">%s po përdor mikrofonin Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s po përdor mikrofonin e %2$s.</string>
     <string name="redo">Ribëje</string>
@@ -913,12 +876,12 @@ KTHEJE TE"</string>
     <string name="screencapture_restrict">Politika e sigurisë nuk lejon përdorimin e kapjes së ekranit.</string>
     <string name="sd_card_unavailable_message">Nuk mund ta përdorësh këtë kartë SD, sepse ajo u fut kur po përdorej një profil tjetër përdoruesi.</string>
     <string name="sd_card_unavailable_title">Karta SD s’është e përdorshme</string>
-    <string name="sdcard_bad_removal_message">Është hequr një kartë SD në mënyrë jo të sigurt. Që të mos e lejosh tabletën të riniset papritur, ruaj të dhënat e paruajtura dhe rinise tani.</string>
+    <string name="sdcard_bad_removal_message">Është hequr një kartë SD në mënyrë jo të sigurt. Që të mos e lejosh telefonin të riniset papritur, ruaj të dhënat e paruajtura dhe rinise tani.</string>
     <string name="sdcard_batch_decrypt_noti_content">Dekripto kartën SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Dekriptimi i kartës SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Karta e enkriptuar SD duhet të dekriptohet përpara përdorimit. Dekriptimi mund të marrë një orë a më tepër. Fillo me bateri të ngarkuar dhe mbaje pajisjen në prizë derisa të mbarojë dekriptimi. Ndërprerja e procesit të dekriptimit mund të shkaktojë humbje të një pjese apo të të gjitha të dhënave.</string>
     <string name="sdcard_decrypt_err_notification">Ndodhi gabim me dekriptimin e kartës SD.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Disa skedarë te karta jote SD janë enkriptuar te një pajisje tjetër dhe nuk mund të përdoren te kjo tabletë.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Disa skedarë te karta jote SD janë enkriptuar te një pajisje tjetër dhe nuk mund të përdoren te ky telefon.</string>
     <string name="sdcard_decrypt_notification">Karta SD u dekriptua.</string>
     <string name="sdcard_decrypt_title_notification">Dekriptimi i kartës SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Po dekriptoj kartën SD…</string>
@@ -935,14 +898,6 @@ KTHEJE TE"</string>
     <string name="sdcard_unmount_policy_noti_title">Karta SD është çmontuar për shkak të rregullores IT.</string>
     <string name="sdhms_nr_control_low_battery">Fike 5G për të kursyer baterinë, kur telefonit i ka mbetur më pak se 15% bateri.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth do të rrijë ndezur në Regjimin Avion.</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Ky app po përdor gjithë ekranin. Gjestet e rrëshqitjes për navigim thjesht do të shfaqin shiritin e statusit. Për të naviguar, rrëshqit sërish, kur shiriti i statusit është shfaqur.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Ky app po përdor gjithë ekranin. Butonat Bazë, Prapa dhe Së fundi janë fshehur, për të minimizuar distraksionet dhe për të mos lejuar që të dalësh nga app-i pa dashur.
-
-Edhe po ta rrotullosh telefonin, butonat gjithnjë do të vendosen përbri portës së karikimit. Mund t’i bësh butonat të rishfaqen, duke rrëshqitur për brenda nga buza e ekranit, siç tregohet nga shigjeta."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Ky app po përdor gjithë ekranin. Butonat Bazë, Prapa dhe Së fundi janë fshehur, për të minimizuar distraksionet dhe për të mos lejuar që të dalësh nga app-i pa dashur.
-
-Që t’i bësh butonat të rishfaqen, rrëshqit lart nga fundi i ekranit, siç tregohet nga shigjeta."</string>
     <string name="sec_monotype_default">E parazgjedhur</string>
     <string name="sec_ringtone_category_brand_sound">Tingulli i markës Samsung</string>
     <string name="sec_ringtone_category_calm">I qetë</string>
@@ -952,6 +907,10 @@ Që t’i bësh butonat të rishfaqen, rrëshqit lart nga fundi i ekranit, siç 
     <string name="sec_ringtone_category_open_theme">Parazgjedhja e temës së tanishme</string>
     <string name="sec_ringtone_category_retro">Retro</string>
     <string name="sec_ringtone_silent">Pa ze</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Anulo</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Për t’u lidhur me një satelit, operatori i rrjetit duhet cilësuar si Përzgjidh automatikisht.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Ndize</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Të ndizet përzgjedhja automatike e rrjetit?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Ndiz Aksesin te mikrofoni që të flasësh.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Ndiz Aksesin te kamera që të përdorësh %s.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Ndiz Aksesin te mikrofoni që të përdorësh %s.</string>
@@ -1047,6 +1006,8 @@ Që t’i bësh butonat të rishfaqen, rrëshqit lart nga fundi i ekranit, siç 
     <string name="sem_face_error_already_in_use_by_VT">S’mund të përdorësh njohjen me fytyrë gjatë thirrjeve video.</string>
     <string name="sem_face_error_camera_access_off">S’mund të përdoret njohja me fytyrë, sepse nuk është dhënë aksesi te kamera</string>
     <string name="sem_face_error_camera_fail">S’e hapa dot Kamerën. Provo sërish.</string>
+    <string name="sem_face_error_lockout">Verifikimi biometrik nuk mund të përdoret më, sepse janë bërë shumë orvatje jo-korrekte.</string>
+    <string name="sem_face_error_lockout_permanent">Verifikimi biometrik nuk mund të përdoret më, sepse janë bërë shumë orvatje jo-korrekte.</string>
     <string name="sem_face_error_ppp_timeout">Ka kaluar ca kohë që kur e verifikove identitetin. Do të duhet të fillosh sërish, që ta regjistrosh fytyrën.</string>
     <string name="sem_face_error_too_dark">Tepër errët për të pikasur fytyrën</string>
     <string name="sem_face_error_too_dark_to_enroll">Tepër errët. Provo të ndezësh një dritë ose të shkosh në një vend me më shumë dritë.</string>
@@ -1062,13 +1023,18 @@ Që t’i bësh butonat të rishfaqen, rrëshqit lart nga fundi i ekranit, siç 
     <string name="sem_fingerprint_acquired_tsp_block">Largoje majën e S Pen nga ekrani, për të skanuar shenjën e gishtit.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Për të përdorur shenjat e gishtit, më parë cilëso një lloj të sigurt bllokimi të ekranit (motiv, PIN ose fjalëkalim).</string>
+    <string name="sem_fingerprint_error_lockout">Verifikimi biometrik nuk mund të përdoret më, sepse janë bërë shumë orvatje jo-korrekte.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Verifikimi biometrik nuk mund të përdoret më, sepse janë bërë shumë orvatje jo-korrekte.</string>
     <string name="sem_fingerprint_error_onehand_mode">S’mund të përdorësh skanerin e shenjave të gishtit në Regjimin me një dorë.</string>
     <string name="sem_fingerprint_error_smart_view">Nuk mund ta skanosh shenjën e gishtit kur po përdor %s.</string>
+    <string name="sem_fingerprint_error_system_failure">Sensori i shenjave të gishtit nuk po përgjigjet. Provo sërish më vonë. Nëse kjo vazhdon, provo ta rinisësh telefonin.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Të dhënat e shenjave të gishtave janë dëmtuar. Shtoji shenjat e gishtave sërish.</string>
     <string name="sem_fingerprint_error_wireless_charger">Shkëputu nga karikuesi pa tel, për të përdorur shenjën e gishtit</string>
     <string name="sem_fingerprint_name_template">Shenja e gishtit %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Më vonë</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Jo tani</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Hiq dhe regjistro</string>
+    <string name="sem_fingerprint_register_dialog_message">Njohja me shenjë gishti u përmirësua me përditësimin e fundit të softuerit. Nuk do të mund të përdorësh njohjen me shenjë gishti derisa t’i heqësh shenjat e gishtit dhe t’i regjistrosh sërish.</string>
     <string name="sem_fingerprint_register_dialog_title">Regjistro sh. e gishtave sërish</string>
     <string name="sem_fingerprint_result_failed">Nuk gjeta përkime.</string>
     <string name="sem_fingerprint_result_retry">Provo sërish.</string>
@@ -1088,7 +1054,7 @@ Që t’i bësh butonat të rishfaqen, rrëshqit lart nga fundi i ekranit, siç 
     <string name="sem_resolver_button_always_accessibility">Gjithnjë përdor app-in e përzgjedhur</string>
     <string name="sem_resolver_button_just_once_accessibility">Përdor app-in e përzgjedhur vetëm një herë</string>
     <string name="sem_resolver_choose_what_to_do">Zgjidh çfarë do të bësh</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Për të ndryshuar cilësimet për app-et e parazgjedhura, shko te Cilësimet > App-et > Zgjidh app-et e parazgjedhura.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Për ta ndryshuar app-in që përdoret me parazgjedhje për ta hapur këtë lloj skedari, shko te Cilësimet > App-et, përzgjidh app-in aktualisht të parazgjedhur, pastaj trokit mbi Cilëso si parazgjedhje > Pastro parazgjedhjet.</string>
     <string name="sem_resolver_icon_content_description">Informacion</string>
     <string name="sem_resolver_personal_tab_accessibility">Personale</string>
     <string name="sem_resolver_share_live_default_text">Bashkëndaje në çast me të tjerët në afërsi. Këtu do të tregohen të gjithë ata që i kanë pajisjet të gjetshme.</string>
@@ -1100,9 +1066,6 @@ Që t’i bësh butonat të rishfaqen, rrëshqit lart nga fundi i ekranit, siç 
     <string name="sem_resolver_work_tab_accessibility">Punë</string>
     <string name="sem_switch_off">Fikur</string>
     <string name="sem_switch_on">Ndezur</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Aksesi te kamera fikur për gjithë app-et</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Ndize</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Aksesi te mikrofoni fikur për gjithë app-et</string>
     <string name="serviceErased">Fshirja pati sukses.</string>
     <string name="serviceModeAll">Të gjitha</string>
     <string name="serviceModeAllConditional">me kusht.</string>
@@ -1112,6 +1075,7 @@ Që t’i bësh butonat të rishfaqen, rrëshqit lart nga fundi i ekranit, siç 
     <string name="serviceModeUnconditional">pa kushte.</string>
     <string name="serviceisDisabled">Shërbimi është çaktivizuar.</string>
     <string name="serviceisEnabled">Shërbimi është aktivizuar.</string>
+    <string name="settings">Cilësimet</string>
     <string name="sf_quick_switch_not_supported">Këmbimi i shpejtë nuk mbështetet në këtë situatë.</string>
     <string name="sf_quick_switch_securefolder_view">U kalua në %s.</string>
     <string name="share">Përbashko</string>
@@ -1120,26 +1084,30 @@ Që t’i bësh butonat të rishfaqen, rrëshqit lart nga fundi i ekranit, siç 
     <string name="sharelist_restrict">Politika e sigurisë nuk e lejon përbashkimin e të dhënave.</string>
     <string name="show_keyboard_button">Trego Butonin e tastierës</string>
     <string name="show_keyboard_button_description">Trego %s në shiritin e navigimit.</string>
+    <string name="showing_esc_dialog">Mund ta cilësosh tastin Esc që të punojë si butoni Prapa.</string>
     <string name="showing_touch_sensitivity_noti_action">Ndize</string>
     <string name="showing_touch_sensitivity_noti_text">Ndiz Ndjeshmërinë në prekje kur po përdor Privacy Screen ose Notepaper Screen, për reagim më të saktë ndaj prekjes.</string>
     <string name="showing_touch_sensitivity_noti_title">Rrit ndjeshmërinë në prekje</string>
+    <string name="side_key_double_press_archived_app">App-i është arkivuar. Zgjidh ndonjë gjë tjetër.</string>
     <string name="side_key_double_press_deleted_app">App-i është çinstaluar. Zgjidh ndonjë gjë tjetër.</string>
     <string name="side_key_double_press_disabled_app">%s është paaftësuar. Zgjidh ndonjë gjë tjetër.</string>
     <string name="signature_identity_toast">%s nënshkruar nga</string>
     <string name="simRefresh">Po rifreskoj të dhënat në SIM</string>
     <string name="simReset">Duke përditësuar të dhënat e SIM-it…</string>
     <string name="sim_check_old_sim_message">Kartat SIM të vjetra ose të dëmtuara mund të shkaktojnë probleme me lidhjen e rrjetit. Lidhu me ofruesin e shërbimit ose vizito ndonjë dyqan të tyre për të kontrolluar se mos SIM-i ka nevojë të zëvendësohet.</string>
+    <string name="sim_check_old_sim_message_skt">Kartat SIM të vjetra ose të dëmtuara mund të shkaktojnë probleme me lidhjen e rrjetit. Lidhu me ofruesin e shërbimit ose vizito ndonjë dyqan të tyre për të kontrolluar se mos SIM-i ka nevojë të zëvendësohet.</string>
     <string name="sim_check_old_sim_title">SIM-i yt mund të ketë nevojë të zëvendësohet</string>
+    <string name="sim_check_old_sim_title_skt">SIM-i yt mund të ketë nevojë të zëvendësohet</string>
     <string name="sim_count_mismatched_ds_to_ss">Regjimi i kartës SIM u këmbye nga SIM dual në SIM tek. Për ta zbatuar këtë cilësim, pajisja do të resetohet në parazgjedhjet e fabrikës dhe do të riniset.</string>
     <string name="sim_count_mismatched_ss_to_ds">Regjimi i kartës SIM u këmbye nga SIM tek në SIM dual. Për ta zbatuar këtë cilësim, pajisja do të resetohet në parazgjedhjet e fabrikës dhe do të riniset.</string>
     <string name="sim_count_mismatched_title">Regjimi i kartës SIM u këmbye</string>
-    <string name="sim_imsreg_error_message_lgt">Telefoni yt nuk do të jetë në gjendje të bëjë thirrje zanore, sepse nuk po e njeh dot kartën SIM. Provo ta heqësh kartën SIM dhe ta futësh përsëri. Nëse ky problem vazhdon, mund të duhet ta zëvendësosh kartën SIM. Për ndihmë, vizito një dyqan LG U+ ose kontakto Shërbimin e klientit LG U+ në 1544-0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Tableta jote nuk do të jetë në gjendje të bëjë thirrje zanore, sepse nuk po e njeh dot kartën SIM. Provo ta heqësh kartën SIM dhe ta futësh përsëri. Nëse ky problem vazhdon, mund të duhet ta zëvendësosh kartën SIM. Për ndihmë, vizito një dyqan LG U+ ose kontakto Shërbimin e klientit LG U+ në 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">Telefoni yt nuk do të jetë në gjendje të bëjë thirrje zanore, sepse nuk po e njeh dot kartën SIM. Provo ta heqësh kartën SIM dhe ta futësh përsëri. Nëse ky problem vazhdon, mund të duhet ta zëvendësosh kartën SIM te një dyqan LG U+.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Tableta jote nuk do të jetë në gjendje të bëjë thirrje zanore, sepse nuk po e njeh dot kartën SIM. Provo ta heqësh kartën SIM dhe ta futësh përsëri. Nëse ky problem vazhdon, mund të duhet ta zëvendësosh kartën SIM te një dyqan LG U+.</string>
     <string name="sim_off_noti_message">Nuk mund të bësh thirrje, të dërgosh mesazhe ose të përdorësh të dhëna, kur të gjitha SIM-et janë fikur. Trokit këtu për t’i ndezur SIM-et.</string>
     <string name="sim_off_noti_title">Të gjitha SIM-et janë fikur</string>
     <string name="sim_off_toast_message">Karta SIM që ke futur është e fikur. Për ta përdorur, shko te Cilësimet > Lidhjet > Menaxheri SIM dhe pastaj ndize.</string>
     <string name="sim_recognize_error_message_kt">Karta jote SIM nuk u njoh. Provo ta heqësh kartën SIM dhe ta futësh përsëri. Nëse ky problem vazhdon, mund të duhet ta zëvendësosh kartën SIM. Për ndihmë, vizito një dyqan KT ose kontakto Shërbimin e klientit KT në 1588-0010.</string>
-    <string name="sim_recognize_error_message_lgt">Karta jote SIM nuk u njoh. Provo ta heqësh kartën SIM dhe ta futësh përsëri. Nëse ky problem vazhdon, mund të duhet ta zëvendësosh kartën SIM. Për ndihmë, vizito një dyqan LG U+ ose kontakto Shërbimin e klientit LG U+ në 1544-0010.</string>
+    <string name="sim_recognize_error_message_lgt">Karta jote SIM nuk u njoh. Provo ta heqësh kartën SIM dhe ta futësh përsëri. Nëse ky problem vazhdon, mund të duhet ta zëvendësosh kartën SIM, te një dyqan LG U+.</string>
     <string name="sim_recognize_error_message_skt">Karta SIM nuk po lexohet dot. Disa app-e dhe funksionalitete nuk do të punojnë. Hiqe kartën SIM dhe fute sërish, pastaj rinise telefonin. Nëse kjo nuk e mënjanon problemin, çoje telefonin dhe kartën SIM te një qendër e Shërbimit të klientit.</string>
     <string name="sim_recognize_error_message_skt_tablet">Karta SIM nuk po lexohet dot. Disa app-e dhe funksionalitete nuk do të punojnë. Hiqe kartën SIM dhe fute sërish, pastaj rinise tabletën. Nëse kjo nuk e mënjanon problemin, çoje tabletën dhe kartën SIM te një qendër e Shërbimit të klientit.</string>
     <string name="sim_recognize_error_title_lgt">S’po e njoh kartën USIM</string>
@@ -1149,10 +1117,8 @@ Që t’i bësh butonat të rishfaqen, rrëshqit lart nga fundi i ekranit, siç 
     <string name="sim_removed_message_hotswap_us_tablet">Lidhu me një rrjet Wi-Fi ose fut një kartë SIM, për të përdorur të dhënat celulare.</string>
     <string name="sim_removed_title_hotswap">S‘ke futur kartë SIM</string>
     <string name="sim_removed_title_hotswap_us_tablet">Fut kartën SIM</string>
+    <string name="smart_tip_action_click_hint_text">Mbyll</string>
     <string name="smartclip_restrict">Politika e sigurisë nuk lejon përdorimin e Klipit të thjeshtuar.</string>
-    <string name="sms_short_code_remember_undo_instruction">Mund ta ndryshosh këtë më vonë, duke shkuar te Cilësimet > Aplikacionet</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Mund ta ndryshosh këtë më vonë që nga Cilësimet > App-et > Butoni Opsione të tjera > Aksesi special > Përdor Shërbime mesazhimi premium</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Po të zgjedhësh KURRË MOS LEJO, ky app nuk do të mund të dërgojë mesazhe në sfond, edhe po t’ia kesh dhënë lejen për të dërguar mesazhe tekst.</string>
     <string name="ss_do_not_show_again_us">Mos e trego më</string>
     <string name="sss_translate">Përktheje</string>
     <string name="ssu_lock_body_vzw">Për fat të keq, pajisja jote nuk mund të aktivizohet në rrjetin e një operatori tjetër, në këtë moment. Për ndihmë, lidhu me Verizon në %1$s or %2$s (planet me parapagim)</string>
@@ -1184,7 +1150,6 @@ Që t’i bësh butonat të rishfaqen, rrëshqit lart nga fundi i ekranit, siç 
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">Shpërndarësja celulare</string>
     <string name="title_dialog_check_rotate_or_not">Do ta fikësh Auto-rrotullo ekranin?</string>
-    <string name="title_uds">Regjimi Kursim të dhënash ultra</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">S’mund të përdorësh Bixby-n kur po konfiguron telefonin.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">S’mund të përdorësh Bixby-n kur po konfiguron tabletën.</string>
     <string name="toast_warning_pattern_lock">Bllokimi me motiv nuk mund të përdoret me Çelësin universal. Kalo më parë te një lloj tjetër bllokimi.</string>
@@ -1224,9 +1189,13 @@ Për ta hequr këtë mbrojtje, shko tek Cilësimet > Siguria dhe privatësia > B
     <string name="unknown_install_blocked_esm_title">Një app i panjohur u bllokua</string>
     <string name="unknown_install_dlg_desc">Ky app nuk është shkarkuar nga një dyqan i miratuar. Po ta instalosh këtë app, mund të rrezikosh sigurinë dhe privatësinë tënde. App-i mund të mbledhë informacionin tënd personal ose të bëjë që të dhënat e tua të humbasin.</string>
     <string name="unknown_install_dlg_desc2">Ky app nuk i mbështet funksionalitetet më të fundit të sigurisë. Instalimi i këtij app-i mund të shoqërohet me rreziqet e mëposhtme për sigurinë:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Ky skedar instalimi app-i mund të mos jetë i sigurt. Mund të mos jetë app-i që pretendon se është. Për të mbrojtur telefonin tënd dhe të dhënat personale, instaloje app-in nga një dyqan app-esh i besuar.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Ky skedar instalimi app-i mund të mos jetë i sigurt. Mund të mos jetë app-i që pretendon se është. Për të mbrojtur tabletën tënde dhe të dhënat personale, instaloje app-in nga një dyqan app-esh i besuar.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Ky app dyshohet si dëmtues dhe mund të ekspozojë telefonin dhe të dhënat e tua ndaj rrezikut. Nuk rekomandohet që ta instalosh këtë app.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Ky app dyshohet si dëmtues dhe mund të ekspozojë tabletën dhe të dhënat e tua ndaj rrezikut. Nuk rekomandohet që ta instalosh këtë app.</string>
-    <string name="unknown_install_dlg_general_title">Ky app është nga një burim i panjohur</string>
+    <string name="unknown_install_dlg_desc_phone">Ky app nuk vjen nga një dyqan app-esh i autorizuar. Për të mbrojtur telefonin dhe informacionin personal, instaloje app-in nga një burim i autorizuar, si Dyqani Play ose Galaxy Store.</string>
+    <string name="unknown_install_dlg_desc_tablet">Ky app nuk vjen nga një dyqan app-esh i autorizuar. Për të mbrojtur tabletën dhe informacionin personal, instaloje app-in nga një burim i autorizuar, si Dyqani Play ose Galaxy Store.</string>
+    <string name="unknown_install_dlg_general_title">Instalimi i këtij app-i nuk rekomandohet</string>
     <string name="unknown_install_dlg_negative_button">Mos instalo</string>
     <string name="unknown_install_dlg_perm_desc1">App-i mund të interceptojë kode verifikimi nga mesazhet tekst që të mbërrijnë.</string>
     <string name="unknown_install_dlg_perm_desc2">Thirrjet në dalje mund të ridrejtohen te një numër telefoni tjetër pa dijeninë tënde.</string>
@@ -1247,7 +1216,7 @@ Për ta hequr këtë mbrojtje, shko tek Cilësimet > Siguria dhe privatësia > B
     <string name="usb_abnormal_reset_title">Lidhja USB e paqëndrueshme</string>
     <string name="usb_abnormal_reset_toast">Lidhja USB nuk është e qëndrueshme. Shkëpute kabllon dhe lidhe sërish, ose provo një kabllo tjetër.</string>
     <string name="usb_accessory_notification_title">U lidh me një aksesor USB</string>
-    <string name="usb_bad_removal_message">Është hequr një pajisje magazinë USB në mënyrë jo të sigurt. Që të mos e lejosh tabletën të riniset papritur, ruaj të dhënat e paruajtura dhe rinise tani.</string>
+    <string name="usb_bad_removal_message">Është hequr një pajisje magazinë USB në mënyrë jo të sigurt. Që të mos e lejosh telefonin të riniset papritur, ruaj të dhënat e paruajtura dhe rinise tani.</string>
     <string name="usb_blocked_by_emergency_mode">Disa funksione USB nuk ofrohen në Regjimin urgjencë.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Nuk mund përdor funksione të ndërlidhura me pajisjen USB të lidhur, kur është aftësuar regjimi Kursim energjie maksimal.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Disa funksione USB do të kufizohen, kur është ndezur Regjimi kursim energjie maksimal.</string>
@@ -1256,18 +1225,20 @@ Për ta hequr këtë mbrojtje, shko tek Cilësimet > Siguria dhe privatësia > B
     <string name="usb_camera_connected_notification_title">U lidh një pajisje media</string>
     <string name="usb_camera_disconnected_notification_title">Pajisja media u shkëput</string>
     <string name="usb_cd_installer_notification_title">Përditësimi i softuerit</string>
-    <string name="usb_charing_only_notification_title">Lidhur</string>
+    <string name="usb_charing_only_notification_title">Karikohet me USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Bllokuesi auto është ndezur, me kufizime maksimale.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">Lidhja USB është bllokuar</string>
     <string name="usb_debugging_only_notification_title">Vetëm debugging</string>
     <string name="usb_host_Unknown_device_connected_notification_title">Pajisje e panjohur USB u lidh.</string>
     <string name="usb_host_cable_connected_notification_title">Lidhësi USB u lidh.</string>
     <string name="usb_host_cable_disconnected_notification_title">Lidhësi USB u shkëput.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Kjo pajisje nuk mund të hapet. Pajisja e lidhur ka nevojë për furnizim të jashtëm me rrymë.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Pajisja USB me fuqi të lartë u lidh.</string>
-    <string name="usb_host_resource_exceed_message">Kontrolluesi USB i tabletës sate nuk ka burime të mjaftueshme për t’u lidhur me këtë pajisje. Provo ta shkëputësh pajisjen dhe ta lidhësh sërish.</string>
+    <string name="usb_host_resource_exceed_message">Kontrolluesi USB i telefonit tënd nuk ka burime të mjaftueshme për t’u lidhur me këtë pajisje. Provo ta shkëputësh pajisjen dhe ta lidhësh sërish.</string>
     <string name="usb_host_resource_exceed_title">S’ka mjaft burime për kontrolluesin USB</string>
-    <string name="usb_hub_depth_exceed_message">Tableta jote mund të mbështetë jo më shumë se 5 lidhje USB me qendrën njëkohësisht.</string>
+    <string name="usb_hub_depth_exceed_message">Telefoni yt mund të mbështetë jo më shumë se 5 lidhje USB me qendrën njëkohësisht.</string>
     <string name="usb_hub_depth_exceed_title">Maksimumi i lidhjeve USB</string>
-    <string name="usb_hub_power_exceed_message">Tableta jote nuk mund të sigurojë energji të mjaftueshme për këtë pajisje USB. Lidhe pajisjen me një qendër USB që furnizon vetë me energji, para se ta lidhësh me tabletën.</string>
+    <string name="usb_hub_power_exceed_message">Telefoni yt nuk mund të sigurojë energji të mjaftueshme për këtë pajisje USB. Lidhe pajisjen me një qendër USB që furnizon vetë me energji, para se ta lidhësh me telefonin.</string>
     <string name="usb_increase_battery_usage">Lidhja USB mund të rritë përdorimin e baterisë.</string>
     <string name="usb_keyboard_connected_notification_title">Tastiera u lidh</string>
     <string name="usb_keyboard_disconnected_notification_title">Tastiera u shkëput</string>
@@ -1300,8 +1271,9 @@ Për ta hequr këtë mbrojtje, shko tek Cilësimet > Siguria dhe privatësia > B
     <string name="usb_ums_connected_notification_message_usbhost">Magazina masive USB u largua papritur.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Memoria e brendshme USB u lidh</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Magazina masive USB u largua në mënyrë të sigurt.</string>
-    <string name="usb_unblock_by_screen_unlock">Zhbllokoje tabletën për të përdorur pajisjen e lidhur USB.</string>
-    <string name="usb_unsupport_accessory_message">Kjo pajisje USB nuk mbështetet nga tableta jote.</string>
+    <string name="usb_unblock_by_screen_unlock">Zhbllokoje telefonin për të përdorur pajisjen e lidhur USB.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">Për të përdorur pajisjen USB, zhbllokoje telefonin dhe rilidhe pajisjen USB.</string>
+    <string name="usb_unsupport_accessory_message">Kjo pajisje USB nuk mbështetet nga telefoni yt.</string>
     <string name="usb_unsupport_accessory_title">Pajisja USB nuk mbështetet</string>
     <string name="usb_unsupported_device">Pajisja e lidhur USB nuk mbështetet.</string>
     <string name="usb_unsupported_device_title">Pajisja nuk mbështetet</string>
@@ -1319,19 +1291,19 @@ Për ta hequr këtë mbrojtje, shko tek Cilësimet > Siguria dhe privatësia > B
     <string name="usb_water_dialg_method_2_desc_2">Mund ta shpejtosh tharjen duke drejtuar një ventilator ose tharëse flokësh (vetëm me ajër të ftohtë) drejt portës.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Kemi pikasur lagështi ose materiale të huaja në portën e karikimit/USB.
 
-Kontrolloje portën e karikimit/USB për ndonjë material të huaj, si pluhur ose mbeturina. Për të parandaluar dëmtimin e tabletës, mos fut asgjë në portën e karikimit, derisa ajo të jetë e pastër dhe të mos ketë më lagështi.
+Kontrolloje portën e karikimit/USB për ndonjë material të huaj, si pluhur ose mbeturina. Për të parandaluar dëmtimin e telefonit, mos fut asgjë në portën e karikimit, derisa ajo të jetë e pastër dhe të mos ketë më lagështi.
 
-Për ta tharë portën, tunde tabletën pastaj prit që të thahet, çfarë mund të kërkojë disa orë. Mund ta përshpejtosh tharjen duke drejtuar një ventilator ose tharëse (vetëm me ajër të ftohtë) për nga porta."</string>
+Për ta tharë portën, tunde telefonin pastaj prit që të thahet, çfarë mund të kërkojë disa orë. Mund ta përshpejtosh tharjen duke drejtuar një ventilator ose tharëse (vetëm me ajër të ftohtë) për nga porta."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Kemi pikasur lagështi ose materiale të huaja në portën e karikimit/USB.
 
-Kontrolloje portën e karikimit/USB për ndonjë material të huaj, si pluhur ose mbeturina. Për të parandaluar dëmtimin e tabletës, mos fut asgjë në portën e karikimit, derisa ajo të jetë e pastër dhe të mos ketë më lagështi.
+Kontrolloje portën e karikimit/USB për ndonjë material të huaj, si pluhur ose mbeturina. Për të parandaluar dëmtimin e telefonit, mos fut asgjë në portën e karikimit, derisa ajo të jetë e pastër dhe të mos ketë më lagështi.
 
-Për ta tharë portën, tunde tabletën pastaj prit që të thahet, çfarë mund të kërkojë disa orë. Mund ta përshpejtosh tharjen duke drejtuar një ventilator ose tharëse (vetëm me ajër të ftohtë) për nga porta.
+Për ta tharë portën, tunde telefonin pastaj prit që të thahet, çfarë mund të kërkojë disa orë. Mund ta përshpejtosh tharjen duke drejtuar një ventilator ose tharëse (vetëm me ajër të ftohtë) për nga porta.
 
-Ndërkohë, mund ta karikosh tabletën pa tel."</string>
+Ndërkohë, mund ta karikosh telefonin pa tel."</string>
     <string name="usb_water_notification_content">Ka lagështirë ose material të huaj në portën e karikimit/USB. Kontrollo para karikimit.</string>
-    <string name="usb_water_notification_message">U pikas lagështi në portën e karikuesit/USB. Sigurohu që ajo të jetë tërësisht e thatë, para se ta karikosh tabletën. Tharja e plotë mund të marrë ca kohë.</string>
+    <string name="usb_water_notification_message">U pikas lagështi në portën e karikuesit/USB. Sigurohu që ajo të jetë tërësisht e thatë, para se ta karikosh telefonin. Tharja e plotë mund të marrë ca kohë.</string>
     <string name="usb_water_notification_message_button">Hollësi</string>
     <string name="usb_water_notification_title">Kontrollo karikuesin/portën USB</string>
     <string name="usbhostStorage_restrict">Politika e sigurisë nuk lejon përdorimin e magazinës USB në pritës.</string>
@@ -1344,6 +1316,8 @@ Ndërkohë, mund ta karikosh tabletën pa tel."</string>
     <string name="vpn_allowOnlySecureConnection">Profili VPN nuk është i sigurt.</string>
     <string name="vpn_error_text">Trokit për të provuar rilidhjen me VPN.</string>
     <string name="vpn_error_title">Gabim i lidhjes VPN</string>
+    <string name="vpn_fail_text_long">S’u lidha dot me %s. Trokit për ta menaxhuar këtë VPN.</string>
+    <string name="vpn_fail_title">VPN nuk është lidhur</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Duke mbyllur app-et, për ta ftohur tabletën</string>
     <string name="vzw_cooldown_mode_ok">OK</string>
@@ -1406,6 +1380,7 @@ Ndërkohë, mund ta karikosh tabletën pa tel."</string>
     <string name="wifi_network_available_detailed">Ka një rrjet Wi-Fi të hapur në dispozicion.</string>
     <string name="wifi_networks_available">Ka rrjete Wi-Fi në dispozicion</string>
     <string name="wifi_networks_available_detailed">Ka rrjete Wi-Fi të hapura në dispozicion.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s po përdor të dhëna celulare sepse lidhja jote WLAN është e ngadaltë ose e paqëndrueshme.</string>
     <string name="wifi_notification_switch_wifi_detail">Telefoni yt kaloi në të dhëna celulare, sepse rrjeti Wi-Fi ishte i paqëndrueshëm.</string>
     <string name="wifi_notification_switch_wifi_title">U kalua në të dhëna celulare</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Njoftime të urgjencës</string>
@@ -1437,9 +1412,5 @@ Ndërkohë, mund ta karikosh tabletën pa tel."</string>
     <string name="work_profile_on_message">Kjo do të japë akses në app-et e punës, njoftimet, të dhënat dhe funksionalitete të tjera të profilit të punës.</string>
     <string name="work_profile_on_title">Do ta ndezësh Profilin e punës?</string>
     <string name="work_profile_restricted">Bllokuesi auto është ndezur me kufizime maksimale. Për të mbrojtur sigurinë tënde, nuk mund të krijohen profile pune.</string>
-    <string name="work_profile_telephony_paused_text">I ke vënë në pauzë app-et e punës. Nuk do të marrësh thirrje dhe as mesazhe tekst prej tyre.</string>
-    <string name="work_profile_telephony_paused_title">Thirrjet dhe mesazhet janë fikur</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Do ta ndezësh profilin e punës?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">Derisa ta fik</string>
 </resources>

@@ -23,7 +23,7 @@
     <item type="dimen" name="dialog_fixed_width_minor">90.0%</item>
     <dimen name="face_unlock_height">430.0dip</dimen>
     <dimen name="floating_toolbar_preferred_width">544.0dip</dimen>
-    <dimen name="immersive_mode_cling_width">380.0dip</dimen>
+    <dimen name="immersive_mode_cling_width">600.0dip</dimen>
     <dimen name="input_method_navigation_key_padding">25.0dip</dimen>
     <dimen name="input_method_navigation_key_width">128.0dip</dimen>
     <dimen name="keyguard_lockscreen_outerring_diameter">364.0dip</dimen>

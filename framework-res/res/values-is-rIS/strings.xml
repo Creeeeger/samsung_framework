@@ -87,6 +87,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Tala við Bixby</string>
     <string name="accessibility_corner_action_type_zoom_in">Auka aðdrátt</string>
     <string name="accessibility_corner_action_type_zoom_out">Minnka aðdrátt</string>
+    <string name="accessibility_dialog_button_allow_samsung">Leyfa</string>
+    <string name="accessibility_dialog_button_deny_samsung">Hafna</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Fjarlægja</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Þegar ýtt er stutt á aflrofann og takkann til að hækka hljóðstyrk er kveikt eða slökkt á eftirfarandi aðgerðum:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Þegar ýtt er stuttlega á hliðartakkann og takkann til að hækka hljóðstyrk er kveikt eða slökkt á eftirfarandi aðgerðum:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Þegar ýtt er stutt á aflrofann og takkann til að hækka hljóðstyrk er kveikt eða slökkt á %s.</string>
@@ -118,6 +121,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">Öryggisstefnan kemur í veg fyrir að þessum reikningi sé bætt við.</string>
     <string name="account_removal_restrict">Öryggisstefnan kemur í veg fyrir að þessi reikningur sé fjarlægður.</string>
+    <string name="action_bar_up_description">Fletting upp</string>
     <string name="action_menu_overflow_description">Fleiri valkostir</string>
     <string name="adb_active_notification_message">Velja til að slökkva á USB-kembingu.</string>
     <string name="adb_active_notification_title">USB-kembing tengd.</string>
@@ -126,6 +130,9 @@
     <string name="advance_wifi_sharing_msg">Tiltækt Wi-Fi net var greint. Tengstu því til að nota Wi-Fi samnýtingu í staðinn fyrir farsímagögn fyrir farsímaaðgangsstaðinn.</string>
     <string name="airplanemode_restrict">Öryggisstefna kemur í veg fyrir að kveikt sé á flugstillingu.</string>
     <string name="allow_settings_changes">Öryggisstefnan kemur í veg fyrir breytingar á stillingum.</string>
+    <string name="always_allow">Leyfa alltaf</string>
+    <string name="app_block_button_open">Opna</string>
+    <string name="app_block_content">%1$s vill opna forritið %2$s.</string>
     <string name="app_clone_storage">Innri geymsla (tvöf. skilaboðafor.)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Velja forrit</string>
     <string name="app_continuity_guide_cling_button_not_now">Ekki núna</string>
@@ -140,32 +147,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">Þú hefur notað allan tímann þinn fyrir %s í dag. Þessu er hægt að breyta í stillingunum.</string>
     <string name="app_restricted_message_concentration_mode">%s er útilokað í einbeitingarstillingu. Hafðu samband við kerfisstjórann til að fá frekari upplýsingar.</string>
     <string name="app_updating_message">Verið er að uppfæra %s. Reyndu aftur síðar.</string>
-    <string name="appblock_block_subtitle1_phone">Til að vernda símann þinn og persónuupplýsingar er ekki hægt að setja þetta forrit upp þar sem grunur leikur á um að það sé spilliforrit.</string>
-    <string name="appblock_block_subtitle1_tablet">Til að vernda spjaldtölvuna þína og persónuupplýsingar er ekki hægt að setja þetta forrit upp þar sem grunur leikur á um að það sé spilliforrit.</string>
-    <string name="appblock_block_subtitle2">Ekki er hægt að setja þetta forrit upp vegna þess að það hefur verið tilkynnt sem spilliforrit.</string>
-    <string name="appblock_block_text1">Uppruni þessa forrits er óstaðfestur og það krefst viðkvæmra heimilda sem gætu verið notaðar til að stela eða leka persónuupplýsingum þínum.</string>
-    <string name="appblock_block_text2">"Spilliforrit geta notað viðkvæmar heimildir til að stela persónuupplýsingum þínum, líkja eftir auðkenni þínu eða fá aðgang að fjárhagsreikningum þínum.
-
-Fjármálastofnanir fara ekki fram á að notendur setji upp ZIP-skrár, APK-skrár eða skráastjórnunarforrit.
-
-Gakktu alltaf úr skugga um að forritin sem þú setur upp komi frá traustum uppruna."</string>
-    <string name="appblock_warn_subtitle">Þetta forrit gæti stolið eða lekið persónuupplýsingum þínum.</string>
+    <string name="appblock_block_text_phone">Ekki er hægt að setja þetta forrit upp vegna þess að það hefur verið tilkynnt sem spilliforrit eða svipar til forrits sem hefur verið tilkynnt sem spilliforrit. Líklegt er að þetta forrit verði notað við glæpi á borð við vefveiðar. Til að gæta að öryggi símans og gagnanna þinn er ekki hægt að sneiða hjá þessari takmörkun.</string>
+    <string name="appblock_block_text_tablet">Ekki er hægt að setja þetta forrit upp vegna þess að það hefur verið tilkynnt sem spilliforrit eða svipar til forrits sem hefur verið tilkynnt sem spilliforrit. Líklegt er að þetta forrit verði notað við glæpi á borð við vefveiðar. Til að gæta að öryggi spjaldtölvunnar og gagnanna þinn er ekki hægt að sneiða hjá þessari takmörkun.</string>
+    <string name="appblock_link_text">Frekari upplýsingar</string>
     <string name="appblock_warn_text1">"Uppsetning á forritum frá óstaðfestum uppruna getur gert forritunum kleift að safna persónuupplýsingum þínum eða fylgjast með virkni þinni.
 
 Ekki er mælt með uppsetningu þessa forrits.
 
 Ef þú kýst samt að setja upp þetta forrit skaltu fara vel yfir persónuverndartilkynningu þess og heimila aðeins nauðsynlegan aðgang."</string>
-    <string name="appblock_warn_text2">"Spilliforrit reyna oft að komast yfir persónuupplýsingar með því að nota aðgangsheimildir að tengiliðum, textaskilaboðum og myndum.
-
-Ekki er mælt með uppsetningu þessa forrits.
-
-Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treystir uppruna forritsins og sýndu aðgát þegar þú veitir heimildir eða annarskonar aðgang að gögnunum þínum."</string>
     <string name="application_default_restrict">Stjórnandi tækisins hefur valið annað forrit sem sjálfgefið.</string>
     <string name="auto_click_paused">Hlé gert á „Smella sjálfkrafa“.</string>
     <string name="auto_click_resumed">„Smella sjálfkrafa“ haldið áfram.</string>
     <string name="autofill_never_use_for_this_app">Aldrei nota %s fyrir þetta forrit</string>
     <string name="autofill_save_cancel">Hætta við</string>
     <string name="autofill_save_never_OK">Í lagi</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">Öryggisstefnan kemur í veg fyrir afritun.</string>
     <string name="badPin2">PIN2-númerið er rangt. Reyndu aftur.</string>
     <string name="badPuk2">PUK2-kóðinn sem þú slóst inn er rangur</string>
@@ -176,8 +172,6 @@ Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treys
     <string name="bluetooth_a2dp_restrict">Öryggisstefnan kemur í veg fyrir spilun hljóðefnis um Bluetooth.</string>
     <string name="bluetooth_avrcp_restrict">Öryggisstefnan kemur í veg fyrir notkun mynd-/hljóðstjórnunar með Bluetooth.</string>
     <string name="bluetooth_bpp_restrict">Öryggisstefnan kemur í veg fyrir prentun um Bluetooth.</string>
-    <string name="bluetooth_china_popup_message">%1$s fer fram á heimild til að nota %2$s. Viltu leyfa það?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Öryggisstefnan kemur í veg fyrir gagnaflutning um Bluetooth.</string>
     <string name="bluetooth_desktop_restrict">Öryggisstefnan kemur í veg fyrir tengingu við tölvu um Bluetooth.</string>
     <string name="bluetooth_device_restrict">Öryggisstefnan kemur í veg fyrir pörun við þetta Bluetooth-tæki.</string>
@@ -188,7 +182,6 @@ Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treys
     <string name="bluetooth_outgoing_call_restrict">Öryggisstefnan kemur í veg fyrir notkun Bluetooth til að hringja símtöl.</string>
     <string name="bluetooth_pairing_restrict">Öryggisstefnan kemur í veg fyrir Bluetooth-pörun.</string>
     <string name="bluetooth_pbap_restrict">Öryggisstefnan kemur í veg fyrir notkun Bluetooth-símaskrár.</string>
-    <string name="bluetooth_permission_request">Bluetooth-leyfisbeiðni</string>
     <string name="bluetooth_restrict">Öryggisstefnan kemur í veg fyrir notkun Bluetooth.</string>
     <string name="bluetooth_sap_restrict">Öryggisstefnan kemur í veg fyrir aðgang að SIM-kortinu um Bluetooth.</string>
     <string name="bluetooth_security_mode_disable">Öryggisstefnan kemur í veg fyrir notkun Bluetooth.</string>
@@ -251,11 +244,8 @@ Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treys
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">Leyfð tæki</string>
     <string name="data_call_restriction">Öryggisstefnan takmarkar notkun farsímagagna.</string>
-    <string name="data_usage_disable_mobile">Slökkva á gagnatengingu farsíma?</string>
-    <string name="data_usage_enable_mobile_warning">Gjald kann að vera tekið fyrir pakkagagnatengingu. Viltu halda áfram?</string>
     <string name="data_usage_limit_body">Farsímagögn eru í bið þar til í lok greiðslutímabilsins.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Yfir farsímagagnamörkum</string>
-    <string name="data_usage_mobile_limit_title">Farsímagagnamarki náð</string>
     <string name="data_usage_rapid_app_body">%s hefur notað meiri gögn en venjulega.</string>
     <string name="data_usage_rapid_body">Forritin þín notuðu meiri gögn en venjulega.</string>
     <string name="data_usage_rapid_title">Mikil notkun farsímagagna</string>
@@ -266,6 +256,7 @@ Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treys
     <string name="data_usage_warning_title_offpeak_chn">%s gagna utan háannat. notuð</string>
     <string name="data_usage_warning_title_unlimited_chn">Hámarkshraða farsímagagna náð</string>
     <string name="device_disabled">Tæki gert óvirkt. Hafðu samband við kerfisstjóra.</string>
+    <string name="device_info_not_available">Ekki tiltækt.</string>
     <string name="dex_cant_change_user_profile">Ekki er hægt að breyta notandaprófíl í Samsung DeX-stillingu.</string>
     <string name="dex_dialog_launch_toast">Opin forrit kunna að lokast. Vistaðu gögnin þín áður en þú ræsir eða lokar Samsung DeX.</string>
     <string name="dex_disconnected_from_device">DeX missti tenginguna við %s. Athugaðu nettenginguna í sjónvarpinu.</string>
@@ -274,9 +265,6 @@ Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treys
     <string name="dex_launcher_mode_change">%s lokað til að skipta yfir í Samsung DeX.</string>
     <string name="dex_mirroring_jit_msg">Þegar þú keyrir Samsung DeX í spjaldtölvunni getur þú speglað skjáinn á hvaða HDMI-tengda skjá sem er til að fá stærra yfirlit.</string>
     <string name="dex_mirroring_jit_title">Spegla DeX á stærri skjá</string>
-    <string name="dex_restart_app_dialog_button_positive">Endurræsa</string>
-    <string name="dex_restart_app_dialog_message">Þetta forrit er þegar í gangi á öðrum skjá. Nauðsynlegt er að endurræsa forritið áður en hægt er að opna það hér. Vistaðu allt sem máli skiptir áður en það er endurræst.</string>
-    <string name="dex_restart_app_dialog_title">Viltu endurræsa %s?</string>
     <string name="dex_restriction_blockerMessage">Öryggisstefna kemur í veg fyrir notkun Samsung DeX.</string>
     <string name="dex_restriction_ethernetOnly">Öryggisstefnan kemur í veg fyrir notkun gagna um Wi-Fi, farsímagagna og tjóðrun í Dex. Tengjast þarf með snúru til að nota netkerfi.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Öryggisstefna kemur í veg fyrir að hægt sé að loka Samsung DeX án þess að aftengja ytri skjá.</string>
@@ -301,7 +289,6 @@ Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treys
     <string name="digital_signature_failure_user_notification">Ógild stafræn undirskrift fyrir notandann %d</string>
     <string name="disableupdate_application_restrict">Öryggisstefna kemur í veg fyrir uppfærslu þessa forrits.</string>
     <string name="display_chooser_button_positive">Endurræsa</string>
-    <string name="display_chooser_dont_show_again">Ekki sýna aftur</string>
     <string name="dlg_confirm_kill_storage_users_text">Þegar USB-geymsla er tengd stöðvast sum forrit sem eru í notkun. Það er mögulega ekki hæt að nota þau fyrr en búið er að aftengja USB-geymslu.</string>
     <string name="dlg_confirm_kill_storage_users_title">Tengja geymslu við tölvu</string>
     <string name="dlg_error_title">USB-aðgerð mistókst</string>
@@ -316,7 +303,7 @@ Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treys
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Ekki er hægt að nota þetta forrit í mörgum gluggum.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Ekki er hægt að nota þennan eiginleika í mörgum gluggum.</string>
     <string name="edit_contact_at_sim_restriction">Öryggisstefna kemur í veg fyrir að tengiliðum SIM-korts sé breytt.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Leyfð tæki</string>
+    <string name="edm_policy_not_allow_open_wifiap">Öryggisstefnan takmarkar notkun óvarinnar tjóðrunar heits reits.</string>
     <string name="emergency_calls_only">Aðeins neyðarsímtöl</string>
     <string name="ethernet_cable_connected_notification_message">Pikkaðu til að setja upp.</string>
     <string name="ethernet_cable_connected_notification_title">Ethernet-snúra tengd.</string>
@@ -336,7 +323,7 @@ Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treys
     <string name="ext_media_unsupported_notification_message">Þetta tæki styður ekki þetta %s. Pikka skal til að setja það upp á studdu sniði.</string>
     <string name="ext_media_unsupported_notification_title">Óstutt %s</string>
     <string name="ext_storage_bad_removal_button">Endurræsa</string>
-    <string name="ext_storage_bad_removal_title">Endurræstu spjaldtölvuna</string>
+    <string name="ext_storage_bad_removal_title">Endurræstu símann</string>
     <string name="extmedia_format_button_format">Snið</string>
     <string name="extmedia_format_message_usbhost">Öllum skrám í USB-geymslunni verður eytt. Ekki er hægt að afturkalla þessa aðgerð!</string>
     <string name="extmedia_format_title_usbhost">Sníða USB-geymslu?</string>
@@ -407,6 +394,7 @@ Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treys
     <string name="globalactions_unable_restart_msg_fmm">Ekki er hægt að endurræsa vegna þess að símanum hefur verið læst um fjartengingu með „Finna símann minn“.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Ekki er hægt að endurræsa vegna þess að spjaldtölvunni hefur verið læst um fjartengingu með „Finna símann minn“.</string>
     <string name="globalactions_unable_restart_msg_securelock">Ekki er hægt að endurræsa símann þegar hann er læstur. Opnaðu hulstrið og taktu símann úr lás til að endurræsa hann.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Ekki er hægt að endurræsa símann á meðan SIM-kortið er læst.</string>
     <string name="hardware_key_restrict">Öryggisstefnan kemur í veg fyrir notkun þessa vélbúnaðartakka.</string>
     <string name="hardware_sec">Skjályklaborð</string>
     <string name="hbd_translate">Þýða innsleginn texta</string>
@@ -476,16 +464,16 @@ Ef þú kýst samt að setja það upp skaltu ganga úr skugga um að þú treys
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Þú þarft að taka spjaldtölvuna úr lás til að slökkva á viðhaldsstillingu.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Ekkert sem gert er á meðan kveikt er á viðhaldsstillingu er vistað, svo sem sótt gögn, uppsetningar á forritum eða breytingar á stillingum.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Velja skjálás</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Endurræsa án þess að búa til annálaskrá</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Hreinsa annálaskrá og endurræsa</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Endurræsa þarf símann til að hægt sé að kveikja á viðhaldsstillingu.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Byrjaðu á að velja skjálás.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Endurræsa þarf spjaldtölvuna til að hægt sé að kveikja á viðhaldsstillingu.</string>
     <string name="maintenance_mode_intro_dialog_textview_message_phone">"Til að auðvelda starfsfólki okkar að greina vandamál í símanum mælum við með að kerfisskrá sé búin til áður en endurræst er í viðhaldsstillingu.
 
-Skráin sýnir hvaða forrit voru notuð og villur sem kunna að hafa komið upp nýlega en inniheldur engar aðrar persónuupplýsingar. Annálaskráin verður aðeins notuð til að greina vandamál og ekki í neinum öðrum tilgangi. Venjulega tekur um tvær mínútur að búa skrána til."</string>
+Skráin inniheldur aðeins upplýsingar sem nauðsynlegar eru til að gera við símann þinn, t.d. hvaða forrit voru notuð, villur sem hafa komið upp nýlega, símanúmer á bannlista og geymslurými fyrir skrár. Skráin verður aðeins notuð til að greina vandamál og ekki í neinum öðrum tilgangi. Venjulega tekur um tvær mínútur að búa skrána til."</string>
     <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Til að auðvelda starfsfólki okkar að greina vandamál í spjaldtölvunni mælum við með að kerfisskrá sé búin til áður en endurræst er í viðhaldsstillingu.
 
-Skráin sýnir hvaða forrit voru notuð og villur sem kunna að hafa komið upp nýlega en inniheldur engar aðrar persónuupplýsingar. Annálaskráin verður aðeins notuð til að greina vandamál og ekki í neinum öðrum tilgangi. Venjulega tekur um tvær mínútur að búa skrána til."</string>
+Skráin inniheldur aðeins upplýsingar sem nauðsynlegar eru til að gera við spjaldtölvuna þína, t.d. hvaða forrit voru notuð, villur sem hafa komið upp nýlega, símanúmer á bannlista og geymslurými fyrir skrár. Skráin verður aðeins notuð til að greina vandamál og ekki í neinum öðrum tilgangi. Venjulega tekur um tvær mínútur að búa skrána til."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Greina geymslu</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Innri geymsla símans er næstum full. Ef geymsluplássið klárast gætu sum forrit og eiginleikar hætt að virka rétt. Prófaðu að eyða skrám eða forritum sem þú þarft ekki lengur á að halda. Ekki gleyma að tæma ruslið eftir að efninu hefur verið eytt.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Innri geymsla spjaldtölvunnar er næstum full. Ef geymsluplássið klárast gætu sum forrit og eiginleikar hætt að virka rétt. Prófaðu að eyða skrám eða forritum sem þú þarft ekki lengur á að halda. Ekki gleyma að tæma ruslið eftir að efninu hefur verið eytt.</string>
@@ -507,10 +495,17 @@ Skráin sýnir hvaða forrit voru notuð og villur sem kunna að hafa komið upp
     <string name="maintenance_mode_outro_label">Loka viðhaldsstillingu</string>
     <string name="maintenance_mode_outro_textview_message_phone">Þú þarft að opna símann til að slökkva á viðhaldsstillingunni. Þegar þú gerir það er síminn endurheimtur í þá stöðu sem var til staðar þegar kveikt var á viðhaldsstillingunni. Breytingar sem gerðar eru á meðan kveikt er á viðhaldsstillingu, s.s. sótt gögn, uppsett forrit og breyttar stillingar, eru ekki vistaðar.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Þú þarft að opna spjaldtölvuna til að slökkva á viðhaldsstillingunni. Þegar þú gerir það er spjaldtölvan endurheimt í þá stöðu sem var til staðar þegar kveikt var á viðhaldsstillingunni. Breytingar sem gerðar eru á meðan kveikt er á viðhaldsstillingu, s.s. sótt gögn, uppsett forrit og breyttar stillingar, eru ekki vistaðar.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Ekki er hægt að nota viðhaldsstillingu þegar „%s“ er virkt.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Ekki er hægt að nota viðhaldsstillingu á meðan kveikt er á orkusparnaði með takmörkuðum forritum og heimaskjá.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Viðhaldsstilling er ekki studd í þessum síma.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Viðhaldsstilling er ekki studd í þessari spjaldtölvu.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">Aðeins eigandi tækisins getur notað %s.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Viltu hætta að afrita gögnin og kveikja á viðhaldsstillingu?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Þú þarft að ljúka við eða eyða ólokinni öryggisafritun til að kveikja á viðhaldsstillingu.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Þú þarft að stöðva yfirstandandi öryggisafritun til að kveikja á viðhaldsstillingu.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Þú þarft að stöðva endurheimt afritaðra gagna til að kveikja á viðhaldsstillingu.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Forrit fyrir stjórnanda tækis</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Býr til annálaskrá …</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Þetta tekur venjulega um tvær mínútur. Þegar annálaskráin hefur verið búin til er síminn endurræstur í viðhaldsstillingu og þú getur afhent hann til viðhalds á öruggan hátt.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Þetta tekur venjulega um tvær mínútur. Þegar annálaskráin hefur verið búin til er spjaldtölvan endurræst í viðhaldsstillingu og þú getur afhent hana til viðhalds á öruggan hátt.</string>
@@ -533,13 +528,8 @@ Spjaldtölvan verður endurræst fljótlega."</string>
     <string name="media_checking_usbhost">Verið er að kanna USB-geymsluna.</string>
     <string name="media_unknown_state">Ástand ytri miðla er óþekkt.</string>
     <string name="mediaplayer_restrict">Öryggisstefnan kemur í veg fyrir notkun MTP-efnisspilara.</string>
+    <string name="message_on_crash">Útilokað af sjálfvirkri útilokun</string>
     <string name="microphone_restrict">Öryggisstefnan kemur í veg fyrir notkun hljóðnema.</string>
-    <string name="miniresolver_call">Símtal</string>
-    <string name="miniresolver_call_in_work">Hringja úr vinnuforriti?</string>
-    <string name="miniresolver_call_information">Fyrirtæki þitt leyfir þér aðeins að hringja úr vinnuforritum.</string>
-    <string name="miniresolver_sms_information">Fyrirtækið þitt leyfir þér aðeins að senda skilaboð úr vinnuforritum.</string>
-    <string name="miniresolver_switch">Skipta</string>
-    <string name="miniresolver_switch_to_work">Viltu skipta yfir í vinnuforrit?</string>
     <string name="mmcc_authentication_reject_name_template">%s ekki leyft</string>
     <string name="mmcc_illegal_me_name_template">%s ekki leyft</string>
     <string name="mmcc_illegal_ms_name_template">%s ekki leyft</string>
@@ -551,30 +541,6 @@ Spjaldtölvan verður endurræst fljótlega."</string>
     <string name="mock_location_reminder_disable">Slökkva</string>
     <string name="mock_location_reminder_title">Kveikt er á gervistaðsetningu</string>
     <string name="more_apps">Fleiri forrit</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s-þjónusta er ekki studd. Hafðu samband við þjónustuver.</string>
-    <string name="mptcp_message_address_type_not_supported">%s tenging léleg. Tengi aftur í gegnum tiltækt net…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s tenging léleg. Tengi aftur í gegnum tiltækt net…</string>
-    <string name="mptcp_message_cmd_not_supported">%s-kerfi er ekki í boði sem stendur. Tengist aftur um tiltækt símkerfi…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s tenging léleg. Tengi aftur í gegnum tiltækt net…</string>
-    <string name="mptcp_message_connection_refused">%s tenging léleg. Tengi aftur í gegnum tiltækt net…</string>
-    <string name="mptcp_message_data_usage_limit">Hámarki gagnanotkunar hefur verið náð. Farðu í „Stillingar“ til að breyta hámarki gagnanotkunar.</string>
-    <string name="mptcp_message_host_unreachable">%s tenging léleg. Tengi aftur í gegnum tiltækt net…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Ekki er hægt að kveikja á %s. Tækið er ekki tengt við LTE-net.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Ekki er hægt að kveikja á %s í alþjóðlegu reiki.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Ekki er hægt að kveikja á %s þegar kveikt er á farsímaaðgangsstað eða USB-tjóðrun.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Ekki er hægt að kveikja á %s þegar kveikt er á Wi-Fi Direct.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Ekki er hægt að kveikja á %s þegar kveikt er á flugstillingu.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Ekki er hægt að kveikja á %s þegar slökkt er á farsímagögnum.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Símafyrirtækið svarar ekki.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Ekki er hægt að kveikja á %1$s. %2$s er ekki í boði í netpakkanum þínum eða ekkert svar barst frá netþjóni %3$s.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Mistókst að senda %s virkjunarbeiðni. Tengi aftur í gegnum tiltæk net…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Ekki er hægt að kveikja á %s. Rangt SIM-kort.</string>
-    <string name="mptcp_message_network_unreachable">%s tenging léleg. Tengi aftur í gegnum tiltækt net…</string>
-    <string name="mptcp_message_non_mptcp_plan">Ekki er hægt að kveikja á Giga Multi-Path. Gagnaáskriftin styður ekki þennan eiginleika.</string>
-    <string name="mptcp_message_operation_disabled_overheating">Slökkt var á %s til að tækið ofhitni ekki. Sæki í gegnum farsímakerfi í staðinn…</string>
-    <string name="mptcp_message_server_error">%s tenging léleg. Tengi aftur í gegnum tiltækt net…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Ekki er hægt að kveikja á %s. Tækið er of heitt. Bíddu þar til tækið hefur kólnað og reyndu svo aftur.</string>
-    <string name="mptcp_message_ttl_expired">%s-kerfi er ekki í boði sem stendur. Tengist aftur um tiltækt símkerfi…</string>
     <string name="multi_user_capability_restrict">Öryggisstefnan kemur í veg fyrir eiginleika tækisins fyrir marga notendur.</string>
     <string name="multi_user_creation_restrict">Öryggisstefnan kemur í veg fyrir stofnun nýrra notendareikninga í tækinu.</string>
     <string name="multi_user_removal_restrict">Öryggisstefnan kemur í veg fyrir að notendareikningar séu fjarlægðir úr tækinu.</string>
@@ -593,24 +559,22 @@ Spjaldtölvan verður endurræst fljótlega."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Hljóð er spilað í Bluetooth-hljóðtækinu þínu. Pikkaðu hér til að slökkva á þessu</string>
     <string name="multisound_sound_via_headphone">Hljóð úr „%s“ er spilað í heyrnartólunum. Pikkað er hér til að slökkva á þessu.</string>
     <string name="multisound_sound_via_headphone_multiselection">Hljóð er spilað í heyrnartólunum þínum. Pikkaðu hér til að slökkva á þessu.</string>
-    <string name="multisound_sound_via_phone_speaker">Hljóð úr „%s“ er spilað í hátalara spjaldtölvunnar. Pikkað er hér til að slökkva á þessu.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Hljóð er spilað í hátalara spjaldtölvunnar. Pikkaðu hér til að slökkva á þessu.</string>
+    <string name="multisound_sound_via_phone_speaker">Hljóð úr „%s“ er spilað í hátalara símans. Pikkað er hér til að slökkva á þessu.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Hljóð er spilað í hátalara símans. Pikkaðu hér til að slökkva á þessu.</string>
     <string name="multisound_sound_via_usb_audio">Hljóð úr „%s“ er spilað í USB-hljóðtækinu. Pikkað er hér til að slökkva á þessu.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Hljóð er spilað í USB-hljóðtækinu. Pikkaðu hér til að slökkva á þessu.</string>
     <string name="multisound_title">Aðskilja hljóð forrits</string>
     <string name="multisound_turn_off_multisound">Slökkva</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Ekki er hægt að keyra „%s“ í Samsung DeX. Prófaðu að keyra það í spjaldtölvustillingu.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Ekki er hægt að keyra „%s“ í Samsung DeX. Það er hannað fyrir heimaskjái spjaldtölva.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Sumir leikir virka aðeins á snertiskjáum. Ef músarstýringar virka ekki í Samsung DeX skaltu reyna að spila leikinn í spjaldtölvustillingu í staðinn.</string>
-    <string name="my_device">Þessi spjaldtölva</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Ekki er hægt að keyra „%s“ í Samsung DeX. Prófaðu að keyra það í símastillingu.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Ekki er hægt að keyra %s í Samsung DeX. Það er hannað fyrir heimaskjái síma.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Sumir leikir virka aðeins á snertiskjáum. Ef músarstýringar virka ekki í Samsung DeX skaltu reyna að spila leikinn í símastillingu í staðinn.</string>
+    <string name="my_device">Þessi sími</string>
     <string name="network_locked_sim_dialog_message_ais">SIM-kortið virkar ekki að fullu með þessum síma vegna þess að það samræmist ekki áskriftarskilmálunum. Ef þú hefur einhverjar spurningar eða vilt fá frekari upplýsingar um þetta skaltu kíkja í þjónustuver Samsung eða verslunina þar sem þú keyptir vörurnar.</string>
     <string name="network_locked_sim_notification_text">SIM-kort með læstu símkerfi í tæki.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Breyttu sjálfgefna heimaforritinu í „Heimaskjár One UI“.</string>
     <string name="nfc_restrict">Öryggisstefna kemur í veg fyrir notkun NFC.</string>
     <string name="nosim_limited_service">Takmörkuð þjónusta</string>
-    <string name="not_support_ai_key">Gervigreindarlykillinn virkar ekki með spjaldtölvunni þinni enn sem komið er. Uppfærsla verður í boði áður en langt um líður.</string>
-    <string name="notification_app_name_settings">Stillingar</string>
     <string name="notification_channel_dex_policy">Stefna Samsung DeX</string>
     <string name="ntfs_usb_storage_readonly_mount_message">Þessi geymsla er skrifvarin vegna þess að hún notar NTFS-sniðið.</string>
     <string name="ntfs_usb_storage_readonly_mount_title">Skrifv. USB-geymslu bætt við</string>
@@ -785,7 +749,6 @@ SKILIST TIL"</string>
     <string name="permlab_scheduleExactAlarm">Stilla vekjara og áminningar</string>
     <string name="permlab_spdControl">Stjórna uppfærslum á öryggisstefnu</string>
     <string name="permlab_ucsPlugin">Viðbót við altæka skilríkjastjórnun</string>
-    <string name="personal_apps_suspended_turn_profile_on">Kveikja</string>
     <string name="phoneTypeConference">Símafundur</string>
     <string name="policydesc_allow_bluetoothmode">Hindra notkun á Bluetooth.</string>
     <string name="policydesc_allow_browser">Hindra notkun á internetinu.</string>
@@ -793,7 +756,7 @@ SKILIST TIL"</string>
     <string name="policydesc_allow_desktopsync">Hindra notkun skjáborðssamstillingar.</string>
     <string name="policydesc_allow_internetsharing">Hindra notkun á farsímaaðgangsstað.</string>
     <string name="policydesc_allow_irda">Hindra notkun á IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Hindra notkun POP- og IMAP-tölvupósts í spjaldtölvunni.</string>
+    <string name="policydesc_allow_popimapemail">Hindra notkun POP- og IMAP-tölvupósts í símanum.</string>
     <string name="policydesc_allow_storagecard">Hindra notkun á SD-kortum.</string>
     <string name="policydesc_allow_textmessaging">Hindra notkun á SMS- og margmiðlunarskilaboðum.</string>
     <string name="policydesc_allow_thirdParty">Þetta forrit getur komið í veg fyrir keyrslu forrita frá þriðju aðilum.</string>
@@ -839,7 +802,7 @@ SKILIST TIL"</string>
     <string name="pwd_change_enforced">Öryggisstefnan krefst þess að þú breytir lykilorðinu þínu.</string>
     <string name="recording_fail">Ekki er hægt að nota hljóðnemann í %1$s á meðan hann er notaður í %2$s.</string>
     <string name="recording_popup">%s er að nota hljóðnemann.</string>
-    <string name="recording_popup_device">Spjaldtölva</string>
+    <string name="recording_popup_device">Sími</string>
     <string name="recording_popup_with_bluetooth">%s er að nota Bluetooth-hljóðnemann.</string>
     <string name="recording_popup_with_device">%1$s er að nota hljóðnema %2$s.</string>
     <string name="redo">Endurgera</string>
@@ -904,12 +867,12 @@ SKILIST TIL"</string>
     <string name="screencapture_restrict">Öryggisstefnan kemur í veg fyrir skjámyndatöku.</string>
     <string name="sd_card_unavailable_message">Þú getur ekki notað SD-kortið vegna þess að annar notandaprófíll var í notkun þegar kortið var sett í.</string>
     <string name="sd_card_unavailable_title">SD-kort ekki tiltækt</string>
-    <string name="sdcard_bad_removal_message">SD-kortið var fjarlægt á óöruggan máta. Vistaðu óvistuð gögn og endurræstu spjaldtölvuna til að koma í veg fyrir að hún endurræsi sig óvænt.</string>
+    <string name="sdcard_bad_removal_message">SD-kortið var fjarlægt á óöruggan máta. Vistaðu óvistuð gögn og endurræstu símann til að koma í veg fyrir að hann endurræsi sig óvænt.</string>
     <string name="sdcard_batch_decrypt_noti_content">Afkóða SD-kort</string>
     <string name="sdcard_batch_decrypt_noti_title">Afkóðun SD-korts</string>
     <string name="sdcard_batch_decrypt_popup_content">Afkóða verður dulkóðaða SD-kortið áður en það er notað. Afkóðun getur tekið klukkustund eða meira. Byrjaðu með fullhlaðna rafhlöðu og hafðu tækið í sambandi uns afkóðun er lokið. Ef afkóðunarferlið er rofið geta einhver eða öll gögn glatast.</string>
     <string name="sdcard_decrypt_err_notification">Villa kom upp við afkóðun á SD-korti.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Sumar skrár á SD-kortinu þínu voru dulkóðaðar í öðru tæki og ekki er hægt að nota þær í þessari spjaldtölvu.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Sumar skrár á SD-kortinu þínu voru dulkóðaðar í öðru tæki og ekki er hægt að nota þær í þessum síma.</string>
     <string name="sdcard_decrypt_notification">SD-kort afkóðað.</string>
     <string name="sdcard_decrypt_title_notification">Afkóðun SD-korts</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Afkóðar SD-kort…</string>
@@ -926,14 +889,6 @@ SKILIST TIL"</string>
     <string name="sdcard_unmount_policy_noti_title">SD-kort aftengt vegna tæknistefnu.</string>
     <string name="sdhms_nr_control_low_battery">Slökkva á 5G til að spara rafhlöðuna þegar hleðsla símans er komin niður fyrir 15%.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Áfram verður kveikt á Bluetooth í flugstillingu.</string>
-    <string name="sec_immersive_cling_button_ok">Í lagi</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Þetta forrit notar allan skjáinn. Hreyfiskipanir til að fletta munu sýna stöðustikuna. Strjúktu aftur þegar stöðustikan er sýnileg til að fletta.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Þetta forrit notar allan skjáinn. Heimatakki, bakkhnappur og takki fyrir nýlegt eru faldir til að lágmarka truflanir og til að koma í veg fyrir að þú lokir forritinu óvart.
-
-Jafnvel þótt þú snúir símanum verða hnapparnir alltaf staðsettir hjá hleðslutenginu. Hægt er að láta hnappana birtast aftur með því að strjúka inn á við frá brún skjásins eins og örin sýnir."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Þetta forrit notar allan skjáinn. Heimatakki, bakkhnappur og takki fyrir nýlegt eru faldir til að lágmarka truflanir og til að koma í veg fyrir að þú lokir forritinu óvart.
-
-Strjúktu upp frá neðri hluta skjásins eins og örin sýnir til að láta hnappana birtast aftur."</string>
     <string name="sec_monotype_default">Sjálfgefið</string>
     <string name="sec_ringtone_category_brand_sound">Hljóð Samsung-vörumerkisins</string>
     <string name="sec_ringtone_category_calm">Ró</string>
@@ -943,6 +898,10 @@ Strjúktu upp frá neðri hluta skjásins eins og örin sýnir til að láta hna
     <string name="sec_ringtone_category_open_theme">Sjálfgildi virks þema</string>
     <string name="sec_ringtone_category_retro">Retró</string>
     <string name="sec_ringtone_silent">Án hljóðs</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Hætta við</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Til að tengjast gervihnetti þarftu að stilla símafyrirtækið þitt á „Velja sjálfkrafa“.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Kveikja</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Viltu kveikja á sjálfvirku vali á farsímakerfi?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Kveiktu á aðgangi að hljóðnema til að tala.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Kveiktu á aðgangi að myndavél til að nota %s.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Kveiktu á aðgangi að hljóðnema til að nota %s.</string>
@@ -1038,6 +997,8 @@ Strjúktu upp frá neðri hluta skjásins eins og örin sýnir til að láta hna
     <string name="sem_face_error_already_in_use_by_VT">Ekki er hægt að nota andlitsgreiningu þegar myndsímtal stendur yfir.</string>
     <string name="sem_face_error_camera_access_off">Ekki er hægt að nota andlitsgreiningu þar sem slökkt er á aðgangi að myndavél</string>
     <string name="sem_face_error_camera_fail">Ekki var hægt að opna myndavél. Reyndu aftur.</string>
+    <string name="sem_face_error_lockout">Staðfesting með lífkennum er ekki í boði vegna of margra misheppnaðra tilrauna.</string>
+    <string name="sem_face_error_lockout_permanent">Staðfesting með lífkennum er ekki í boði vegna of margra misheppnaðra tilrauna.</string>
     <string name="sem_face_error_ppp_timeout">Þónokkur tími er liðinn síðan þú staðfestir hver þú ert. Þú þarft að byrja aftur til að skrá andlitið þitt.</string>
     <string name="sem_face_error_too_dark">Of dimmt til að greina andlit</string>
     <string name="sem_face_error_too_dark_to_enroll">Of dimmt. Prófaðu að kveikja á ljósi eða fara á stað með betri lýsingu.</string>
@@ -1053,13 +1014,18 @@ Strjúktu upp frá neðri hluta skjásins eins og örin sýnir til að láta hna
     <string name="sem_fingerprint_acquired_tsp_block">Færðu enda S Pen frá skjánum til að skanna fingrafarið þitt.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Veldu öruggan skjálás (mynstur, PIN-númer eða lykilorð) til að nota fingraför.</string>
+    <string name="sem_fingerprint_error_lockout">Staðfesting með lífkennum er ekki í boði vegna of margra misheppnaðra tilrauna.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Staðfesting með lífkennum er ekki í boði vegna of margra misheppnaðra tilrauna.</string>
     <string name="sem_fingerprint_error_onehand_mode">Ekki er hægt að nota fingrafaraskanna í einnar handar stillingu.</string>
     <string name="sem_fingerprint_error_smart_view">Ekki er hægt að skanna fingrafar þegar %s er í notkun.</string>
+    <string name="sem_fingerprint_error_system_failure">Fingrafaranemi svarar ekki. Reyndu aftur síðar. Prófaðu að endurræsa símann ef vandamálið er viðvarandi.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Fingrafaragögnin hafa skemmst. Bættu fingraförunum við aftur.</string>
     <string name="sem_fingerprint_error_wireless_charger">Aftengdu þráðlaust hleðslutæki til að nota fingrafar</string>
     <string name="sem_fingerprint_name_template">Fingrafar %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Síðar</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Ekki núna</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Fjarlægja og skrá</string>
+    <string name="sem_fingerprint_register_dialog_message">Fingrafarakennsl voru endurbætt í nýjustu hugbúnaðaruppfærslunni. Til að geta notað fingrafarakennsl skaltu fjarlægja fingraförin þín og skrá þau aftur.</string>
     <string name="sem_fingerprint_register_dialog_title">Skrá fingraför aftur</string>
     <string name="sem_fingerprint_result_failed">Ekkert fannst.</string>
     <string name="sem_fingerprint_result_retry">Reyndu aftur.</string>
@@ -1079,7 +1045,7 @@ Strjúktu upp frá neðri hluta skjásins eins og örin sýnir til að láta hna
     <string name="sem_resolver_button_always_accessibility">Alltaf nota valið forrit</string>
     <string name="sem_resolver_button_just_once_accessibility">Nota valið forrit aðeins einu sinni</string>
     <string name="sem_resolver_choose_what_to_do">Velja hvað á að gera</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Opnaðu „Stillingar > Forrit > Velja sjálfgefin forrit“ til að breyta stillingum sjálfgefinna forrita.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Til að breyta sjálfgefna forritinu til að opna þessa skráartegund opnarðu „Stillingar > Forrit“, velur núverandi sjálfgefið forrit og pikkar svo á „Gera sjálfgefið > Hreinsa sjálfgefið“.</string>
     <string name="sem_resolver_icon_content_description">Upplýsingar</string>
     <string name="sem_resolver_personal_tab_accessibility">Einkamál</string>
     <string name="sem_resolver_share_live_default_text">Deila strax með fólki í nágrenninu. Fólk sem hefur gert tæki sín sýnileg birtist hér.</string>
@@ -1091,9 +1057,6 @@ Strjúktu upp frá neðri hluta skjásins eins og örin sýnir til að láta hna
     <string name="sem_resolver_work_tab_accessibility">Vinna</string>
     <string name="sem_switch_off">Slökkt</string>
     <string name="sem_switch_on">Kveikt</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Slökkt á aðg. að myndavél fyrir öll forrit</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Kveikja</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Slökkt á aðg. að hljóðnema f. öll forrit</string>
     <string name="serviceErased">Eytt.</string>
     <string name="serviceModeAll">Allt</string>
     <string name="serviceModeAllConditional">skilyrt.</string>
@@ -1103,6 +1066,7 @@ Strjúktu upp frá neðri hluta skjásins eins og örin sýnir til að láta hna
     <string name="serviceModeUnconditional">án skilyrða.</string>
     <string name="serviceisDisabled">Þjónustan er óvirk.</string>
     <string name="serviceisEnabled">Þjónustan er virk.</string>
+    <string name="settings">Stillingar</string>
     <string name="sf_quick_switch_not_supported">Flýtiskipti eru ekki studd í þessum aðstæðum.</string>
     <string name="sf_quick_switch_securefolder_view">Skipt yfir í %s.</string>
     <string name="share">Deila</string>
@@ -1111,26 +1075,30 @@ Strjúktu upp frá neðri hluta skjásins eins og örin sýnir til að láta hna
     <string name="sharelist_restrict">Öryggisstefna kemur í veg fyrir deilingu gagna.</string>
     <string name="show_keyboard_button">Sýna lyklaborðshnapp</string>
     <string name="show_keyboard_button_description">Sýna %s á yfirlitsstikunni.</string>
+    <string name="showing_esc_dialog">Hægt er að stilla Esc-takkann þannig að hann virki sem bakktakki.</string>
     <string name="showing_touch_sensitivity_noti_action">Kveikja</string>
     <string name="showing_touch_sensitivity_noti_text">Kveiktu á snertinæmi á meðan þú notar Privacy Screen eða Notepaper Screen til að fá nákvæmari snertisvörun.</string>
     <string name="showing_touch_sensitivity_noti_title">Auka snertinæmi</string>
+    <string name="side_key_double_press_archived_app">Forrit sett í geymslu. Veldu eitthvað annað.</string>
     <string name="side_key_double_press_deleted_app">Forrit fjarlægt. Velja þarf eitthvað annað.</string>
     <string name="side_key_double_press_disabled_app">Slökkt er á %s. Velja þarf eitthvað annað.</string>
     <string name="signature_identity_toast">%s undirritað af</string>
     <string name="simRefresh">Uppfæri SIM-gögn</string>
     <string name="simReset">Uppfærir gögn SIM-korts …</string>
     <string name="sim_check_old_sim_message">Gömul eða skemmd SIM-kort geta valdið vandamálum með nettengingu. Hafðu samband við símafyrirtækið þitt eða farðu í einhverja af verslunum þess til að athuga hvort skipta þurfi út SIM-kortinu.</string>
+    <string name="sim_check_old_sim_message_skt">Gömul eða skemmd SIM-kort geta valdið vandamálum með nettengingu. Hafðu samband við símafyrirtækið þitt eða farðu í einhverja af verslunum þess til að athuga hvort skipta þurfi út SIM-kortinu.</string>
     <string name="sim_check_old_sim_title">Hugsanlega þarf að skipta út SIM-kortinu þínu</string>
+    <string name="sim_check_old_sim_title_skt">Hugsanlega þarf að skipta út SIM-kortinu þínu</string>
     <string name="sim_count_mismatched_ds_to_ss">Stillingum SIM-korts hefur verið breytt úr tvöföldu SIM í eitt SIM. Til að nota þessa stillingu verður tækið stillt á sjálfgefnar grunnstillingar framleiðanda og endurræst.</string>
     <string name="sim_count_mismatched_ss_to_ds">Stillingum SIM-korts hefur verið breytt úr einu SIM í tvöfalt SIM. Til að nota þessa stillingu verður tækið stillt á sjálfgefnar grunnstillingar framleiðanda og endurræst.</string>
     <string name="sim_count_mismatched_title">Stillingu SIM-korts breytt</string>
-    <string name="sim_imsreg_error_message_lgt">Ekki er hægt að hringja úr símanum þínum vegna þess að hann greinir ekki SIM-kortið. Prófaðu að fjarlægja SIM-kortið og setja það aftur í. Ef vandamálið er viðvarandi gætirðu þurft að skipta um SIM-kort. Kíktu í LG U+ verslun eða hafðu samband við þjónustuver LG U+ í síma 1544-0010 til að fá aðstoð.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Ekki er hægt að hringja úr spjaldtölvunni þinni vegna þess að hún greinir ekki SIM-kortið. Prófaðu að fjarlægja SIM-kortið og setja það aftur í. Ef vandamálið er viðvarandi gætirðu þurft að skipta um SIM-kort. Kíktu í LG U+ verslun eða hafðu samband við þjónustuver LG U+ í síma 1544-0010 til að fá aðstoð.</string>
+    <string name="sim_imsreg_error_message_lgt">Ekki er hægt að hringja úr símanum þínum vegna þess að hann greinir ekki SIM-kortið. Prófaðu að fjarlægja SIM-kortið og setja það aftur í. Ef vandamálið er viðvarandi gætirðu þurft að skipta um SIM-kort í LG U+ verslun.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Ekki er hægt að hringja úr spjaldtölvunni þinni vegna þess að hún greinir ekki SIM-kortið. Prófaðu að fjarlægja SIM-kortið og setja það aftur í. Ef vandamálið er viðvarandi gætirðu þurft að skipta um SIM-kort í LG U+ verslun.</string>
     <string name="sim_off_noti_message">Þú getur ekki hringt, sent skilaboð eða notað gögn þegar slökkt er á öllum SIM-kortum. Pikkaðu hér til að kveikja á SIM-kortum.</string>
     <string name="sim_off_noti_title">Slökkt er á öllum SIM-kortum</string>
     <string name="sim_off_toast_message">Slökkt er á SIM-kortinu sem þú settir í. Til að nota það skaltu opna „Stillingar > Tengingar > SIM-stjórnun“ og kveikja á því.</string>
     <string name="sim_recognize_error_message_kt">Ekki var hægt að greina SIM-kortið þitt. Prófaðu að fjarlægja SIM-kortið og setja það aftur í. Ef vandamálið er viðvarandi gætirðu þurft að skipta um SIM-kort. Kíktu í KT-verslun eða hafðu samband við þjónustuver KT í síma 1588-0010 til að fá aðstoð.</string>
-    <string name="sim_recognize_error_message_lgt">Ekki var hægt að greina SIM-kortið þitt. Prófaðu að fjarlægja SIM-kortið og setja það aftur í. Ef vandamálið er viðvarandi gætirðu þurft að skipta um SIM-kort. Kíktu í LG U+ verslun eða hafðu samband við þjónustuver LG U+ í síma 1544-0010 til að fá aðstoð.</string>
+    <string name="sim_recognize_error_message_lgt">Ekki var hægt að greina SIM-kortið þitt. Prófaðu að fjarlægja SIM-kortið og setja það aftur í. Ef vandamálið er viðvarandi gætirðu þurft að skipta um SIM-kort í LG U+ verslun.</string>
     <string name="sim_recognize_error_message_skt">Ekki er hægt að lesa SIM-kortið. Ekki er víst að öll forrit eða eiginleikar virki. Taktu SIM-kortið úr, settu það aftur í og endurræstu síðan símann. Ef þetta lagar ekki vandamálið skaltu fara með símann og SIM-kortið í þjónustuver.</string>
     <string name="sim_recognize_error_message_skt_tablet">Ekki er hægt að lesa SIM-kortið. Ekki er víst að öll forrit eða eiginleikar virki. Taktu SIM-kortið úr, settu það aftur í og endurræstu síðan spjaldtölvuna. Ef þetta lagar ekki vandamálið skaltu fara með spjaldtölvuna og SIM-kortið í þjónustuver.</string>
     <string name="sim_recognize_error_title_lgt">Ekki er hægt að greina USIM-kort</string>
@@ -1140,10 +1108,8 @@ Strjúktu upp frá neðri hluta skjásins eins og örin sýnir til að láta hna
     <string name="sim_removed_message_hotswap_us_tablet">Tengstu Wi-Fi neti eða settu SIM-kort í til að nota farsímagögn.</string>
     <string name="sim_removed_title_hotswap">SIM-kort ekki í</string>
     <string name="sim_removed_title_hotswap_us_tablet">Settu inn SIM-kort</string>
+    <string name="smart_tip_action_click_hint_text">Loka</string>
     <string name="smartclip_restrict">Öryggisstefnan kemur í veg fyrir notkun einfaldrar klippu.</string>
-    <string name="sms_short_code_remember_undo_instruction">Þú getur breytt þessu síðar með því að fara í Stillingar > Forrit</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Þú getur breytt þessu síðar með því að fara í „Stillingar > Forrit > hnappinn fyrir fleiri valkosti > Sérstakur aðgangur > Nota greiðsluskilaboðaþjónustu“</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Ef þú pikkar á LEYFA ALDREI getur þetta forrit ekki sent skilaboð í bakgrunni, jafnvel þótt búið sé að gefa því heimild til að senda SMS-skilaboð.</string>
     <string name="ss_do_not_show_again_us">Ekki sýna aftur</string>
     <string name="sss_translate">Þýða</string>
     <string name="ssu_lock_body_vzw">Því miður er ekki hægt að virkja tækið þitt á símkerfi annars símafyrirtækis eins og er. Hafðu samband við Verizon í síma %1$s eða %2$s (fyrirframgreiddar áskriftir) til að fá aðstoð</string>
@@ -1174,7 +1140,6 @@ Strjúktu upp frá neðri hluta skjásins eins og örin sýnir til að láta hna
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">Farsímaaðgangsstaður</string>
     <string name="title_dialog_check_rotate_or_not">Slökkva á sjálfvirkum snúningi skjás?</string>
-    <string name="title_uds">Ofursparnaður gagna</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Ekki er hægt að nota Bixby á meðan síminn er settur upp.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Ekki er hægt að nota Bixby á meðan spjaldtölvan er sett upp.</string>
     <string name="toast_warning_pattern_lock">Ekki er hægt að nota mynsturslás með altækum rofa. Skiptu fyrst í aðra lásgerð.</string>
@@ -1214,9 +1179,13 @@ Til að fjarlægja þessa vernd skaltu opna „Stillingar > Öryggi og persónuv
     <string name="unknown_install_blocked_esm_title">Lokað á óþekkt forrit</string>
     <string name="unknown_install_dlg_desc">Þetta forrit var ekki sótt úr viðurkenndri verslun. Uppsetning á þessu forriti getur stofnað öryggi þínu og persónuvernd í hættu. Forritið kann að safna persónuupplýsingum þínum eða valda því að gögnin þín glatist.</string>
     <string name="unknown_install_dlg_desc2">Þetta forrit styður ekki nýjustu öryggiseiginleikana. Uppsetning þessa forrits getur haft eftirfarandi öryggisáhættu í för með sér:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Þessi uppsetningarskrá fyrir forritið gæti verið óörugg. Þetta er ef til vill ekki forritið sem þú ætlaðir að setja upp. Til að vernda símann þinn og persónuleg gögn skaltu setja forritið upp úr forritaverslun sem þú treystir í staðinn.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Þessi uppsetningarskrá fyrir forritið gæti verið óörugg. Þetta er ef til vill ekki forritið sem þú ætlaðir að setja upp. Til að vernda spjaldtölvuna þína og persónuleg gögn skaltu setja forritið upp úr forritaverslun sem þú treystir í staðinn.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Þetta forrit er talið vera skaðlegt og getur sett símann þinn og upplýsingar í hættu. Ekki er mælt með uppsetningu þessa forrits.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Þetta forrit er talið vera skaðlegt og getur sett spjaldtölvuna þína og upplýsingar í hættu. Ekki er mælt með uppsetningu þessa forrits.</string>
-    <string name="unknown_install_dlg_general_title">Þetta forrit er af óþekktum uppruna</string>
+    <string name="unknown_install_dlg_desc_phone">Þetta forrit er ekki frá viðurkenndri forritaverslun. Settu forritið upp úr viðurkenndri verslun eins og Play Store eða Galaxy Store til að vernda símann og persónuupplýsingarnar þínar.</string>
+    <string name="unknown_install_dlg_desc_tablet">Þetta forrit er ekki frá viðurkenndri forritaverslun. Settu forritið upp úr viðurkenndri verslun eins og Play Store eða Galaxy Store til að vernda spjaldtölvuna og persónuupplýsingarnar þínar.</string>
+    <string name="unknown_install_dlg_general_title">Ekki er mælt með uppsetningu þessa forrits</string>
     <string name="unknown_install_dlg_negative_button">Ekki setja upp</string>
     <string name="unknown_install_dlg_perm_desc1">Forritið kann að greina staðfestingarkóða úr SMS-skilaboðum sem þú færð.</string>
     <string name="unknown_install_dlg_perm_desc2">Hringdum símtölum kann að vera beint í annað símanúmer án þinnar vitundar.</string>
@@ -1235,7 +1204,7 @@ Til að fjarlægja þessa vernd skaltu opna „Stillingar > Öryggi og persónuv
     <string name="usb_abnormal_reset_title">USB-tenging er ekki stöðug</string>
     <string name="usb_abnormal_reset_toast">USB-tenging er ekki stöðug. Taktu snúruna úr sambandi og stingdu henni aftur í samband eða prófaðu aðra snúru.</string>
     <string name="usb_accessory_notification_title">Tengt við USB-aðgang</string>
-    <string name="usb_bad_removal_message">USB-geymslutæki var fjarlægt á óöruggan máta. Vistaðu óvistuð gögn og endurræstu spjaldtölvuna til að koma í veg fyrir að hún endurræsi sig óvænt.</string>
+    <string name="usb_bad_removal_message">USB-geymslutæki var fjarlægt á óöruggan máta. Vistaðu óvistuð gögn og endurræstu símann til að koma í veg fyrir að hann endurræsi sig óvænt.</string>
     <string name="usb_blocked_by_emergency_mode">Sumir eiginleikar USB eru ekki í boði í neyðarstillingu.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Ekki er hægt að nota eiginleika fyrir tengt USB-tæki þegar kveikt er á hámarksorkusparnaðarstillingu.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Sumir USB-eiginleikar verða takmarkaðir á meðan kveikt er á hámarksorkusparnaðarstillingu.</string>
@@ -1244,13 +1213,15 @@ Til að fjarlægja þessa vernd skaltu opna „Stillingar > Öryggi og persónuv
     <string name="usb_camera_connected_notification_title">Margmiðlunartæki tengt</string>
     <string name="usb_camera_disconnected_notification_title">Margmiðlunartæki aftengt</string>
     <string name="usb_cd_installer_notification_title">Hugbúnaðaruppfærsla</string>
-    <string name="usb_charing_only_notification_title">Tengt</string>
+    <string name="usb_charing_only_notification_title">Hleður um USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Kveikt er á sjálfvirkri útilokun með hámarkstakmörkunum.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">Lokað fyrir USB-tengingu</string>
     <string name="usb_debugging_only_notification_title">Aðeins kembing</string>
-    <string name="usb_host_resource_exceed_message">USB-stýring spjaldtölvunnar er ekki með næg tilföng til að tengja þetta tæki. Prófaðu að aftengja tækið og tengja það aftur.</string>
+    <string name="usb_host_resource_exceed_message">USB-stýring símans er ekki með næg tilföng til að tengja þetta tæki. Prófaðu að aftengja tækið og tengja það aftur.</string>
     <string name="usb_host_resource_exceed_title">Ekki næg tilföng fyrir USB-stýringu</string>
-    <string name="usb_hub_depth_exceed_message">Spjaldtölvan getur aðeins stutt allt að 5 USB-miðstöðvartengingar á sama tíma.</string>
+    <string name="usb_hub_depth_exceed_message">Síminn getur aðeins stutt allt að 5 USB-miðstöðvartengingar á sama tíma.</string>
     <string name="usb_hub_depth_exceed_title">Hámarkstengingar USB-miðstöðvar</string>
-    <string name="usb_hub_power_exceed_message">Spjaldtölvan getur ekki veitt þessu USB-tæki nóg afl. Tengdu tækið við sjálfknúna USB-miðstöð áður en þú tengir það við spjaldtölvuna.</string>
+    <string name="usb_hub_power_exceed_message">Síminn getur ekki veitt þessu USB-tæki nóg afl. Tengdu tækið við sjálfknúna USB-miðstöð áður en þú tengir það við símann.</string>
     <string name="usb_increase_battery_usage">USB-tenging kann að auka rafhlöðunotkun.</string>
     <string name="usb_mass_storage_restrict">Öryggisstefnan kemur í veg fyrir notkun USB-gagnageymslu.</string>
     <string name="usb_midi_notification_title">USB fyrir MIDI</string>
@@ -1276,8 +1247,9 @@ Til að fjarlægja þessa vernd skaltu opna „Stillingar > Öryggi og persónuv
     <string name="usb_storage_stop_title">USB-geymsla í notkun.</string>
     <string name="usb_storage_title">USB er tengt.</string>
     <string name="usb_type_c_supply_power_notification_title">Hleður tengt tæki um USB</string>
-    <string name="usb_unblock_by_screen_unlock">Taktu spjaldtölvuna úr lás til að nota tengda USB-tækið.</string>
-    <string name="usb_unsupport_accessory_message">Spjaldtölvan þín styður ekki þetta USB-tæki.</string>
+    <string name="usb_unblock_by_screen_unlock">Taktu símann úr lás til að nota tengda USB-tækið.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">Til að nota USB-tæki skaltu taka símann úr lás og tengja USB-tækið aftur.</string>
+    <string name="usb_unsupport_accessory_message">Síminn þinn styður ekki þetta USB-tæki.</string>
     <string name="usb_unsupport_accessory_title">Óstutt USB-tæki</string>
     <string name="usb_unsupported_device">Tengda USB-tækið er ekki stutt.</string>
     <string name="usb_unsupported_device_title">Tækið er ekki stutt</string>
@@ -1295,31 +1267,33 @@ Til að fjarlægja þessa vernd skaltu opna „Stillingar > Öryggi og persónuv
     <string name="usb_water_dialg_method_2_desc_2">Hægt er að flýta fyrir þurrkun með því að beina viftu eða hárþurrku (aðeins kalt loft) að tenginu.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Við greindum raka eða aðskotaefni í hleðslu-/USB-tenginu.
 
-Athugaðu hvort eitthvert aðskotaefni, t.d. ryk eða óhreinindi, er í hleðslu-/USB-tenginu. Til að koma í veg fyrir skemmdir á spjaldtölvunni skaltu ekki stinga neinu í samband fyrr en hleðslutengið er hreint og rakinn er horfinn.
+Athugaðu hvort eitthvert aðskotaefni, t.d. ryk eða óhreinindi, er í hleðslu-/USB-tenginu. Til að koma í veg fyrir skemmdir á símanum skaltu ekki stinga neinu í samband fyrr en hleðslutengið er hreint og rakinn er horfinn.
 
-Til að þurrka tengið skaltu hrista út allan raka og bíða síðan eftir að hann þorni, sem gæti tekið nokkrar klukkustundir. Hægt er að flýta fyrir þurrkuninni með því að beina viftu eða hárþurrku (aðeins kalt loft) að tenginu."</string>
+Til að þurrka tengið skaltu hrista út allan raka og bíða síðan eftir að það þorni, sem gæti tekið nokkrar klukkustundir. Hægt er að flýta fyrir þurrkuninni með því að beina viftu eða hárþurrku (aðeins kalt loft) að tenginu."</string>
     <string name="usb_water_dialg_positive_button">Í lagi</string>
     <string name="usb_water_dialg_support_wireless_charging">"Við greindum raka eða aðskotaefni í hleðslu-/USB-tenginu.
 
-Athugaðu hvort eitthvert aðskotaefni, t.d. ryk eða óhreinindi, er í hleðslu-/USB-tenginu. Til að koma í veg fyrir skemmdir á spjaldtölvunni skaltu ekki stinga neinu í samband fyrr en hleðslutengið er hreint og rakinn er horfinn.
+Athugaðu hvort eitthvert aðskotaefni, t.d. ryk eða óhreinindi, er í hleðslu-/USB-tenginu. Til að koma í veg fyrir skemmdir á símanum skaltu ekki stinga neinu í samband fyrr en hleðslutengið er hreint og rakinn er horfinn.
 
 Til að þurrka tengið skaltu hrista út allan raka og bíða síðan eftir að það þorni, sem gæti tekið nokkrar klukkustundir. Hægt er að flýta fyrir þurrkuninni með því að beina viftu eða hárþurrku (aðeins kalt loft) að tenginu.
 
-Í millitíðinni geturðu hlaðið spjaldtölvuna þráðlaust."</string>
+Í millitíðinni geturðu hlaðið símann þráðlaust."</string>
     <string name="usb_water_notification_content">Það er raki eða aðskotaefni í hleðslu-/USB-tenginu. Athugaðu það áður en þú hleður.</string>
-    <string name="usb_water_notification_message">Raki greindist í hleðslu-/USB-tenginu. Gakktu úr skugga um að það sé alveg þurrt áður en þú hleður spjaldtölvuna. Tengið getur verið dálitla stund að þorna.</string>
+    <string name="usb_water_notification_message">Raki greindist í hleðslu-/USB-tenginu. Gakktu úr skugga um að það sé alveg þurrt áður en þú hleður símann. Tengið getur verið dálitla stund að þorna.</string>
     <string name="usb_water_notification_message_button">Upplýsingar</string>
     <string name="usb_water_notification_title">Athugaðu hleðslu-/USB-tengið</string>
     <string name="usbhostStorage_restrict">Öryggisstefnan kemur í veg fyrir notkun USB-hýsigeymslu.</string>
     <string name="usbmemory_added_notification_title">USB-geymslu bætt við</string>
     <string name="usbmemory_readonly_mount_notification_message">USB-geymslutækið virkar ekki sem skyldi og hefur verið stillt sem skrifvarið til að koma í veg fyrir gagnatap. Mælt er með því að afrit sé tekið af gögnunum í USB-geymslutækinu.</string>
-    <string name="usbmemory_readonly_mount_notification_title">Ei hægt að skrifa í USB-geymslu</string>
+    <string name="usbmemory_readonly_mount_notification_title">E. hægt að skrifa í USB-geymslu</string>
     <string name="user_encrypted_title_phone">Sími endurræstur</string>
     <string name="user_encrypted_title_tablet">Spjaldtölva endurræst</string>
     <string name="voice_to_text_message_guide_toast">Þú þarft að stilla Samsung-lyklaborð sem sjálfgefið til að nota þennan eiginleika.</string>
     <string name="vpn_allowOnlySecureConnection">VPN-snið ekki öruggt.</string>
     <string name="vpn_error_text">Pikkaðu til að reyna að tengjast VPN aftur.</string>
     <string name="vpn_error_title">Villa í VPN-tengingu</string>
+    <string name="vpn_fail_text_long">Ekki tókst að tengjast %s. Pikkaðu til að stjórna þessu VPN-neti.</string>
+    <string name="vpn_fail_title">VPN-net er ótengt</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Lokar forritum til að kæla spjaldtölvuna</string>
     <string name="vzw_cooldown_mode_ok">Í lagi</string>
@@ -1382,6 +1356,7 @@ Til að þurrka tengið skaltu hrista út allan raka og bíða síðan eftir að
     <string name="wifi_network_available_detailed">Opið Wi-Fi net er í boði.</string>
     <string name="wifi_networks_available">Wi-Fi net eru í boði</string>
     <string name="wifi_networks_available_detailed">Opin Wi-Fi net eru í boði.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s notar farsímagögn vegna þess að WLAN-tengingin er hæg eða óstöðug.</string>
     <string name="wifi_notification_switch_wifi_detail">Síminn þinn skipti yfir í farsímagögn vegna þess að Wi-Fi netið var óstöðugt.</string>
     <string name="wifi_notification_switch_wifi_title">Skipt yfir í farsímagögn</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Neyðartilkynningar</string>
@@ -1413,9 +1388,5 @@ Til að þurrka tengið skaltu hrista út allan raka og bíða síðan eftir að
     <string name="work_profile_on_message">Þetta veitir þér aðgang að vinnuforritum, tilkynningum, gögnum og öðrum eiginleikum vinnuprófíls.</string>
     <string name="work_profile_on_title">Kveikja á vinnuprófíl?</string>
     <string name="work_profile_restricted">Sjálfvirk útilokun er virk með hámarkstakmörkunum. Til að gæta að öryggi þínu er ekki hægt að búa til vinnuprófíla.</string>
-    <string name="work_profile_telephony_paused_text">Þú hefur gert hlé á vinnuforritunum þínum. Þú færð hvorki símtöl né textaskilaboð frá þeim.</string>
-    <string name="work_profile_telephony_paused_title">Slökkt er á símtölum og skilab.</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Viltu kveikja á vinnuprófíl?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">Þar til ég slekk á</string>
 </resources>

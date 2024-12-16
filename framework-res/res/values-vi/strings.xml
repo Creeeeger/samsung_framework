@@ -44,7 +44,7 @@
     <string name="ColrMmi">Giới hạn ID đường kết nối</string>
     <string name="CwMmi">Chờ cuộc gọi</string>
     <string name="DndMmi">Không làm phiền</string>
-    <string name="EmergencyCallWarningSummary">Không thể thực hiện cuộc gọi khẩn cấp qua Wi‑Fi</string>
+    <string name="EmergencyCallWarningSummary">Cần có mạng di động để thực hiện các cuộc gọi khẩn cấp</string>
     <string name="EmergencyCallWarningTitle">Không có dịch vụ gọi khẩn cấp</string>
     <string name="Midnight">Nửa đêm</string>
     <string name="NetworkPreferenceSwitchSummary">Hãy thử thay đổi mạng ưu tiên. Nhấn để thay đổi.</string>
@@ -255,7 +255,12 @@
     <string name="accessibility_corner_action_type_zoom_in">Phóng to</string>
     <string name="accessibility_corner_action_type_zoom_out">Thu nhỏ</string>
     <string name="accessibility_dialog_button_allow">Cho phép</string>
+    <string name="accessibility_dialog_button_allow_samsung">Cho phép</string>
     <string name="accessibility_dialog_button_deny">Từ chối</string>
+    <string name="accessibility_dialog_button_deny_samsung">Từ chối</string>
+    <string name="accessibility_dialog_button_uninstall">Gỡ cài đặt</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Gỡ cài đặt</string>
+    <string name="accessibility_dialog_touch_filtered_warning">Một ứng dụng đang che khuất yêu cầu quyền này nên chúng tôi không thể xác minh phản hồi của bạn.</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Nhấn nhanh phím Nguồn và Tăng âm lượng sẽ bật hoặc tắt các chức năng sau:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Nhấn nhanh phím Cạnh và Tăng âm lượng sẽ bật hoặc tắt các chức năng sau:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Nhấn nhanh phím Nguồn và Tăng âm lượng sẽ bật hoặc tắt %s.</string>
@@ -269,11 +274,14 @@
     <string name="accessibility_edit_shortcut_menu_button_title">Chọn các tính năng để dùng với nút hỗ trợ tiếp cận</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">Chọn các tính năng để dùng với phím tắt là phím âm lượng</string>
     <string name="accessibility_enable_service_title">Cho phép %1$s toàn quyền kiểm soát thiết bị của bạn?</string>
-    <string name="accessibility_freeform_caption">Thanh phụ đề của %1$s.</string>
     <string name="accessibility_gesture_3finger_instructional_text">Để chuyển đổi giữa các tính năng, hãy dùng 3 ngón tay vuốt lên và giữ.</string>
     <string name="accessibility_gesture_3finger_prompt_text">Chọn một tính năng để dùng với cử chỉ hỗ trợ tiếp cận (dùng 3 ngón tay vuốt lên từ cuối màn hình):</string>
     <string name="accessibility_gesture_instructional_text">Để chuyển đổi giữa các tính năng, hãy dùng 2 ngón tay vuốt lên và giữ.</string>
     <string name="accessibility_gesture_prompt_text">Chọn một tính năng để dùng với cử chỉ hỗ trợ tiếp cận (dùng 2 ngón tay vuốt lên từ cuối màn hình):</string>
+    <string name="accessibility_label_clone_profile">Nhân bản</string>
+    <string name="accessibility_label_communal_profile">Dùng chung</string>
+    <string name="accessibility_label_managed_profile">Hồ sơ công việc</string>
+    <string name="accessibility_label_private_profile">Không gian riêng tư</string>
     <string name="accessibility_magnification_chooser_text">Phóng to</string>
     <string name="accessibility_select_different_function">Bạn có thể chọn chức năng khác trong Cài đặt > Hỗ trợ > Cài đặt nâng cao.</string>
     <string name="accessibility_select_shortcut_menu_title">Nhấn vào một tính năng để bắt đầu sử dụng:</string>
@@ -325,13 +333,13 @@ Bạn có thể chuyển phím tắt này thành một tính năng khác trong p
     <string name="accessibility_system_action_dpad_left_label">Chuyển sang trái bằng bàn phím di chuyển</string>
     <string name="accessibility_system_action_dpad_right_label">Chuyển sang phải bằng bàn phím di chuyển</string>
     <string name="accessibility_system_action_dpad_up_label">Chuyển lên trên bằng bàn phím di chuyển</string>
-    <string name="accessibility_system_action_hardware_a11y_shortcut_label">Phím tắt hỗ trợ tiếp cận</string>
+    <string name="accessibility_system_action_hardware_a11y_shortcut_label">Lối tắt hỗ trợ tiếp cận</string>
     <string name="accessibility_system_action_headset_hook_label">Giá treo tai nghe</string>
     <string name="accessibility_system_action_home_label">Nhà</string>
     <string name="accessibility_system_action_lock_screen_label">Khóa màn hình</string>
     <string name="accessibility_system_action_notifications_label">Thông báo</string>
-    <string name="accessibility_system_action_on_screen_a11y_shortcut_chooser_label">Bộ chọn phím tắt hỗ trợ tiếp cận trên màn hình</string>
-    <string name="accessibility_system_action_on_screen_a11y_shortcut_label">Phím tắt hỗ trợ tiếp cận trên màn hình</string>
+    <string name="accessibility_system_action_on_screen_a11y_shortcut_chooser_label">Bộ chọn lối tắt hỗ trợ tiếp cận trên màn hình</string>
+    <string name="accessibility_system_action_on_screen_a11y_shortcut_label">Lối tắt hỗ trợ tiếp cận trên màn hình</string>
     <string name="accessibility_system_action_power_dialog_label">Hộp thoại thao tác với nguồn</string>
     <string name="accessibility_system_action_quick_settings_label">Cài đặt nhanh</string>
     <string name="accessibility_system_action_recents_label">Ứng dụng gần đây</string>
@@ -342,7 +350,7 @@ Bạn có thể chuyển phím tắt này thành một tính năng khác trong p
     <string name="action_bar_home_description">Điều hướng về trang chủ</string>
     <string name="action_bar_home_description_format">%1$s, %2$s</string>
     <string name="action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
-    <string name="action_bar_up_description">Điều hướng lên trên</string>
+    <string name="action_bar_up_description">Di chuyển lên</string>
     <string name="action_menu_overflow_description">Tùy chọn khác</string>
     <string name="action_mode_done">Xong</string>
     <string name="activity_chooser_view_dialog_title_default">Chọn hoạt động</string>
@@ -382,19 +390,25 @@ Bạn có thể chuyển phím tắt này thành một tính năng khác trong p
     <string name="alert_windows_notification_turn_off_action">Tắt</string>
     <string name="allow">Cho phép</string>
     <string name="allow_settings_changes">Chính sách bảo mật ngăn không cho thay đổi cài đặt.</string>
+    <string name="alternative_face_setup_notification_content">Hãy dùng tính năng Mở khoá bằng khuôn mặt khi thiết bị không nhận diện được vân tay của bạn, chẳng hạn như khi ngón tay bị ướt</string>
+    <string name="alternative_fp_setup_notification_content">Hãy dùng tính năng Mở khoá bằng vân tay khi thiết bị không nhận diện được khuôn mặt của bạn, chẳng hạn như khi thiếu ánh sáng</string>
+    <string name="alternative_unlock_setup_notification_title">Thử mở khoá bằng cách khác</string>
     <string name="alwaysUse">Sử dụng theo mặc định đối với tác vụ này.</string>
+    <string name="always_allow">Luôn cho phép</string>
     <string name="android_preparing_apk">Đang chuẩn bị %1$s.</string>
-    <string name="android_start_title">Máy tính bảng đang khởi động…</string>
+    <string name="android_start_title">Điện thoại đang khởi động…</string>
     <string name="android_system_label">Hệ thống Android</string>
     <string name="android_upgrading_complete">Hoàn tất khởi động.</string>
     <string name="android_upgrading_notification_title">Đang hoàn tất cập nhật hệ thống…</string>
     <string name="android_upgrading_starting_apps">Khởi động ứng dụng.</string>
-    <string name="android_upgrading_title">Máy tính bảng đang cập nhật…</string>
+    <string name="android_upgrading_title">Điện thoại đang cập nhật…</string>
     <string name="anr_activity_application">%2$s không phản hồi</string>
     <string name="anr_activity_process">%1$s không phản hồi</string>
     <string name="anr_application_process">%1$s không phản hồi</string>
     <string name="anr_process">Quá trình %1$s không phản hồi</string>
     <string name="anr_title" />
+    <string name="app_block_button_open">Mở</string>
+    <string name="app_block_content">%1$s muốn mở ứng dụng %2$s.</string>
     <string name="app_blocked_message">%1$s hiện không dùng được.</string>
     <string name="app_blocked_title">Ứng dụng này không dùng được</string>
     <string name="app_category_accessibility">Hỗ trợ tiếp cận</string>
@@ -423,42 +437,31 @@ Bạn có thể chuyển phím tắt này thành một tính năng khác trong p
     <string name="app_restricted_message_concentration_mode">%s bị chặn trong chế độ Tập trung. Hãy liên hệ với quản trị viên CNTT của bạn để tìm hiểu thêm.</string>
     <string name="app_running_notification_text">Nhấn để biết thêm thông tin hoặc dừng ứng dụng.</string>
     <string name="app_running_notification_title">%1$s đang chạy</string>
-    <string name="app_streaming_blocked_message">Hiện tại, bạn không thể truy cập vào ứng dụng này trên %1$s. Hãy thử trên máy tính bảng.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Ứng dụng này đang yêu cầu tính năng bảo mật bổ sung. Hãy thử trên máy tính bảng.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Hiện tại, bạn không thể truy cập vào ứng dụng này trên %1$s. Hãy thử trên máy tính bảng.</string>
+    <string name="app_streaming_blocked_message">Hiện tại, bạn không thể truy cập vào ứng dụng này trên %1$s. Hãy thử trên điện thoại.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Ứng dụng này đang yêu cầu tính năng bảo mật bổ sung. Hãy thử trên điện thoại.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">Ứng dụng này đang yêu cầu thêm quyền, nhưng bạn không thể cấp quyền trong một phiên truyền trực tuyến. Trước tiên, hãy cấp quyền trên điện thoại của bạn.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Hiện tại, bạn không thể truy cập vào ứng dụng này trên %1$s. Hãy thử trên điện thoại.</string>
     <string name="app_streaming_blocked_title">Không hỗ trợ %1$s</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Không dùng được máy ảnh</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Tiếp tục trên điện thoại</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Không dùng được micrô</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">Cần có quyền</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">Yêu cầu quyền đã bị chặn</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Cửa hàng Play không có sẵn</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Không dùng được các chế độ cài đặt của máy tính bảng</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Không dùng được các chế độ cài đặt của điện thoại</string>
     <string name="app_suspended_default_message">%1$s hiện không sử dụng được. Chính sách này do %2$s quản lý.</string>
     <string name="app_suspended_more_details">Tìm hiểu thêm</string>
     <string name="app_suspended_title">Ứng dụng không sử dụng được</string>
     <string name="app_suspended_unsuspend_message">Mở lại ứng dụng</string>
     <string name="app_updating_message">%s đang được cập nhật. Hãy thử lại sau.</string>
     <string name="app_upgrading_toast">%1$s đang nâng cấp…</string>
-    <string name="appblock_block_subtitle1_phone">Ứng dụng này bị nghi ngờ là độc hại nên không thể cài đặt để bảo vệ điện thoại và dữ liệu cá nhân của bạn.</string>
-    <string name="appblock_block_subtitle1_tablet">Ứng dụng này bị nghi ngờ là độc hại nên không thể cài đặt để bảo vệ máy tính bảng và dữ liệu cá nhân của bạn.</string>
-    <string name="appblock_block_subtitle2">Ứng dụng này đã bị báo cáo là độc hại nên không thể cài đặt.</string>
-    <string name="appblock_block_text1">Ứng dụng này đến từ nguồn chưa được xác minh và yêu cầu các quyền nhạy cảm có thể dùng để đánh cắp hoặc làm rò rỉ dữ liệu cá nhân của bạn.</string>
-    <string name="appblock_block_text2">"Ứng dụng độc hại có thể lợi dụng các quyền nhạy cảm để đánh cắp dữ liệu cá nhân của bạn, mạo danh danh tính hoặc truy cập vào tài khoản tài chính của bạn.
-
-Các tổ chức tài chính hợp pháp không yêu cầu cài đặt file ZIP, file APK hoặc ứng dụng quản lý file.
-
-Luôn đảm bảo cài đặt ứng dụng từ nguồn đáng tin."</string>
-    <string name="appblock_warn_subtitle">Ứng dụng này có thể đánh cắp hoặc làm rò rỉ thông tin cá nhân của bạn.</string>
+    <string name="appblock_block_text_phone">Không thể cài đặt ứng dụng này vì ứng dụng này đã được báo cáo là độc hại hoặc tương tự như ứng dụng được báo cáo là độc hại. Ứng dụng này có nguy cơ là phương tiện cho hành vi phạm tội như lừa đảo. Để bảo vệ điện thoại và dữ liệu, bạn không được bỏ qua hạn chế này.</string>
+    <string name="appblock_block_text_tablet">Không thể cài đặt ứng dụng này vì ứng dụng này đã được báo cáo là độc hại hoặc tương tự như ứng dụng được báo cáo là độc hại. Ứng dụng này có nguy cơ là phương tiện cho hành vi phạm tội như lừa đảo. Để bảo vệ máy tính bảng và dữ liệu, bạn không được bỏ qua hạn chế này.</string>
+    <string name="appblock_link_text">Tìm hiểu thêm</string>
     <string name="appblock_warn_text1">"Ứng dụng từ các nguồn chưa được xác minh có thể thu thập thông tin cá nhân hoặc theo dõi hoạt động của bạn sau khi được cài đặt.
 
 Không nên cài đặt ứng dụng này.
 
 Nếu bạn vẫn chọn cài đặt ứng dụng này, hãy xem xét cẩn thận Thông báo về quyền riêng tư của ứng dụng và nhớ rằng chỉ cấp các quyền cần thiết."</string>
-    <string name="appblock_warn_text2">"Các ứng dụng độc hại thường lợi dụng các quyền Danh bạ, SMS và Ảnh để chiếm thông tin cá nhân của bạn.
-
-Không nên cài đặt ứng dụng này.
-
-Nếu bạn vẫn chọn cài đặt ứng dụng này, hãy đảm bảo ứng dụng đến từ nguồn đáng tin và thận trọng khi cấp quyền hoặc quyền truy cập khác vào dữ liệu của bạn."</string>
     <string name="application_default_restrict">Người quản trị thiết bị đã đặt ứng dụng khác làm mặc định.</string>
     <string name="as_app_forced_to_restricted_bucket">Đã đưa %1$s vào bộ chứa BỊ HẠN CHẾ</string>
     <string name="auto_click_paused">Đã tạm dừng Tự động bấm.</string>
@@ -490,9 +493,10 @@ Nếu bạn vẫn chọn cài đặt ứng dụng này, hãy đảm bảo ứng 
     <string name="autofill_save_type_payment_card">thẻ thanh toán</string>
     <string name="autofill_save_type_username">tên người dùng</string>
     <string name="autofill_save_yes">Lưu</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="autofill_update_title">Cập nhật trong <b>%1$s</b>?</string>
     <string name="autofill_update_title_with_2types">Cập nhật %1$s và %2$s trong <b>%3$s</b>?</string>
-    <string name="autofill_update_title_with_3types">Cập nhật các mục này: %1$s, %2$s và %3$s trong <b>%4$s</b>?</string>
+    <string name="autofill_update_title_with_3types">Cập nhật các mục %1$s, %2$s và %3$s trong <b>%4$s</b>?</string>
     <string name="autofill_update_title_with_type">Cập nhật %1$s trong <b>%2$s</b>?</string>
     <string name="autofill_update_yes">Cập nhật</string>
     <string name="autofill_window_title">Tự động điền với %1$s</string>
@@ -503,7 +507,7 @@ Nếu bạn vẫn chọn cài đặt ứng dụng này, hãy đảm bảo ứng 
     <string name="badPuk">PUK bạn đã nhập không đúng.</string>
     <string name="badPuk2">Bạn đã nhập PUK2 không đúng</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">Máy tính bảng còn đủ pin. Các tính năng không bị hạn chế nữa.</string>
+    <string name="battery_saver_charged_notification_summary">Điện thoại còn đủ pin. Các tính năng không bị hạn chế nữa.</string>
     <string name="battery_saver_description">Trình tiết kiệm pin sẽ bật Giao diện tối, đồng thời hạn chế hoặc tắt hoạt động chạy trong nền, một số hiệu ứng hình ảnh, các tính năng nhất định, và một số kết nối mạng.</string>
     <string name="battery_saver_description_with_learn_more">Trình tiết kiệm pin sẽ bật Giao diện tối, đồng thời hạn chế hoặc tắt hoạt động chạy trong nền, một số hiệu ứng hình ảnh, các tính năng nhất định và một số đường kết nối mạng.</string>
     <string name="battery_saver_notification_channel_name">Trình tiết kiệm pin</string>
@@ -517,6 +521,7 @@ Nếu bạn vẫn chọn cài đặt ứng dụng này, hãy đảm bảo ứng 
     <string name="biometric_error_generic">Lỗi khi xác thực</string>
     <string name="biometric_error_hw_unavailable">Không có phần cứng sinh trắc học</string>
     <string name="biometric_error_user_canceled">Đã hủy xác thực</string>
+    <string name="biometric_face_not_recognized">Không nhận dạng được khuôn mặt</string>
     <string name="biometric_not_recognized">Không nhận dạng được</string>
     <string name="biometric_or_screen_lock_app_setting_name">Dùng dữ liệu sinh trắc học hoặc phương thức khóa màn hình</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">Dùng dữ liệu sinh trắc học của bạn hoặc phương thức khóa màn hình để tiếp tục</string>
@@ -528,8 +533,6 @@ Nếu bạn vẫn chọn cài đặt ứng dụng này, hãy đảm bảo ứng 
     <string name="bluetooth_airplane_mode_toast">Bluetooth sẽ không tắt khi chế độ trên máy bay bật</string>
     <string name="bluetooth_avrcp_restrict">Chính sách bảo mật ngăn không cho sử dụng điều khiển âm thanh/video bằng Bluetooth.</string>
     <string name="bluetooth_bpp_restrict">Chính sách bảo mật ngăn không cho in qua Bluetooth.</string>
-    <string name="bluetooth_china_popup_message">%1$s đang xin phép sử dụng %2$s. Cho phép?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Chính sách bảo mật ngăn không cho truyền dữ liệu qua Bluetooth.</string>
     <string name="bluetooth_desktop_restrict">Chính sách bảo mật ngăn không cho chế kết nối với máy tính để bàn qua Bluetooth.</string>
     <string name="bluetooth_device_restrict">Chính sách bảo mật ngăn không cho ghép nối với thiết bị Bluetooth này.</string>
@@ -540,7 +543,6 @@ Nếu bạn vẫn chọn cài đặt ứng dụng này, hãy đảm bảo ứng 
     <string name="bluetooth_outgoing_call_restrict">Chính sách bảo mật ngăn không cho thực hiện cuộc gọi đi qua Bluetooth.</string>
     <string name="bluetooth_pairing_restrict">Chính sách bảo mật ngăn không cho ghép nối Bluetooth.</string>
     <string name="bluetooth_pbap_restrict">Chính sách bảo mật ngăn không cho sử dụng danh bạ Bluetooth.</string>
-    <string name="bluetooth_permission_request">Yêu cầu cấp phép Bluetooth</string>
     <string name="bluetooth_restrict">Chính sách bảo mật ngăn không cho sử dụng Bluetooth.</string>
     <string name="bluetooth_sap_restrict">Chính sách bảo mật ngăn không cho truy cập thẻ SIM qua Bluetooth.</string>
     <string name="bluetooth_security_mode_disable">Chính sách bảo mật không cho phép sử dụng Bluetooth.</string>
@@ -665,12 +667,17 @@ Nếu bạn vẫn chọn cài đặt ứng dụng này, hãy đảm bảo ứng 
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">OK</string>
+    <string name="connected_display_thermally_unavailable_notification_content">Thiết bị của bạn quá nóng nên không phản chiếu được nội dung lên màn hình. Hãy để thiết bị nguội bớt</string>
+    <string name="connected_display_unavailable_notification_content">Hãy dùng một cáp khác rồi thử lại</string>
+    <string name="connected_display_unavailable_notification_title">Không chiếu được nội dung lên màn hình</string>
     <string name="console_running_notification_message">Hiệu suất sẽ bị ảnh hưởng. Để tắt, hãy chọn trình tải khởi động.</string>
     <string name="console_running_notification_title">Đã bật bảng điều khiển cổng nối tiếp</string>
     <string name="constrained_status_bar_device_locked">Thiết bị đã khóa</string>
     <string name="contentServiceSync">Đồng bộ hóa</string>
     <string name="contentServiceSyncNotificationTitle">Không thể đồng bộ hóa</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">Đã cố xóa quá nhiều %s.</string>
+    <string name="content_description_collapsed">Đã thu gọn</string>
+    <string name="content_description_expanded">Đã mở rộng</string>
     <string name="content_description_sliding_handle">Tay trượt. Chạm &amp; giữ.</string>
     <string name="conversation_single_line_image_placeholder">đã gửi hình ảnh</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -696,12 +703,10 @@ Bạn đã dùng tai nghe ở mức âm lượng cao hơn khuyến nghị, đi�
     <string name="data_saver_description">Để giúp giảm mức sử dụng dữ liệu, Trình tiết kiệm dữ liệu sẽ chặn một số ứng dụng gửi hoặc nhận dữ liệu trong nền. Ứng dụng mà bạn hiện sử dụng có thể dùng dữ liệu nhưng tần suất sẽ giảm. Ví dụ: hình ảnh sẽ không hiển thị cho đến khi bạn nhấn vào hình ảnh đó.</string>
     <string name="data_saver_enable_button">Bật</string>
     <string name="data_saver_enable_title">Bật Trình tiết kiệm dữ liệu?</string>
-    <string name="data_usage_disable_mobile">Tắt kết nối dữ liệu di động?</string>
-    <string name="data_usage_enable_mobile_warning">Việc kết nối qua dữ liệu gói có thể phải trả thêm phí. Tiếp tục?</string>
     <string name="data_usage_limit_body">Dữ liệu di động bị tạm dừng đến cuối chu kỳ thanh toán.</string>
     <string name="data_usage_limit_snoozed_body">Bạn đã vượt quá %s so với giới hạn đã đặt</string>
     <string name="data_usage_mobile_limit_snoozed_title">Vượt quá giới hạn d.liệu d.động</string>
-    <string name="data_usage_mobile_limit_title">Đã đạt giới hạn dữ liệu di động</string>
+    <string name="data_usage_mobile_limit_title">Đã đạt đến giới hạn dữ liệu di động</string>
     <string name="data_usage_rapid_app_body">%s đã sử dụng nhiều dữ liệu hơn bình thường.</string>
     <string name="data_usage_rapid_body">Các ứng dụng của bạn đã sử dụng nhiều dữ liệu hơn bình thường.</string>
     <string name="data_usage_rapid_title">Mức sử dụng dữ liệu di động cao</string>
@@ -733,8 +738,8 @@ Bạn đã dùng tai nghe ở mức âm lượng cao hơn khuyến nghị, đi�
     <string name="decline">Từ chối</string>
     <string name="decline_remote_bugreport_action">TỪ CHỐI</string>
     <string name="default_audio_route_category_name">Hệ thống</string>
-    <string name="default_audio_route_name">Máy tính bảng</string>
-    <string name="default_audio_route_name_dock_speakers">Loa đế</string>
+    <string name="default_audio_route_name">Điện thoại</string>
+    <string name="default_audio_route_name_dock_speakers">Loa kiêm đế sạc</string>
     <string name="default_audio_route_name_external_device">Thiết bị bên ngoài</string>
     <string name="default_audio_route_name_headphones">Tai nghe</string>
     <string name="default_audio_route_name_usb">USB</string>
@@ -751,11 +756,13 @@ Bạn đã dùng tai nghe ở mức âm lượng cao hơn khuyến nghị, đi�
     <string name="deprecated_target_sdk_message">Ứng dụng này được xây dựng cho một phiên bản Android cũ. Ứng dụng này có thể không hoạt động đúng cách và không có các biện pháp bảo vệ mới nhất về bảo mật và quyền riêng tư. Hãy kiểm tra để tìm bản cập nhật hoặc liên hệ với nhà phát triển của ứng dụng.</string>
     <string name="description_target_unlock_tablet">Trượt để mở khóa.</string>
     <string name="device_disabled">Thiết bị đã bị khóa. Hãy liên hệ quản trị viên IT.</string>
+    <string name="device_info_not_available">Không có.</string>
     <string name="device_ownership_relinquished">Quản trị viên đã từ bỏ quyền sở hữu thiết bị để cho phép dùng vào mục đích cá nhân</string>
     <string name="device_policy_manager_service">Dịch vụ quản lý chính sách thiết bị</string>
     <string name="device_state_notification_settings_button">Chuyển đến phần Cài đặt</string>
     <string name="device_state_notification_turn_off_button">Tắt</string>
     <string name="device_storage_monitor_notification_channel">Bộ nhớ của thiết bị</string>
+    <string name="device_unlock_notification_name">Mở khoá thiết bị</string>
     <string name="dex_cant_change_user_profile">Không thể thay đổi hồ sơ người dùng khi đang ở chế độ Samsung DeX.</string>
     <string name="dex_dialog_launch_toast">Các ứng dụng đang mở có thể đóng. Hãy lưu dữ liệu của bạn trước khi khởi động hoặc thoát Samsung DeX.</string>
     <string name="dex_disconnected_from_device">DeX đã ngắt kết nối với %s. Hãy kiểm tra kết nối mạng trên TV của bạn.</string>
@@ -764,9 +771,6 @@ Bạn đã dùng tai nghe ở mức âm lượng cao hơn khuyến nghị, đi�
     <string name="dex_launcher_mode_change">%s đã đóng để chuyển sang Samsung DeX.</string>
     <string name="dex_mirroring_jit_msg">Khi bạn chạy Samsung DeX trên máy tính bảng, bạn có thể phản chiếu màn hình máy tính bảng lên mọi màn hình kết nối cổng HDMI để xem trên màn hình lớn hơn.</string>
     <string name="dex_mirroring_jit_title">Chiếu DeX lên màn hình lớn hơn</string>
-    <string name="dex_restart_app_dialog_button_positive">K.động lại</string>
-    <string name="dex_restart_app_dialog_message">Ứng dụng này đang chạy trên màn hình khác. Để mở ứng dụng ở đây, ứng dụng cần khởi động lại. Hãy lưu mọi dữ liệu quan trọng trước khi bạn khởi động lại.</string>
-    <string name="dex_restart_app_dialog_title">Khởi động lại %s?</string>
     <string name="dex_restriction_blockerMessage">Chính sách bảo mật không cho phép sử dụng Samsung DeX.</string>
     <string name="dex_restriction_ethernetOnly">Chính sách bảo mật không cho phép sử dụng dữ liệu Wi-Fi, dữ liệu di động và chia sẻ kết nối internet trong DeX. Cần một kết nối có dây cho các tính năng mạng.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Theo chính sách bảo mật, hãy ngắt kết nối màn hình ngoài để thoát Samsung DeX.</string>
@@ -795,7 +799,6 @@ sử dụng %s"</string>
     <string name="disableupdate_application_restrict">Chính sách bảo mật ngăn cập nhật ứng dụng này.</string>
     <string name="dismiss_action">Đóng</string>
     <string name="display_chooser_button_positive">K.động lại</string>
-    <string name="display_chooser_dont_show_again">Không hiển thị lại</string>
     <string name="display_manager_built_in_display_name">Màn hình tích hợp</string>
     <string name="display_manager_hdmi_display_name">Màn hình HDMI</string>
     <string name="display_manager_overlay_display_name">Lớp phủ #%1$d</string>
@@ -817,6 +820,7 @@ sử dụng %s"</string>
     <string name="dpm_wifi_misc_network_insecure">Chính sách bảo mật ngăn không cho sử dụng các mạng Wi-Fi không bảo mật.</string>
     <string name="dpm_wifi_misc_wifi_disabled">Chính sách bảo mật không cho dùng Wi-Fi.</string>
     <string name="dpm_wifi_user_profiles_denied">Chính sách bảo mật ngăn không cho thêm mạng Wi-Fi.</string>
+    <string name="dream_accessibility_action_click">đóng</string>
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Không thể sử dụng ứng dụng này ở dạng xem Đa cửa sổ.</string>
     <string name="dream_preview_title">Bản xem trước, %1$s</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Không thể sử dụng tính năng này ở dạng xem Đa cửa sổ.</string>
@@ -845,11 +849,13 @@ sử dụng %s"</string>
     <string name="duration_years_shortest_future">%d năm nữa</string>
     <string name="dynamic_mode_notification_channel_name">Thông báo cung cấp thông tin về chế độ sạc thông thường</string>
     <string name="dynamic_mode_notification_summary">Giảm mức sử dụng pin để kéo dài thời lượng pin</string>
+    <string name="dynamic_mode_notification_summary_v2">Trình tiết kiệm pin được bật để kéo dài thời lượng pin</string>
     <string name="dynamic_mode_notification_title">Đã bật Trình tiết kiệm pin</string>
+    <string name="dynamic_mode_notification_title_v2">Trình tiết kiệm pin đang bật</string>
     <string name="editTextMenuTitle">Tác vụ văn bản</string>
     <string name="edit_accessibility_shortcut_menu_button">Chỉnh sửa phím tắt</string>
     <string name="edit_contact_at_sim_restriction">Chính sách bảo mật ngăn chỉnh sửa danh bạ trên thẻ SIM.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Thiết bị được phép</string>
+    <string name="edm_policy_not_allow_open_wifiap">Chính sách bảo mật hạn chế việc sử dụng chia sẻ kết nối internet không bảo mật cho điểm truy cập.</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
     <string name="elapsed_time_short_format_mm_ss">%1$02d:%2$02d</string>
     <string name="emailTypeCustom">Tùy chỉnh</string>
@@ -860,8 +866,10 @@ sử dụng %s"</string>
     <string name="emergency_call_dialog_number_for_display">Số khẩn cấp</string>
     <string name="emergency_calls_only">Chỉ Cuộc gọi khẩn cấp</string>
     <string name="enablePin">Không thành công, kích hoạt tính năng khóa SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s muốn bật Khám phá bằng cách chạm. Khi Khám phá bằng cách chạm được bật, bạn có thể nghe hoặc xem mô tả dưới ngón tay bạn hoặc thực hiện cử chỉ để tương tác với máy tính bảng.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s muốn bật Khám phá bằng cách chạm. Khi Khám phá bằng cách chạm được bật, bạn có thể nghe hoặc xem mô tả dưới ngón tay bạn hoặc thực hiện cử chỉ để tương tác với điện thoại.</string>
     <string name="enable_explore_by_touch_warning_title">Bật Khám phá bằng cách chạm?</string>
+    <string name="error_handwriting_unsupported">Trường này không hỗ trợ tính năng Viết tay</string>
+    <string name="error_handwriting_unsupported_password">Các trường mật khẩu không hỗ trợ tính năng Viết tay</string>
     <string name="error_message_change_not_allowed">Quản trị viên của bạn không cho phép thực hiện thay đổi này</string>
     <string name="error_message_title">Lỗi</string>
     <string name="ethernet_cable_connected_notification_message">Chạm để cài đặt.</string>
@@ -924,7 +932,7 @@ sử dụng %s"</string>
     <string name="ext_media_unsupported_notification_message">Thiết bị này không hỗ trợ %s này. Chạm để thiết lập ở định dạng được hỗ trợ.</string>
     <string name="ext_media_unsupported_notification_title">%s không được hỗ trợ</string>
     <string name="ext_storage_bad_removal_button">Khởi động lại</string>
-    <string name="ext_storage_bad_removal_title">Khởi động lại máy tính bảng</string>
+    <string name="ext_storage_bad_removal_title">Khởi động lại điện thoại</string>
     <string name="extmedia_format_button_format">Định dạng</string>
     <string name="extmedia_format_message">Tất cả dữ liệu trên thẻ của bạn sẽ bị mất.</string>
     <string name="extmedia_format_message_usbhost">Tất cả các tệp được lưu trữ trong bộ lưu trữ USB sẽ bị xóa. Không thể hoàn nguyên tác vụ này!</string>
@@ -946,7 +954,7 @@ sử dụng %s"</string>
     <string name="face_acquired_too_bright">Quá sáng. Hãy thử giảm độ sáng.</string>
     <string name="face_acquired_too_close">Đưa điện thoại ra xa hơn</string>
     <string name="face_acquired_too_dark">Không đủ ánh sáng</string>
-    <string name="face_acquired_too_different">Không thể nhận dạng khuôn mặt. Hãy thử lại.</string>
+    <string name="face_acquired_too_different">Không nhận dạng được khuôn mặt. Hãy thử lại.</string>
     <string name="face_acquired_too_far">Đưa điện thoại lại gần hơn</string>
     <string name="face_acquired_too_high">Nâng điện thoại lên cao hơn</string>
     <string name="face_acquired_too_left">Đưa điện thoại sang bên phải</string>
@@ -979,8 +987,6 @@ sử dụng %s"</string>
     <string name="face_recalibrate_notification_name">Mở khóa bằng khuôn mặt</string>
     <string name="face_recalibrate_notification_title">Vấn đề với tính năng Mở khóa bằng khuôn mặt</string>
     <string name="face_sensor_privacy_enabled">Để dùng tính năng Mở khoá bằng khuôn mặt, hãy bật tuỳ chọn <b>Truy cập máy ảnh</b> trong phần Cài đặt > Quyền riêng tư</string>
-    <string name="face_setup_notification_content">Mở khóa điện thoại bằng cách nhìn vào điện thoại</string>
-    <string name="face_setup_notification_title">Thiết lập tính năng Mở khóa bằng khuôn mặt</string>
     <string name="faceunlock_multiple_failures">Đã vượt quá số lần Mở khóa bằng khuôn mặt tối đa</string>
     <string name="factory_reset_message">"Không thể sử dụng ứng dụng quản trị. Thiết bị của bạn sẽ bị xóa ngay bây giờ.
 
@@ -1016,20 +1022,21 @@ Hãy liên hệ với quản trị viên của tổ chức nếu bạn có thắ
     <string name="fingerprint_app_setting_name">Dùng vân tay</string>
     <string name="fingerprint_authenticated">Đã xác thực vân tay</string>
     <string name="fingerprint_dialog_default_subtitle">Sử dụng dấu vân tay của bạn để tiếp tục</string>
-    <string name="fingerprint_error_bad_calibration">Không thể dùng cảm biến vân tay. Hãy liên hệ với một nhà cung cấp dịch vụ sửa chữa</string>
-    <string name="fingerprint_error_canceled">Thao tác dùng dấu vân tay bị hủy.</string>
-    <string name="fingerprint_error_hw_not_available">Phần cứng vân tay không khả dụng.</string>
-    <string name="fingerprint_error_hw_not_present">Thiết bị này không có cảm biến vân tay.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">Không nhận dạng được khuôn mặt. Hãy dùng vân tay.</string>
+    <string name="fingerprint_error_bad_calibration">Không dùng được cảm biến vân tay. Hãy liên hệ với một nhà cung cấp dịch vụ sửa chữa.</string>
+    <string name="fingerprint_error_canceled">Đã huỷ thao tác dùng vân tay</string>
+    <string name="fingerprint_error_hw_not_available">Không có phần cứng xử lý vân tay</string>
+    <string name="fingerprint_error_hw_not_present">Thiết bị này không có cảm biến vân tay</string>
     <string name="fingerprint_error_lockout">Bạn đã thử quá nhiều lần. Hãy dùng phương thức khoá màn hình.</string>
     <string name="fingerprint_error_lockout_permanent">Bạn đã thử quá nhiều lần. Hãy dùng phương thức khoá màn hình.</string>
-    <string name="fingerprint_error_no_fingerprints">Chưa đăng ký vân tay.</string>
+    <string name="fingerprint_error_no_fingerprints">Chưa đăng ký vân tay</string>
     <string name="fingerprint_error_no_space">Không thể thiết lập vân tay</string>
     <string name="fingerprint_error_not_match">Không nhận dạng được vân tay</string>
     <string name="fingerprint_error_power_pressed">Đã nhấn nút nguồn</string>
-    <string name="fingerprint_error_security_update_required">Đã tạm thời tắt cảm biến.</string>
+    <string name="fingerprint_error_security_update_required">Đã tắt tạm thời cảm biến</string>
     <string name="fingerprint_error_timeout">Hết thời gian chờ thiết lập vân tay. Hãy thử lại.</string>
     <string name="fingerprint_error_unable_to_process">Không xử lý được vân tay. Hãy thử lại.</string>
-    <string name="fingerprint_error_user_canceled">Người dùng đã hủy thao tác dùng dấu vân tay.</string>
+    <string name="fingerprint_error_user_canceled">Người dùng đã huỷ thao tác sử dụng vân tay</string>
     <string name="fingerprint_error_vendor_unknown">Đã xảy ra lỗi. Hãy thử lại.</string>
     <string name="fingerprint_name_template">Ngón tay %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">Dùng vân tay hoặc phương thức khóa màn hình</string>
@@ -1037,8 +1044,6 @@ Hãy liên hệ với quản trị viên của tổ chức nếu bạn có thắ
     <string name="fingerprint_recalibrate_notification_content">Hãy liên hệ với một nhà cung cấp dịch vụ sửa chữa.</string>
     <string name="fingerprint_recalibrate_notification_name">Mở khóa bằng vân tay</string>
     <string name="fingerprint_recalibrate_notification_title">Không thể dùng cảm biến vân tay</string>
-    <string name="fingerprint_setup_notification_content">Nhấn để thêm vân tay</string>
-    <string name="fingerprint_setup_notification_title">Thiết lập thêm những cách mở khóa khác</string>
     <string name="fingerprint_udfps_error_not_match">Không nhận dạng được vân tay</string>
     <string name="fingerprints">Tệp tham chiếu:</string>
     <string name="firmwarerecovery_restrict">Chính sách bảo mật hạn chế khôi phục phần mềm.</string>
@@ -1128,7 +1133,7 @@ Hãy thử nhấn nhẹ khi thiết lập vân tay của bạn."</string>
     <string name="global_action_toggle_sealed_mode">Chế độ Bảo mật</string>
     <string name="global_action_toggle_silent_mode">Chế độ im lặng</string>
     <string name="global_action_voice_assist">Trợ lý thoại</string>
-    <string name="global_actions">Tùy chọn máy tính bảng</string>
+    <string name="global_actions">Tùy chọn điện thoại</string>
     <string name="global_actions_airplane_mode_off_status">Chế độ trên máy bay TẮT</string>
     <string name="global_actions_airplane_mode_on_status">Chế độ trên máy bay đang bật</string>
     <string name="global_actions_toggle_airplane_mode">Chế độ trên máy bay</string>
@@ -1149,6 +1154,7 @@ Hãy thử nhấn nhẹ khi thiết lập vân tay của bạn."</string>
     <string name="globalactions_unable_restart_msg_fmm">Không thể khởi động lại vì Tìm di động của bạn đã khóa điện thoại từ xa.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Không thể khởi động lại vì Tìm di động của bạn đã khóa máy tính bảng từ xa.</string>
     <string name="globalactions_unable_restart_msg_securelock">Không thể khởi động lại điện thoại khi bị khóa. Hãy mở nắp và mở khóa để khởi động lại điện thoại.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Không thể khởi động lại điện thoại khi thẻ SIM bị khóa.</string>
     <string name="gnss_service">Dịch vụ GNSS</string>
     <string name="gnss_time_update_service">Dịch vụ cập nhật thời gian GNSS</string>
     <string name="gpsNotifMessage">Được yêu cầu bởi %1$s (%2$s)</string>
@@ -1164,7 +1170,7 @@ Hãy thử nhấn nhẹ khi thiết lập vân tay của bạn."</string>
     <string name="granularity_label_link">liên kết</string>
     <string name="granularity_label_word">từ</string>
     <string name="guest_name">Khách</string>
-    <string name="hardware">Hiện bàn phím ảo</string>
+    <string name="hardware">Sử dụng bàn phím ảo</string>
     <string name="hardware_key_restrict">Chính sách bảo mật ngăn không cho sử dụng mã phần cứng này.</string>
     <string name="hardware_sec">Bàn phím trên màn hình</string>
     <string name="harmful_app_warning_open_anyway">VẪN MỞ</string>
@@ -1313,11 +1319,11 @@ Bạn có chắc chắn muốn điều hướng khỏi trang này không?"</stri
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Nhấn để nhập mật khẩu&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Mã PIN không chính xác.</string>
     <string name="kg_enter_confirm_pin_hint">Xác nhận mã PIN mong muốn</string>
-    <string name="kg_failed_attempts_almost_at_login">"Bạn đã %1$d lần vẽ không chính xác hình mở khóa của mình. Sau %2$d lần thử không thành công nữa, bạn sẽ được yêu cầu mở khóa máy tính bảng bằng tài khoản email.
+    <string name="kg_failed_attempts_almost_at_login">"Bạn đã %1$d lần vẽ không chính xác hình mở khóa của mình. Sau %2$d lần thử không thành công nữa, bạn sẽ được yêu cầu mở khóa điện thoại bằng tài khoản email.
 
  Vui lòng thử lại sau %3$d giây."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Bạn đã %1$d lần mở khóa máy tính bảng không đúng cách. Sau %2$d lần mở khóa không thành công nữa, máy tính bảng sẽ được đặt lại về mặc định ban đầu và tất cả dữ liệu người dùng sẽ bị mất.</string>
-    <string name="kg_failed_attempts_now_wiping">Bạn đã %d lần mở khóa máy tính bảng không đúng cách. Bây giờ, máy tính bảng sẽ được đặt lại về mặc định ban đầu.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Bạn đã %1$d lần mở khóa điện thoại không đúng cách. Sau %2$d lần mở khóa không thành công nữa, điện thoại sẽ được đặt lại về mặc định ban đầu và tất cả dữ liệu người dùng sẽ bị mất.</string>
+    <string name="kg_failed_attempts_now_wiping">Bạn đã %d lần mở khóa điện thoại không đúng cách. Bây giờ, điện thoại sẽ được đặt lại về mặc định ban đầu.</string>
     <string name="kg_forgot_pattern_button_text">Đã quên hình</string>
     <string name="kg_invalid_confirm_pin_hint">Mã PIN không khớp</string>
     <string name="kg_invalid_puk">Hãy nhập lại mã PUK chính xác. Nhiều lần lặp lại sẽ vô hiệu hóa vĩnh viễn thẻ SIM.</string>
@@ -1405,11 +1411,11 @@ Hãy thử lại sau %2$d giây."</string>
     <string name="lockscreen_carrier_default">Không có dịch vụ</string>
     <string name="lockscreen_carrier_noservice">(Không có dịch vụ).</string>
     <string name="lockscreen_emergency_call">Khẩn cấp</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Bạn đã mở khóa máy tính bảng không đúng cách %1$d lần. Sau %2$d lần mở khóa không thành công nữa, máy tính bảng sẽ được đặt lại về mặc định ban đầu và tất cả dữ liệu người dùng sẽ bị mất.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Bạn đã %1$d lần vẽ không chính xác hình mở khóa của mình. Sau %2$d lần thử không thành công nữa, bạn sẽ được yêu cầu mở khóa máy tính bảng bằng thông tin đăng nhập Google của mình.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Bạn đã mở khóa điện thoại không đúng cách %1$d lần. Sau %2$d lần mở khóa không thành công nữa, điện thoại sẽ được đặt lại về mặc định ban đầu và tất cả dữ liệu người dùng sẽ bị mất.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Bạn đã %1$d lần vẽ không chính xác hình mở khóa. Sau %2$d lần thử không thành công nữa, bạn sẽ được yêu cầu mở khóa điện thoại bằng thông tin đăng nhập Google của bạn.
 
  Vui lòng thử lại sau %3$d giây."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Bạn đã mở khóa máy tính bảng không đúng cách %d lần. Bây giờ, máy tính bảng sẽ được đặt lại về mặc định ban đầu.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Bạn đã mở khóa điện thoại không đúng cách %d lần. Bây giờ, điện thoại sẽ được đặt lại về mặc định ban đầu.</string>
     <string name="lockscreen_forgot_pattern_button_text">Đã quên hình?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Bạn quên tên người dùng hoặc mật khẩu?
 Hãy truy cập "<b>google.com/accounts/recovery</b>.</string>
@@ -1425,7 +1431,7 @@ Hãy truy cập "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Nhấn vào Menu để mở khóa hoặc thực hiện cuộc gọi khẩn cấp.</string>
     <string name="lockscreen_missing_sim_instructions">Hãy thêm SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">Không tìm thấy hoặc không đọc được SIM. Hãy thêm SIM.</string>
-    <string name="lockscreen_missing_sim_message">Không có SIM nào trong máy tính bảng.</string>
+    <string name="lockscreen_missing_sim_message">Không có SIM nào trong điện thoại.</string>
     <string name="lockscreen_missing_sim_message_short">Không có SIM</string>
     <string name="lockscreen_network_locked_message">Mạng đã khóa</string>
     <string name="lockscreen_password_wrong">Thử lại</string>
@@ -1465,7 +1471,7 @@ Hãy thử lại sau %2$d giây."</string>
     <string name="low_internal_storage_view_text">Một số chức năng hệ thống có thể không hoạt động</string>
     <string name="low_internal_storage_view_text_no_boot">Không đủ bộ nhớ cho hệ thống. Đảm bảo bạn có 250 MB dung lượng trống và khởi động lại.</string>
     <string name="low_internal_storage_view_title">Sắp hết dung lượng lưu trữ</string>
-    <string name="low_memory">Bộ nhớ máy tính bảng đã đầy. Hãy xóa một số tệp để tạo thêm dung lượng.</string>
+    <string name="low_memory">Bộ nhớ điện thoại đã đầy. Hãy xóa một số tệp để tạo thêm dung lượng.</string>
     <string name="ltb_kill_content_v2_phone">%s đã đóng vì ứng dụng này đang làm điện thoại của bạn quá nóng. Bạn có thể mở lại sau khi điện thoại của bạn hạ nhiệt.</string>
     <string name="ltb_kill_content_v2_tablet">%s đã đóng vì ứng dụng này đang làm máy tính bảng của bạn quá nóng. Bạn có thể mở lại sau khi máy tính bảng của bạn hạ nhiệt.</string>
     <string name="ltb_warning_button">Không đóng</string>
@@ -1485,16 +1491,16 @@ Hãy thử lại sau %2$d giây."</string>
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Bạn sẽ cần mở khóa máy tính bảng để tắt chế độ Bảo trì.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Sẽ không lưu những điều xảy ra khi chế độ Bảo trì đang bật, chẳng hạn như dữ liệu đã tải về, cài đặt ứng dụng hoặc thay đổi cài đặt.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Đặt khóa màn hình</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Khởi động lại mà không cần tạo nhật ký</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Tạo nhật ký và khởi động lại</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Điện thoại của bạn cần khởi động lại để bật chế độ Bảo trì.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Trước tiên, hãy đặt khóa màn hình.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Máy tính bảng của bạn cần khởi động lại để bật chế độ Bảo trì.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Để giúp nhân viên hỗ trợ của chúng tôi phân tích mọi sự cố với điện thoại của bạn, chúng tôi khuyên bạn nên tạo nhật ký hệ thống trước khi bắt đầu chế độ Bảo trì.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Để giúp đội ngũ hỗ trợ của chúng tôi chẩn đoán và phân tích mọi sự cố với điện thoại của bạn, bạn nên tạo nhật ký hệ thống trước khi bắt đầu chế độ Bảo trì.
 
-Nhật ký sẽ hiển thị ứng dụng nào đã được sử dụng và bất kỳ lỗi nào có thể đã xảy ra gần đây, nhưng sẽ không bao gồm bất kỳ thông tin cá nhân nào khác. Nhật ký sẽ chỉ được sử dụng để phân tích sự cố và không dành cho bất kỳ mục đích nào khác. Thường mất khoảng 2 phút để tạo nhật ký."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Để giúp nhân viên hỗ trợ của chúng tôi phân tích mọi sự cố với máy tính bảng của bạn, chúng tôi khuyên bạn nên tạo nhật ký hệ thống trước khi bắt đầu chế độ Bảo trì.
+Nhật ký chỉ bao gồm thông tin cần thiết để sửa lỗi cho điện thoại của bạn, ví dụ như ứng dụng nào đã được sử dụng, lỗi xảy ra gần đây, số điện thoại bị chặn và dung lượng lưu trữ file. Nhật ký sẽ không nhằm bất kỳ mục đích nào khác ngoài chẩn đoán và phân tích sự cố. Thông thường, thao tác tạo nhật ký sẽ mất 2 phút."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Để giúp đội ngũ hỗ trợ của chúng tôi chẩn đoán và phân tích mọi sự cố với máy tính bảng của bạn, bạn nên tạo nhật ký hệ thống trước khi bắt đầu chế độ Bảo trì.
 
-Nhật ký sẽ hiển thị ứng dụng nào đã được sử dụng và bất kỳ lỗi nào có thể đã xảy ra gần đây, nhưng sẽ không bao gồm bất kỳ thông tin cá nhân nào khác. Nhật ký sẽ chỉ được sử dụng để phân tích sự cố và không dành cho bất kỳ mục đích nào khác. Thường mất khoảng 2 phút để tạo nhật ký."</string>
+Nhật ký chỉ bao gồm thông tin cần thiết để sửa lỗi cho máy tính bảng của bạn, ví dụ như ứng dụng nào đã được sử dụng, lỗi xảy ra gần đây, số điện thoại bị chặn và dung lượng lưu trữ file. Nhật ký sẽ không nhằm bất kỳ mục đích nào khác ngoài chẩn đoán và phân tích sự cố. Thông thường, thao tác tạo nhật ký sẽ mất 2 phút."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Phân tích lưu trữ</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Bộ nhớ trong trên điện thoại của bạn sắp đầy. Nếu bạn hết dung lượng lưu trữ, một số ứng dụng và tính năng có thể không còn hoạt động đúng cách. Hãy thử xóa một số file hoặc ứng dụng mà bạn không cần nữa. Sau khi xóa, đừng quên dọn sạch Thùng rác.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Bộ nhớ trong trên máy tính bảng của bạn sắp đầy. Nếu bạn hết dung lượng lưu trữ, một số ứng dụng và tính năng có thể không còn hoạt động đúng cách. Hãy thử xóa một số file hoặc ứng dụng mà bạn không cần nữa. Sau khi xóa, đừng quên dọn sạch Thùng rác.</string>
@@ -1516,10 +1522,17 @@ Nhật ký sẽ hiển thị ứng dụng nào đã được sử dụng và b�
     <string name="maintenance_mode_outro_label">Thoát chế độ Bảo trì</string>
     <string name="maintenance_mode_outro_textview_message_phone">Bạn sẽ cần mở khóa điện thoại để tắt chế độ Bảo trì. Khi bạn làm như vậy, mọi thứ sẽ trở lại như cũ khi chế độ Bảo trì được bật lần đầu tiên. Các thay đổi được thực hiện trong khi bật chế độ Bảo trì, chẳng hạn như dữ liệu đã tải về, ứng dụng đã cài đặt hoặc thay đổi cài đặt, sẽ không được lưu.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Bạn sẽ cần mở khóa máy tính bảng để tắt chế độ Bảo trì. Khi bạn làm như vậy, mọi thứ sẽ trở lại như cũ khi chế độ Bảo trì được bật lần đầu tiên. Các thay đổi được thực hiện trong khi bật chế độ Bảo trì, chẳng hạn như dữ liệu đã tải về, ứng dụng đã cài đặt hoặc thay đổi cài đặt, sẽ không được lưu.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Không thể sử dụng chế độ Bảo trì khi %s đang bật.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Không thể sử dụng chế độ Bảo trì khi đang bật Tiết kiệm pin với một số ứng dụng bị hạn chế và Màn hình chờ.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Chế độ Bảo trì không được hỗ trợ trên điện thoại này.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Chế độ Bảo trì không được hỗ trợ trên máy tính bảng này.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">Chỉ người sở hữu thiết bị mới có thể sử dụng %s.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Dừng sao lưu dữ liệu của bạn và bật chế độ Bảo trì?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Để bật chế độ Bảo trì, bạn cần hoàn tất hoặc xóa bản sao lưu chưa hoàn tất của mình.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Để bật chế độ Bảo trì, bạn cần dừng quá trình sao lưu đang diễn ra.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Để bật chế độ Bảo trì, bạn cần dừng khôi phục dữ liệu sao lưu của mình.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Ứng dụng quản trị thiết bị</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Đang tạo nhật ký…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Quá trình này thường mất khoảng 2 phút. Sau khi tạo nhật ký, điện thoại của bạn sẽ khởi động lại ở chế độ Bảo trì và bạn có thể an tâm giao điện thoại để bảo trì.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Quá trình này thường mất khoảng 2 phút. Sau khi tạo nhật ký, điện thoại của bạn sẽ khởi động lại ở chế độ Bảo trì và bạn có thể an tâm giao máy tính bảng để bảo trì.</string>
@@ -1669,6 +1682,7 @@ Máy tính bảng của bạn sẽ sớm khởi động lại."</string>
     <string name="menu_shift_shortcut_label">Shift+</string>
     <string name="menu_space_shortcut_label">dấu cách</string>
     <string name="menu_sym_shortcut_label">Sym+</string>
+    <string name="message_on_crash">Bị chặn bởi Tự động chặn</string>
     <string name="mic_access_off_toast">Micrô đang bị chặn</string>
     <string name="mic_access_on_toast">Micrô đang hoạt động</string>
     <string name="microphone_restrict">Chính sách bảo mật ngăn không cho sử dụng micro.</string>
@@ -1692,12 +1706,14 @@ Máy tính bảng của bạn sẽ sớm khởi động lại."</string>
     <string name="mime_type_video">Video</string>
     <string name="mime_type_video_ext">Video %1$s</string>
     <string name="miniresolver_call">Gọi</string>
-    <string name="miniresolver_call_in_work">Gọi từ ứng dụng công việc?</string>
-    <string name="miniresolver_call_information">Tổ chức của bạn chỉ cho phép bạn thực hiện cuộc gọi từ các ứng dụng công việc.</string>
+    <string name="miniresolver_call_in_work">Gọi bằng ứng dụng công việc?</string>
+    <string name="miniresolver_call_information">Tổ chức của bạn chỉ cho phép bạn gọi điện bằng ứng dụng công việc</string>
     <string name="miniresolver_open_in_personal">Mở trong %s cá nhân?</string>
     <string name="miniresolver_open_in_work">Mở trong %s công việc?</string>
     <string name="miniresolver_open_work">Mở %s công việc?</string>
-    <string name="miniresolver_sms_information">Tổ chức của bạn chỉ cho phép bạn gửi tin nhắn từ các ứng dụng công việc.</string>
+    <string name="miniresolver_private_space_messages_information">Bạn chỉ có thể gửi tin nhắn SMS qua ứng dụng Tin nhắn cá nhân của mình.</string>
+    <string name="miniresolver_private_space_phone_information">Bạn chỉ có thể gọi điện qua ứng dụng Điện thoại cá nhân của mình. Cuộc gọi được thực hiện bằng ứng dụng Điện thoại cá nhân sẽ được thêm vào nhật ký cuộc gọi cá nhân của bạn.</string>
+    <string name="miniresolver_sms_information">Tổ chức của bạn chỉ cho phép bạn gửi tin nhắn bằng ứng dụng công việc</string>
     <string name="miniresolver_switch">Chuyển</string>
     <string name="miniresolver_switch_to_work">Chuyển sang ứng dụng công việc?</string>
     <string name="miniresolver_use_personal_browser">Dùng trình duyệt cá nhân</string>
@@ -1733,30 +1749,6 @@ Máy tính bảng của bạn sẽ sớm khởi động lại."</string>
     <string name="month_day_year" formatted="false">Ngày %d tháng %-m năm %Y</string>
     <string name="more_apps">Ứng dụng khác</string>
     <string name="more_item_label">Thêm</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">Dịch vụ %s không được hỗ trợ. Hãy liên hệ dịch vụ khách hàng.</string>
-    <string name="mptcp_message_address_type_not_supported">Kết nối %s yếu. Đang kết nối lại qua mạng hiện có…</string>
-    <string name="mptcp_message_busy_ntime_wait">Kết nối %s yếu. Đang kết nối lại qua mạng hiện có…</string>
-    <string name="mptcp_message_cmd_not_supported">Mạng %s tạm thời không khả dụng. Đang kết nối lại qua mạng hiện có…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">Kết nối %s yếu. Đang kết nối lại qua mạng hiện có…</string>
-    <string name="mptcp_message_connection_refused">Kết nối %s yếu. Đang kết nối lại qua mạng hiện có…</string>
-    <string name="mptcp_message_data_usage_limit">Đã đạt giới hạn sử dụng dữ liệu. Để thay đổi giới hạn sử dụng dữ liệu, hãy đi đến Cài đặt.</string>
-    <string name="mptcp_message_host_unreachable">Kết nối %s yếu. Đang kết nối lại qua mạng hiện có…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Không thể bật %s. Thiết bị chưa kết nối với mạng LTE.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Không thể bật %s khi chuyển vùng quốc tế.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Không thể bật %s khi Điểm truy cập di động hoặc USB internet được bật.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Không thể bật %s khi đang bật Wi-Fi Direct.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Không thể bật %s khi đang bật chế độ Máy bay.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Không thể bật %s khi Dữ liệu di động bị tắt.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Không có phản hồi từ nhà cung cấp dịch vụ.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Không thể bật %1$s. %2$s không khả dụng với gói internet của bạn hoặc không nhận được phản hồi từ server %3$s.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Có lỗi khi gửi yêu cầu kích hoạt %s. Đang kết nối lại qua các mạng có sẵn…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Không thể bật %s. Đã gắn không đúng thẻ SIM.</string>
-    <string name="mptcp_message_network_unreachable">Kết nối %s yếu. Đang kết nối lại qua mạng hiện có…</string>
-    <string name="mptcp_message_non_mptcp_plan">Không thể bật Giga Multi-Path. Gói dữ liệu không hỗ trợ chức năng này.</string>
-    <string name="mptcp_message_operation_disabled_overheating">Đã tắt %s để thiết bị không bị quá nóng. Đang tải về qua mạng di động thay thế…</string>
-    <string name="mptcp_message_server_error">Kết nối %s yếu. Đang kết nối lại qua mạng hiện có…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Không thể bật %s. Thiết bị đang quá nóng. Hãy chờ đến khi thiết bị hạ nhiệt và thử lại.</string>
-    <string name="mptcp_message_ttl_expired">Mạng %s tạm thời không khả dụng. Đang kết nối lại qua mạng hiện có…</string>
     <string name="mte_override_notification_message">Hiệu suất và độ ổn định có thể bị ảnh hưởng. Hãy khởi động lại để tắt. Nếu được bật bằng arm64.memtag.bootctl, hãy đặt trước chế độ này thành không có.</string>
     <string name="mte_override_notification_title">Đã bật MTE thử nghiệm</string>
     <string name="multi_user_capability_restrict">Chính sách bảo mật ngăn không cho sử dụng khả năng nhiều người dùng trên thiết bị của bạn.</string>
@@ -1777,18 +1769,18 @@ Máy tính bảng của bạn sẽ sớm khởi động lại."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Âm thanh đang phát qua thiết bị âm thanh Bluetooth của bạn. Chạm vào đây để tắt</string>
     <string name="multisound_sound_via_headphone">Âm thanh %s đang phát qua tai nghe. Chạm vào đây để tắt.</string>
     <string name="multisound_sound_via_headphone_multiselection">Âm thanh đang phát qua tai nghe. Chạm vào đây để tắt.</string>
-    <string name="multisound_sound_via_phone_speaker">Âm thanh %s đang phát qua loa máy tính bảng. Chạm vào đây để tắt.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Âm thanh đang phát qua loa máy tính bảng. Chạm vào đây để tắt.</string>
+    <string name="multisound_sound_via_phone_speaker">Âm thanh %s đang phát qua loa điện thoại. Chạm vào đây để tắt tính năng này.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Âm thanh đang phát qua loa điện thoại. Chạm vào đây để tắt.</string>
     <string name="multisound_sound_via_usb_audio">Âm thanh %s đang phát qua thiết bị âm thanh USB. Chạm vào đây để tắt.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Âm thanh đang phát qua thiết bị âm thanh USB. Chạm vào đây để tắt.</string>
     <string name="multisound_title">Âm thanh ứng dụng riêng biệt</string>
     <string name="multisound_turn_off_multisound">Tắt</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s không thể chạy trong Samsung DeX. Hãy thử chạy ở chế độ máy tính bảng.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s không thể chạy trong Samsung DeX. Ứng dụng này được thiết kế cho Màn hình chờ của máy tính bảng.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Một số trò chơi chỉ hoạt động trên màn hình cảm ứng. Nếu tính năng điều khiển bằng chuột không hoạt động trong Samsung DeX, thay vào đó, hãy thử chơi ở chế độ máy tính bảng.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s không thể chạy trong Samsung DeX. Hãy thử chạy ở chế độ điện thoại.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s không thể chạy trong Samsung DeX. Ứng dụng này được thiết kế cho Màn hình chờ của điện thoại.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Một số trò chơi chỉ hoạt động trên màn hình cảm ứng. Nếu tính năng điều khiển bằng chuột không hoạt động trong Samsung DeX, thay vào đó, hãy thử chơi ở chế độ điện thoại.</string>
     <string name="music_recognition_manager_service">Dịch vụ quản lý tính năng nhận dạng nhạc</string>
     <string name="muted_by">%1$s đang tắt một số âm thanh</string>
-    <string name="my_device">Máy tính bảng này</string>
+    <string name="my_device">Điện thoại này</string>
     <string name="nas_upgrade_notification_content">Thông báo nâng cao hiện cung cấp các thao tác và câu trả lời đề xuất. Thông báo thích ứng trên Android không được hỗ trợ nữa.</string>
     <string name="nas_upgrade_notification_disable_action">Tắt</string>
     <string name="nas_upgrade_notification_enable_action">OK</string>
@@ -1828,7 +1820,6 @@ Thông báo nâng cao có thể đọc mọi nội dung thông báo, bao gồm c
     <string name="nosim_limited_service">Dịch vụ hạn chế</string>
     <string name="not_checked">chưa chọn</string>
     <string name="not_selected">chưa được chọn</string>
-    <string name="not_support_ai_key">Khóa AI chưa áp dụng cho máy tính bảng của bạn. Bản cập nhật sẽ sớm ra mắt.</string>
     <string name="notification_action_check_bg_apps">Xem các ứng dụng đang hoạt động</string>
     <string name="notification_alerted_content_description">Đã phát âm báo</string>
     <string name="notification_app_name_settings">Cài đặt</string>
@@ -1847,6 +1838,7 @@ Thông báo nâng cao có thể đọc mọi nội dung thông báo, bao gồm c
     <string name="notification_channel_developer_important">Thông báo quan trọng liên quan đến nhà phát triển</string>
     <string name="notification_channel_device_admin">Thông báo từ quản trị viên CNTT của bạn</string>
     <string name="notification_channel_dex_policy">Chính sách Samsung DeX</string>
+    <string name="notification_channel_display">Màn hình</string>
     <string name="notification_channel_do_not_disturb">Không làm phiền</string>
     <string name="notification_channel_emergency_callback">Chế độ gọi lại khẩn cấp</string>
     <string name="notification_channel_foreground_service">Các ứng dụng tiêu thụ pin</string>
@@ -1888,8 +1880,8 @@ Thông báo nâng cao có thể đọc mọi nội dung thông báo, bao gồm c
     <string name="notification_verified_content_description">Đã xác minh</string>
     <string name="notification_work_profile_content_description">Hồ sơ công việc</string>
     <string name="now_string_shortest">vừa xong</string>
-    <string name="ntfs_usb_storage_readonly_mount_message">Bộ nhớ này chỉ được phép đọc vì sử dụng định dạng NTFS.</string>
-    <string name="ntfs_usb_storage_readonly_mount_title">Đã thêm bộ nhớ USB chỉ đọc</string>
+    <string name="ntfs_usb_storage_readonly_mount_message">Lưu trữ này chỉ được phép đọc vì sử dụng định dạng NTFS.</string>
+    <string name="ntfs_usb_storage_readonly_mount_title">Đã thêm TB lưu trữ USB chỉ đọc</string>
     <string name="number_picker_decrement_button">Giảm</string>
     <string name="number_picker_increment_button">Tăng</string>
     <string name="number_picker_increment_scroll_action">Trượt lên để tăng và trượt xuống để giảm.</string>
@@ -1909,7 +1901,8 @@ Thông báo nâng cao có thể đọc mọi nội dung thông báo, bao gồm c
     <string name="overheat_warning_title_v2_tablet">Máy tính bảng quá nóng</string>
     <string name="owner_name">Chủ sở hữu</string>
     <string name="package_deleted_device_owner">Do quản trị viên của bạn xóa</string>
-    <string name="package_installed_device_owner">Do quản trị viên của bạn cài đặt</string>
+    <string name="package_installed_device_owner">"Do quản trị viên của bạn cài đặt.
+Chuyển đến phần cài đặt để xem các quyền được cấp"</string>
     <string name="package_module">Gói</string>
     <string name="package_night_mode_dialog_got_it">Đã hiểu</string>
     <string name="package_night_mode_dialog_message">%s đang chạy ở chế độ Tối để tiết kiệm pin. Bạn có thể chuyển sang chế độ Sáng trong Labs cài đặt.</string>
@@ -1932,7 +1925,9 @@ Thông báo nâng cao có thể đọc mọi nội dung thông báo, bao gồm c
     <string name="permdesc_accessCoarseLocation">Khi bạn dùng ứng dụng này, ứng dụng có thể nhận được thông tin vị trí gần đúng của bạn từ dịch vụ vị trí. Bạn phải bật dịch vụ vị trí trên thiết bị của mình thì ứng dụng mới nhận được thông tin vị trí.</string>
     <string name="permdesc_accessDrmCertificates">Cho phép ứng dụng cung cấp và sử dụng chứng chỉ DRM. Không cần thiết cho các ứng dụng thông thường.</string>
     <string name="permdesc_accessFineLocation">Khi bạn dùng ứng dụng này, ứng dụng có thể nhận được thông tin vị trí chính xác của bạn từ dịch vụ vị trí. Bạn phải bật dịch vụ vị trí trên thiết bị của mình thì ứng dụng mới nhận được thông tin vị trí. Việc này có thể làm tăng mức sử dụng pin.</string>
+    <string name="permdesc_accessHiddenProfile">Cho phép ứng dụng truy cập vào hồ sơ bị ẩn.</string>
     <string name="permdesc_accessImsCallService">Cho phép ứng dụng sử dụng dịch vụ IMS để thực hiện cuộc gọi mà không có sự can thiệp của bạn.</string>
+    <string name="permdesc_accessLastKnownCellId">Cho phép ứng dụng truy cập thông tin nhận dạng mạng di động đã biết gần đây nhất do nhà mạng điện thoại cung cấp.</string>
     <string name="permdesc_accessLocationExtraCommands">Cho phép ứng dụng truy cập vào các lệnh của nhà cung cấp vị trí bổ sung. Điều này có thể cho phép ứng dụng can thiệp vào hoạt động của Hệ thống định vị toàn cầu (GPS) hoặc các nguồn vị trí khác.</string>
     <string name="permdesc_accessNetworkConditions">Cho phép ứng dụng quan sát các điều kiện mạng. Không bao giờ cần cho ứng dụng thông thường.</string>
     <string name="permdesc_accessNetworkState">Cho phép ứng dụng xem thông tin về các kết nối mạng như mạng nào thoát và mạng nào được kết nối.</string>
@@ -1953,23 +1948,24 @@ Thông báo nâng cao có thể đọc mọi nội dung thông báo, bao gồm c
     <string name="permdesc_bindNotificationListenerService">Cho phép chủ sở hữu liên kết với giao diện cấp cao nhất của dịch vụ trình xử lý thông báo. Không cần thiết cho các ứng dụng thông thường.</string>
     <string name="permdesc_bind_connection_service">Cho phép ứng dụng tương tác với dịch vụ điện thoại để thực hiện/nhận cuộc gọi.</string>
     <string name="permdesc_bind_incall_service">Cho phép ứng dụng kiểm soát thời gian và cách người dùng nhìn thấy màn hình trong cuộc gọi.</string>
-    <string name="permdesc_bluetooth">Cho phép ứng dụng xem cấu hình của Bluetooth trên máy tính bảng và tạo và chấp nhận các kết nối với các thiết bị đã ghép nối.</string>
-    <string name="permdesc_bluetoothAdmin">Cho phép ứng dụng định cấu hình máy tính bảng Bluetooth cục bộ cũng như phát hiện và ghép nối với các thiết bị từ xa.</string>
+    <string name="permdesc_bluetooth">Cho phép ứng dụng xem cấu hình của Bluetooth trên điện thoại, tạo và chấp nhận các kết nối với các thiết bị đã ghép nối.</string>
+    <string name="permdesc_bluetoothAdmin">Cho phép ứng dụng định cấu hình điện thoại Bluetooth cục bộ cũng như phát hiện và ghép nối với các thiết bị từ xa.</string>
     <string name="permdesc_bluetooth_advertise">Cho phép ứng dụng quảng cáo trên các thiết bị Bluetooth ở gần</string>
     <string name="permdesc_bluetooth_connect">Cho phép ứng dụng kết nối với thiết bị Bluetooth đã ghép nối</string>
     <string name="permdesc_bluetooth_scan">Cho phép ứng dụng khám phá và ghép nối với các thiết bị Bluetooth ở gần</string>
     <string name="permdesc_bodySensors">Cho phép ứng dụng truy cập vào dữ liệu cảm biến cơ thể khi đang dùng, chẳng hạn như nhịp tim, thân nhiệt và tỷ lệ phần trăm oxy trong máu.</string>
     <string name="permdesc_bodySensors_background">Cho phép ứng dụng truy cập vào dữ liệu cảm biến cơ thể khi ở chế độ nền, chẳng hạn như nhịp tim, thân nhiệt và tỷ lệ phần trăm oxy trong máu.</string>
-    <string name="permdesc_broadcastSticky">Cho phép ứng dụng gửi nội dung truyền phát hấp dẫn người xem. Nội dung này sẽ vẫn còn sau khi quá trình truyền phát kết thúc. Việc sử dụng quá mức có thể làm cho máy tính bảng bị chậm hoặc không ổn định do khiến máy tính bảng sử dụng quá nhiều bộ nhớ.</string>
+    <string name="permdesc_broadcastSticky">Cho phép ứng dụng gửi nội dung truyền phát hấp dẫn người xem. Nội dung này sẽ vẫn còn sau khi quá trình truyền phát kết thúc. Việc sử dụng quá mức có thể làm cho điện thoại bị chậm hoặc không ổn định do khiến điện thoại sử dụng quá nhiều bộ nhớ.</string>
     <string name="permdesc_callCompanionApp">Cho phép ứng dụng xem và kiểm soát cuộc gọi đến trên thiết bị. Ứng dụng sẽ xem và kiểm soát các thông tin như số điện thoại của các cuộc gọi và trạng thái cuộc gọi.</string>
     <string name="permdesc_callPhone">Cho phép ứng dụng gọi cho các số điện thoại mà không cần bạn phải can thiệp. Việc này có thể làm phát sinh các khoản phí hoặc cuộc gọi không mong muốn. Xin lưu ý rằng quyền này không cho phép ứng dụng gọi cho các số khẩn cấp. Các ứng dụng độc hại có thể khiến bạn bị mất tiền thông qua việc thực hiện cuộc gọi khi chưa có sự xác nhận của bạn, hoặc có thể quay số theo mã của nhà mạng, khiến các cuộc gọi đến bị tự động chuyển tiếp đến một số khác.</string>
     <string name="permdesc_camera">Ứng dụng này có thể chụp ảnh và quay video bằng máy ảnh khi bạn đang dùng ứng dụng.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">Ứng dụng này có thể truy cập vào camera dưới vai trò Người dùng hệ thống không có giao diện người dùng.</string>
     <string name="permdesc_cameraOpenCloseListener">Ứng dụng này có thể nhận các lệnh gọi lại khi có bất kỳ thiết bị camera nào đang được mở (bằng ứng dụng) hoặc đóng.</string>
     <string name="permdesc_changeNetworkState">Cho phép ứng dụng thay đổi trạng thái kết nối mạng.</string>
     <string name="permdesc_changeTetherState">Cho phép ứng dụng thay đổi trạng thái của kết nối mạng được dùng làm điểm truy cập Internet.</string>
-    <string name="permdesc_changeWifiMulticastState">Cho phép ứng dụng nhận các gói được gửi đến tất cả các thiết bị trên mạng Wi-Fi các địa chỉ đa hướng, chứ không phải chỉ máy tính bảng của bạn. Chế độ này sử dụng nhiều năng lượng hơn chế độ không phát đa hướng.</string>
+    <string name="permdesc_changeWifiMulticastState">Cho phép ứng dụng nhận các gói được gửi đến tất cả các thiết bị trên mạng Wi-Fi các địa chỉ đa hướng, chứ không phải chỉ điện thoại của bạn. Chế độ này sử dụng nhiều năng lượng hơn chế độ không phát đa hướng.</string>
     <string name="permdesc_changeWifiState">Cho phép ứng dụng kết nối ngắt kết nối khỏi các điểm truy cập Wi-Fi và để thực hiện thay đổi đối với cấu hình thiết bị cho mạng Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">Cho phép ứng dụng kết nối máy tính bảng và ngắt kết nối máy tính bảng khỏi mạng WiMAX.</string>
+    <string name="permdesc_changeWimaxState">Cho phép ứng dụng kết nối điện thoại và ngắt kết nối điện thoại khỏi mạng WiMAX.</string>
     <string name="permdesc_companionProfileWatch">Cho phép một ứng dụng đồng hành quản lý các đồng hồ.</string>
     <string name="permdesc_connection_manager">Cho phép ứng dụng quản lý kết nối viễn thông.</string>
     <string name="permdesc_control_incall_experience">Cho phép ứng dụng cung cấp trải nghiệm người dùng trong cuộc gọi.</string>
@@ -1990,6 +1986,7 @@ Thông báo nâng cao có thể đọc mọi nội dung thông báo, bao gồm c
     <string name="permdesc_foregroundServiceHealth">Cho phép ứng dụng dùng các dịch vụ trên nền trước thuộc loại \"health\"</string>
     <string name="permdesc_foregroundServiceLocation">Cho phép ứng dụng dùng các dịch vụ trên nền trước thuộc loại \"location\"</string>
     <string name="permdesc_foregroundServiceMediaPlayback">Cho phép ứng dụng dùng các dịch vụ trên nền trước thuộc loại \"mediaPlayback\"</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">Cho phép ứng dụng dùng các dịch vụ trên nền trước thuộc loại \"mediaProcessing\"</string>
     <string name="permdesc_foregroundServiceMediaProjection">Cho phép ứng dụng dùng các dịch vụ trên nền trước thuộc loại \"mediaProjection\"</string>
     <string name="permdesc_foregroundServiceMicrophone">Cho phép ứng dụng dùng các dịch vụ trên nền trước thuộc loại \"microphone\"</string>
     <string name="permdesc_foregroundServicePhoneCall">Cho phép ứng dụng dùng các dịch vụ trên nền trước thuộc loại \"phoneCall\"</string>
@@ -1997,7 +1994,7 @@ Thông báo nâng cao có thể đọc mọi nội dung thông báo, bao gồm c
     <string name="permdesc_foregroundServiceSpecialUse">Cho phép ứng dụng dùng các dịch vụ trên nền trước thuộc loại \"specialUse\"</string>
     <string name="permdesc_foregroundServiceSystemExempted">Cho phép ứng dụng dùng các dịch vụ trên nền trước thuộc loại \"systemExempted\"</string>
     <string name="permdesc_fullScreenIntent">Cho phép ứng dụng hiển thị thông báo dưới dạng các hoạt động ở chế độ toàn màn hình trên thiết bị ở trạng thái khóa</string>
-    <string name="permdesc_getAccounts">Cho phép ứng dụng nhận danh sách các tài khoản mà máy tính bảng biết. Danh sách này có thể bao gồm bất kỳ tài khoản nào được tạo bởi các ứng dụng mà bạn đã cài đặt.</string>
+    <string name="permdesc_getAccounts">Cho phép ứng dụng nhận danh sách các tài khoản mà điện thoại biết. Danh sách này có thể bao gồm bất kỳ tài khoản nào được tạo bởi các ứng dụng mà bạn đã cài đặt.</string>
     <string name="permdesc_getAppList">Cho phép một ứng dụng đọc danh sách các ứng dụng đã cài đặt.</string>
     <string name="permdesc_getPackageSize">Cho phép ứng dụng truy xuất mã, dữ liệu và kích thước bộ nhớ đệm của chính ứng dụng</string>
     <string name="permdesc_getTasks">Cho phép ứng dụng truy xuất thông tin về các công việc đã và đang chạy gần đây. Việc này có thể cho phép ứng dụng phát hiện thông tin về những ứng dụng nào đã được sử dụng trên thiết bị.</string>
@@ -2095,17 +2092,18 @@ HÃY TRẢ VỀ"</string>
     <string name="permdesc_mount_unmount_filesystems">Cho phép ứng dụng gắn kết và ngắt hệ thống file của bộ nhớ rời.</string>
     <string name="permdesc_nearby_wifi_devices">Cho phép ứng dụng này thông báo, kết nối và xác định vị trí tương đối của các thiết bị Wi‑Fi lân cận</string>
     <string name="permdesc_nfc">Cho phép ứng dụng giao tiếp với thẻ Giao tiếp trường gần (NFC), thẻ và trình đọc.</string>
+    <string name="permdesc_nfcTransactionEvent">Cho phép ứng dụng nhận thông tin về giao dịch diễn ra trên Phần tử bảo mật.</string>
     <string name="permdesc_observeCompanionDevicePresence">Cho phép một ứng dụng đồng hành phát hiện thiết bị đồng hành khi các thiết bị ở gần hoặc ở xa.</string>
-    <string name="permdesc_persistentActivity">Cho phép ứng dụng tạo sự đồng nhất cho các phần của mình trong bộ nhớ. Việc này có thể hạn chế bộ nhớ đối với các ứng dụng khác đang làm chậm máy tính bảng.</string>
+    <string name="permdesc_persistentActivity">Cho phép ứng dụng tạo sự đồng nhất cho các phần của mình trong bộ nhớ. Việc này có thể hạn chế bộ nhớ đối với các ứng dụng khác đang làm chậm điện thoại.</string>
     <string name="permdesc_postNotification">Cho phép ứng dụng hiển thị thông báo</string>
     <string name="permdesc_preferredPaymentInfo">Cho phép ứng dụng nhận thông tin về dịch vụ thanh toán qua công nghệ giao tiếp tầm gần mà bạn ưu tiên, chẳng hạn như các hình thức hỗ trợ đã đăng ký và điểm đến trong hành trình.</string>
     <string name="permdesc_processOutgoingCalls">Cho phép ứng dụng xem số được gọi trong một cuộc gọi đi với tùy chọn chuyển hướng cuộc gọi đến một số khác hoặc hủy cuộc gọi đó hoàn toàn.</string>
     <string name="permdesc_queryAllPackages">Cho phép một ứng dụng xem tất cả các gói đã cài đặt.</string>
     <string name="permdesc_readBasicPhoneState">Cho phép ứng dụng dùng các tính năng cơ bản của điện thoại trên thiết bị.</string>
-    <string name="permdesc_readCalendar">Ứng dụng này có thể đọc tất cả các sự kiện lịch được lưu trữ trên máy tính bảng của bạn và chia sẻ hoặc lưu dữ liệu lịch của bạn.</string>
+    <string name="permdesc_readCalendar">Ứng dụng này có thể đọc tất cả các sự kiện lịch được lưu trữ trên điện thoại của bạn và chia sẻ hoặc lưu dữ liệu lịch của bạn.</string>
     <string name="permdesc_readCallLog">Ứng dụng này có thể đọc nhật ký cuộc gọi của bạn.</string>
     <string name="permdesc_readCellBroadcasts">Cho phép ứng dụng đọc tin nhắn quảng bá mà thiết bị của bạn nhận được. Tin nhắn quảng bá cảnh báo được gửi ở một số địa điểm nhằm cảnh báo cho bạn về các tình huống khẩn cấp. Các ứng dụng độc hại có thể gây ảnh hưởng đến hiệu suất hoặc hoạt động của thiết bị của bạn khi nhận được tin nhắn quảng bá khẩn cấp.</string>
-    <string name="permdesc_readContacts">Cho phép ứng dụng đọc dữ liệu về người liên hệ mà bạn lưu trữ trên máy tính bảng của mình. Ứng dụng cũng sẽ có quyền truy cập vào các tài khoản đã tạo người liên hệ trên máy tính bảng của bạn. Đây có thể là các tài khoản do ứng dụng (bạn đã cài đặt) tạo. Quyền này cho phép ứng dụng lưu dữ liệu về người liên hệ của bạn và các ứng dụng độc hại có thể lén lút chia sẻ dữ liệu này.</string>
+    <string name="permdesc_readContacts">Cho phép ứng dụng đọc dữ liệu về người liên hệ mà bạn lưu trữ trên điện thoại. Ứng dụng cũng sẽ có quyền truy cập vào các tài khoản đã tạo người liên hệ trên điện thoại của bạn. Đây có thể là các tài khoản do ứng dụng (bạn đã cài đặt) tạo. Quyền này cho phép ứng dụng lưu dữ liệu về người liên hệ của bạn và các ứng dụng độc hại có thể lén lút chia sẻ dữ liệu này.</string>
     <string name="permdesc_readInstallSessions">Cho phép ứng dụng đọc phiên cài đặt. Thao tác này sẽ cho phép ứng dụng xem chi tiết về gói cài đặt đang hoạt động.</string>
     <string name="permdesc_readMediaAudio">Cho phép ứng dụng đọc tệp âm thanh trong bộ nhớ dùng chung.</string>
     <string name="permdesc_readMediaImages">Cho phép ứng dụng đọc tệp hình ảnh trong bộ nhớ dùng chung.</string>
@@ -2113,11 +2111,11 @@ HÃY TRẢ VỀ"</string>
     <string name="permdesc_readNetworkUsageHistory">Cho phép ứng dụng đọc thông tin lịch sử sử dụng mạng của các mạng và ứng dụng cụ thể.</string>
     <string name="permdesc_readPhoneNumbers">Cho phép ứng dụng truy cập số điện thoại của thiết bị.</string>
     <string name="permdesc_readPhoneState">Cho phép ứng dụng truy cập vào các tính năng điện thoại của thiết bị. Quyền này cho phép ứng dụng xác định số điện thoại và ID thiết bị, cho dù cuộc gọi có hiện hoạt hay không và số từ xa có được kết nối bằng một cuộc gọi hay không.</string>
-    <string name="permdesc_readSms">Ứng dụng này có thể đọc tất cả các tin nhắn SMS (văn bản) được lưu trữ trên máy tính bảng của bạn.</string>
+    <string name="permdesc_readSms">Ứng dụng này có thể đọc tất cả các tin nhắn SMS (văn bản) được lưu trữ trên điện thoại của bạn.</string>
     <string name="permdesc_readSyncSettings">Cho phép ứng dụng đọc cài đặt đồng bộ hóa cho tài khoản. Ví dụ: việc này có thể xác định liệu ứng dụng Mọi người đã được đồng bộ hóa với tài khoản chưa.</string>
     <string name="permdesc_readSyncStats">Cho phép ứng dụng đọc thống kê đồng bộ hóa cho tài khoản, bao gồm lịch sử của các sự kiện đồng bộ hóa và lượng dữ liệu được đồng bộ hóa.</string>
     <string name="permdesc_readVisualUserSelect">Cho phép ứng dụng đọc các tệp hình ảnh và video mà bạn chọn trong bộ nhớ dùng chung.</string>
-    <string name="permdesc_receiveBootCompleted">Cho phép ứng dụng tự chạy ngay khi hệ thống khởi động xong. Quyền này có thể khiến máy tính bảng mất nhiều thời gian khởi động hơn và cho phép ứng dụng làm chậm toàn bộ máy tính bảng do ứng dụng luôn chạy.</string>
+    <string name="permdesc_receiveBootCompleted">Cho phép ứng dụng tự chạy ngay khi hệ thống khởi động xong. Quyền này có thể khiến điện thoại mất nhiều thời gian khởi động hơn và cho phép ứng dụng làm chậm toàn bộ điện thoại do ứng dụng luôn chạy.</string>
     <string name="permdesc_receiveMms">Cho phép ứng dụng nhận và xử lý tin nhắn MMS. Điều này có nghĩa là ứng dụng có thể theo dõi hoặc xóa tin nhắn được gửi đến thiết bị của bạn mà không hiển thị chúng cho bạn.</string>
     <string name="permdesc_receiveSms">Cho phép ứng dụng nhận và xử lý tin nhắn SMS. Điều này có nghĩa là ứng dụng có thể theo dõi hoặc xóa tin nhắn được gửi đến thiết bị của bạn mà không hiển thị chúng cho bạn.</string>
     <string name="permdesc_receiveWapPush">Cho phép ứng dụng nhận và xử lý tin nhắn WAP. Quyền này bao gồm khả năng giám sát hoặc xóa tin nhắn được gửi cho bạn mà không hiển thị chúng cho bạn.</string>
@@ -2139,7 +2137,7 @@ HÃY TRẢ VỀ"</string>
     <string name="permdesc_sendSms">Cho phép ứng dụng gửi tin nhắn SMS. Việc này có thể dẫn đến các khoản phí không mong muốn. Các ứng dụng độc hai có thể khiến bạn tốn tiền bằng cách gửi tin nhắn mà không cần sự xác nhận của bạn.</string>
     <string name="permdesc_setAlarm">"Cho phép ứng dụng đặt báo thức trong ứng dụng đồng hồ báo thức được cài đặt. Một số ứng dụng đồng hồ báo thức có thể không thực thi tính  năng này."</string>
     <string name="permdesc_setInputCalibration">Cho phép ứng dụng sửa đổi các thông số hiệu chỉnh của màn hình cảm ứng. Không cần cho ứng dụng thông thường.</string>
-    <string name="permdesc_setTimeZone">Cho phép ứng dụng thay đổi múi giờ của máy tính bảng.</string>
+    <string name="permdesc_setTimeZone">Cho phép ứng dụng thay đổi múi giờ của điện thoại.</string>
     <string name="permdesc_setWallpaper">Cho phép ứng dụng đặt hình nền hệ thống.</string>
     <string name="permdesc_setWallpaperHints">Cho phép ứng dụng đặt gợi ý kích thước hình nền của hệ thống.</string>
     <string name="permdesc_sim_communication">Cho phép ứng dụng gửi lệnh đến SIM. Việc này rất nguy hiểm.</string>
@@ -2153,7 +2151,7 @@ HÃY TRẢ VỀ"</string>
     <string name="permdesc_subscribedFeedsRead">Cho phép ứng dụng lấy thông tin chi tiết về nguồn cấp dữ liệu hiện được đồng bộ hóa.</string>
     <string name="permdesc_systemAlertWindow">Ứng dụng này có thể xuất hiện ở phía trên cùng của các ứng dụng khác hoặc các phần khác của màn hình. Điều này có thể cản trở hoạt động sử dụng ứng dụng thông thường và thay đổi cách các ứng dụng khác xuất hiện.</string>
     <string name="permdesc_systemCamera">Ứng dụng hệ thống có đặc quyền này có thể dùng máy ảnh hệ thống để chụp ảnh và quay video bất cứ lúc nào. Ngoài ra, ứng dụng này cũng cần có quyền android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Cho phép ứng dụng sử dụng bộ phát hồng ngoại của máy tính bảng.</string>
+    <string name="permdesc_transmitIr">Cho phép ứng dụng sử dụng bộ phát hồng ngoại của điện thoại.</string>
     <string name="permdesc_turnScreenOn">Cho phép ứng dụng bật màn hình.</string>
     <string name="permdesc_ucsPlugin">Làm việc với các plug-in lưu trữ chứng danh của bên thứ ba.</string>
     <string name="permdesc_uninstall_shortcut">Cho phép ứng dụng xóa lối tắt trên Màn hình chính mà không cần sự can thiệp của người dùng.</string>
@@ -2167,12 +2165,13 @@ HÃY TRẢ VỀ"</string>
     <string name="permdesc_vibrate">Cho phép ứng dụng kiểm soát bộ rung.</string>
     <string name="permdesc_vibrator_state">Cho phép ứng dụng truy cập vào trạng thái bộ rung.</string>
     <string name="permdesc_videoWrite">Cho phép ứng dụng này sửa đổi bộ sưu tập video của bạn.</string>
-    <string name="permdesc_wakeLock">Cho phép ứng dụng ngăn máy tính bảng chuyển sang chế độ ngủ.</string>
-    <string name="permdesc_writeCalendar">Ứng dụng này có thể thêm, xóa hoặc thay đổi sự kiện lịch trên máy tính bảng của bạn. Ứng dụng này có thể gửi các tin nhắn trông có vẻ như được gửi từ các chủ sở hữu lịch hoặc thay đổi sự kiện mà không thông báo cho chủ sở hữu.</string>
-    <string name="permdesc_writeCallLog">Cho phép ứng dụng sửa đổi nhật ký cuộc gọi trên máy tính bảng của bạn, bao gồm dữ liệu về các cuộc gọi đến và gọi đi. Các ứng dụng độc hại có thể sử dụng quyền này để xóa hoặc sửa đổi nhật ký cuộc gọi của bạn.</string>
-    <string name="permdesc_writeContacts">Cho phép ứng dụng sửa đổi dữ liệu về người liên hệ mà bạn lưu trữ trên máy tính bảng của mình. Quyền này cho phép ứng dụng xóa dữ liệu về người liên hệ.</string>
+    <string name="permdesc_wakeLock">Cho phép ứng dụng ngăn điện thoại chuyển sang chế độ ngủ.</string>
+    <string name="permdesc_writeCalendar">Ứng dụng này có thể thêm, xóa hoặc thay đổi sự kiện lịch trên điện thoại của bạn. Ứng dụng này có thể gửi các tin nhắn trông có vẻ như được gửi từ các chủ sở hữu lịch hoặc thay đổi sự kiện mà không thông báo cho chủ sở hữu.</string>
+    <string name="permdesc_writeCallLog">Cho phép ứng dụng sửa đổi nhật ký cuộc gọi trên điện thoại của bạn, bao gồm dữ liệu về các cuộc gọi đến và gọi đi. Các ứng dụng độc hại có thể sử dụng quyền này để xóa hoặc sửa đổi nhật ký cuộc gọi của bạn.</string>
+    <string name="permdesc_writeContacts">Cho phép ứng dụng sửa đổi dữ liệu về người liên hệ mà bạn lưu trữ trên điện thoại của mình. Quyền này cho phép ứng dụng xóa dữ liệu về người liên hệ.</string>
     <string name="permdesc_writeSettings">Cho phép ứng dụng sửa đổi dữ liệu cài đặt của hệ thống. Ứng dụng độc hại có thể làm hỏng cấu hình hệ thống của bạn.</string>
     <string name="permdesc_writeSyncSettings">Cho phép ứng dụng sửa đổi cài đặt đồng bộ hóa cho tài khoản. Ví dụ: ứng dụng có thể được sử dụng để cho phép đồng bộ hóa ứng dụng Mọi người với tài khoản.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">Cho phép ứng dụng cập nhật trạng thái xác minh các khoá liên hệ E2EE do các ứng dụng khác sở hữu</string>
     <string name="permgroupdesc_activityRecognition">truy cập vào hoạt động thể chất</string>
     <string name="permgroupdesc_calendar">truy cập lịch của bạn</string>
     <string name="permgroupdesc_calllog">đọc và ghi nhật ký cuộc gọi điện thoại</string>
@@ -2214,7 +2213,9 @@ cho tài khoản %s."</string>
     <string name="permlab_accessCoarseLocation">chỉ truy cập thông tin vị trí gần đúng khi ứng dụng mở trên màn hình</string>
     <string name="permlab_accessDrmCertificates">truy cập chứng chỉ DRM</string>
     <string name="permlab_accessFineLocation">chỉ truy cập vị trí chính xác trong nền trước</string>
+    <string name="permlab_accessHiddenProfile">Truy cập vào hồ sơ bị ẩn</string>
     <string name="permlab_accessImsCallService">truy cập dịch vụ gọi điện qua IMS</string>
+    <string name="permlab_accessLastKnownCellId">Truy cập thông tin danh tính mạng di động đã biết gần đây nhất.</string>
     <string name="permlab_accessLocationExtraCommands">truy cập vào các lệnh của nhà cung cấp vị trí bổ sung</string>
     <string name="permlab_accessNetworkConditions">quan sát các điều kiện mạng</string>
     <string name="permlab_accessNetworkState">xem kết nối mạng</string>
@@ -2246,6 +2247,7 @@ cho tài khoản %s."</string>
     <string name="permlab_callCompanionApp">xem và kiểm soát cuộc gọi thông qua hệ thống.</string>
     <string name="permlab_callPhone">gọi trực tiếp số điện thoại</string>
     <string name="permlab_camera">chụp ảnh và quay video</string>
+    <string name="permlab_cameraHeadlessSystemUser">Cho phép ứng dụng hoặc dịch vụ truy cập vào camera dưới vai trò Người dùng hệ thống không có giao diện người dùng.</string>
     <string name="permlab_cameraOpenCloseListener">Cho phép một ứng dụng hoặc dịch vụ nhận lệnh gọi lại khi các thiết bị máy ảnh đang được mở/đóng.</string>
     <string name="permlab_changeNetworkState">thay đổi kết nối mạng</string>
     <string name="permlab_changeTetherState">thay đổi kết nối được dùng làm điểm truy cập Internet</string>
@@ -2273,6 +2275,7 @@ cho tài khoản %s."</string>
     <string name="permlab_foregroundServiceHealth">chạy dịch vụ trên nền trước thuộc loại \"health\"</string>
     <string name="permlab_foregroundServiceLocation">chạy dịch vụ trên nền trước thuộc loại \"location\"</string>
     <string name="permlab_foregroundServiceMediaPlayback">chạy dịch vụ trên nền trước thuộc loại \"mediaPlayback\"</string>
+    <string name="permlab_foregroundServiceMediaProcessing">chạy dịch vụ trên nền trước thuộc loại \"mediaProcessing\"</string>
     <string name="permlab_foregroundServiceMediaProjection">chạy dịch vụ trên nền trước thuộc loại \"mediaProjection\"</string>
     <string name="permlab_foregroundServiceMicrophone">chạy dịch vụ trên nền trước thuộc loại \"microphone\"</string>
     <string name="permlab_foregroundServicePhoneCall">chạy dịch vụ trên nền trước thuộc loại \"phoneCall\"</string>
@@ -2373,6 +2376,7 @@ cho tài khoản %s."</string>
     <string name="permlab_mount_unmount_filesystems">truy cập hệ thống tệp Thẻ SD</string>
     <string name="permlab_nearby_wifi_devices">tương tác với các thiết bị Wi‑Fi lân cận</string>
     <string name="permlab_nfc">kiểm soát Liên lạc trường gần</string>
+    <string name="permlab_nfcTransactionEvent">Sự kiện giao dịch trên Phần tử bảo mật</string>
     <string name="permlab_observeCompanionDevicePresence">Phát hiện thiết bị đồng hành</string>
     <string name="permlab_persistentActivity">đặt ứng dụng luôn chạy</string>
     <string name="permlab_postNotification">hiển thị thông báo</string>
@@ -2445,12 +2449,13 @@ cho tài khoản %s."</string>
     <string name="permlab_uwb_ranging">xác định khoảng cách tương đối giữa các thiết bị ở gần dùng Băng tần siêu rộng</string>
     <string name="permlab_vibrate">kiểm soát rung</string>
     <string name="permlab_videoWrite">sửa đổi bộ sưu tập video</string>
-    <string name="permlab_wakeLock">ngăn máy tính bảng chuyển sang chế độ ngủ</string>
+    <string name="permlab_wakeLock">ngăn điện thoại chuyển sang chế độ ngủ</string>
     <string name="permlab_writeCalendar">thêm hoặc sửa đổi các sự kiện lịch và gửi email cho khách mà chủ sở hữu không hề biết</string>
     <string name="permlab_writeCallLog">ghi nhật ký cuộc gọi</string>
     <string name="permlab_writeContacts">sửa đổi danh sách liên hệ của bạn</string>
     <string name="permlab_writeSettings">sửa đổi các chế độ cài đặt hệ thống</string>
     <string name="permlab_writeSyncSettings">chuyển đổi bật và tắt đồng bộ hóa</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">cập nhật trạng thái xác minh các khoá liên hệ E2EE do các ứng dụng khác sở hữu</string>
     <string name="perms_description_app">Được cung cấp bởi %1$s.</string>
     <string name="perms_new_perm_prefix">&lt;font fgcolor=#ff33b5e5 size=12>MỚI: &lt;/font></string>
     <string name="personal_apps_suspended_turn_profile_on">Bật</string>
@@ -2460,7 +2465,7 @@ cho tài khoản %s."</string>
     <string name="phoneTypeAssistant">Số hỗ trợ</string>
     <string name="phoneTypeCallback">Số gọi lại</string>
     <string name="phoneTypeCar">Ô tô</string>
-    <string name="phoneTypeCompanyMain">Số ĐT CQ chính</string>
+    <string name="phoneTypeCompanyMain">Số chính ở nơi làm việc</string>
     <string name="phoneTypeConference">Hội nghị</string>
     <string name="phoneTypeCustom">Tùy chỉnh</string>
     <string name="phoneTypeFaxHome">Số fax nhà riêng</string>
@@ -2487,7 +2492,7 @@ cho tài khoản %s."</string>
     <string name="policydesc_allow_desktopsync">Ngăn sử dụng đồng bộ desktop.</string>
     <string name="policydesc_allow_internetsharing">Ngăn sử dụng Điểm truy cập di động.</string>
     <string name="policydesc_allow_irda">Ngăn sử dụng IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Ngăn sử dụng email POP và IMAP trên máy tính bảng.</string>
+    <string name="policydesc_allow_popimapemail">Ngăn sử dụng email POP và IMAP trên điện thoại.</string>
     <string name="policydesc_allow_storagecard">Ngăn sử dụng thẻ SD.</string>
     <string name="policydesc_allow_textmessaging">Ngăn sử dụng tin nhắn SMS và MMS.</string>
     <string name="policydesc_allow_thirdParty">Ứng dụng này có thể ngăn các ứng dụng bên thứ ba khởi chạy.</string>
@@ -2505,10 +2510,10 @@ cho tài khoản %s."</string>
     <string name="policydesc_setGlobalProxy">Đặt proxy chung của thiết bị được sử dụng trong khi chính sách bật. Chỉ chủ sở hữu thiết bị mới có thể đặt proxy chung.</string>
     <string name="policydesc_unsigned_app">Ứng dụng này có thể ngăn các ứng dụng từ những nguồn không xác định khởi chạy.</string>
     <string name="policydesc_unsigned_pkg">Ứng dụng này có thể ngăn cài đặt các ứng dụng từ những nguồn không xác định.</string>
-    <string name="policydesc_watchLogin">Theo dõi số lần nhập mật khẩu không chính xác khi mở khóa màn hình và khóa máy tính bảng hoặc xóa tất cả dữ liệu của máy tính bảng nếu có quá nhiều lần nhập mật khẩu không chính xác.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Giám sát số lần nhập sai mật khẩu khi mở khóa màn hình và khóa máy tính bảng hoặc xóa tất cả dữ liệu của người dùng này nếu nhập sai mật khẩu quá nhiều lần.</string>
-    <string name="policydesc_wipeData">Xóa dữ liệu trên máy tính bảng mà không cần cảnh báo, bằng cách thực hiện thiết lập lại dữ liệu ban đầu.</string>
-    <string name="policydesc_wipeData_secondaryUser">Xóa dữ liệu của người dùng trên máy tính bảng này mà không cảnh báo.</string>
+    <string name="policydesc_watchLogin">Theo dõi số lần nhập mật khẩu không chính xác khi mở khóa màn hình và khóa điện thoại hoặc xóa tất cả dữ liệu của điện thoại nếu có quá nhiều lần nhập mật khẩu không chính xác.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Giám sát số lần nhập sai mật khẩu khi mở khóa màn hình và khóa điện thoại hoặc xóa tất cả dữ liệu của người dùng này nếu nhập sai mật khẩu quá nhiều lần.</string>
+    <string name="policydesc_wipeData">Xóa dữ liệu trên điện thoại mà không cần cảnh báo, bằng cách thiết lập lại dữ liệu ban đầu.</string>
+    <string name="policydesc_wipeData_secondaryUser">Xóa dữ liệu của người dùng trên điện thoại này mà không cảnh báo.</string>
     <string name="policylab_allow_bluetoothmode">Tắt Bluetooth</string>
     <string name="policylab_allow_browser">Tắt Internet</string>
     <string name="policylab_allow_camera">Vô hiệu máy ảnh</string>
@@ -2542,7 +2547,7 @@ cho tài khoản %s."</string>
     <string name="postalTypeHome">Nhà riêng</string>
     <string name="postalTypeOther">Khác</string>
     <string name="postalTypeWork">Nơi làm việc</string>
-    <string name="power_dialog">Tùy chọn máy tính bảng</string>
+    <string name="power_dialog">Tùy chọn điện thoại</string>
     <string name="power_off">Tắt nguồn</string>
     <string name="prepend_shortcut_label">Trình đơn+</string>
     <string name="preposition_for_date">vào %s</string>
@@ -2554,6 +2559,8 @@ cho tài khoản %s."</string>
     <string name="print_service_installed_title">Đã cài đặt dịch vụ %s</string>
     <string name="printing_disabled_by">%s đã tắt tính năng in.</string>
     <string name="private_dns_broken_detailed">Không thể truy cập máy chủ DNS riêng tư</string>
+    <string name="private_profile_label_badge">%1$s riêng tư</string>
+    <string name="private_space_set_up_screen_lock_message">Để dùng không gian riêng tư, hãy thiết lập một phương thức khoá màn hình trên thiết bị này</string>
     <string name="profile_encrypted_detail">Đã khóa hồ sơ công việc</string>
     <string name="profile_encrypted_detail_workspace_premium">%s bị khóa</string>
     <string name="profile_encrypted_detail_workspace_prime">Đã khóa Hồ sơ công việc</string>
@@ -2563,6 +2570,13 @@ cho tài khoản %s."</string>
     <string name="profile_encrypted_message_workspace_prime">Mở khóa hồ sơ công việc của bạn để nhận thông báo về các ứng dụng công việc.</string>
     <string name="profile_encrypted_title">Một số chức năng có thể bị hạn chế</string>
     <string name="profile_encrypted_title_secure_folder">Đã khóa Thư mục bảo mật.</string>
+    <string name="profile_label_clone">Sao chép</string>
+    <string name="profile_label_communal">Dùng chung</string>
+    <string name="profile_label_private">Riêng tư</string>
+    <string name="profile_label_test">Kiểm thử</string>
+    <string name="profile_label_work">Công việc</string>
+    <string name="profile_label_work_2">Công việc 2</string>
+    <string name="profile_label_work_3">Công việc 3</string>
     <string name="profile_restarting_message_premium">Bạn sẽ không nhận được tất cả thông báo từ ứng dụng công việc khi %1$s bị khóa. Hãy chạm vào đây để mở khóa %2$s.</string>
     <string name="profile_restarting_message_prime">Bạn sẽ không nhận được tất cả thông báo từ ứng dụng công việc khi hồ sơ công việc của bạn bị khóa. Hãy chạm vào đây để mở khóa hồ sơ công việc của bạn.</string>
     <string name="profile_restarting_title_premium">%s bị khóa</string>
@@ -2588,9 +2602,11 @@ cho tài khoản %s."</string>
     <string name="recent_tasks_title">Gần đây</string>
     <string name="recording_fail">Không thể sử dụng micro trong %1$s khi đang sử dụng trong %2$s.</string>
     <string name="recording_popup">%s đang sử dụng micro.</string>
-    <string name="recording_popup_device">Máy tính bảng</string>
+    <string name="recording_popup_device">Điện thoại</string>
     <string name="recording_popup_with_bluetooth">%s đang sử dụng micro Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s đang sử dụng micro của %2$s.</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">Đã ẩn nội dung thông báo nhạy cảm</string>
     <string name="redo">Làm lại</string>
     <string name="reduce_bright_colors_feature_name">"Giảm độ
 sáng thêm"</string>
@@ -2722,6 +2738,29 @@ Việc nghe ở mức âm lượng cao trong thời gian dài có thể gây t�
     <string name="samsung_global_action_restart">Khởi động lại</string>
     <string name="samsung_keyboard_settings">Cài đặt Bàn phím Samsung</string>
     <string name="sanitized_content_text_sf">Nội dung ẩn</string>
+    <string name="satellite_notification_how_it_works">Cách hoạt động</string>
+    <string name="satellite_notification_manual_summary">Gửi và nhận tin nhắn mà không cần mạng di động hoặc Wi-Fi</string>
+    <string name="satellite_notification_manual_title">Sử dụng tính năng nhắn tin qua vệ tinh?</string>
+    <string name="satellite_notification_open_message">Mở ứng dụng Tin nhắn</string>
+    <string name="satellite_notification_summary">Bạn có thể gửi và nhận tin nhắn mà không cần có mạng di động hoặc mạng Wi-Fi</string>
+    <string name="satellite_notification_title">Đã tự động kết nối với vệ tinh</string>
+    <string name="scCellularNetworkSecuritySummary">Mã hoá, thông báo cho mạng chưa được mã hoá</string>
+    <string name="scCellularNetworkSecurityTitle">Bảo mật mạng di động</string>
+    <string name="scIdentifierDisclosureIssueSummary">"Vào %1$s, một mạng lân cận đã ghi lại mã nhận dạng duy nhất của thiết bị của bạn (IMSI hoặc IMEI) trong lúc sử dụng SIM %2$s của bạn.
+
+Tức là vị trí, hoạt động hoặc danh tính của bạn đã được ghi lại. Đây là một phương thức thông dụng nhưng có thể trở thành vấn đề đối với những ai lo ngại về quyền riêng tư."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">Vào %1$s, một mạng lân cận đã ghi nhận mã nhận dạng duy nhất của thiết bị của bạn (IMSI hoặc IMEI) trong lúc sử dụng SIM %2$s của bạn</string>
+    <string name="scIdentifierDisclosureIssueTitle">Mã thiết bị đã bị truy cập</string>
+    <string name="scNullCipherIssueActionGotIt">Tôi hiểu</string>
+    <string name="scNullCipherIssueActionLearnMore">Tìm hiểu thêm</string>
+    <string name="scNullCipherIssueActionSettings">Cài đặt an ninh mạng di động</string>
+    <string name="scNullCipherIssueEncryptedSummary">Kết nối SIM %1$s nay an toàn hơn</string>
+    <string name="scNullCipherIssueEncryptedTitle">Đã kết nối với mạng %1$s đã mã hoá</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"Cuộc gọi, tin nhắn và dữ liệu hiện dễ bị tấn công trong lúc sử dụng SIM %1$s của bạn.
+
+Khi kết nối của bạn được mã hoá lại, bạn sẽ nhận được một thông báo khác."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">Cuộc gọi, tin nhắn và dữ liệu hiện dễ bị tấn công trong lúc sử dụng SIM %1$s của bạn.</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">Đã kết nối với mạng chưa được mã hoá</string>
     <string name="scan_text">Tr.xuất văn bản</string>
     <string name="screen_compat_mode_hint">Bật lại chế độ này trong cài đặt Hệ thống > Ứng dụng > Đã tải xuống.</string>
     <string name="screen_compat_mode_scale">Tỷ lệ</string>
@@ -2732,16 +2771,17 @@ Việc nghe ở mức âm lượng cao trong thời gian dài có thể gây t�
     <string name="screen_lock">Phương thức khoá màn hình</string>
     <string name="screen_lock_app_setting_name">Dùng phương thức khóa màn hình</string>
     <string name="screen_lock_dialog_default_subtitle">Hãy nhập phương thức khóa màn hình của bạn để tiếp tục</string>
+    <string name="screen_not_shared_sensitive_content">Nội dung ứng dụng bị ẩn khỏi tính năng chia sẻ màn hình vì lý do bảo mật</string>
     <string name="screencapture_restrict">Chính sách bảo mật ngăn không cho sử dụng tính năng chụp màn hình.</string>
     <string name="screenshot_edit">Chỉnh sửa</string>
     <string name="sd_card_unavailable_message">Bạn không thể sử dụng thẻ SD vì thẻ được gắn trong khi một hồ sơ người dùng khác đang được sử dụng.</string>
     <string name="sd_card_unavailable_title">Thẻ SD không khả dụng</string>
-    <string name="sdcard_bad_removal_message">Bạn đã gỡ thẻ SD không an toàn. Để máy tính bảng không bị khởi động lại đột ngột, hãy lưu dữ liệu chưa được lưu và khởi động lại ngay.</string>
+    <string name="sdcard_bad_removal_message">Bạn đã gỡ thẻ SD không an toàn. Để điện thoại không bị khởi động lại đột ngột, hãy lưu dữ liệu chưa được lưu và khởi động lại ngay.</string>
     <string name="sdcard_batch_decrypt_noti_content">Giải mã thẻ SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Giải mật mã hóa thẻ SD</string>
     <string name="sdcard_batch_decrypt_popup_content">Thẻ SD đã mã hóa phải được mở trước khi được dùng. Mở khóa có thể mất một giờ hoặc hơn. Bắt đầu với pin được nạp và giữ thiết bị luôn cắm điện cho đến khi giải mật mã hoàn tất. Việc ngắt tiến trình giải mật mã có thể gây mất một số hoặc toàn bộ dữ liệu.</string>
     <string name="sdcard_decrypt_err_notification">Đã xảy ra lỗi giải mã thẻ SD.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Một số file trên thẻ SD của bạn đã được mã hóa trên thiết bị khác và không thể sử dụng được trên máy tính bảng này.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Một số file trên thẻ SD của bạn đã được mã hóa trên thiết bị khác và không thể sử dụng được trên điện thoại này.</string>
     <string name="sdcard_decrypt_notification">Thẻ SD đã được giải mật mã hóa.</string>
     <string name="sdcard_decrypt_title_notification">Giải mật mã hóa thẻ SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Đang giải mã thẻ SD…</string>
@@ -2765,14 +2805,6 @@ Việc nghe ở mức âm lượng cao trong thời gian dài có thể gây t�
     <string name="searchview_description_submit">Gửi truy vấn</string>
     <string name="searchview_description_voice">Tìm kiếm bằng giọng nói</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth sẽ luôn bật ở chế độ Máy bay.</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Ứng dụng này đang sử dụng toàn màn hình. Thao tác vuốt để dẫn hướng sẽ hiển thị thanh trạng thái. Để dẫn hướng, vuốt lại khi thanh trạng thái đang hiển thị.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Ứng dụng này đang sử dụng chế độ toàn màn hình. Các phím Trang chính, Trở về và Gần đây đã được ẩn để giảm thiểu phiền nhiễu và để ngăn bạn vô tình rời khỏi ứng dụng.
-
-Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt bên cạnh cổng sạc. Bạn có thể làm cho các phím xuất hiện lại bằng cách vuốt vào trong từ cạnh màn hình theo hướng mũi tên."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Ứng dụng này đang sử dụng chế độ toàn màn hình. Các phím Trang chính, Trở về và Gần đây đã được ẩn để giảm thiểu phiền nhiễu và để ngăn bạn vô tình rời khỏi ứng dụng.
-
-Để làm cho các phím xuất hiện lại, hãy vuốt lên từ dưới cùng của màn hình theo hướng mũi tên."</string>
     <string name="sec_monotype_default">Mặc định</string>
     <string name="sec_ringtone_category_brand_sound">Âm thanh nhãn hiệu Samsung</string>
     <string name="sec_ringtone_category_calm">Nhẹ nhàng</string>
@@ -2782,6 +2814,10 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="sec_ringtone_category_open_theme">Theme mặc định hiện tại</string>
     <string name="sec_ringtone_category_retro">Hoài cổ</string>
     <string name="sec_ringtone_silent">Yên lặng</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Thoát</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Để kết nối với vệ tinh, bạn cần đặt nhà cung cấp mạng ở chế độ Chọn tự động.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Bật</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Bật tính năng chọn mạng tự động?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Bật Truy cập micro để nói.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Bật Truy cập máy ảnh để sử dụng %s.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Bật Truy cập micro để sử dụng %s.</string>
@@ -2889,6 +2925,8 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="sem_face_error_already_in_use_by_VT">Không thể sử dụng nhận diện khuôn mặt trong cuộc gọi video.</string>
     <string name="sem_face_error_camera_access_off">Không thể sử dụng nhận diện khuôn mặt vì truy cập máy ảnh đã bị tắt</string>
     <string name="sem_face_error_camera_fail">Không thể mở Máy ảnh. Hãy thử lại.</string>
+    <string name="sem_face_error_lockout">Không thể xác thực sinh trắc học vì thực hiện sai quá nhiều lần.</string>
+    <string name="sem_face_error_lockout_permanent">Không thể xác thực sinh trắc học vì thực hiện sai quá nhiều lần.</string>
     <string name="sem_face_error_ppp_timeout">Đã khá lâu rồi bạn chưa xác thực danh tính của mình. Bạn sẽ cần bắt đầu lại để đăng ký khuôn mặt của mình.</string>
     <string name="sem_face_error_too_dark">Quá tối để nhận diện khuôn mặt</string>
     <string name="sem_face_error_too_dark_to_enroll">Quá tối. Hãy thử mở đèn hoặc di chuyển đến chỗ sáng hơn.</string>
@@ -2904,13 +2942,18 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="sem_fingerprint_acquired_tsp_block">Đưa đầu bút S Pen ra khỏi màn hình để quét vân tay của bạn.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Để sử dụng vân tay, trước tiên hãy đặt kiểu khóa màn hình bảo mật (mẫu hình, mã PIN hoặc mật mã).</string>
+    <string name="sem_fingerprint_error_lockout">Không thể xác thực sinh trắc học vì thực hiện sai quá nhiều lần.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Không thể xác thực sinh trắc học vì thực hiện sai quá nhiều lần.</string>
     <string name="sem_fingerprint_error_onehand_mode">Không thể sử dụng quét vân tay ở chế độ Một tay.</string>
     <string name="sem_fingerprint_error_smart_view">Không thể quét vân tay trong khi sử dụng %s.</string>
+    <string name="sem_fingerprint_error_system_failure">Cảm biến vân tay không phản hồi. Hãy thử lại sau. Nếu điều này vẫn tiếp diễn, hãy thử khởi động lại điện thoại của bạn.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Dữ liệu vân tay đã bị hỏng. Thêm lại vân tay của bạn.</string>
     <string name="sem_fingerprint_error_wireless_charger">Ngắt kết nối với bộ sạc không dây để sử dụng vân tay của bạn</string>
     <string name="sem_fingerprint_name_template">Vân tay %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Để sau</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Lúc khác</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Xóa và đăng ký</string>
+    <string name="sem_fingerprint_register_dialog_message">Nhận dạng vân tay đã được cải thiện trong bản cập nhật phần mềm mới nhất. Bạn sẽ không thể sử dụng nhận dạng vân tay cho đến khi bạn xóa vân tay của mình và đăng ký lại.</string>
     <string name="sem_fingerprint_register_dialog_title">Đăng ký lại vân tay</string>
     <string name="sem_fingerprint_result_failed">Không khớp.</string>
     <string name="sem_fingerprint_result_retry">Hãy thử lại.</string>
@@ -2930,7 +2973,7 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="sem_resolver_button_always_accessibility">Luôn sử dụng ứng dụng đã chọn</string>
     <string name="sem_resolver_button_just_once_accessibility">Chỉ sử dụng ứng dụng đã chọn một lần</string>
     <string name="sem_resolver_choose_what_to_do">Chọn việc cần làm</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Để thay đổi cài đặt ứng dụng mặc định, hãy đi đến Cài đặt > Ứng dụng > Chọn ứng dụng mặc định.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Để thay đổi ứng dụng mặc định dùng để mở loại file này, hãy vào Cài đặt > Ứng dụng, chọn ứng dụng mặc định hiện tại, sau đó chạm Đặt làm mặc định > Xóa mặc định.</string>
     <string name="sem_resolver_icon_content_description">Thông tin</string>
     <string name="sem_resolver_personal_tab_accessibility">Cá nhân</string>
     <string name="sem_resolver_share_live_default_text">Chia sẻ ngay với những người đang ở gần. Những người cho phép hiển thị thiết bị của họ sẽ được hiển thị ở đây.</string>
@@ -2946,9 +2989,9 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="sending">Đang gửi…</string>
     <string name="sensor_notification_service">Dịch vụ Thông báo của cảm biến</string>
     <string name="sensor_privacy_notification_channel_label">Quyền riêng tư khi sử dụng cảm biến</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Đã tắt truy cập máy ảnh cho tất cả ứ.dụng</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Bật</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Đã tắt truy cập micro cho tất cả ứng dụng</string>
+    <string name="sensor_privacy_start_use_camera_notification_content_title">Bỏ chặn máy ảnh của thiết bị</string>
+    <string name="sensor_privacy_start_use_dialog_turn_on_button">Bỏ chặn</string>
+    <string name="sensor_privacy_start_use_mic_notification_content_title">Bỏ chặn micrô của thiết bị</string>
     <string name="sensor_privacy_start_use_notification_content_text">Cho <b>%s</b> cũng như mọi ứng dụng và dịch vụ</string>
     <string name="serial_number">Số sê-ri:</string>
     <string name="serviceClassData">Dữ liệu</string>
@@ -2973,6 +3016,9 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="serviceRegistered">Đăng ký thành công.</string>
     <string name="serviceisDisabled">Dịch vụ bị vô hiệu hóa.</string>
     <string name="serviceisEnabled">Dịch vụ được bật.</string>
+    <string name="set_up_screen_lock_action_label">Đặt phương thức khoá màn hình</string>
+    <string name="set_up_screen_lock_title">Đặt phương thức khoá màn hình</string>
+    <string name="settings">Cài đặt</string>
     <string name="sf_quick_switch_not_supported">Không hỗ trợ chuyển đổi nhanh trong tình huống này.</string>
     <string name="sf_quick_switch_securefolder_view">Đã chuyển sang %s.</string>
     <string name="sha1_fingerprint">Vân tay SHA-1:</string>
@@ -2996,12 +3042,14 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="show_ime">Hiện bàn phím ảo trên màn hình trong khi bàn phím vật lý đang hoạt động</string>
     <string name="show_keyboard_button">Hiển thị phím Bàn phím</string>
     <string name="show_keyboard_button_description">Hiển thị %s trên thanh điều hướng.</string>
+    <string name="showing_esc_dialog">Bạn có thể đặt phím Esc hoạt động như nút Quay lại.</string>
     <string name="showing_touch_sensitivity_noti_action">Bật</string>
     <string name="showing_touch_sensitivity_noti_text">Bật chế độ cảm ứng cao khi đang sử dụng Tấm chống nhìn trộm hoặc Tấm Note để điều khiển cảm ứng chính xác hơn.</string>
     <string name="showing_touch_sensitivity_noti_title">Tăng độ nhạy cảm ứng</string>
-    <string name="shutdown_confirm">Máy tính bảng của bạn sẽ tắt.</string>
+    <string name="shutdown_confirm">Điện thoại của bạn sẽ tắt.</string>
     <string name="shutdown_confirm_question">Bạn có muốn tắt không?</string>
     <string name="shutdown_progress">Đang tắt…</string>
+    <string name="side_key_double_press_archived_app">Ứng dụng đã được lưu trữ. Hãy chọn ứng dụng khác.</string>
     <string name="side_key_double_press_deleted_app">Ứng dụng đã bị gỡ cài đặt. Hãy chọn ứng dụng khác.</string>
     <string name="side_key_double_press_disabled_app">%s đã tắt. Hãy chọn ứng dụng khác.</string>
     <string name="signature_identity_toast">%s được ký bởi</string>
@@ -3014,18 +3062,20 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="sim_added_message">Khởi động lại thiết bị của bạn để truy cập mạng di động.</string>
     <string name="sim_added_title">Đã thêm SIM</string>
     <string name="sim_check_old_sim_message">Thẻ SIM cũ hoặc bị hỏng có thể gây ra sự cố kết nối mạng. Hãy liên hệ với nhà cung cấp dịch vụ của bạn hoặc tới một trong các cửa hàng của họ để kiểm tra xem có cần thay thẻ SIM hay không.</string>
+    <string name="sim_check_old_sim_message_skt">Thẻ SIM cũ hoặc bị hỏng có thể gây ra sự cố kết nối mạng. Hãy liên hệ với nhà cung cấp dịch vụ của bạn hoặc tới một trong các cửa hàng của họ để kiểm tra xem có cần thay thẻ SIM hay không.</string>
     <string name="sim_check_old_sim_title">Bạn có thể cần thay SIM</string>
+    <string name="sim_check_old_sim_title_skt">Bạn có thể cần thay SIM</string>
     <string name="sim_count_mismatched_ds_to_ss">Chế độ thẻ SIM đã chuyển từ Hai SIM sang Một SIM. Để áp dụng cài đặt này, thiết bị sẽ được khôi phục cài đặt gốc và khởi động lại.</string>
     <string name="sim_count_mismatched_ss_to_ds">Chế độ thẻ SIM đã chuyển từ Một SIM sang Hai SIM. Để áp dụng cài đặt này, thiết bị sẽ được khôi phục cài đặt gốc và khởi động lại.</string>
     <string name="sim_count_mismatched_title">Đã chuyển đổi chế độ thẻ SIM</string>
     <string name="sim_done_button">Xong</string>
-    <string name="sim_imsreg_error_message_lgt">Điện thoại của bạn sẽ không thể thực hiện cuộc gọi thoại vì không thể nhận dạng thẻ SIM. Hãy thử tháo thẻ SIM rồi lắp lại. Nếu sự cố này vẫn tiếp diễn, bạn có thể cần phải thay thẻ SIM. Để được trợ giúp, hãy ghé thăm cửa hàng LG U+ hoặc liên hệ với Dịch vụ khách hàng của LG U+ theo số 1544-0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Máy tính bảng của bạn sẽ không thể thực hiện cuộc gọi thoại vì không thể nhận dạng thẻ SIM. Hãy thử tháo thẻ SIM rồi lắp lại. Nếu sự cố này vẫn tiếp diễn, bạn có thể cần phải thay thẻ SIM. Để được trợ giúp, hãy ghé thăm cửa hàng LG U+ hoặc liên hệ với Dịch vụ khách hàng của LG U+ theo số 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">Điện thoại của bạn sẽ không thực hiện được cuộc gọi thoại vì không nhận dạng được thẻ SIM. Hãy thử tháo thẻ SIM và lắp lại. Nếu sự cố này vẫn tiếp diễn, bạn có thể cần thay thẻ SIM tại cửa hàng LG U+.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Máy tính bảng của bạn sẽ không thực hiện được cuộc gọi thoại vì không nhận dạng được thẻ SIM. Hãy thử tháo thẻ SIM và lắp lại. Nếu sự cố này vẫn tiếp diễn, bạn có thể cần thay thẻ SIM tại cửa hàng LG U+.</string>
     <string name="sim_off_noti_message">Bạn không thể thực hiện cuộc gọi, gửi tin nhắn hoặc sử dụng dữ liệu khi tất cả các SIM đều đã tắt. Hãy chạm vào đây để bật SIM.</string>
     <string name="sim_off_noti_title">Tất cả các SIM đều bị tắt</string>
     <string name="sim_off_toast_message">Thẻ SIM bạn vừa lắp đã tắt. Để sử dụng tính năng này, hãy đi tới Cài đặt > Kết nối > Quản lý SIM, sau đó bật tính năng này.</string>
     <string name="sim_recognize_error_message_kt">Thẻ SIM của bạn không được nhận dạng. Hãy thử tháo thẻ SIM rồi lắp lại. Nếu sự cố này vẫn tiếp diễn, bạn có thể cần phải thay thẻ SIM. Để được trợ giúp, hãy ghé thăm cửa hàng KT hoặc liên hệ với Dịch vụ khách hàng của KT theo số 1588-0010.</string>
-    <string name="sim_recognize_error_message_lgt">Thẻ SIM của bạn không được nhận dạng. Hãy thử tháo thẻ SIM rồi lắp lại. Nếu sự cố này vẫn tiếp diễn, bạn có thể cần phải thay thẻ SIM. Để được trợ giúp, hãy ghé thăm cửa hàng LG U+ hoặc liên hệ với Dịch vụ khách hàng của LG U+ theo số 1544-0010.</string>
+    <string name="sim_recognize_error_message_lgt">Không xác định được thẻ SIM của bạn. Hãy thử tháo thẻ SIM và lắp lại. Nếu vẫn gặp sự cố này, bạn có thể cần thay thẻ SIM tại cửa hàng LG U+.</string>
     <string name="sim_recognize_error_message_skt">Không thể đọc thẻ SIM. Một số ứng dụng và tính năng có thể không hoạt động. Hãy tháo và lắp lại thẻ SIM, sau đó khởi động lại điện thoại của bạn. Nếu cách đó không khắc phục được sự cố, hãy mang điện thoại và thẻ SIM của bạn đến trung tâm Dịch vụ khách hàng.</string>
     <string name="sim_recognize_error_message_skt_tablet">Không thể đọc thẻ SIM. Một số ứng dụng và tính năng có thể không hoạt động. Hãy tháo và lắp lại thẻ SIM, sau đó khởi động lại máy tính bảng của bạn. Nếu cách đó không khắc phục được sự cố, hãy mang máy tính bảng và thẻ SIM của bạn đến trung tâm Dịch vụ khách hàng.</string>
     <string name="sim_recognize_error_title_lgt">Không thể nhận dạng thẻ USIM</string>
@@ -3045,6 +3095,7 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="skip_button_label">Bỏ qua</string>
     <string name="slice_more_content">+ %1$d</string>
     <string name="slices_permission_request">%1$s muốn hiển thị các lát của %2$s</string>
+    <string name="smart_tip_action_click_hint_text">Đóng</string>
     <string name="smartclip_restrict">Chính sách bảo mật ngăn việc sử dụng Easy clip.</string>
     <string name="sms_control_message"><b>%1$s</b> đang gửi rất nhiều tin nhắn SMS. Bạn có muốn cho phép ứng dụng này tiếp tục gửi tin nhắn không?</string>
     <string name="sms_control_no">Từ chối</string>
@@ -3058,9 +3109,7 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="sms_short_code_confirm_never_allow">Không bao giờ cho phép</string>
     <string name="sms_short_code_details">Điều này <b>có thể gây ra các khoản phí</b> đối với tài khoản di động của bạn.</string>
     <string name="sms_short_code_remember_choice">Nhớ lựa chọn của tôi</string>
-    <string name="sms_short_code_remember_undo_instruction">Bạn có thể thay đổi điều này sau bằng cách đến Cài đặt > ứng dụng.</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Bạn có thể thay đổi điều này sau bằng cách đi đến Cài đặt > Ứng dụng > Phím Tùy chọn khác > Truy cập đặc biệt > Sử dụng dịch vụ tin nhắn SMS premium.</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Nếu bạn chạm KHÔNG BAO GIỜ CHO PHÉP, ứng dụng này sẽ không thể gửi tin nhắn ngầm ngay cả khi được cấp quyền Gửi tin nhắn SMS.</string>
+    <string name="sms_short_code_remember_undo_instruction">Bạn có thể thay đổi cài đặt này sau trong Cài đặt > Ứng dụng</string>
     <string name="smv_application">Ứng dụng %1$s (quá trình %2$s) đã vi phạm chính sách StrictMode tự thi hành của mình.</string>
     <string name="smv_process">Quá trình %1$s đã vi phạm chính sách StrictMode tự thi hành của mình.</string>
     <string name="splash_screen_view_branding_description">Hình ảnh thương hiệu của ứng dụng</string>
@@ -3145,7 +3194,6 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="time_picker_radial_mode_description">Chuyển sang chế độ đồng hồ để nhập thời gian.</string>
     <string name="time_picker_text_input_mode_description">Chuyển sang chế độ nhập văn bản để nhập thời gian.</string>
     <string name="title_dialog_check_rotate_or_not">Tắt Tự động xoay màn hình?</string>
-    <string name="title_uds">Chế độ Siêu tiết kiệm dữ liệu</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Không thể sử dụng Bixby khi đang thiết lập điện thoại của bạn.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Không thể sử dụng Bixby khi đang thiết lập máy tính bảng của bạn.</string>
     <string name="toast_warning_pattern_lock">Không thể sử dụng khóa mẫu hình cùng với Công tắc đa năng. Trước tiên hãy đổi sang kiểu khóa khác.</string>
@@ -3175,6 +3223,7 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="ucm_smartcard_is_encrypting_phone">Smartcard đang mã hóa điện thoại…</string>
     <string name="ui_translation_accessibility_translated_text">Đã dịch %1$s.</string>
     <string name="ui_translation_accessibility_translation_finished">Đã dịch thông báo từ %1$s sang %2$s.</string>
+    <string name="unarchival_session_app_label">Đang chờ xử lý...</string>
     <string name="undo">Hoàn tác</string>
     <string name="unknown_install_activity_warning_title">Ứng dụng độc hại đáng ngờ</string>
     <string name="unknown_install_blocked_dlg_desc">Không thể cài đặt ứng dụng này vì có thể là ứng dụng độc hại.</string>
@@ -3194,9 +3243,13 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="unknown_install_blocked_esm_title">Đã chặn ứng dụng không xác định</string>
     <string name="unknown_install_dlg_desc">Ứng dụng này không được tải về từ một cửa hàng được phê duyệt. Bạn có thể gặp rủi ro về bảo mật và quyền riêng tư khi cài đặt ứng dụng này. Ứng dụng có thể thu thập thông tin cá nhân của bạn hoặc khiến dữ liệu của bạn bị mất.</string>
     <string name="unknown_install_dlg_desc2">Ứng dụng này không hỗ trợ các tính năng bảo mật mới nhất. Việc cài đặt ứng dụng này có thể dẫn đến các rủi ro bảo mật sau:</string>
+    <string name="unknown_install_dlg_desc_global_phone">File cài đặt ứng dụng này có thể không an toàn. Ứng dụng này có thể đang mạo danh. Để bảo vệ điện thoại và dữ liệu cá nhân của bạn, hãy cài đặt ứng dụng từ cửa hàng ứng dụng uy tín.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">File cài đặt ứng dụng này có thể không an toàn. Ứng dụng này có thể đang mạo danh. Để bảo vệ máy tính bảng và dữ liệu cá nhân của bạn, hãy cài đặt ứng dụng từ cửa hàng ứng dụng uy tín.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Ứng dụng này bị nghi ngờ là ứng dụng độc hại và có thể khiến điện thoại cũng như dữ liệu của bạn gặp rủi ro. Không nên cài đặt ứng dụng này.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Ứng dụng này bị nghi ngờ là ứng dụng độc hại và có thể khiến máy tính bảng cũng như dữ liệu của bạn gặp rủi ro. Không nên cài đặt ứng dụng này.</string>
-    <string name="unknown_install_dlg_general_title">Ứng dụng này đến từ một nguồn không xác định</string>
+    <string name="unknown_install_dlg_desc_phone">Ứng dụng này không đến từ cửa hàng ứng dụng đã được xác minh. Để bảo vệ điện thoại và thông tin cá nhân của bạn, hãy cài đặt ứng dụng từ cửa hàng đã được xác minh như Play Store hoặc Galaxy Store.</string>
+    <string name="unknown_install_dlg_desc_tablet">Ứng dụng này không đến từ cửa hàng ứng dụng đã được xác minh. Để bảo vệ máy tính bảng và thông tin cá nhân của bạn, hãy cài đặt ứng dụng từ cửa hàng đã được xác minh như Play Store hoặc Galaxy Store.</string>
+    <string name="unknown_install_dlg_general_title">Không nên cài đặt ứng dụng này</string>
     <string name="unknown_install_dlg_negative_button">Không cài đặt</string>
     <string name="unknown_install_dlg_perm_desc1">Ứng dụng có thể chặn mã xác thực từ tin nhắn văn bản mà bạn nhận được.</string>
     <string name="unknown_install_dlg_perm_desc2">Các cuộc gọi đi có thể được chuyển hướng đến một số điện thoại khác mà bạn không biết.</string>
@@ -3226,7 +3279,7 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="usb_abnormal_reset_title">Kết nối USB không ổn định</string>
     <string name="usb_abnormal_reset_toast">Kết nối USB không ổn định. Hãy tháo cáp rồi cắm lại hoặc thử cáp khác.</string>
     <string name="usb_accessory_notification_title">Đã kết nối tới phụ kiện USB</string>
-    <string name="usb_bad_removal_message">Bạn đã gỡ thiết bị lưu trữ USB không an toàn. Để máy tính bảng không bị khởi động lại đột ngột, hãy lưu dữ liệu chưa được lưu và khởi động lại ngay.</string>
+    <string name="usb_bad_removal_message">Bạn đã tháo bộ nhớ USB không an toàn. Để điện thoại không bị khởi động lại đột ngột, hãy lưu dữ liệu chưa được lưu và khởi động lại ngay.</string>
     <string name="usb_blocked_by_emergency_mode">Một số chức năng của USB không khả dụng ở chế độ Khẩn cấp.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Không thể dùng các chức năng liên quan đến thiết bị USB đã kết nối khi đang bật chế độ Siêu tiết kiệm pin.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Một số chức năng USB sẽ bị giới hạn khi bật chế độ Tiết kiệm pin tối đa.</string>
@@ -3236,7 +3289,9 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="usb_camera_disconnected_notification_title">Đã ngắt kết nối thiết bị media</string>
     <string name="usb_cd_installer_notification_title">Cập nhật phần mềm</string>
     <string name="usb_charging_notification_title">Đang sạc thiết bị này qua USB</string>
-    <string name="usb_charing_only_notification_title">Đã kết nối</string>
+    <string name="usb_charing_only_notification_title">Sạc qua USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Tính năng Tự động chặn đang bật kèm hạn chế tối đa.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">Đã chặn kết nối USB</string>
     <string name="usb_contaminant_detected_message">Cổng USB đã tự động tắt. Nhấn để tìm hiểu thêm.</string>
     <string name="usb_contaminant_detected_title">Có chất lỏng hoặc mảnh vỡ trong cổng USB</string>
     <string name="usb_contaminant_not_detected_message">Điện thoại không còn phát hiện chất lỏng hay mảnh vỡ nữa.</string>
@@ -3248,11 +3303,11 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="usb_host_cable_disconnected_notification_title">Bộ kết nối USB đã ngắt kết nối.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Không thể truy cập thiết bị này. Thiết bị đã kết nối cần nguồn điện bên ngoài.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Thiết bị USB công suất cao đã kết nối.</string>
-    <string name="usb_host_resource_exceed_message">Bộ điều khiển USB của máy tính bảng không có đủ tài nguyên để kết nối thiết bị này. Hãy thử ngắt kết nối thiết bị rồi kết nối lại.</string>
+    <string name="usb_host_resource_exceed_message">Bộ điều khiển USB của điện thoại không có đủ tài nguyên để kết nối thiết bị này. Hãy thử ngắt kết nối thiết bị rồi kết nối lại.</string>
     <string name="usb_host_resource_exceed_title">Không đủ tài nguyên bộ điều khiển USB</string>
-    <string name="usb_hub_depth_exceed_message">Máy tính bảng của bạn chỉ có thể hỗ trợ tối đa 5 kết nối hub USB cùng lúc.</string>
+    <string name="usb_hub_depth_exceed_message">Điện thoại của bạn chỉ có thể hỗ trợ tối đa 5 kết nối hub USB cùng lúc.</string>
     <string name="usb_hub_depth_exceed_title">Số kết nối hub USB tối đa</string>
-    <string name="usb_hub_power_exceed_message">Máy tính bảng của bạn không thể cấp đủ nguồn cho thiết bị USB này. Hãy kết nối thiết bị với hub USB tự cấp nguồn trước khi kết nối với máy tính bảng.</string>
+    <string name="usb_hub_power_exceed_message">Điện thoại của bạn không thể cấp đủ nguồn cho thiết bị USB này. Hãy kết nối thiết bị với hub USB tự cấp nguồn trước khi kết nối với điện thoại.</string>
     <string name="usb_increase_battery_usage">Kết nối USB có thể làm tăng mức sử dụng pin.</string>
     <string name="usb_keyboard_connected_notification_title">Bàn phím đã kết nối</string>
     <string name="usb_keyboard_disconnected_notification_title">Bàn phím đã ngắt kết nối</string>
@@ -3295,8 +3350,9 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="usb_ums_connected_notification_message_usbhost">Ổ lưu trữ USB bị gỡ đột ngột.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Bộ nhớ USB đã kết nối</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Ổ lưu trữ USB được gỡ an toàn.</string>
-    <string name="usb_unblock_by_screen_unlock">Mở khóa máy tính bảng để sử dụng thiết bị USB đã kết nối.</string>
-    <string name="usb_unsupport_accessory_message">Máy tính bảng của bạn không hỗ trợ thiết bị USB này.</string>
+    <string name="usb_unblock_by_screen_unlock">Mở khóa điện thoại để sử dụng thiết bị USB đã kết nối.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">Để sử dụng thiết bị USB, hãy mở khóa điện thoại của bạn và kết nối lại thiết bị USB.</string>
+    <string name="usb_unsupport_accessory_message">Điện thoại của bạn không hỗ trợ thiết bị USB này.</string>
     <string name="usb_unsupport_accessory_title">Thiết bị USB không được hỗ trợ</string>
     <string name="usb_unsupported_audio_accessory_message">Thiết bị được kết nối không tương thích với điện thoại này. Nhấn để tìm hiểu thêm.</string>
     <string name="usb_unsupported_audio_accessory_title">Đã phát hiện phụ kiện âm thanh analog</string>
@@ -3317,25 +3373,25 @@ Ngay cả khi bạn xoay điện thoại, các phím sẽ luôn được đặt 
     <string name="usb_water_dialg_method_2_desc_2">Bạn có thể tăng tốc độ làm khô bằng cách hướng quạt hoặc máy sấy (chỉ dòng khí mát) về phía cổng.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Chúng tôi đã phát hiện có hơi ẩm hoặc vật lạ trong cổng sạc/USB của bạn.
 
-Hãy kiểm tra cổng sạc/USB của bạn xem có vật lạ nào như bụi hoặc mảnh vụn không. Để tránh làm hỏng máy tính bảng của bạn, đừng cắm bất cứ thứ gì vào cho đến khi cổng sạc sạch và hết hơi ẩm.
+Hãy kiểm tra cổng sạc/USB của bạn xem có vật lạ nào như bụi hoặc mảnh vụn không. Để tránh làm hỏng điện thoại của bạn, đừng cắm bất cứ thứ gì vào cho đến khi cổng sạc sạch và hết hơi ẩm.
 
 Để làm khô cổng, hãy lắc hết hơi ẩm rồi đợi cho cổng khô, quá trình này có thể mất vài giờ. Bạn có thể tăng tốc độ làm khô bằng cách hướng quạt hoặc máy sấy (chỉ dùng không khí mát) vào cổng."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Chúng tôi đã phát hiện có hơi ẩm hoặc vật lạ trong cổng sạc/USB của bạn.
 
-Hãy kiểm tra cổng sạc/USB của bạn xem có vật lạ nào như bụi hoặc mảnh vụn không. Để tránh làm hỏng máy tính bảng của bạn, không cắm bất cứ vật gì vào cho đến khi cổng sạc sạch và hết hơi ẩm.
+Hãy kiểm tra cổng sạc/USB của bạn xem có vật lạ nào như bụi hoặc mảnh vụn không. Để tránh làm hỏng điện thoại của bạn, đừng cắm bất cứ thứ gì vào cho đến khi cổng sạc sạch và hết hơi ẩm.
 
-Để làm khô cổng, hãy lắc hết hơi ẩm rồi chờ cho cổng sạc khô, quá trình này có thể mất vài giờ. Bạn có thể tăng tốc độ làm khô bằng cách hướng quạt hoặc máy sấy (chỉ dùng không khí mát) vào cổng.
+Để làm khô cổng, hãy lắc hết hơi ẩm rồi đợi cho cổng khô, quá trình này có thể mất vài giờ. Bạn có thể tăng tốc độ làm khô bằng cách hướng quạt hoặc máy sấy (chỉ dùng không khí mát) vào cổng.
 
-Trong thời gian đó, bạn có thể sạc không dây cho máy tính bảng của mình."</string>
+Trong thời gian đó, bạn có thể sạc điện thoại không dây."</string>
     <string name="usb_water_notification_content">Có độ ẩm hoặc vật lạ trong cổng sạc/USB của bạn. Hãy kiểm tra trước khi sạc.</string>
-    <string name="usb_water_notification_message">Đã phát hiện độ ẩm ở cổng sạc/USB của bạn. Hãy đảm bảo bộ phận này khô ráo trước khi sạc máy tính bảng của bạn. Có thể mất chút thời gian để khô hoàn toàn.</string>
+    <string name="usb_water_notification_message">Đã phát hiện độ ẩm ở cổng sạc/USB của bạn. Hãy đảm bảo bộ phận này khô ráo trước khi sạc điện thoại của bạn. Có thể mất chút thời gian để khô hoàn toàn.</string>
     <string name="usb_water_notification_message_button">Chi tiết</string>
     <string name="usb_water_notification_title">Kiểm tra cổng sạc/USB</string>
     <string name="usbhostStorage_restrict">Chính sách bảo mật ngăn việc sử dụng bộ nhớ USB host.</string>
     <string name="usbmemory_added_notification_title">Đã thêm bộ nhớ USB</string>
-    <string name="usbmemory_readonly_mount_notification_message">Thiết bị lưu trữ USB không hoạt động đúng và đã được đặt thành chỉ đọc để ngăn mất dữ liệu. Bạn nên sao lưu dữ liệu trên thiết bị lưu trữ USB.</string>
-    <string name="usbmemory_readonly_mount_notification_title">Không thể ghi vào bộ nhớ USB</string>
+    <string name="usbmemory_readonly_mount_notification_message">Bộ nhớ USB không hoạt động đúng và đã được đặt thành chỉ đọc để ngăn mất dữ liệu. Bạn nên sao lưu dữ liệu trên bộ nhớ USB.</string>
+    <string name="usbmemory_readonly_mount_notification_title">Không thể ghi vào TB l.trữ USB</string>
     <string name="use_a_different_app">Sử dụng một ứng dụng khác</string>
     <string name="user_creation_account_exists">Cho phép %1$s tạo người dùng mới bằng %2$s (đã tồn tại người dùng có tài khoản này)?</string>
     <string name="user_creation_adding">Cho phép %1$s tạo người dùng mới bằng %2$s?</string>
@@ -3347,7 +3403,7 @@ Trong thời gian đó, bạn có thể sạc không dây cho máy tính bảng 
     <string name="user_switched">Người dùng hiện tại %1$s.</string>
     <string name="user_switching_message">Đang chuyển sang %1$s…</string>
     <string name="validity_period">Tính hợp lệ:</string>
-    <string name="vdm_camera_access_denied">Không truy cập được vào máy ảnh trên máy tính bảng từ %1$s của bạn</string>
+    <string name="vdm_camera_access_denied">Không truy cập được vào máy ảnh trên điện thoại từ %1$s của bạn</string>
     <string name="vdm_pip_blocked">Không thể xem video ở chế độ hình trong hình khi đang truyền trực tuyến</string>
     <string name="vdm_secure_window">Bạn không thể truy cập vào nội dung này trong khi phát trực tuyến. Hãy thử trên điện thoại.</string>
     <string name="view_and_control_notification_content">%s có thể xem và điều khiển màn hình của bạn. Nhấn để xem lại.</string>
@@ -3372,6 +3428,8 @@ Trong thời gian đó, bạn có thể sạc không dây cho máy tính bảng 
     <string name="vpn_allowOnlySecureConnection">Cấu hình VPN không bảo mật</string>
     <string name="vpn_error_text">Chạm để thử kết nối lại VPN.</string>
     <string name="vpn_error_title">Lỗi kết nối VPN</string>
+    <string name="vpn_fail_text_long">Không thể kết nối với %s. Hãy chạm để quản lý VPN này.</string>
+    <string name="vpn_fail_title">Chưa kết nối VPN</string>
     <string name="vpn_lockdown_config">Thay đổi cài đặt mạng hoặc VPN</string>
     <string name="vpn_lockdown_connected">Đã kết nối VPN luôn bật</string>
     <string name="vpn_lockdown_connecting">Đang kết nối VPN luôn bật…</string>
@@ -3498,6 +3556,7 @@ Bạn có muốn đóng trang không?"</string>
     <string name="wifi_networks_available_detailed">Hiện có nhiều mạng Wi-Fi đang mở.</string>
     <string name="wifi_no_internet">%1$s không có quyền truy cập Internet</string>
     <string name="wifi_no_internet_detailed">Nhấn để biết tùy chọn</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s đang sử dụng dữ liệu di động vì kết nối WLAN của bạn chậm hoặc không ổn định.</string>
     <string name="wifi_notification_switch_wifi_detail">Điện thoại của bạn đã chuyển sang dữ liệu di động vì mạng Wi-Fi không ổn định.</string>
     <string name="wifi_notification_switch_wifi_title">Đã chuyển sang dữ liệu di động</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Thông báo khẩn cấp</string>
@@ -3539,9 +3598,9 @@ Bạn có muốn đóng trang không?"</string>
     <string name="work_profile_on_message">Điều này sẽ cho phép bạn truy cập ứng dụng công việc, thông báo, dữ liệu và các tính năng hồ sơ công việc khác.</string>
     <string name="work_profile_on_title">Bật Hồ sơ công việc?</string>
     <string name="work_profile_restricted">Tính năng Tự động chặn sẽ bật kèm theo các hạn chế tối đa. Để đảm bảo bảo mật, bạn không thể tạo hồ sơ công việc.</string>
-    <string name="work_profile_telephony_paused_text">Bạn đã tạm dừng các ứng dụng công việc của mình. Bạn sẽ không nhận được các cuộc gọi điện thoại hoặc tin nhắn SMS từ chúng.</string>
-    <string name="work_profile_telephony_paused_title">Cuộc gọi và tin nhắn đã tắt</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Bật cấu hình cơ quan?</string>
+    <string name="work_profile_telephony_paused_text">Bạn đã tạm dừng các ứng dụng công việc. Bạn sẽ không nhận được cuộc gọi hoặc tin nhắn văn bản nào.</string>
+    <string name="work_profile_telephony_paused_title">Ngưng nhận cuộc gọi và tin nhắn</string>
+    <string name="work_profile_telephony_paused_turn_on_button">Dùng ứng dụng công việc</string>
     <string name="workspace_title">Workspace</string>
     <string name="write_fail_reason_cancelled">Đã hủy</string>
     <string name="write_fail_reason_cannot_write">Lỗi ghi nội dung</string>
@@ -3562,9 +3621,15 @@ Bạn có muốn đóng trang không?"</string>
     <string name="zen_mode_duration_minutes_summary">{count,plural, =1{Trong 1 phút (cho đến {formattedTime})}other{Trong # phút (cho đến {formattedTime})}}</string>
     <string name="zen_mode_duration_minutes_summary_short">{count,plural, =1{Trong 1 phút (cho đến {formattedTime})}other{Trong # phút (cho đến {formattedTime})}}</string>
     <string name="zen_mode_feature_name">Không làm phiền</string>
-    <string name="zen_mode_forever">Đến khi bạn tắt đi</string>
+    <string name="zen_mode_forever">Cho đến khi bạn tắt</string>
     <string name="zen_mode_forever_dnd">Cho đến khi bạn tắt Đừng làm phiền</string>
+    <string name="zen_mode_implicit_activated">Bật</string>
+    <string name="zen_mode_implicit_deactivated">Tắt</string>
+    <string name="zen_mode_implicit_trigger_description">Do %1$s quản lý</string>
     <string name="zen_mode_rule_name_combination">%1$s / %2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">Bất kỳ lịch nào</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s – %2$s</string>
     <string name="zen_mode_until">Cho đến %1$s</string>
     <string name="zen_mode_until_next_day">Cho tới %1$s</string>
     <string name="zen_upgrade_notification_content">Nhấn để xem những thông báo bị chặn.</string>

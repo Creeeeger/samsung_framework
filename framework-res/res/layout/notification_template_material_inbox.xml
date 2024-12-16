@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout android:id="@id/status_bar_latest_event_content" android:tag="inbox" android:clipChildren="false" android:layout_width="fill_parent" android:layout_height="wrap_content"
+<FrameLayout android:id="@id/status_bar_latest_event_content" android:tag="inbox" android:clipChildren="false" android:layout_width="fill_parent" android:layout_height="wrap_content" android:minHeight="@dimen/notification_headerless_min_height"
   xmlns:android="http://schemas.android.com/apk/res/android">
     <include layout="@layout/notification_template_header" />
     <LinearLayout android:layout_gravity="top" android:orientation="vertical" android:id="@id/notification_action_list_margin_target" android:clipToPadding="false" android:layout_width="fill_parent" android:layout_height="fill_parent">

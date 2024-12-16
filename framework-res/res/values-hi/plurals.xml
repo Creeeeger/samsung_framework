@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">SD कार्ड जिसमें एप्स स्थापित किए गए थे, उसे निकाल दिए जाने के कारण आपका टैबलेट अस्थिर है। सामान्य स्थिति में वापस आने के लिए आपका टैबलेट %d सेकंड में पुनः चालू होगा। इससे पहले कि टैबलेट पुनः चालू हो कोई भी डाटा जो सुरक्षित नहीं किया गया है, उसे सुरक्षित कर लें।</item>
+        <item quantity="other">जिस SD कार्ड में एप्स स्थापित किए गए थे, उसे निकाल दिए जाने के कारण आपका फोन अस्थिर है। सामान्य स्थिति में वापस आने के लिए आपका फोन %d सेकंड में पुनः चालू होगा। इससे पहले कि फोन पुनः चालू हो कोई भी डाटा जो सुरक्षित नहीं किया गया है, उसे सुरक्षित कर लें।</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">SD कार्ड जिसमें एप्स स्थापित किए गए थे, उसे निकाल दिए जाने के कारण आपका टैबलेट अस्थिर है। सामान्य स्थिति में वापस आने के लिए आपका टैबलेट %d सेकंड में पुनः चालू होगा। इससे पहले कि टैबलेट पुनः चालू हो कोई भी डाटा जो सुरक्षित नहीं किया गया है, उसे सुरक्षित कर लें।</item>
+        <item quantity="one">जिस SD कार्ड में एप्स स्थापित किए गए थे, उसे निकाल दिए जाने के कारण आपका फोन अस्थिर है। सामान्य स्थिति में वापस आने के लिए आपका फोन %d सेकंड में पुनः चालू होगा। इससे पहले कि फोन पुनः चालू हो कोई भी डाटा जो सुरक्षित नहीं किया गया है, उसे सुरक्षित कर लें।</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">आपका टैबलेट %d सेकंड में पुनः चालू होगा</item>
+        <item quantity="other">आपका फोन %d सेकंड में पुनः चालू होगा</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">आपका टैबलेट %d सेकंड में पुनः चालू होगा</item>
+        <item quantity="one">आपका फोन %d सेकंड में पुनः चालू होगा</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
@@ -104,14 +104,6 @@
         <item quantity="other">%d मदें</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">%d मद</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">N/A</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">आप जिस Wi-Fi नेटवर्क से कनेक्ट होना चाहते हैं, वह एक समय में केवल %d डिवाइसेस से कनेक्ट हो सकता है। उस नेटवर्क से किसी भी अन्य डिवाइसेस को डिस्कनेक्ट करें, इसके बाद फिर से प्रयास करें।</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">आप जिस Wi-Fi नेटवर्क से कनेक्ट होना चाहते हैं, वह एक समय में केवल %d डिवाइस से कनेक्ट हो सकता है। उस नेटवर्क से किसी भी अन्य डिवाइसेस को डिस्कनेक्ट करें, इसके बाद फिर से प्रयास करें।</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

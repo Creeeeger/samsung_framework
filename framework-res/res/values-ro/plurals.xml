@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Tableta dvs. este instabilă deoarece a fost scos un card SD pe care erau instalate aplicații. Tableta va reporni peste %d secunde, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea tabletei.</item>
+        <item quantity="other">Telefonul dvs. este instabil deoarece a fost scos un card SD pe care erau instalate aplicații. Telefonul va reporni peste %d secunde, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea telefonului.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Tableta dvs. este instabilă deoarece a fost scos un card SD pe care erau instalate aplicații. Tableta va reporni peste %d secundă, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea tabletei.</item>
+        <item quantity="one">Telefonul dvs. este instabil deoarece a fost scos un card SD pe care erau instalate aplicații. Telefonul va reporni peste %d secundă, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea telefonului.</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Tableta dvs. este instabilă deoarece a fost scos un card SD pe care erau instalate aplicații. Tableta va reporni peste %d secunde, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea tabletei.</item>
+        <item quantity="few">Telefonul dvs. este instabil deoarece a fost scos un card SD pe care erau instalate aplicații. Telefonul va reporni peste %d secunde, pentru a reveni la normal. Salvați toate datele nesalvate înainte de repornirea telefonului.</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Tableta va reporni peste %d secunde</item>
+        <item quantity="other">Telefonul va reporni peste %d secunde</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Tableta va reporni peste %d secundă</item>
+        <item quantity="one">Telefonul va reporni peste %d secundă</item>
         <item quantity="two">N/A</item>
-        <item quantity="few">Tableta va reporni peste %d secunde</item>
+        <item quantity="few">Telefonul va reporni peste %d secunde</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="app_kills_content_v2_phone">
@@ -106,14 +106,6 @@
         <item quantity="one">%d element</item>
         <item quantity="two">N/A</item>
         <item quantity="few">%d elemente</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">Rețeaua Wi-Fi la care doriți să vă conectați permite doar conectarea a %d dispozitive simultan. Deconectați toate celelalte dispozitive de la rețeaua respectivă, apoi încercați din nou.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">Rețeaua Wi-Fi la care doriți să vă conectați permite doar conectarea a %d dispozitiv simultan. Deconectați toate celelalte dispozitive de la rețeaua respectivă, apoi încercați din nou.</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">Rețeaua Wi-Fi la care doriți să vă conectați permite doar conectarea a %d dispozitive simultan. Deconectați toate celelalte dispozitive de la rețeaua respectivă, apoi încercați din nou.</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="zen_mode_duration_time_hours">

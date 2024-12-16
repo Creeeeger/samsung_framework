@@ -109,6 +109,7 @@
     <item type="id" name="accessibility_permissionDialog_title" />
     <item type="id" name="accessibility_permission_enable_allow_button" />
     <item type="id" name="accessibility_permission_enable_deny_button" />
+    <item type="id" name="accessibility_permission_enable_uninstall_button" />
     <item type="id" name="accessibility_shortcut_target_checkbox" />
     <item type="id" name="accessibility_shortcut_target_icon" />
     <item type="id" name="accessibility_shortcut_target_label" />
@@ -168,10 +169,11 @@
     <item type="id" name="app_ops" />
     <item type="id" name="appblock_desc" />
     <item type="id" name="appblock_icon" />
-    <item type="id" name="appblock_subtitle" />
+    <item type="id" name="appblock_link" />
     <item type="id" name="appblock_title" />
     <item type="id" name="ask_checkbox" />
     <item type="id" name="authtoken_type" />
+    <item type="id" name="autofill_button_bar_spacer" />
     <item type="id" name="autofill_dataset_footer" />
     <item type="id" name="autofill_dataset_header" />
     <item type="id" name="autofill_dataset_icon" />
@@ -185,12 +187,16 @@
     <item type="id" name="autofill_dialog_picker" />
     <item type="id" name="autofill_dialog_yes" />
     <item type="id" name="autofill_save" />
+    <item type="id" name="autofill_save_button_bar" />
     <item type="id" name="autofill_save_custom_subtitle" />
     <item type="id" name="autofill_save_icon" />
     <item type="id" name="autofill_save_no" />
     <item type="id" name="autofill_save_title" />
     <item type="id" name="autofill_save_yes" />
     <item type="id" name="autofill_service_icon" />
+    <item type="id" name="autofill_sheet_divider" />
+    <item type="id" name="autofill_sheet_scroll_view" />
+    <item type="id" name="autofill_sheet_scroll_view_space" />
     <item type="id" name="back_button" />
     <item type="id" name="badge" />
     <item type="id" name="big_picture" />
@@ -219,7 +225,6 @@
     <item type="id" name="calendar_view" />
     <item type="id" name="cancel" />
     <item type="id" name="cancel_button" />
-    <item type="id" name="caption" />
     <item type="id" name="characterPicker" />
     <item type="id" name="check" />
     <item type="id" name="checked" />
@@ -235,7 +240,6 @@
     <item type="id" name="clip_children_tag" />
     <item type="id" name="clip_to_padding_tag" />
     <item type="id" name="clipboard" />
-    <item type="id" name="close_window" />
     <item type="id" name="compat_checkbox" />
     <item type="id" name="contentPanel" />
     <item type="id" name="content_preview_container" />
@@ -255,6 +259,9 @@
     <item type="id" name="content_preview_thumbnail" />
     <item type="id" name="content_preview_title" />
     <item type="id" name="content_preview_title_layout" />
+    <item type="id" name="controlScreen_description" />
+    <item type="id" name="controlScreen_icon" />
+    <item type="id" name="controlScreen_title" />
     <item type="id" name="conversation_face_pile" />
     <item type="id" name="conversation_face_pile_bottom" />
     <item type="id" name="conversation_face_pile_bottom_background" />
@@ -292,8 +299,7 @@
     <item type="id" name="deleteText" />
     <item type="id" name="deny_button" />
     <item type="id" name="description" />
-    <item type="id" name="dex_restart_app_dialog_message_view" />
-    <item type="id" name="dex_restart_dialog_checkbox_view" />
+    <item type="id" name="dialog_item" />
     <item type="id" name="dictionary" />
     <item type="id" name="divider" />
     <item type="id" name="drag" />
@@ -309,6 +315,7 @@
     <item type="id" name="expand_button_icon" />
     <item type="id" name="expand_button_number" />
     <item type="id" name="expand_button_pill" />
+    <item type="id" name="expand_button_pill_colorized_layer" />
     <item type="id" name="expand_button_touch_container" />
     <item type="id" name="expanded_menu" />
     <item type="id" name="expires_on" />
@@ -336,6 +343,7 @@
     <item type="id" name="fullscreenArea" />
     <item type="id" name="grant_credentials_permission_message_footer" />
     <item type="id" name="grant_credentials_permission_message_header" />
+    <item type="id" name="group_child_count_number" />
     <item type="id" name="group_divider" />
     <item type="id" name="group_icon_shadow" />
     <item type="id" name="group_message_container" />
@@ -347,21 +355,15 @@
     <item type="id" name="header_text_secondary" />
     <item type="id" name="header_text_secondary_divider" />
     <item type="id" name="headers" />
+    <item type="id" name="home_panel" />
     <item type="id" name="hour" />
     <item type="id" name="hours" />
     <item type="id" name="icon_badge" />
     <item type="id" name="icon_menu" />
     <item type="id" name="icon_menu_presenter" />
     <item type="id" name="imageView" />
-    <item type="id" name="image_arrow_rot0" />
-    <item type="id" name="image_arrow_rot270" />
-    <item type="id" name="image_arrow_rot90" />
-    <item type="id" name="immersive_cling_back_bg" />
-    <item type="id" name="immersive_cling_back_bg_light" />
-    <item type="id" name="immersive_cling_chevron" />
     <item type="id" name="immersive_cling_description" />
-    <item type="id" name="immersive_cling_land" />
-    <item type="id" name="immersive_cling_port" />
+    <item type="id" name="immersive_cling_icon" />
     <item type="id" name="immersive_cling_title" />
     <item type="id" name="inbox_text0" />
     <item type="id" name="inbox_text1" />
@@ -390,8 +392,11 @@
     <item type="id" name="input_mode" />
     <item type="id" name="input_separator" />
     <item type="id" name="insertion_handle" />
+    <item type="id" name="insignificant_icon_dummy" />
+    <item type="id" name="insignificant_icon_dummy_bg" />
     <item type="id" name="install_anyway_button" />
     <item type="id" name="install_deny_button" />
+    <item type="id" name="intelli_menu_divider" />
     <item type="id" name="internalEmpty" />
     <item type="id" name="issued_on" />
     <item type="id" name="issued_on_header" />
@@ -405,8 +410,6 @@
     <item type="id" name="label_error" />
     <item type="id" name="label_hour" />
     <item type="id" name="label_minute" />
-    <item type="id" name="land_guide_text" />
-    <item type="id" name="land_ok" />
     <item type="id" name="language_item" />
     <item type="id" name="language_picker_header" />
     <item type="id" name="language_picker_item" />
@@ -422,6 +425,7 @@
     <item type="id" name="locale_search_menu" />
     <item type="id" name="locale_secondary" />
     <item type="id" name="lock_screen" />
+    <item type="id" name="low_light" />
     <item type="id" name="maintenance_mode_intro_backup_menu_cloud" />
     <item type="id" name="maintenance_mode_intro_backup_menu_cloud_main_textview" />
     <item type="id" name="maintenance_mode_intro_backup_menu_cloud_sub_textview" />
@@ -446,12 +450,10 @@
     <item type="id" name="maintenance_mode_outro_imageview" />
     <item type="id" name="maintenance_mode_outro_textview" />
     <item type="id" name="maintenance_mode_view_dump_container" />
+    <item type="id" name="maintenance_mode_view_dump_progressbar_container" />
     <item type="id" name="maintenance_mode_view_dump_textview" />
-    <item type="id" name="maintenance_mode_view_waiting_container" />
-    <item type="id" name="maintenance_mode_view_waiting_textview" />
     <item type="id" name="manage_apps" />
     <item type="id" name="matches" />
-    <item type="id" name="maximize_window" />
     <item type="id" name="media_actions" />
     <item type="id" name="media_route_control_frame" />
     <item type="id" name="media_route_extended_settings_button" />
@@ -548,10 +550,14 @@
     <item type="id" name="parentPanel" />
     <item type="id" name="pause" />
     <item type="id" name="pending_intent_tag" />
+    <item type="id" name="performAction_description" />
+    <item type="id" name="performAction_icon" />
+    <item type="id" name="performAction_title" />
     <item type="id" name="perm_icon" />
     <item type="id" name="perm_money_icon" />
     <item type="id" name="perm_money_label" />
     <item type="id" name="perm_name" />
+    <item type="id" name="permissionDialog_description" />
     <item type="id" name="permission_group" />
     <item type="id" name="permission_icon" />
     <item type="id" name="permission_list" />
@@ -571,8 +577,6 @@
     <item type="id" name="popupWindow_checkBox" />
     <item type="id" name="popupWindow_text" />
     <item type="id" name="popup_submenu_presenter" />
-    <item type="id" name="port_guide_text" />
-    <item type="id" name="port_ok" />
     <item type="id" name="prefs" />
     <item type="id" name="prefs_container" />
     <item type="id" name="prefs_frame" />
@@ -612,6 +616,7 @@
     <item type="id" name="remote_views_stable_id" />
     <item type="id" name="replace_app_icon" />
     <item type="id" name="replace_message" />
+    <item type="id" name="reply_action_container" />
     <item type="id" name="resolver_button_bar_divider" />
     <item type="id" name="resolver_empty_state" />
     <item type="id" name="resolver_empty_state_button" />
@@ -838,8 +843,10 @@
     <item type="id" name="target_badge" />
     <item type="id" name="textSpacerNoButtons" />
     <item type="id" name="textSpacerNoTitle" />
+    <item type="id" name="text_layout" />
     <item type="id" name="text_optimizing_apps" />
     <item type="id" name="three" />
+    <item type="id" name="thumb_bg" />
     <item type="id" name="tilt_container" />
     <item type="id" name="tilt_txt" />
     <item type="id" name="timePicker" />
@@ -875,8 +882,6 @@
     <item type="id" name="twSuggestionItem" />
     <item type="id" name="two" />
     <item type="id" name="unchecked" />
-    <item type="id" name="unknownsource_phishing_title" />
-    <item type="id" name="unknownsource_warning_text" />
     <item type="id" name="unpressed" />
     <item type="id" name="unpressedOff" />
     <item type="id" name="unpressedOn" />
@@ -891,6 +896,7 @@
     <item type="id" name="webview" />
     <item type="id" name="work_widget_app_icon" />
     <item type="id" name="work_widget_badge_icon" />
+    <item type="id" name="writing_toolkit" />
     <item type="id" name="year" />
     <item type="id" name="zero" />
     <item type="id" name="zoomControls" />

@@ -44,7 +44,7 @@
     <string name="ColrMmi">Prijungtos eilutės ID apribojimas</string>
     <string name="CwMmi">Laukiantis skambutis</string>
     <string name="DndMmi">Netrukdyti</string>
-    <string name="EmergencyCallWarningSummary">Negalima skambinti pagalbos numeriu naudojant „Wi‑Fi“</string>
+    <string name="EmergencyCallWarningSummary">Kad būtų galima skambinti pagalbos numeriais, būtina naudoti mobiliojo ryšio tinklą</string>
     <string name="EmergencyCallWarningTitle">Skambučių pagalbos numeriu paslauga nepasiekiama</string>
     <string name="Midnight">Vidurnaktis</string>
     <string name="NetworkPreferenceSwitchSummary">Pabandykite pakeisti pageidaujamą tinklą. Palieskite, kad pakeistumėte.</string>
@@ -255,7 +255,12 @@
     <string name="accessibility_corner_action_type_zoom_in">Didinti</string>
     <string name="accessibility_corner_action_type_zoom_out">Mažinti</string>
     <string name="accessibility_dialog_button_allow">Leisti</string>
+    <string name="accessibility_dialog_button_allow_samsung">Leisti</string>
     <string name="accessibility_dialog_button_deny">Atmesti</string>
+    <string name="accessibility_dialog_button_deny_samsung">Atmesti</string>
+    <string name="accessibility_dialog_button_uninstall">Pašalinti</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Pašalinti</string>
+    <string name="accessibility_dialog_touch_filtered_warning">Programa užstoja leidimo užklausą, todėl negalima patvirtinti jūsų atsakymo.</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Greitai paspaudus maitinimo ir garsumo didinimo mygtukus įjungiamos arba išjungiamos toliau nurodytos funkcijos.</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Greitai paspaudus šoninį ir garsumo didinimo mygtukus įjungiamos arba išjungiamos toliau nurodytos funkcijos:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Greitai paspaudus maitinimo ir garsumo didinimo mygtukus įjungiama arba išjungiama %s.</string>
@@ -269,11 +274,14 @@
     <string name="accessibility_edit_shortcut_menu_button_title">Funkcijų, kurioms bus naudojamas pritaikomumo mygtukas, pasirinkimas</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">Funkcijų, kurioms bus naudojamas garsumo spartusis klavišas, pasirinkimas</string>
     <string name="accessibility_enable_service_title">Leisti „%1$s“ valdyti visas įrenginio funkcijas?</string>
-    <string name="accessibility_freeform_caption">Programos „%1$s“ antraštės juosta.</string>
     <string name="accessibility_gesture_3finger_instructional_text">Norėdami perjungti funkcijas, perbraukite aukštyn trimis pirštais ir palaikykite.</string>
     <string name="accessibility_gesture_3finger_prompt_text">Pasirinkite funkciją, kuri bus naudojama su pritaikomumo gestu (perbraukimas aukštyn trimis pirštais iš ekrano apačios):</string>
     <string name="accessibility_gesture_instructional_text">Norėdami perjungti funkcijas, perbraukite aukštyn dviem pirštais ir palaikykite.</string>
     <string name="accessibility_gesture_prompt_text">Pasirinkite funkciją, kuri bus naudojama su pritaikomumo gestu (perbraukimas aukštyn dviem pirštais iš ekrano apačios):</string>
+    <string name="accessibility_label_clone_profile">Klonuoti</string>
+    <string name="accessibility_label_communal_profile">Bendruomenės</string>
+    <string name="accessibility_label_managed_profile">Darbo profilis</string>
+    <string name="accessibility_label_private_profile">Privati erdvė</string>
     <string name="accessibility_magnification_chooser_text">Didinimas</string>
     <string name="accessibility_select_different_function">Įvairias funkcijas galite pasirinkti eidami į Nustatymai > Pritaikymas neįgaliesiems > Išplėstiniai nustatymai.</string>
     <string name="accessibility_select_shortcut_menu_title">Norėdami naudoti funkciją, palieskite ją:</string>
@@ -342,7 +350,7 @@ Galite pakeisti šį spartųjį klavišą į kitą funkciją skiltyje „Nustaty
     <string name="action_bar_home_description">Naršyti pagrindinį puslapį</string>
     <string name="action_bar_home_description_format">%1$s, %2$s</string>
     <string name="action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
-    <string name="action_bar_up_description">Naršyti į viršų</string>
+    <string name="action_bar_up_description">Pereiti aukštyn</string>
     <string name="action_menu_overflow_description">Daugiau parinkčių</string>
     <string name="action_mode_done">Atlikta</string>
     <string name="activity_chooser_view_dialog_title_default">Pasirinkti veiklą</string>
@@ -382,19 +390,25 @@ Galite pakeisti šį spartųjį klavišą į kitą funkciją skiltyje „Nustaty
     <string name="alert_windows_notification_turn_off_action">Išjungti</string>
     <string name="allow">Leisti</string>
     <string name="allow_settings_changes">Saugos politika neleidžia keisti nustatymų.</string>
+    <string name="alternative_face_setup_notification_content">Naudokite atrakinimą pagal veidą, kai nepavyksta atpažinti piršto atspaudo, pvz., kai pirštai drėgni</string>
+    <string name="alternative_fp_setup_notification_content">Naudokite atrakinimą piršto atspaudu, kai nepavyksta atpažinti veido, pvz., kai netinkamas apšvietimas</string>
+    <string name="alternative_unlock_setup_notification_title">Išbandykite kitą atrakinimo metodą</string>
     <string name="alwaysUse">Šiam veiksmui tai naudoti pagal numatytuosius nustatymus.</string>
+    <string name="always_allow">Visada</string>
     <string name="android_preparing_apk">Ruošiama „%1$s“.</string>
-    <string name="android_start_title">Planšetinis kompiuteris paleidžiamas…</string>
+    <string name="android_start_title">Telefonas paleidžiamas…</string>
     <string name="android_system_label">„Android“ sistema</string>
     <string name="android_upgrading_complete">Užbaigiamas paleidimas.</string>
     <string name="android_upgrading_notification_title">Baigiama atnaujinti sistemą…</string>
     <string name="android_upgrading_starting_apps">Paleidžiamos programos.</string>
-    <string name="android_upgrading_title">Planšetinis kompiuteris atnaujinamas…</string>
+    <string name="android_upgrading_title">Telefonas atnaujinamas…</string>
     <string name="anr_activity_application">„%2$s“ neatsako</string>
     <string name="anr_activity_process">„%1$s“ neatsako</string>
     <string name="anr_application_process">„%1$s“ neatsako</string>
     <string name="anr_process">Procesas „%1$s“ neatsako</string>
     <string name="anr_title" />
+    <string name="app_block_button_open">Atidaryti</string>
+    <string name="app_block_content">%1$s nori atidaryti %2$s programą.</string>
     <string name="app_blocked_message">Programa „%1$s“ šiuo metu nepasiekiama.</string>
     <string name="app_blocked_title">Programa nepasiekiama.</string>
     <string name="app_category_accessibility">Pritaikomumas</string>
@@ -423,42 +437,31 @@ Galite pakeisti šį spartųjį klavišą į kitą funkciją skiltyje „Nustaty
     <string name="app_restricted_message_concentration_mode">Veikiant koncentracijos režimui %s blokuojama. Daugiau sužinosite iš savo IT administratoriaus.</string>
     <string name="app_running_notification_text">Palieskite, kad gautumėte daugiau informacijos arba galėtumėte sustabdyti programą.</string>
     <string name="app_running_notification_title">„%1$s“ vykdoma</string>
-    <string name="app_streaming_blocked_message">Šįkart nepavyksta pasiekti programos iš jūsų „%1$s“. Pabandykite naudoti planšetinį kompiuterį.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Ši programa prašo papildomų saugos funkcijų. Pabandykite naudoti planšetinį kompiuterį.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Nepavyksta pasiekti nuotolinio įrenginio iš jūsų „%1$s“. Pabandykite naudoti planšetinį kompiuterį.</string>
+    <string name="app_streaming_blocked_message">Šįkart nepavyksta pasiekti programos iš jūsų „%1$s“. Pabandykite naudoti telefoną.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Ši programa prašo papildomų saugos funkcijų. Pabandykite naudoti telefoną.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">Ši programa prašo papildomų leidimų, bet jų negalima suteikti per srautinio perdavimo seansą. Leidimą pirmiausia suteikite telefone.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Nepavyksta pasiekti nuotolinio įrenginio iš jūsų „%1$s“. Pabandykite naudoti telefoną.</string>
     <string name="app_streaming_blocked_title">„%1$s“ nepasiekiama</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kamera nepasiekiama</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Tęsti telefone</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofonas nepasiekiamas</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">Reikalingas leidimas</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">Leidimo užklausa atmesta</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">„Play“ parduotuvė nepasiekiama</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Planšetinio kompiuterio nustatymai nepasiekiami</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Telefono nustatymai nepasiekiami</string>
     <string name="app_suspended_default_message">Programa „%1$s“ šiuo metu nepasiekiama. Tai tvarkoma naudojant programą „%2$s“.</string>
     <string name="app_suspended_more_details">Sužinoti daugiau</string>
     <string name="app_suspended_title">Programa nepasiekiama</string>
     <string name="app_suspended_unsuspend_message">Atšaukti programos pristabdymą</string>
     <string name="app_updating_message">%s naujinama. Bandykite dar kartą vėliau.</string>
     <string name="app_upgrading_toast">„%1$s“ naujovinama...</string>
-    <string name="appblock_block_subtitle1_phone">Siekiant apsaugoti telefoną ir asmeninius duomenis, šios programos negalima įdiegti, nes įtariama, kad ji yra kenkėjiška.</string>
-    <string name="appblock_block_subtitle1_tablet">Siekiant apsaugoti planšetinį kompiuterį ir asmeninius duomenis, šios programos negalima įdiegti, nes įtariama, kad ji yra kenkėjiška.</string>
-    <string name="appblock_block_subtitle2">Šios programos negalima įdiegti, nes pranešta, kad ji yra kenkėjiška.</string>
-    <string name="appblock_block_text1">Šios programos šaltinis nepatvirtintas ir ji reikalauja leidimų, kurie gali būti panaudoti siekiant pavogti arba nutekinti asmeninius duomenis.</string>
-    <string name="appblock_block_text2">"Kenkėjiškos programos gali naudoti leidimus, kad pavogtų asmeninius duomenis, pasisavintų tapatybę arba pasiektų sąskaitas.
-
-Teisėtos finansinės institucijos nereikalauja įdiegti ZIP failų, APK failų ar failų tvarkyklių programų.
-
-Visada patikrinkite, ar diegiamos programos yra iš patikimo šaltinio."</string>
-    <string name="appblock_warn_subtitle">Ši programa gali pavogti arba nutekinti jūsų asmeninę informaciją.</string>
+    <string name="appblock_block_text_phone">Šios programos negalima įdiegti, nes apie ją pranešta kaip apie kenkėjišką arba ji panaši į programą, apie kurią pranešta kaip apie kenkėjišką. Tikėtina, kad ši programa bus naudojama vykdant tokius nusikaltimus kaip sukčiavimas apsimetant. Kad telefonas ir duomenys būtų saugūs, šio apribojimo negalima apeiti.</string>
+    <string name="appblock_block_text_tablet">Šios programos negalima įdiegti, nes apie ją pranešta kaip apie kenkėjišką arba ji panaši į programą, apie kurią pranešta kaip apie kenkėjišką. Tikėtina, kad ši programa bus naudojama vykdant tokius nusikaltimus kaip sukčiavimas apsimetant. Kad planšetinis kompiuteris ir duomenys būtų saugūs, šio apribojimo negalima apeiti.</string>
+    <string name="appblock_link_text">Sužinokite daugiau</string>
     <string name="appblock_warn_text1">"Diegdami programas iš nepatvirtintų šaltinių galite leisti programoms rinkti jūsų asmeninę informaciją arba stebėti jūsų veiklą.
 
 Šios programos diegti nerekomenduojama.
 
 Jei vis tiek nuspręsite įdiegti šią programą, atidžiai peržiūrėkite programos Privatumo pranešimą ir suteikite tik būtinus leidimus."</string>
-    <string name="appblock_warn_text2">"Kenkėjiškos programos dažnai bando gauti asmeninę informaciją panaudojant Adresatų, SMS ir Nuotraukų leidimus.
-
-Šios programos diegti nerekomenduojama.
-
-Jei vis tiek nuspręsite įdiegti šią programą, įsitikinkite, kad ji yra iš patikimo šaltinio ir būkite atsargūs suteikdami leidimus arba prieigą prie savo duomenų."</string>
     <string name="application_default_restrict">Įrenginio administratorius numatytąja nustatė kitą programą.</string>
     <string name="as_app_forced_to_restricted_bucket">„%1$s“ įkeltas į grupę APRIBOTA</string>
     <string name="auto_click_paused">Automatinis spustelėjimas pristabdytas.</string>
@@ -490,9 +493,10 @@ Jei vis tiek nuspręsite įdiegti šią programą, įsitikinkite, kad ji yra iš
     <string name="autofill_save_type_payment_card">mokėjimo kortelė</string>
     <string name="autofill_save_type_username">naudotojo vardas</string>
     <string name="autofill_save_yes">Išsaugoti</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="autofill_update_title">Atnaujinti paslaugoje <b>%1$s</b>?</string>
     <string name="autofill_update_title_with_2types">Atnaujinti %1$s ir %2$s paslaugoje <b>%3$s</b>?</string>
-    <string name="autofill_update_title_with_3types">Atnaujinti šiuos elementus paslaugoje <b>%4$s</b>: %1$s, %2$s ir %3$s ?</string>
+    <string name="autofill_update_title_with_3types">Atnaujinti šiuos elementus paslaugoje <b>%4$s</b>: %1$s, %2$s ir %3$s?</string>
     <string name="autofill_update_title_with_type">Atnaujinti %1$s paslaugoje <b>%2$s</b>?</string>
     <string name="autofill_update_yes">Atnaujinti</string>
     <string name="autofill_window_title">Automatinis pildymas naudojant „%1$s“</string>
@@ -503,7 +507,7 @@ Jei vis tiek nuspręsite įdiegti šią programą, įsitikinkite, kad ji yra iš
     <string name="badPuk">Įvestas PUK kodas neteisingas.</string>
     <string name="badPuk2">Įvestas PUK2 neteisingas</string>
     <string name="batt_cooldown_mode_ok">Gerai</string>
-    <string name="battery_saver_charged_notification_summary">Planšetinis kompiuteris pakankamai įkrautas. Funkcijos neberibojamos.</string>
+    <string name="battery_saver_charged_notification_summary">Telefonas pakankamai įkrautas. Funkcijos neberibojamos.</string>
     <string name="battery_saver_description">Akumuliatoriaus tausojimo priemonė įjungia tamsiąją temą ir apriboja arba išjungia veiklą fone, kai kuriuos vaizdinius efektus, tam tikras funkcijas bei kai kuriuos tinklo ryšius.</string>
     <string name="battery_saver_description_with_learn_more">Akumuliatoriaus tausojimo priemonė įjungia tamsiąją temą ir apriboja arba išjungia veiklą fone, kai kuriuos vaizdinius efektus, tam tikras funkcijas bei kai kuriuos tinklo ryšius.</string>
     <string name="battery_saver_notification_channel_name">Akumuliatoriaus tausojimo priemonė</string>
@@ -517,6 +521,7 @@ Jei vis tiek nuspręsite įdiegti šią programą, įsitikinkite, kad ji yra iš
     <string name="biometric_error_generic">Autentifikuojant įvyko klaida</string>
     <string name="biometric_error_hw_unavailable">Biometrinė aparatinė įranga nepasiekiama</string>
     <string name="biometric_error_user_canceled">Autentifikavimas atšauktas</string>
+    <string name="biometric_face_not_recognized">Veidas neatpažintas</string>
     <string name="biometric_not_recognized">Neatpažinta</string>
     <string name="biometric_or_screen_lock_app_setting_name">Naudoti biometrinius duomenis arba ekrano užraktą</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">Jei norite tęsti, naudokite biometrinius duomenis arba ekrano užraktą</string>
@@ -528,8 +533,6 @@ Jei vis tiek nuspręsite įdiegti šią programą, įsitikinkite, kad ji yra iš
     <string name="bluetooth_airplane_mode_toast">„Bluetooth“ liks įjungtas veikiant lėktuvo režimui</string>
     <string name="bluetooth_avrcp_restrict">Saugos politika neleidžia naudotis „Bluetooth“ garso / vaizdo valdymo funkcija.</string>
     <string name="bluetooth_bpp_restrict">Saugos politika neleidžia spausdinti per „Bluetooth“.</string>
-    <string name="bluetooth_china_popup_message">%1$s prašo leidimo naudoti %2$s. Leisti?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Saugos politika neleidžia perduoti duomenų per „Bluetooth“.</string>
     <string name="bluetooth_desktop_restrict">Saugos politika neleidžia jungtis prie stalinio kompiuterio per „Bluetooth“.</string>
     <string name="bluetooth_device_restrict">Saugos politika neleidžia sieti su šiuo „Bluetooth“ įrenginiu.</string>
@@ -540,7 +543,6 @@ Jei vis tiek nuspręsite įdiegti šią programą, įsitikinkite, kad ji yra iš
     <string name="bluetooth_outgoing_call_restrict">Saugos politika neleidžia skambinti per „Bluetooth“.</string>
     <string name="bluetooth_pairing_restrict">Saugos politika neleidžia sieti su „Bluetooth“.</string>
     <string name="bluetooth_pbap_restrict">Saugos politika neleidžia naudotis „Bluetooth“ adresų knyga.</string>
-    <string name="bluetooth_permission_request">Prašymas leisti „Bluetooth“</string>
     <string name="bluetooth_restrict">Saugos politika neleidžia naudoti „Bluetooth“.</string>
     <string name="bluetooth_sap_restrict">Saugos politika neleidžia pasiekti SIM kortelės per „Bluetooth“.</string>
     <string name="bluetooth_security_mode_disable">Saugos politika neleidžia naudoti „Bluetooth“.</string>
@@ -652,11 +654,11 @@ Jei vis tiek nuspręsite įdiegti šią programą, įsitikinkite, kad ji yra iš
     <string name="common_secure_boot_nwlock_notification_text">Ši SIM kortelė nepalaikoma.</string>
     <string name="common_secure_boot_nwlock_notification_title">Invalid SIM card inserted</string>
     <string name="concurrent_display_notification_active_content">„%1$s“ naudoja abu ekranus turiniui rodyti</string>
-    <string name="concurrent_display_notification_active_title">Įjungtas dvigubas ekranas</string>
-    <string name="concurrent_display_notification_name">Dvigubas ekranas</string>
+    <string name="concurrent_display_notification_active_title">Įjungta „Dual Screen“</string>
+    <string name="concurrent_display_notification_name">Dual Screen</string>
     <string name="concurrent_display_notification_power_save_content">Funkcija „Dual Screen“ nepasiekiama, nes įjungta Akumuliatoriaus tausojimo priemonė. Šią parinktį bet kada galite išjungti skiltyje „Nustatymai“.</string>
     <string name="concurrent_display_notification_power_save_title">Funkcija „Dual Screen“ nepasiekiama</string>
-    <string name="concurrent_display_notification_thermal_content">Dvigubas ekranas nepasiekiamas, nes telefonas per daug kaista</string>
+    <string name="concurrent_display_notification_thermal_content">„Dual Screen“ nepasiekiamas, nes telefonas per daug kaista</string>
     <string name="concurrent_display_notification_thermal_title">Įrenginys per daug kaista</string>
     <string name="condition_provider_service_binding_label">Sąlygos teikėjas</string>
     <string name="conference_call">Konferencinis skambutis</string>
@@ -665,12 +667,17 @@ Jei vis tiek nuspręsite įdiegti šią programą, įsitikinkite, kad ji yra iš
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">Gerai</string>
+    <string name="connected_display_thermally_unavailable_notification_content">Jūsų įrenginys per daug įkaitęs ir negali bendrinti ekrano vaizdo, kol atvės</string>
+    <string name="connected_display_unavailable_notification_content">Naudokite kitą laiką ir bandykite dar kartą</string>
+    <string name="connected_display_unavailable_notification_title">Negalima bendrinti ekrano vaizdo ekrane</string>
     <string name="console_running_notification_message">Našumas paveiktas. Norėdami išjungti, patikrinkite paleidyklę.</string>
     <string name="console_running_notification_title">Serijos pultas įgalintas</string>
     <string name="constrained_status_bar_device_locked">Įrenginys užrakintas</string>
     <string name="contentServiceSync">Sinchronizuoti</string>
     <string name="contentServiceSyncNotificationTitle">Sinchronizuoti nepavyko</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">Bandoma ištrinti per daug turinio (%s).</string>
+    <string name="content_description_collapsed">Sutraukta</string>
+    <string name="content_description_expanded">Išskleista</string>
     <string name="content_description_sliding_handle">Slydimo valdymas. Palieskite ir laikykite.</string>
     <string name="conversation_single_line_image_placeholder">išsiuntė vaizdą</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -696,12 +703,10 @@ Ausinių garsumo lygis yra aukštesnis, nei rekomenduojama, o tai gali pakenkti 
     <string name="data_saver_description">Kad padėtų sumažinti duomenų naudojimą, Duomenų taupymo priemonė neleidžia kai kurioms programoms siųsti ar gauti duomenų fone. Šiuo metu naudojama programa gali pasiekti duomenis, bet tai bus daroma rečiau. Tai gali reikšti, kad, pvz., vaizdai nebus pateikiami, jei jų nepaliesite.</string>
     <string name="data_saver_enable_button">Įjungti</string>
     <string name="data_saver_enable_title">Įj. Duomenų taupymo priemonę?</string>
-    <string name="data_usage_disable_mobile">Išjungti mobilųjį duomenų ryšį?</string>
-    <string name="data_usage_enable_mobile_warning">Jungiantis paketinių duomenų perdavimo ryšiu gali būti taikomi papildomi mokesčiai. Tęsti?</string>
     <string name="data_usage_limit_body">Mobilieji duomenys yra laikinai pristabdyti iki mokėjimo ciklo pabaigos.</string>
     <string name="data_usage_limit_snoozed_body">Viršijote nustatytą apribojimą (%s)</string>
     <string name="data_usage_mobile_limit_snoozed_title">Viršytas mobil. duomenų limitas</string>
-    <string name="data_usage_mobile_limit_title">Pasiektas mob. duomenų limitas</string>
+    <string name="data_usage_mobile_limit_title">Pasiek. mob. ryšio duom. limitas</string>
     <string name="data_usage_rapid_app_body">%s išnaudojo daugiau duomenų bei įprasta.</string>
     <string name="data_usage_rapid_body">Jūsų programos sunaudojo daugiau duomenų nei įprasta.</string>
     <string name="data_usage_rapid_title">Didelis mob. telefono duomenų naudojimas</string>
@@ -733,7 +738,7 @@ Ausinių garsumo lygis yra aukštesnis, nei rekomenduojama, o tai gali pakenkti 
     <string name="decline">Atmesti</string>
     <string name="decline_remote_bugreport_action">ATMESTI</string>
     <string name="default_audio_route_category_name">Sistema</string>
-    <string name="default_audio_route_name">Planšetinis kompiuteris</string>
+    <string name="default_audio_route_name">Telefonas</string>
     <string name="default_audio_route_name_dock_speakers">Doko garsiakalbiai</string>
     <string name="default_audio_route_name_external_device">Išorinis įrenginys</string>
     <string name="default_audio_route_name_headphones">Ausinės</string>
@@ -751,11 +756,13 @@ Ausinių garsumo lygis yra aukštesnis, nei rekomenduojama, o tai gali pakenkti 
     <string name="deprecated_target_sdk_message">Ši programa sukurta senesnės versijos „Android“. Ji gali tinkamai neveikti ir joje nėra naujausių saugos ir privatumo apsaugos priemonių. Patikrinkite, ar yra naujinių, arba susisiekite su programos kūrėju.</string>
     <string name="description_target_unlock_tablet">Perbraukite pirštu, kad atrakintumėte.</string>
     <string name="device_disabled">Įrenginys išjungtas. Kreipkitės į IT administratorių.</string>
+    <string name="device_info_not_available">Neprieinama.</string>
     <string name="device_ownership_relinquished">Administratorius atmetė prašymą įrenginį naudoti asmeniniais tikslais</string>
     <string name="device_policy_manager_service">Įrenginio politikos tvarkyklės paslauga</string>
     <string name="device_state_notification_settings_button">Eiti į skiltį „Nustatymai“</string>
     <string name="device_state_notification_turn_off_button">Išjungti</string>
     <string name="device_storage_monitor_notification_channel">Įrenginio saugykla</string>
+    <string name="device_unlock_notification_name">Įrenginio atrakinimo funkcija</string>
     <string name="dex_cant_change_user_profile">Negalima keisti naudotojo profilio, kol veikia „Samsung DeX“ režimu.</string>
     <string name="dex_dialog_launch_toast">Atidarytos programos gali būti uždarytos. Prieš paleisdami ar išjungdami „Samsung DeX“ išsaugokite savo duomenis.</string>
     <string name="dex_disconnected_from_device">„DeX“ atjungta nuo %s. Televizoriuje patikrinkite tinklo ryšį.</string>
@@ -764,9 +771,6 @@ Ausinių garsumo lygis yra aukštesnis, nei rekomenduojama, o tai gali pakenkti 
     <string name="dex_launcher_mode_change">%s uždaryta, kad būtų įjungta „Samsung DeX“.</string>
     <string name="dex_mirroring_jit_msg">Paleidę „Samsung DeX“ planšetiniame kompiuteryje ekrano vaizdą galite dubliuoti bet kuriame per HDMI prijungtame ekrane ir mėgautis didesniu vaizdu.</string>
     <string name="dex_mirroring_jit_title">„DeX“ vaizdas didesniame ekrane</string>
-    <string name="dex_restart_app_dialog_button_positive">Perkrauti</string>
-    <string name="dex_restart_app_dialog_message">Ši programa jau veikia kitame ekrane. Jei norite atidaryti čia, programą reikia paleisti iš naujo. Prieš paleisdami iš naujo išsaugokite visą svarbią informaciją.</string>
-    <string name="dex_restart_app_dialog_title">Paleisti %s iš naujo?</string>
     <string name="dex_restriction_blockerMessage">Saugos politika neleidžia naudoti „Samsung DeX“.</string>
     <string name="dex_restriction_ethernetOnly">Saugos politika neleidžia naudoti „Wi-Fi“ duomenų, mobiliųjų duomenų ir „DeX“ siejimo. Tinklo funkcijoms reikalingas laidinis ryšys.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Dėl saugumo politikos atjunkite išorinį ekraną, kad išjungtumėte „Samsung DeX“.</string>
@@ -795,7 +799,6 @@ naudojant %s"</string>
     <string name="disableupdate_application_restrict">Saugos politika neleidžia atnaujinti šios programos.</string>
     <string name="dismiss_action">Atmesti</string>
     <string name="display_chooser_button_positive">Perkrauti</string>
-    <string name="display_chooser_dont_show_again">Neberodyti</string>
     <string name="display_manager_built_in_display_name">Integruotas ekranas</string>
     <string name="display_manager_hdmi_display_name">HDMI ekranas</string>
     <string name="display_manager_overlay_display_name">Perdanga nr. %1$d</string>
@@ -817,6 +820,7 @@ naudojant %s"</string>
     <string name="dpm_wifi_misc_network_insecure">Saugos politika neleidžia naudotis nesaugiais „Wi-Fi“ tinklais.</string>
     <string name="dpm_wifi_misc_wifi_disabled">Saugos politika neleidžia naudoti „Wi-Fi“.</string>
     <string name="dpm_wifi_user_profiles_denied">Saugos politika neleidžia pridėti „Wi-Fi“ tinklų.</string>
+    <string name="dream_accessibility_action_click">uždaryti</string>
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Negalima naudoti šios programos kelių langų rodinyje.</string>
     <string name="dream_preview_title">Peržiūra, %1$s</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Negalima naudoti šios funkcijos kelių langų rodinyje.</string>
@@ -845,11 +849,13 @@ naudojant %s"</string>
     <string name="duration_years_shortest_future">po %d m.</string>
     <string name="dynamic_mode_notification_channel_name">Veiksmų sekos režimo informacijos pranešimas</string>
     <string name="dynamic_mode_notification_summary">Sumažinamas akumuliatoriaus energijos vartojimas, kad akumuliatorius veiktų ilgiau</string>
+    <string name="dynamic_mode_notification_summary_v2">Akumuliatoriaus tausojimo priemonė įjungta, kad akumuliatorius veiktų ilgiau</string>
     <string name="dynamic_mode_notification_title">Įjungta akumuliatoriaus tausojimo priemonė</string>
+    <string name="dynamic_mode_notification_title_v2">Akumuliatoriaus tausojimo priemonė įjungta</string>
     <string name="editTextMenuTitle">Teksto veiksmai</string>
     <string name="edit_accessibility_shortcut_menu_button">Redaguoti sparčiuosius klavišus</string>
     <string name="edit_contact_at_sim_restriction">Saugos politika neleidžia redaguoti SIM kortelės adresatų.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Leidžiami įrenginiai</string>
+    <string name="edm_policy_not_allow_open_wifiap">Saugos politika riboja neapsaugoto saitvietės siejimo naudojimą.</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
     <string name="elapsed_time_short_format_mm_ss">%1$02d:%2$02d</string>
     <string name="emailTypeCustom">Tinkintas</string>
@@ -860,8 +866,10 @@ naudojant %s"</string>
     <string name="emergency_call_dialog_number_for_display">Pagalbos numeris</string>
     <string name="emergency_calls_only">Tik pagalbos skambučiai</string>
     <string name="enablePin">Nepavyko. Įgalinti SIM / RUIM užraktą.</string>
-    <string name="enable_explore_by_touch_warning_message">„%1$s“ nori įgalinti naršymą liečiant. Kai naršymas liečiant bus įjungtas, galėsite išgirsti ar peržiūrėti pirštu liečiamų elementų aprašus arba atlikdami gestus naudoti planšetinį kompiuterį.</string>
+    <string name="enable_explore_by_touch_warning_message">„%1$s“ nori įgalinti naršymą liečiant. Kai naršymas liečiant bus įjungtas, galėsite išgirsti ar peržiūrėti pirštu liečiamų elementų aprašus arba atlikdami gestus naudoti telefoną.</string>
     <string name="enable_explore_by_touch_warning_title">Įgalinti naršymą liečiant?</string>
+    <string name="error_handwriting_unsupported">Rašymas ranka nepalaikomas šiame lauke</string>
+    <string name="error_handwriting_unsupported_password">Rašymas ranka nepalaikomas slaptažodžių laukuose</string>
     <string name="error_message_change_not_allowed">Administratorius neleidžia atlikti šio pakeitimo</string>
     <string name="error_message_title">Klaida</string>
     <string name="ethernet_cable_connected_notification_message">Bakstelėkite ir nustatykite.</string>
@@ -924,7 +932,7 @@ naudojant %s"</string>
     <string name="ext_media_unsupported_notification_message">Šis įrenginys ne’palaiko šios %s. Bakstelėkite ir nustatykite naudodami palaikomą formatą.</string>
     <string name="ext_media_unsupported_notification_title">Nepalaikoma %s</string>
     <string name="ext_storage_bad_removal_button">Leisti iš naujo</string>
-    <string name="ext_storage_bad_removal_title">Paleiskit planš. komp. iš naujo</string>
+    <string name="ext_storage_bad_removal_title">Paleiskite telefoną iš naujo</string>
     <string name="extmedia_format_button_format">Formatas</string>
     <string name="extmedia_format_message">Bus prarasti visi kortelėje esantys duomenys.</string>
     <string name="extmedia_format_message_usbhost">Bus ištrinti visi USB atmintyje saugomi failai. Šio veiksmo negalima atšaukti!</string>
@@ -979,8 +987,6 @@ naudojant %s"</string>
     <string name="face_recalibrate_notification_name">Atrakinimas pagal veidą</string>
     <string name="face_recalibrate_notification_title">Su atrakinimu pagal veidą susijusi problema</string>
     <string name="face_sensor_privacy_enabled">Jei norite naudoti atrakinimą pagal veidą, įjunkite parinktį <b>Prieiga prie fotoaparato</b> skiltyje „Nustatymai“ > „Privatumas“</string>
-    <string name="face_setup_notification_content">Atrakinkite telefoną pažiūrėję į jį</string>
-    <string name="face_setup_notification_title">Atrakinimo pagal veidą nustatymas</string>
     <string name="faceunlock_multiple_failures">Viršijote maksimalų atrakinimo pagal veidą bandymų skaičių</string>
     <string name="factory_reset_message">"Administratoriaus programos negalima naudoti. Dabar įrenginio duomenys bus ištrinti.
 
@@ -1006,7 +1012,7 @@ Jei turite klausimų, susisiekite su organizacijos administratoriumi."</string>
     <string name="fingerprint_acquired_imager_dirty">Nuvalykite kontrolinio kodo jutiklį ir bandykite dar kartą</string>
     <string name="fingerprint_acquired_imager_dirty_alt">Nuvalykite jutiklį ir bandykite dar kartą</string>
     <string name="fingerprint_acquired_immobile">Kaskart šiek tiek pakeiskite piršto poziciją</string>
-    <string name="fingerprint_acquired_insufficient">Nepavyko atpažinti kontrolinio kodo. Bandykite dar kartą.</string>
+    <string name="fingerprint_acquired_insufficient">Piršto atspaudas neatpažintas. Bandykite dar kartą.</string>
     <string name="fingerprint_acquired_partial">Stipriai paspauskite jutiklį</string>
     <string name="fingerprint_acquired_power_press">Aptiktas maitinimo mygtuko paspaudimas</string>
     <string name="fingerprint_acquired_too_bright">Per šviesu</string>
@@ -1016,20 +1022,21 @@ Jei turite klausimų, susisiekite su organizacijos administratoriumi."</string>
     <string name="fingerprint_app_setting_name">Naudoti kontrolinį kodą</string>
     <string name="fingerprint_authenticated">Piršto antspaudas autentifikuotas</string>
     <string name="fingerprint_dialog_default_subtitle">Naudokite kontrolinį kodą, kad galėtumėte tęsti</string>
-    <string name="fingerprint_error_bad_calibration">Negalima naudoti kontrolinio kodo jutiklio. Apsilankykite pas taisymo paslaugos teikėją</string>
-    <string name="fingerprint_error_canceled">Piršto antspaudo operacija atšaukta.</string>
-    <string name="fingerprint_error_hw_not_available">Piršto antspaudo aparatinė įranga nepasiekiama.</string>
-    <string name="fingerprint_error_hw_not_present">Šiame įrenginyje nėra kontrolinio kodo jutiklio.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">Veidas neatpažintas. Naudokite piršto atspaudą.</string>
+    <string name="fingerprint_error_bad_calibration">Negalima naudoti piršto atspaudo jutiklio. Apsilankykite pas taisymo paslaugos teikėją.</string>
+    <string name="fingerprint_error_canceled">Piršto antspaudo operacija atšaukta</string>
+    <string name="fingerprint_error_hw_not_available">Piršto antspaudo aparatinė įranga nepasiekiama</string>
+    <string name="fingerprint_error_hw_not_present">Šiame įrenginyje nėra piršto antspaudo jutiklio</string>
     <string name="fingerprint_error_lockout">Per daug bandymų. Naudokite ekrano užraktą.</string>
     <string name="fingerprint_error_lockout_permanent">Per daug bandymų. Naudokite ekrano užraktą.</string>
-    <string name="fingerprint_error_no_fingerprints">Neužregistruota jokių kontrolinių kodų.</string>
+    <string name="fingerprint_error_no_fingerprints">Neužregistruota jokių pirštų atspaudų</string>
     <string name="fingerprint_error_no_space">Nepavyko nustatyti kontrolinio kodo</string>
     <string name="fingerprint_error_not_match">Piršto atspaudas neatpažintas</string>
     <string name="fingerprint_error_power_pressed">Paspaustas maitinimo mygtukas</string>
-    <string name="fingerprint_error_security_update_required">Jutiklis laikinai išjungtas.</string>
+    <string name="fingerprint_error_security_update_required">Jutiklis laikinai išjungtas</string>
     <string name="fingerprint_error_timeout">Baigėsi piršto atspaudo sąrankos skirtasis laikas. Bandykite dar kartą.</string>
     <string name="fingerprint_error_unable_to_process">Nepavyko apdoroti kontrolinio kodo. Bandykite dar kartą.</string>
-    <string name="fingerprint_error_user_canceled">Piršto antspaudo operaciją atšaukė naudotojas.</string>
+    <string name="fingerprint_error_user_canceled">Piršto antspaudo operaciją atšaukė naudotojas</string>
     <string name="fingerprint_error_vendor_unknown">Kažkas nepavyko. Bandykite dar kartą.</string>
     <string name="fingerprint_name_template">%d pirštas</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">Naudoti kontrolinį kodą arba ekrano užraktą</string>
@@ -1037,8 +1044,6 @@ Jei turite klausimų, susisiekite su organizacijos administratoriumi."</string>
     <string name="fingerprint_recalibrate_notification_content">Apsilankykite pas taisymo paslaugos teikėją.</string>
     <string name="fingerprint_recalibrate_notification_name">Atrakinimas piršto atspaudu</string>
     <string name="fingerprint_recalibrate_notification_title">Negalima naudoti kontrolinio kodo jutiklio</string>
-    <string name="fingerprint_setup_notification_content">Palieskite, kad pridėtumėte kontrolinį kodą</string>
-    <string name="fingerprint_setup_notification_title">Daugiau atrakinimo metodų nustatymas</string>
     <string name="fingerprint_udfps_error_not_match">Piršto atspaudas neatpažintas</string>
     <string name="fingerprints">Kontroliniai kodai</string>
     <string name="firmwarerecovery_restrict">Saugos politika neleidžia atkurti programinės aparatinės įrangos.</string>
@@ -1128,7 +1133,7 @@ Nustatydami kontrolinį kodą, pabandykite jį švelniai paliesti."</string>
     <string name="global_action_toggle_sealed_mode">Saugus režimas</string>
     <string name="global_action_toggle_silent_mode">Tylus režimas</string>
     <string name="global_action_voice_assist">Voice Assist</string>
-    <string name="global_actions">Planšetinio kompiuterio parinktys</string>
+    <string name="global_actions">Telefono parinktys</string>
     <string name="global_actions_airplane_mode_off_status">lėktuvo režimas IŠJUNGTAS</string>
     <string name="global_actions_airplane_mode_on_status">ĮJUNGTAS lėktuvo režimas</string>
     <string name="global_actions_toggle_airplane_mode">Lėktuvo režimas</string>
@@ -1149,6 +1154,7 @@ Nustatydami kontrolinį kodą, pabandykite jį švelniai paliesti."</string>
     <string name="globalactions_unable_restart_msg_fmm">Negalima paleisti iš naujo, nes telefonas užblokuotas nuotoliniu būdu per „Ieškoti mano mobiliojo“.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Negalima paleisti iš naujo, nes planšetinis kompiuteris užblokuotas nuotoliniu būdu per „Ieškoti mano mobiliojo“.</string>
     <string name="globalactions_unable_restart_msg_securelock">Užrakinto telefono negalima paleisti iš naujo. Atidarykite dangtelį, atrakinkite ir paleiskite telefoną iš naujo.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Telefono negalima paleisti iš naujo, kai SIM kortelė užrakinta.</string>
     <string name="gnss_service">GNSS paslauga</string>
     <string name="gnss_time_update_service">GNSS laiko atnaujinimo paslauga</string>
     <string name="gpsNotifMessage">Užklausą pateikė %1$s („%2$s“)</string>
@@ -1164,7 +1170,7 @@ Nustatydami kontrolinį kodą, pabandykite jį švelniai paliesti."</string>
     <string name="granularity_label_link">nuoroda</string>
     <string name="granularity_label_word">žodis</string>
     <string name="guest_name">Svečias</string>
-    <string name="hardware">Rodyti virtualiąją klaviatūrą</string>
+    <string name="hardware">Ekrano klaviatūros naudojimas</string>
     <string name="hardware_key_restrict">Saugos politika neleidžia naudoti šio mygtuko.</string>
     <string name="hardware_sec">Ekrano klaviatūra</string>
     <string name="harmful_app_warning_open_anyway">VIS TIEK ATIDARYTI</string>
@@ -1313,11 +1319,11 @@ Tikrai norite išeiti iš šio puslapio?"</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Palieskite, kad įves. slaptaž.&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Neteisingas PIN kodas.</string>
     <string name="kg_enter_confirm_pin_hint">Patvirtinkite pageidaujamą PIN kodą</string>
-    <string name="kg_failed_attempts_almost_at_login">"Netinkamai nupiešėte atrakinimo piešinį %1$d k. Po dar %2$d nesėkm. band. būsite paprašyti atrakinti planšetinį kompiuterį naudodami „Google“ prisijungimo duomenis.
+    <string name="kg_failed_attempts_almost_at_login">"Netinkamai nupiešėte atrakinimo piešinį %1$d k. Po dar %2$d nesėkm. band. būsite paprašyti atrakinti telefoną naudodami „Google“ prisijungimo duomenis.
 
  Bandykite dar kartą po %3$d sek."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">%1$d k. bandėte netinkamai atrakinti planšetinį kompiuterį. Po dar %2$d nesėkm. band. planšetiniame kompiuteryje bus iš naujo nustatyti numatytieji gamyklos nustatymai ir bus prarasti visi naudotojo duomenys.</string>
-    <string name="kg_failed_attempts_now_wiping">%d k. bandėte netinkamai atrakinti planšetinį kompiuterį. Planšetiniame kompiuteryje bus iš naujo nustatyti numatytieji gamyklos nustatymai.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">%1$d k. bandėte netinkamai atrakinti telefoną. Po dar %2$d nesėkm. band. telefone bus iš naujo nustatyti numatytieji gamyklos nustatymai ir bus prarasti visi naudotojo duomenys.</string>
+    <string name="kg_failed_attempts_now_wiping">%d k. bandėte netinkamai atrakinti telefoną. Telefone bus iš naujo nustatyti numatytieji gamyklos nustatymai.</string>
     <string name="kg_forgot_pattern_button_text">Pamiršau atrakinimo piešinį</string>
     <string name="kg_invalid_confirm_pin_hint">PIN kodai neatitinka</string>
     <string name="kg_invalid_puk">Pakartotinai įveskite tinkamą PUK kodą. Pakartotinai bandant SIM bus neleidžiama visam laikui.</string>
@@ -1405,11 +1411,11 @@ Bandykite dar kartą po %2$d sek."</string>
     <string name="lockscreen_carrier_default">Nėra paslaugos</string>
     <string name="lockscreen_carrier_noservice">(Paslauga neveikia).</string>
     <string name="lockscreen_emergency_call">Skambutis pagalbos numeriu</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">%1$d kart. bandėte netinkamai atrakinti planšetinį kompiuterį. Po dar %2$d nesėkm. band. planšetiniame kompiuteryje bus iš naujo nustatyti numatytieji gamyklos nustatymai ir bus prarasti visi naudotojo duomenys.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Neteisingai nurodėte savo atrakinimo modelį %1$d k. Po dar %2$d nesėkm. band. būsite paprašyti atrakinti planšetinį kompiuterį naudodami „Google“ prisijungimo duomenis.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">%1$d kart. bandėte netinkamai atrakinti telefoną. Po dar %2$d nesėkm. band. telefone bus iš naujo nustatyti numatytieji gamyklos nustatymai ir bus prarasti visi naudotojo duomenys.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Neteisingai nurodėte savo atrakinimo modelį %1$d k. Po dar %2$d nesėkm. band. būsite paprašyti atrakinti telefoną naudodami „Google“ prisijungimo duomenis.
 
  Bandykite dar kartą po %3$d sek."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">%d kart. bandėte netinkamai atrakinti planšetinį kompiuterį. Planšetinis kompiuteris bus iš naujo nustatytas į numatytuosius gamyklos nustatymus.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">%d kart. bandėte netinkamai atrakinti telefoną. Telefonas bus iš naujo nustatytas į numatytuosius gamyklos nustatymus.</string>
     <string name="lockscreen_forgot_pattern_button_text">Pamiršote modelį?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Pamiršote naudotojo vardą ar slaptažodį?
 Apsilankykite šiuo adresu: "<b>google.com/accounts/recovery?hl=lt</b></string>
@@ -1425,7 +1431,7 @@ Apsilankykite šiuo adresu: "<b>google.com/accounts/recovery?hl=lt</b></string>
     <string name="lockscreen_instructions_when_pattern_enabled">Paspauskite „Meniu“, kad atrakintumėte ar skambintumėte pagalbos numeriu.</string>
     <string name="lockscreen_missing_sim_instructions">Įdėkite SIM kortelę.</string>
     <string name="lockscreen_missing_sim_instructions_long">Trūksta SIM kortelės arba ji neskaitoma. Įdėkite SIM kortelę.</string>
-    <string name="lockscreen_missing_sim_message">Planšetiniame kompiuteryje nėra SIM kortelės.</string>
+    <string name="lockscreen_missing_sim_message">Telefone nėra SIM kortelės.</string>
     <string name="lockscreen_missing_sim_message_short">Nėra SIM kortelės</string>
     <string name="lockscreen_network_locked_message">Tinklas užrakintas</string>
     <string name="lockscreen_password_wrong">Bandykite dar kartą</string>
@@ -1465,7 +1471,7 @@ Bandykite dar kartą po %2$d sek."</string>
     <string name="low_internal_storage_view_text">Kai kurios sistemos funkcijos gali neveikti</string>
     <string name="low_internal_storage_view_text_no_boot">Sistemos saugykloje nepakanka vietos. Įsitikinkite, kad yra 250 MB laisvos vietos, ir paleiskite iš naujo.</string>
     <string name="low_internal_storage_view_title">Mažėja laisvos saugyklos vietos</string>
-    <string name="low_memory">Planšetinio kompiuterio atmintis pilna. Kad atlaisvintumėte vietos, ištrinkite kelis failus.</string>
+    <string name="low_memory">Telefono atmintis pilna. Ištrinkite kai kuriuos failus, kad atlaisvintumėte vietos.</string>
     <string name="ltb_kill_content_v2_phone">%s buvo uždaryta, nes dėl jos telefonas kaista. Ją galėsite atidaryti vėliau, kai telefonas atvės.</string>
     <string name="ltb_kill_content_v2_tablet">%s buvo uždaryta, nes dėl jos planšetinis kompiuteris kaista. Ją galėsite atidaryti vėliau, kai planšetinis kompiuteris atvės.</string>
     <string name="ltb_warning_button">Neuždaryti</string>
@@ -1485,16 +1491,16 @@ Bandykite dar kartą po %2$d sek."</string>
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Priežiūros režimui išjungti turėsite atrakinti savo planšetinį kompiuterį.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Veikiant priežiūros režimu niekas nebus išsaugoma, pvz., atsisiųsti duomenys, įdiegtos programos ar nustatymų pakeitimai.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Nust. ekrano užraktą</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Paleisti iš naujo nekuriant žurnalo</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Kurti žurnalą ir paleisti iš naujo</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Telefoną reikia paleisti iš naujo, kad būtų įjungtas priežiūros režimas.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Pirma nustatykite ekrano užraktą.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Planšetinį kompiuterį reikia paleisti iš naujo, kad būtų įjungtas priežiūros režimas.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Kad mūsų techninės pagalbos darbuotojams būtų lengviau išanalizuoti bet kokias telefono problemas, prieš įjungiant priežiūros režimą rekomenduojame sukurti sistemos žurnalą.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Kad mūsų techninės pagalbos darbuotojams būtų lengviau nustatyti ir išanalizuoti bet kokias telefono problemas, prieš įjungiant priežiūros režimą rekomenduojame sukurti sistemos žurnalą.
 
-Žurnale rodoma, kokios programos buvo naudojamos ir kokios klaidos galėjo atsirasti paskutiniu metu, tačiau jame nėra jokios kitos asmeninės informacijos. Sistemos žurnalas bus naudojamas tik siekiant išanalizuoti problemas, neturint jokių kitų tikslų. Paprastai žurnalo kūrimas trunka apie 2 minutes."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Kad mūsų techninės pagalbos darbuotojams būtų lengviau išanalizuoti bet kokias planšetinio kompiuterio problemas, prieš įjungiant priežiūros režimą rekomenduojame sukurti sistemos žurnalą.
+Žurnale pateikiama tik esminė telefono taisymui reikalinga informacija, pvz., kokios programos buvo naudojamos, neseniai įvykusios klaidos, užblokuoti telefono numeriai ir failų saugyklos talpa. Sistemos žurnalas bus naudojamas tik siekiant nustatyti ir išanalizuoti problemas, neturint jokių kitų tikslų. Paprastai žurnalo kūrimas trunka apie 2 minutes."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Kad mūsų techninės pagalbos darbuotojams būtų lengviau nustatyti ir išanalizuoti bet kokias planšetinio kompiuterio problemas, prieš įjungiant priežiūros režimą rekomenduojame sukurti sistemos žurnalą.
 
-Žurnale rodoma, kokios programos buvo naudojamos ir kokios klaidos galėjo atsirasti paskutiniu metu, tačiau jame nėra jokios kitos asmeninės informacijos. Sistemos žurnalas bus naudojamas tik siekiant išanalizuoti problemas, neturint jokių kitų tikslų. Paprastai žurnalo kūrimas trunka apie 2 minutes."</string>
+Žurnale pateikiama tik esminė planšetinio kompiuterio taisymui reikalinga informacija, pvz., kokios programos buvo naudojamos, neseniai įvykusios klaidos, užblokuoti telefono numeriai ir failų saugyklos talpa. Sistemos žurnalas bus naudojamas tik siekiant nustatyti ir išanalizuoti problemas, neturint jokių kitų tikslų. Paprastai žurnalo kūrimas trunka apie 2 minutes."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Analizuoti saugyklą</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Telefono vidinė atmintis beveik visiškai pilna. Jei vieta saugykloje baigsis, kai kurios programos ir funkcijos gali nebeveikti tinkamai. Pabandykite ištrinti kai kuriuos nereikalingus failus ar programas. Ištrynę nepamirškite ištuštinti šiukšlinės.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Planšetinio kompiuterio vidinė saugykla beveik visiškai pilna. Jei vieta saugykloje baigsis, kai kurios programos ir funkcijos gali nebeveikti tinkamai. Pabandykite ištrinti kai kuriuos nereikalingus failus ar programas. Ištrynę nepamirškite ištuštinti šiukšlinės.</string>
@@ -1516,10 +1522,17 @@ Bandykite dar kartą po %2$d sek."</string>
     <string name="maintenance_mode_outro_label">Išeiti iš priežiūros režimo</string>
     <string name="maintenance_mode_outro_textview_message_phone">Priežiūros režimui išjungti turėsite atrakinti savo telefoną. Tą padarius viskas sugrįš į ankstesnę būseną, kaip buvo prieš įjungiant priežiūros režimą. Pakeitimai, atlikti kai yra įjungtas Priežiūros režimas, pvz., atsisiųsti duomenys, įdiegtos programos ar nustatymų pakeitimai, nebus išsaugoti.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Priežiūros režimui išjungti turėsite atrakinti savo planšetinį kompiuterį. Tą padarius viskas sugrįš į ankstesnę būseną, kaip buvo prieš įjungiant priežiūros režimą. Pakeitimai, atlikti kai yra įjungtas Priežiūros režimas, pvz., atsisiųsti duomenys, įdiegtos programos ar nustatymų pakeitimai, nebus išsaugoti.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Priežiūros režimas negali būti naudojamas, kai %s yra aktyvus.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Priežiūros režimo negalima naudoti veikiant energijos taupymui su apribotomis programomis ir pradžios ekranu.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Priežiūros režimas šiame telefone nepalaikomas.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Priežiūros režimas šiame planšetiniame kompiuteryje nepalaikomas.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s gali naudoti tik įrenginio savininkas.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Stabdyti duomenų atsarginių kopijų kūrimą ir įjungti priežiūros režimą?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Kad būtų galima įjungti priežiūros režimą, turite užbaigti arba ištrinti neužbaigtą atsarginę kopiją.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Kad būtų galima įjungti priežiūros režimą, turite sustabdyti vykdomą atsarginį kopijavimą.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Kad būtų galima įjungti priežiūros režimą, turite sustabdyti atsarginės kopijos duomenų atkūrimą.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Įrenginio administratoriaus programa</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">„Samsung DeX“</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Kuriamas žurnalas…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Paprastai tai trunka apie 2 minutes. Sukūrus žurnalą, telefonas bus iš naujo paleistas priežiūros režimu ir galėsite saugiai perduoti telefoną priežiūrai.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Paprastai tai trunka apie 2 minutes. Sukūrus žurnalą, planšetinis kompiuteris bus iš naujo paleistas priežiūros režimu ir galėsite saugiai perduoti planšetinį kompiuterį priežiūrai.</string>
@@ -1669,6 +1682,7 @@ Jūsų planšetinis kompiuteris netrukus bus paleistas iš naujo."</string>
     <string name="menu_shift_shortcut_label">„Shift“ +</string>
     <string name="menu_space_shortcut_label">tarpas</string>
     <string name="menu_sym_shortcut_label">„Sym“ +</string>
+    <string name="message_on_crash">Užblokavo „Auto Blocker“</string>
     <string name="mic_access_off_toast">Mikrofonas užblokuotas</string>
     <string name="mic_access_on_toast">Mikrofonas pasiekiamas</string>
     <string name="microphone_restrict">Saugos politika neleidžia naudoti mikrofono.</string>
@@ -1691,15 +1705,17 @@ Jūsų planšetinis kompiuteris netrukus bus paleistas iš naujo."</string>
     <string name="mime_type_spreadsheet_ext">%1$s skaičiuoklė</string>
     <string name="mime_type_video">Vaizdo įrašas</string>
     <string name="mime_type_video_ext">%1$s vaizdo įrašas</string>
-    <string name="miniresolver_call">Skambutis</string>
+    <string name="miniresolver_call">Skambinti</string>
     <string name="miniresolver_call_in_work">Skambinti iš darbo programos?</string>
-    <string name="miniresolver_call_information">Jūsų organizacijoje iš darbo programų leidžiama tik skambinti.</string>
+    <string name="miniresolver_call_information">Jūsų organizacija leidžia skambinti tik iš darbo programų</string>
     <string name="miniresolver_open_in_personal">Atidaryti asmeninėje programoje „%s“?</string>
     <string name="miniresolver_open_in_work">Atidaryti darbo programoje „%s“?</string>
     <string name="miniresolver_open_work">Atidaryti darbo programą „%s“?</string>
-    <string name="miniresolver_sms_information">Jūsų organizacijoje iš darbo programų leidžiama tik siųsti žinutes.</string>
-    <string name="miniresolver_switch">Įjungti</string>
-    <string name="miniresolver_switch_to_work">Įjungti darbo programą?</string>
+    <string name="miniresolver_private_space_messages_information">Galite siųsti SMS pranešimus tik iš asmeninės programos „Messages“.</string>
+    <string name="miniresolver_private_space_phone_information">Galite skambinti telefonu tik iš asmeninės Telefono programos. Naudojant asmeninę Telefono programą atlikti skambučiai bus pridėti prie jūsų asmeninės skambučių istorijos.</string>
+    <string name="miniresolver_sms_information">Jūsų organizacija leidžia siųsti pranešimus tik iš darbo programų</string>
+    <string name="miniresolver_switch">Perjungti</string>
+    <string name="miniresolver_switch_to_work">Perjungti į darbo programą?</string>
     <string name="miniresolver_use_personal_browser">Naudoti asmeninę naršyklę</string>
     <string name="miniresolver_use_work_browser">Naudoti darbo naršyklę</string>
     <string name="minute">min.</string>
@@ -1733,30 +1749,6 @@ Jūsų planšetinis kompiuteris netrukus bus paleistas iš naujo."</string>
     <string name="month_day_year" formatted="false">%Y m. %B %-e d.</string>
     <string name="more_apps">Daugiau programų</string>
     <string name="more_item_label">Daugiau</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s paslauga nepalaikoma. Kreipkitės į klientų aptarnavimo centrą.</string>
-    <string name="mptcp_message_address_type_not_supported">%s ryšys prastas. Jungiama iš naujo per pasiekiamą tinklą…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s ryšys prastas. Jungiama iš naujo per pasiekiamą tinklą…</string>
-    <string name="mptcp_message_cmd_not_supported">%s tinklas laikinai nepasiekiamas. Jungiama iš naujo per pasiekiamą tinklą…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s ryšys prastas. Jungiama iš naujo per pasiekiamą tinklą…</string>
-    <string name="mptcp_message_connection_refused">%s ryšys prastas. Jungiama iš naujo per pasiekiamą tinklą…</string>
-    <string name="mptcp_message_data_usage_limit">Pasiekta duomenų naudojimo riba. Jei norite keisti duomenų naudojimo apribojimą, eikite į nustatymus.</string>
-    <string name="mptcp_message_host_unreachable">%s ryšys prastas. Jungiama iš naujo per pasiekiamą tinklą…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Negalima įjungti %s. Įrenginys neprijungtas prie LTE tinklo.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Negalima įjungti %s, kol veikia tarptautinis tarptinklinis ryšys.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Neįmanoma įjungti %s, kol įjungta mobilioji saitvietė arba USB siejimas.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Kai įjungta „Wi-Fi Direct“, negalima įjungti %s.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Veikiant skrydžio režimui negalima įjungti %s.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Neįmanoma įjungti %s, kol išjungti mobilieji duomenys.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Nėra atsakymo iš paslaugų teikėjo.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Neįmanoma įjungti %1$s. %2$s neveikia su jūsų interneto duomenų paketu arba negaunamas atsakymas iš %3$s serverio.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Nepavyko išsiųsti %s aktyvinimo užklausos. Jungiamasi iš naujo per pasiekiamus tinklus…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Negalima įjungti %s. Įdėta netinkama SIM.</string>
-    <string name="mptcp_message_network_unreachable">%s ryšys prastas. Jungiama iš naujo per pasiekiamą tinklą…</string>
-    <string name="mptcp_message_non_mptcp_plan">Neįmanoma įjungti „Giga Multi-Path“. Funkcijos nepalaiko duomenų planas.</string>
-    <string name="mptcp_message_operation_disabled_overheating">Siekiant apsaugoti įrenginį nuo perkaitimo %s išjungta. Vietoje to atsisiunčiama per mobilųjį tinklą…</string>
-    <string name="mptcp_message_server_error">%s ryšys prastas. Jungiama iš naujo per pasiekiamą tinklą…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Negalima įjungti %s. Įrenginys kaista. Palaukite, kol įrenginys atvės, ir bandykite dar kartą.</string>
-    <string name="mptcp_message_ttl_expired">%s tinklas laikinai nepasiekiamas. Jungiama iš naujo per pasiekiamą tinklą…</string>
     <string name="mte_override_notification_message">Gali paveikti našumą ir stabilumą. Norėdami išjungti paleiskite iš naujo. Jei įgalinta naudojant „arm64.memtag.bootctl“, prieš tai nustatykite kaip „none“.</string>
     <string name="mte_override_notification_title">Eksperimentiniai atminties žymėjimo plėtiniai (angl. „Memory Tagging Extensions“, MTE) įgalinti</string>
     <string name="multi_user_capability_restrict">Saugos politika neleidžia keliems naudotojams naudotis jūsų įrenginiu.</string>
@@ -1777,18 +1769,18 @@ Jūsų planšetinis kompiuteris netrukus bus paleistas iš naujo."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Garsas leidžiamas per „Bluetooth“ garso įrenginį. Bakstelėkite čia ir išjunkite</string>
     <string name="multisound_sound_via_headphone">%s garsas leidžiamas per ausines. Bakstelėkite čia ir išjunkite.</string>
     <string name="multisound_sound_via_headphone_multiselection">Garsas leidžiamas per ausines. Bakstelėkite čia ir išjunkite.</string>
-    <string name="multisound_sound_via_phone_speaker">%s garsas leidžiamas per planšetinio kompiuterio garsiakalbį. Bakstelėkite čia ir išjunkite.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Garsas leidžiamas per planšetinio kompiuterio garsiakalbį. Bakstelėkite čia ir išjunkite.</string>
+    <string name="multisound_sound_via_phone_speaker">%s garsas leidžiamas per telefono garsiakalbį. Bakstelėkite čia ir išjunkite.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Garsas leidžiamas per telefono garsiakalbį. Bakstelėkite čia ir išjunkite.</string>
     <string name="multisound_sound_via_usb_audio">%s garsas leidžiamas per USB garso įrenginį. Bakstelėkite čia ir išjunkite.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Garsas leidžiamas per USB garso įrenginį. Bakstelėkite čia ir išjunkite.</string>
     <string name="multisound_title">Atskirti programos garsą</string>
     <string name="multisound_turn_off_multisound">Išjungti</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">„Samsung DeX“ negalima paleisti %s. Pabandykite paleisti naudodami planšetinio kompiuterio režimą.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">„Samsung DeX“ negalima paleisti %s. Jis skirtas planšetinio kompiuterio pradžios ekranams.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Kai kurie žaidimai veikia tik jutikliniuose ekranuose. Jei „Samsung DeX“ pelės valdikliai neveikia, pabandykite žaisti naudodami planšetinio kompiuterio režimą.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">„Samsung DeX“ negalima paleisti %s. Pabandykite paleisti naudodami telefono režimą.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">„Samsung DeX“ negalima paleisti %s. Jis skirtas telefono pradžios ekranams.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Kai kurie žaidimai veikia tik jutikliniuose ekranuose. Jei „Samsung DeX“ pelės valdikliai neveikia, pabandykite žaisti naudodami telefono režimą.</string>
     <string name="music_recognition_manager_service">Muzikos atpažinimo tvarkyklės paslauga</string>
     <string name="muted_by">„%1$s“ nutildo kai kuriuos garsus</string>
-    <string name="my_device">Šis planšetinis kompiuteris</string>
+    <string name="my_device">Šis telefonas</string>
     <string name="nas_upgrade_notification_content">Siūlomi veiksmai ir atsakymai dabar teikiami patobulintais pranešimais. „Android“ prisitaikantys pranešimai nebepalaikomi.</string>
     <string name="nas_upgrade_notification_disable_action">Išjungti</string>
     <string name="nas_upgrade_notification_enable_action">Gerai</string>
@@ -1828,7 +1820,6 @@ Patobulintų pranešimų funkcija gali pasiekti pranešimų turinį, įskaitant 
     <string name="nosim_limited_service">Ribota paslauga</string>
     <string name="not_checked">nepažymėta</string>
     <string name="not_selected">nepasirinkta</string>
-    <string name="not_support_ai_key">„AI“ raktas dar neveikia su jūsų planšetiniu kompiuteriu. Netrukus bus išleistas atnaujinimas.</string>
     <string name="notification_action_check_bg_apps">Peržiūrėkite aktyvias programas</string>
     <string name="notification_alerted_content_description">Įspėjimas išsiųstas</string>
     <string name="notification_app_name_settings">Nustatymai</string>
@@ -1847,6 +1838,7 @@ Patobulintų pranešimų funkcija gali pasiekti pranešimų turinį, įskaitant 
     <string name="notification_channel_developer_important">Svarbūs kūrėjų pranešimai</string>
     <string name="notification_channel_device_admin">IT administratoriaus įspėjimai</string>
     <string name="notification_channel_dex_policy">„Samsung DeX“ politika</string>
+    <string name="notification_channel_display">Ekranas</string>
     <string name="notification_channel_do_not_disturb">Netrukdymo režimas</string>
     <string name="notification_channel_emergency_callback">Atskambinimo pagalbos numeriu režimas</string>
     <string name="notification_channel_foreground_service">Programos, naudojančios akumuliatoriaus energiją</string>
@@ -1888,7 +1880,7 @@ Patobulintų pranešimų funkcija gali pasiekti pranešimų turinį, įskaitant 
     <string name="notification_verified_content_description">Patvirtinta</string>
     <string name="notification_work_profile_content_description">Darbo profilis</string>
     <string name="now_string_shortest">dabar</string>
-    <string name="ntfs_usb_storage_readonly_mount_message">Ši atmintinė yra tik skaitoma, nes joje naudojamas NTFS formatas.</string>
+    <string name="ntfs_usb_storage_readonly_mount_message">Ši saugykla yra tik skaitoma, nes joje naudojamas NTFS formatas.</string>
     <string name="ntfs_usb_storage_readonly_mount_title">Pridėta tik skait. USB atmint.</string>
     <string name="number_picker_decrement_button">Sumažinti</string>
     <string name="number_picker_increment_button">Padidinti</string>
@@ -1909,7 +1901,8 @@ Patobulintų pranešimų funkcija gali pasiekti pranešimų turinį, įskaitant 
     <string name="overheat_warning_title_v2_tablet">Planšetinis kompiuteris kaista</string>
     <string name="owner_name">Savininkas</string>
     <string name="package_deleted_device_owner">Ištrynė administratorius</string>
-    <string name="package_installed_device_owner">Įdiegė administratorius</string>
+    <string name="package_installed_device_owner">"Įdiegė administratorius.
+Eikite į nustatymus ir peržiūrėkite suteiktus leidimus"</string>
     <string name="package_module">Paketas</string>
     <string name="package_night_mode_dialog_got_it">Supratau</string>
     <string name="package_night_mode_dialog_message">%s veikia tamsiuoju režimu, kad būtų taupoma akumuliatoriaus energija. Šviesųjį režimą galite įjungti nustatymų laboratorijose.</string>
@@ -1932,7 +1925,9 @@ Patobulintų pranešimų funkcija gali pasiekti pranešimų turinį, įskaitant 
     <string name="permdesc_accessCoarseLocation">Ši programa gali gauti apytikslius jūsų vietovės duomenis iš Vietovės paslaugų, kai programa naudojama. Kad programa galėtų gauti vietovės duomenis, Vietovės paslaugos turi būti įjungtos įrenginyje.</string>
     <string name="permdesc_accessDrmCertificates">Programai leidžiama pasiekti ir naudoti DRM sertifikatus. Neturėtų prireikti naudojant įprastas programas.</string>
     <string name="permdesc_accessFineLocation">Ši programa gali gauti tikslius jūsų vietovės duomenis iš Vietovės paslaugų, kai programa naudojama. Kad programa galėtų gauti vietovės duomenis, Vietovės paslaugos turi būti įjungtos įrenginyje. Dėl to gali padidėti akumuliatoriaus energijos vartojimas.</string>
+    <string name="permdesc_accessHiddenProfile">Leidžia programai pasiekti paslėptus profilius.</string>
     <string name="permdesc_accessImsCallService">Programai leidžiama naudoti IMS paslaugą, kad būtų galima atlikti skambučius be jūsų įsikišimo.</string>
+    <string name="permdesc_accessLastKnownCellId">Leidžiama programai pasiekti paskutinį žinomą telefono ryšio teikėjo nurodytą mobiliojo ryšio identifikatorių.</string>
     <string name="permdesc_accessLocationExtraCommands">Programai leidžiama pasiekti papildomas vietovės nustatymo paslaugų teikėjų komandas. Dėl to programa gali trukdyti veikti GPS ar kitiems vietovės nustatymo šaltiniams.</string>
     <string name="permdesc_accessNetworkConditions">Leidžiama programai vykdyti tinklo sąlygų stebėjimą. To niekada neturėtų prireikti naudojant įprastas programas.</string>
     <string name="permdesc_accessNetworkState">Leidžiama programai peržiūrėti informaciją apie tinklo ryšius, pvz., kurie tinklai pasiekiami ir prijungti.</string>
@@ -1953,23 +1948,24 @@ Patobulintų pranešimų funkcija gali pasiekti pranešimų turinį, įskaitant 
     <string name="permdesc_bindNotificationListenerService">Leidžiama turėtojui susisaistyti su pranešimų skaitymo priemonės paslaugos aukščiausio lygio sąsaja. Įprastoms programoms to neturėtų prireikti.</string>
     <string name="permdesc_bind_connection_service">Programai leidžiama sąveikauti su telefonijos paslaugomis skambučiams atlikti / gauti.</string>
     <string name="permdesc_bind_incall_service">Programai leidžiama valdyti, kada ir kaip naudotojai matys gaunamojo skambučio ekraną.</string>
-    <string name="permdesc_bluetooth">Leidžiama programai peržiūrėti „Bluetooth“ konfigūraciją planšetiniame kompiuteryje ir užmegzti bei priimti ryšius iš susietų įrenginių.</string>
-    <string name="permdesc_bluetoothAdmin">Leidžiama programai konfigūruoti vietinį „Bluetooth“ planšetinį kompiuterį ir atrasti nuotolinius įrenginius bei su jais susieti.</string>
+    <string name="permdesc_bluetooth">Leidžiama programai peržiūrėti „Bluetooth“ konfigūraciją telefone ir užmegzti bei priimti ryšius iš susietų įrenginių.</string>
+    <string name="permdesc_bluetoothAdmin">Leidžiama programai konfigūruoti vietinį „Bluetooth“ telefoną ir atrasti bei susieti su nuotoliniais įrenginiais.</string>
     <string name="permdesc_bluetooth_advertise">Programai leidžiama reklamuoti netoliese esančiuose „Bluetooth“ įrenginiuose</string>
     <string name="permdesc_bluetooth_connect">Leidžiama programai prisijungti prie susietų „Bluetooth“ įrenginių</string>
     <string name="permdesc_bluetooth_scan">Leidžiama programai aptikti ir susieti „Bluetooth“ įrenginius netoliese</string>
     <string name="permdesc_bodySensors">Leidžiama programai pasiekti kūno jutiklių duomenis, pvz., pulso dažnį, temperatūrą ir deguonies procentinę dalį kraujyje, kai programa naudojama.</string>
     <string name="permdesc_bodySensors_background">Leidžiama programai pasiekti kūno jutiklių duomenis, pvz., pulso dažnį, temperatūrą ir deguonies procentinę dalį kraujyje, kai programa veikia fone.</string>
-    <string name="permdesc_broadcastSticky">Leidžiama programai siųsti užsifiksuojančias transliacijas, kurios išlieka pasibaigus transliacijai. Per dažnas jų naudojimas gali sulėtinti planšetinio kompiuterio veikimą ar padaryti jį nestabilų verčiant naudoti per daug atminties.</string>
+    <string name="permdesc_broadcastSticky">Leidžiama programai siųsti užsifiksuojančias transliacijas, kurios išlieka pasibaigus transliacijai. Per dažnas jų naudojimas gali sulėtinti telefono veikimą ar padaryti jį nestabilų verčiant naudoti per daug atminties.</string>
     <string name="permdesc_callCompanionApp">Programai leidžiama matyti ir valdyti vykstančius skambučius įrenginyje. Tai apima tokią informaciją kaip skambučių telefono numeriai ir skambučių būsena.</string>
     <string name="permdesc_callPhone">Leidžiama programai skambinti telefonų numeriais be jūsų įsikišimo. Gali būti taikomi nenumatyti mokesčiai ar gaunami nenumatyti skambučiai. Atminkite, kad programai neleidžiama skambinti pagalbos numeriais. Naudojant kenkėjiškas programas gali būti taikomi mokesčiai, skambinant be jūsų patvirtinimo arba renkant operatorių kodus, kuriuos taikant gaunamieji skambučiai automatiškai peradresuojami kitu numeriu.</string>
     <string name="permdesc_camera">Ši programa gali fotografuoti ir įrašyti vaizdo įrašų naudodama fotoaparatą, kol programa naudojama.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">Ši programa gali pasiekti vaizdo kamerą kaip sistemos be grafinės naudotojo sąsajos naudotojas.</string>
     <string name="permdesc_cameraOpenCloseListener">Ši programa gali sulaukti atgalinio skambinimo, kai atidaromas ar uždaromas (kurios nors programos) koks nors fotoaparatas.</string>
     <string name="permdesc_changeNetworkState">Leidžiama programai keisti tinklo jungiamumo būseną.</string>
     <string name="permdesc_changeTetherState">Leidžiama programai keisti susieto tinklo jungiamumą.</string>
-    <string name="permdesc_changeWifiMulticastState">Leidžiama programai gauti paketus, siunčiamus į visus prie „Wi-Fi“ ryšio tinklo prijungtus įrenginius (ne tik į planšetinį kompiuterį), naudojančius daugiaadresio perdavimo adresus. Ji naudoja daugiau energijos nei ne daugiaadresio perdavimo režimas.</string>
+    <string name="permdesc_changeWifiMulticastState">Leidžiama programai gauti paketus, siunčiamus į visus prie „Wi-Fi“ ryšio tinklo prijungtus įrenginius (ne tik į telefoną), naudojančius daugiaadresio perdavimo adresus. Ji naudoja daugiau energijos nei ne daugiaadresio perdavimo režimas.</string>
     <string name="permdesc_changeWifiState">Leidžiama programai prisijungti prie „Wi-Fi“ ryšio prieigos taškų ir nuo jų atsijungti bei keisti įrenginio „Wi-Fi“ ryšio tinklų konfigūraciją.</string>
-    <string name="permdesc_changeWimaxState">Leidžia programai prijungti planšetinį kompiuterį prie „WiMAX“ ryšio tinklų ir nuo jų atjungti.</string>
+    <string name="permdesc_changeWimaxState">Leidžia programai prijungti telefoną prie „WiMAX“ ryšio tinklų ir nuo jų atjungti.</string>
     <string name="permdesc_companionProfileWatch">Leidžiama papildomai programai valdyti laikrodžius.</string>
     <string name="permdesc_connection_manager">Programai leidžiama tvarkyti telekomunikacijų ryšius.</string>
     <string name="permdesc_control_incall_experience">Programai leidžiama teikti naudotojui paslaugas vykstant skambučiui.</string>
@@ -1990,6 +1986,7 @@ Patobulintų pranešimų funkcija gali pasiekti pranešimų turinį, įskaitant 
     <string name="permdesc_foregroundServiceHealth">Programai leidžiama naudoti priekinio plano paslaugas, kurių tipas „health“</string>
     <string name="permdesc_foregroundServiceLocation">Programai leidžiama naudoti priekinio plano paslaugas, kurių tipas „location“</string>
     <string name="permdesc_foregroundServiceMediaPlayback">Programai leidžiama naudoti priekinio plano paslaugas, kurių tipas „mediaPlayback“</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">Programai leidžiama naudoti priekinio plano paslaugas, kurių tipas „mediaProcessing“</string>
     <string name="permdesc_foregroundServiceMediaProjection">Programai leidžiama naudoti priekinio plano paslaugas, kurių tipas „mediaProjection“</string>
     <string name="permdesc_foregroundServiceMicrophone">Programai leidžiama naudoti priekinio plano paslaugas, kurių tipas „microphone“</string>
     <string name="permdesc_foregroundServicePhoneCall">Programai leidžiama naudoti priekinio plano paslaugas, kurių tipas „phoneCall“</string>
@@ -1997,7 +1994,7 @@ Patobulintų pranešimų funkcija gali pasiekti pranešimų turinį, įskaitant 
     <string name="permdesc_foregroundServiceSpecialUse">Programai leidžiama naudoti priekinio plano paslaugas, kurių tipas „specialUse“</string>
     <string name="permdesc_foregroundServiceSystemExempted">Programai leidžiama naudoti priekinio plano paslaugas, kurių tipas „systemExempted“</string>
     <string name="permdesc_fullScreenIntent">Leidžiama programai pateikti pranešimus kaip veiklą viso ekrano režimu užrakintame įrenginyje</string>
-    <string name="permdesc_getAccounts">Leidžiama programai gauti planšetinio kompiuterio žinomų paskyrų sąrašą. Gali būti įtrauktos visos paskyros, sukurtos įdiegtomis programomis.</string>
+    <string name="permdesc_getAccounts">Leidžiama programai gauti telefono žinomų paskyrų sąrašą. Gali būti įtrauktos visos paskyros, sukurtos įdiegtomis programomis.</string>
     <string name="permdesc_getAppList">Leidžia programai nuskaityti įdiegtų programų sąrašą.</string>
     <string name="permdesc_getPackageSize">Leidžiama programai nuskaityti kodą, duomenis ir talpykloje saugoti dydžius</string>
     <string name="permdesc_getTasks">Leidžiama programai nuskaityti informaciją apie šiuo ir pastaruoju metu vykdomas užduotis. Taip programa gali atrasti informacijos, kokios programos naudojamos įrenginyje.</string>
@@ -2095,17 +2092,18 @@ GRĄŽINKITE"</string>
     <string name="permdesc_mount_unmount_filesystems">Leidžia programai prijungti ir atjungti keičiamųjų laikmenų failų sistemas.</string>
     <string name="permdesc_nearby_wifi_devices">Leidžiama programai reklamuoti, prisijungti ir nustatyti apytikslę netoliese esančių „Wi-Fi“ įrenginių poziciją</string>
     <string name="permdesc_nfc">Leidžiama programai perduoti artimojo lauko ryšių technologijos (ALR) žymas, korteles ir skaitymo programas.</string>
+    <string name="permdesc_nfcTransactionEvent">Leidžiama programai gauti informaciją apie operacijas, vykstančias saugos elemente.</string>
     <string name="permdesc_observeCompanionDevicePresence">Leidžiama papildomai programai stebėti papildomos programos įrenginių duomenis, kai įrenginiai yra netoliese arba toli.</string>
-    <string name="permdesc_persistentActivity">Leidžiama programai savo dalis įrašyti į atmintį. Dėl to gali būti apribota kitomis programomis pasiekiama atmintis ir sulėtėti planšetinio kompiuterio veikimas.</string>
+    <string name="permdesc_persistentActivity">Leidžiama programai savo dalis įrašyti į atmintį. Dėl to gali būti apribota kitomis programomis pasiekiama atmintis ir sulėtėti telefono veikimas.</string>
     <string name="permdesc_postNotification">Programai leidžiama rodyti pranešimus</string>
     <string name="permdesc_preferredPaymentInfo">Programai leidžiama gauti pageidaujamą ARL mokamos paslaugos informaciją, pvz., užregistruotą pagalbą ir maršrutų tikslus.</string>
     <string name="permdesc_processOutgoingCalls">Leidžiama programai peržiūrėti renkamą numerį siunčiamojo skambučio metu suteikiant galimybę peradresuoti skambutį kitu numeriu arba visiškai nutraukti skambutį.</string>
     <string name="permdesc_queryAllPackages">Programai leidžiama peržiūrėti visus įdiegtus paketus.</string>
     <string name="permdesc_readBasicPhoneState">Programai leidžiama pasiekti pagrindines įrenginio telefonijos funkcijas.</string>
-    <string name="permdesc_readCalendar">Ši programa gali nuskaityti visus planšetiniame kompiuteryje saugomus kalendoriaus įvykius ir bendrinti arba išsaugoti kalendoriaus duomenis.</string>
+    <string name="permdesc_readCalendar">Ši programa gali nuskaityti visus telefone saugomus kalendoriaus įvykius ir bendrinti arba išsaugoti kalendoriaus duomenis.</string>
     <string name="permdesc_readCallLog">Ši programa gali nuskaityti skambučių istoriją.</string>
     <string name="permdesc_readCellBroadcasts">"Programai leidžiama skaityti mobiliuoju transliuojamus pranešimus, gaunamus jūsų įrenginyje. Mobiliuoju transliuojami įspėjimai pristatomi kai kuriose vietose, kad įspėtų apie kritines situacijas. Kai gaunamas  mobiliuoju transliuojamas pranešimas apie kritinę situaciją, kenkėjiškos programos gali trukdyti įrenginiui veikti ar jį naudoti."</string>
-    <string name="permdesc_readContacts">Programai leidžiama skaityti duomenis apie planšetiniame kompiuteryje saugomus kontaktus. Programos taip pat galės pasiekti planšetiniame kompiuteryje esančias paskyras, kuriose buvo sukurta kontaktų. Gali būti įtrauktos paskyros, kurias sukūrė jūsų įdiegtos programos. Šis leidimas suteikia teisę programoms saugoti kontaktinius duomenis, o kenkėjiškos programos gali bendrinti kontaktinius duomenis be jūsų žinios.</string>
+    <string name="permdesc_readContacts">Programai leidžiama skaityti duomenis apie telefone saugomus kontaktus. Programos taip pat galės pasiekti telefone esančias paskyras, kuriose buvo sukurta kontaktų. Gali būti įtrauktos paskyros, kurias sukūrė jūsų įdiegtos programos. Šis leidimas suteikia teisę programoms saugoti kontaktinius duomenis, o kenkėjiškos programos gali bendrinti kontaktinius duomenis be jūsų žinios.</string>
     <string name="permdesc_readInstallSessions">Leidžiama programai skaityti diegimo seansus. Leidžiama peržiūrėti išsamią aktyvių paketų diegimo informaciją.</string>
     <string name="permdesc_readMediaAudio">Leidžiama programai nuskaityti garso failus iš bendrinamos saugyklos.</string>
     <string name="permdesc_readMediaImages">Leidžiama programai nuskaityti vaizdo failus iš bendrinamos saugyklos.</string>
@@ -2113,11 +2111,11 @@ GRĄŽINKITE"</string>
     <string name="permdesc_readNetworkUsageHistory">Leidžiama programai skaityti konkrečių tinklų ir programų tinklo naudojimo istoriją.</string>
     <string name="permdesc_readPhoneNumbers">Programai leidžiama pasiekti įrenginio telefonų numerius.</string>
     <string name="permdesc_readPhoneState">Leidžiama programai pasiekti telefono funkcijas įrenginyje. Šis leidimas suteikia teisę programai nustatyti telefono numerį ir įrenginio ID, tai, ar skambutis aktyvus, ir skambučiu prijungtą nuotolinį numerį.</string>
-    <string name="permdesc_readSms">Ši programa gali nuskaityti visus planšetiniame kompiuteryje saugomus SMS (teksto) pranešimus.</string>
+    <string name="permdesc_readSms">Ši programa gali nuskaityti visus telefone saugomus SMS (teksto) pranešimus.</string>
     <string name="permdesc_readSyncSettings">Leidžiama programai skaityti ir sinchronizuoti paskyros nustatymus. Pvz., taip gali būti nustatoma, ar su paskyra sinchronizuota Žmonių programa.</string>
     <string name="permdesc_readSyncStats">Leidžiama programai skaityti sinchronizuotą paskyros statistiką, įskaitant sinchronizuotų įvykių istoriją ir informaciją, kiek duomenų sinchronizuota.</string>
     <string name="permdesc_readVisualUserSelect">Leidžiama programai nuskaityti jūsų pasirinktus vaizdo ir vaizdo įrašo failus iš bendrinamos saugyklos.</string>
-    <string name="permdesc_receiveBootCompleted">Leidžiama programai pasileisti, kai baigsis sistemos įkėlimas iš naujo. Dėl to planšetinio kompiuterio paleidimas gali trukti ilgiau ir programa gali sulėtinti planšetinį kompiuterį, nes ji veiks visada.</string>
+    <string name="permdesc_receiveBootCompleted">Leidžiama programai pasileisti, kai baigsis sistemos įkėlimas iš naujo. Dėl to telefono paleidimas gali trukti ilgiau ir programa gali sulėtinti telefoną, nes ji veiks visada.</string>
     <string name="permdesc_receiveMms">Leidžiama programai gauti ir apdoroti MMS pranešimus. Tai reiškia, kad programa gali stebėti ir ištrinti į jūsų įrenginį siunčiamus pranešimus jums jų neparodžiusi.</string>
     <string name="permdesc_receiveSms">Leidžiama programai gauti ir apdoroti SMS pranešimus. Tai reiškia, kad programa gali stebėti ir ištrinti į jūsų įrenginį siunčiamus pranešimus jums jų neparodžiusi.</string>
     <string name="permdesc_receiveWapPush">Leidžiama programai gauti ir apdoroti WAP pranešimus. Šis leidimas apima galimybę stebėti ar ištrinti jums siunčiamus pranešimus jums jų neparodžius.</string>
@@ -2139,7 +2137,7 @@ GRĄŽINKITE"</string>
     <string name="permdesc_sendSms">Leidžiama programai siųsti SMS pranešimus. Dėl to gali atsirasti nenumatytų apmokestinimų. Kenkėjiškos programos gali siųsti mokamus pranešimus be jūsų patvirtinimo.</string>
     <string name="permdesc_setAlarm">Leidžiama programai nustatyti signalą įdiegtoje žadintuvo programoje. Kai kuriose žadintuvo programose ši funkcija gali nebūti nevykdoma.</string>
     <string name="permdesc_setInputCalibration">Leidžiama programai keisti jutiklinio ekrano kalibravimo parametrus. Neturėtų prireikti naudojant įprastas programas.</string>
-    <string name="permdesc_setTimeZone">Leidžiama programai keisti planšetinio kompiuterio laiko juostą.</string>
+    <string name="permdesc_setTimeZone">Leidžiama programai keisti telefono laiko juostą.</string>
     <string name="permdesc_setWallpaper">Leidžiama programai nustatyti sistemos darbalaukio foną.</string>
     <string name="permdesc_setWallpaperHints">Leidžiama programai nustatyti sistemos darbalaukio fono dydžio užuominas.</string>
     <string name="permdesc_sim_communication">Programai leidžiama siųsti komandas į SIM kortelę. Tai labai pavojinga.</string>
@@ -2153,7 +2151,7 @@ GRĄŽINKITE"</string>
     <string name="permdesc_subscribedFeedsRead">Leidžiama programai gauti išsamios informacijos apie šiuo metu sinchronizuojamus sklaidos kanalus.</string>
     <string name="permdesc_systemAlertWindow">Ši programa gali būti rodoma virš kitų programų arba kitų ekrano sričių. Tai gali trukdyti įprastai naudoti programas ir pakeisti kitų programų rodymo būdą.</string>
     <string name="permdesc_systemCamera">Ši privilegijuota arba sistemos programa gali daryti nuotraukas ir įrašyti vaizdo įrašus naudodama sistemos fotoaparatą bet kuriuo metu. Programai taip pat būtinas leidimas „android.permission.CAMERA“</string>
-    <string name="permdesc_transmitIr">Programai leidžiama naudoti planšetinio kompiuterio infraraudonųjų spindulių perdavimo įrenginį.</string>
+    <string name="permdesc_transmitIr">Programai leidžiama naudoti telefono infraraudonųjų spindulių perdavimo įrenginį.</string>
     <string name="permdesc_turnScreenOn">Programai leidžiama įjungti ekraną.</string>
     <string name="permdesc_ucsPlugin">Dirbkite su trečiųjų šalių kredencialų saugyklos papildiniais.</string>
     <string name="permdesc_uninstall_shortcut">Programai leidžiama pašalinti sparčiuosius klavišus iš pagrindinio ekrano be naudotojo įsikišimo.</string>
@@ -2167,12 +2165,13 @@ GRĄŽINKITE"</string>
     <string name="permdesc_vibrate">Leidžiama programai valdyti vibravimą.</string>
     <string name="permdesc_vibrator_state">Programai leidžiama pasiekti vibratoriaus būseną.</string>
     <string name="permdesc_videoWrite">Programai leidžiama keisti vaizdo įrašų kolekciją.</string>
-    <string name="permdesc_wakeLock">Leidžiama programai neleisti planšetiniam kompiuteriui užmigti.</string>
-    <string name="permdesc_writeCalendar">Ši programa gali pridėti, pašalinti arba pakeisti planšetiniame kompiuteryje esančius kalendoriaus įvykius. Ši programa gali siųsti pranešimus, kurie gali atrodyti atsiųsti kalendoriaus savininkų, arba pakeisti įvykius nepranešusi jų savininkams.</string>
-    <string name="permdesc_writeCallLog">Programai leidžiama skaityti planšetinio kompiuterio skambučių žurnalą, įskaitant duomenis apie gaunamuosius ir siunčiamuosius skambučius. Kenkėjiškos programos tai gali naudoti, kad ištrintų ar keistų jūsų skambučių žurnalą.</string>
-    <string name="permdesc_writeContacts">Programai leidžiama keisti duomenis apie planšetiniame kompiuteryje saugomus kontaktus. Su šiuo leidimu programos gali ištrinti kontaktinius duomenis.</string>
+    <string name="permdesc_wakeLock">Leidžiama programai neleisti telefonui užmigti.</string>
+    <string name="permdesc_writeCalendar">Ši programa gali pridėti, pašalinti arba pakeisti telefone esančius kalendoriaus įvykius. Ši programa gali siųsti pranešimus, kurie atrodys atsiųsti kalendoriaus savininkų, arba pakeisti įvykius nepranešusi jų savininkams.</string>
+    <string name="permdesc_writeCallLog">Programai leidžiama skaityti telefono skambučių žurnalą, įskaitant duomenis apie gaunamuosius ir siunčiamuosius skambučius. Kenkėjiškos programos tai gali naudoti, kad ištrintų ar keistų jūsų skambučių žurnalą.</string>
+    <string name="permdesc_writeContacts">Programai leidžiama keisti duomenis apie telefone saugomus kontaktus. Su šiuo leidimu programos gali ištrinti kontaktinius duomenis.</string>
     <string name="permdesc_writeSettings">Leidžiama programai keisti sistemos nustatymų duomenis. Kenkėjiškos programos gali sugadinti jūsų sistemos konfigūraciją.</string>
     <string name="permdesc_writeSyncSettings">Leidžiama programai keisti sinchronizuotus paskyros nustatymus. Pvz., tai gali būti naudojama norint įgalinti Žmonių programos sinchronizavimą su paskyra.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">Leidžia programai atnaujinti kitoms programoms priklausančių tiesioginės šifruotės kontaktų raktų patvirtinimo būsenas</string>
     <string name="permgroupdesc_activityRecognition">galimybė pasiekti fizinę veiklą</string>
     <string name="permgroupdesc_calendar">pasiekti kalendorių</string>
     <string name="permgroupdesc_calllog">skaityti ir rašyti telefono skambučių žurnalą</string>
@@ -2214,7 +2213,9 @@ dėl %s paskyros"</string>
     <string name="permlab_accessCoarseLocation">pasiekti apytikslę vietovę, tik kai programa veikia priekiniame plane</string>
     <string name="permlab_accessDrmCertificates">gali pasiekti DRM sertifikatus</string>
     <string name="permlab_accessFineLocation">pasiekti tikslią vietovę, tik kai programa veikia priekiniame plane</string>
+    <string name="permlab_accessHiddenProfile">Pasiekti paslėptus profilius</string>
     <string name="permlab_accessImsCallService">pasiekti IMS skambučių paslaugą</string>
+    <string name="permlab_accessLastKnownCellId">Pasiekite paskutinį žinomą mobiliojo ryšio identifikatorių.</string>
     <string name="permlab_accessLocationExtraCommands">pasiekti papildomas vietos teikimo įrankio komandas</string>
     <string name="permlab_accessNetworkConditions">vykdyti tinklo sąlygų stebėjimą</string>
     <string name="permlab_accessNetworkState">žiūrėti tinklo ryšius</string>
@@ -2246,6 +2247,7 @@ dėl %s paskyros"</string>
     <string name="permlab_callCompanionApp">matyti ir valdyti skambučius per sistemą.</string>
     <string name="permlab_callPhone">skambinti tiesiogiai telefono numeriais</string>
     <string name="permlab_camera">fotografuoti ir filmuoti</string>
+    <string name="permlab_cameraHeadlessSystemUser">Leisti programai ar paslaugai pasiekti vaizdo kamerą kaip sistemos be grafinės naudotojo sąsajos naudotojui.</string>
     <string name="permlab_cameraOpenCloseListener">Leisti programai ar paslaugai sulaukti atgalinio skambinimo, kai atidaromas ar uždaromas fotoaparatas.</string>
     <string name="permlab_changeNetworkState">keisti tinklo jungiamumą</string>
     <string name="permlab_changeTetherState">keisti susietą jungiamumą</string>
@@ -2273,6 +2275,7 @@ dėl %s paskyros"</string>
     <string name="permlab_foregroundServiceHealth">paleisti priekinio plano paslaugą, kurios tipas „health“</string>
     <string name="permlab_foregroundServiceLocation">paleisti priekinio plano paslaugą, kurios tipas „location“</string>
     <string name="permlab_foregroundServiceMediaPlayback">paleisti priekinio plano paslaugą, kurios tipas „mediaPlayback“</string>
+    <string name="permlab_foregroundServiceMediaProcessing">vykdyti priekinio plano paslaugą, kurios tipas „mediaProcessing“</string>
     <string name="permlab_foregroundServiceMediaProjection">paleisti priekinio plano paslaugą, kurios tipas „mediaProjection“</string>
     <string name="permlab_foregroundServiceMicrophone">paleisti priekinio plano paslaugą, kurios tipas „microphone“</string>
     <string name="permlab_foregroundServicePhoneCall">paleisti priekinio plano paslaugą, kurios tipas „phoneCall“</string>
@@ -2373,6 +2376,7 @@ dėl %s paskyros"</string>
     <string name="permlab_mount_unmount_filesystems">pasiekti SD kortelės failų sistemą</string>
     <string name="permlab_nearby_wifi_devices">sąveikauti su „Wi‑Fi“ įrenginiais netoliese</string>
     <string name="permlab_nfc">valdyti artimo lauko perdavimą (angl. „Near Field Communication“)</string>
+    <string name="permlab_nfcTransactionEvent">Saugos elemento operacijos įvykis</string>
     <string name="permlab_observeCompanionDevicePresence">Papildomos programos įrenginių duomenų stebėjimas</string>
     <string name="permlab_persistentActivity">nustatyti, kad programa būtų visada vykdoma</string>
     <string name="permlab_postNotification">rodyti pranešimus</string>
@@ -2445,12 +2449,13 @@ dėl %s paskyros"</string>
     <string name="permlab_uwb_ranging">nustatyti apyt. netoliese es. itin plataus dažnio juostos įreng. poziciją</string>
     <string name="permlab_vibrate">valdyti vibraciją</string>
     <string name="permlab_videoWrite">keisti vaizdo įrašų kolekciją</string>
-    <string name="permlab_wakeLock">neleisti planšetiniam kompiuteriui užmigti</string>
+    <string name="permlab_wakeLock">neleisti telefonui snausti</string>
     <string name="permlab_writeCalendar">prideda arba keičia kalendoriaus įvykius ir siunčia el. laiškus svečiams be savininko žinios</string>
     <string name="permlab_writeCallLog">rašyti skambučių žurnalą</string>
     <string name="permlab_writeContacts">keisti kontaktus</string>
     <string name="permlab_writeSettings">keisti sistemos nustatymus</string>
     <string name="permlab_writeSyncSettings">įjungti arba išjungti sinchronizavimą</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">atnaujinti kitoms programoms priklausančių tiesioginės šifruotės kontaktų raktų patvirtinimo būsenas</string>
     <string name="perms_description_app">Pateikė „%1$s“.</string>
     <string name="perms_new_perm_prefix">&lt;font fgcolor=#ff33b5e5 size=12>NAUJAS: &lt;/font></string>
     <string name="personal_apps_suspended_turn_profile_on">Įjungti</string>
@@ -2487,7 +2492,7 @@ dėl %s paskyros"</string>
     <string name="policydesc_allow_desktopsync">Neleisti naudoti darbalaukio sinchronizavimo.</string>
     <string name="policydesc_allow_internetsharing">Neleisti naudoti mobiliosios saitvietės.</string>
     <string name="policydesc_allow_irda">Neleisti naudoti „IrDA“.</string>
-    <string name="policydesc_allow_popimapemail">Neleisti naudoti POP ir IMAP el. pašto planšetiniame kompiuteryje.</string>
+    <string name="policydesc_allow_popimapemail">Neleisti naudoti POP ir IMAP el. pašto telefone.</string>
     <string name="policydesc_allow_storagecard">Neleisti naudoti SD kortelių.</string>
     <string name="policydesc_allow_textmessaging">Neleisti naudoti teksto ir daugialypės terpės žinučių.</string>
     <string name="policydesc_allow_thirdParty">Ši programa gali neleisti paleisti trečiųjų šalių programų.</string>
@@ -2505,10 +2510,10 @@ dėl %s paskyros"</string>
     <string name="policydesc_setGlobalProxy">Nustatykite įrenginio visuotinį tarpinį serverį, kuris bus naudojamas, kai politika įgalinta. Tik įrenginio savininkas gali nustatyti visuotinį tarpinį serverį.</string>
     <string name="policydesc_unsigned_app">Ši programa gali neleisti paleisti programų iš nežinomų šaltinių.</string>
     <string name="policydesc_unsigned_pkg">Ši programa gali neleisti diegti programų iš nežinomų šaltinių.</string>
-    <string name="policydesc_watchLogin">Stebimas neteisingai įvestų slaptažodžių skaičius atrakinant ekraną ir užrakinti planšetinį kompiuterį arba ištrinti visus jame esančius duomenis, jei įvedama per daug neteisingų slaptažodžių.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Stebėkite atrakinant ekraną įvestų netinkamų slaptažodžių skaičių ir užrakinkite planšetinį kompiuterį arba ištrinkite visus šio naudotojo duomenis, jei per daug kartų įvedamas netinkamas slaptažodis.</string>
-    <string name="policydesc_wipeData">Be įspėjimo ištrinti planšetinio kompiuterio duomenis atkuriant gamyklinius duomenis.</string>
-    <string name="policydesc_wipeData_secondaryUser">Ištrinkite šio naudotojo duomenis šiame planšetiniame kompiuteryje be įspėjimo.</string>
+    <string name="policydesc_watchLogin">Atrakindami ekraną stebėkite neteisingai įvestų slaptažodžių skaičių ir užrakinkite telefoną ar ištrinkite visus telefono duomenis, jei įvedama per daug neteisingų slaptažodžių.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Stebėkite atrakinant ekraną įvestų netinkamų slaptažodžių skaičių ir užrakinkite telefoną arba ištrinkite visus šio naudotojo duomenis, jei per daug kartų įvedamas netinkamas slaptažodis.</string>
+    <string name="policydesc_wipeData">Be įspėjimo ištrinti telefono duomenis atkuriant gamyklinius duomenis.</string>
+    <string name="policydesc_wipeData_secondaryUser">Ištrinkite šio naudotojo duomenis šiame telefone be įspėjimo.</string>
     <string name="policylab_allow_bluetoothmode">Išjungti „Bluetooth“</string>
     <string name="policylab_allow_browser">Išjungti internetą</string>
     <string name="policylab_allow_camera">Išjungti fotokameras</string>
@@ -2542,7 +2547,7 @@ dėl %s paskyros"</string>
     <string name="postalTypeHome">Pagrindinis</string>
     <string name="postalTypeOther">Kita</string>
     <string name="postalTypeWork">Darbo</string>
-    <string name="power_dialog">Planšetinio kompiuterio parinktys</string>
+    <string name="power_dialog">Telefono parinktys</string>
     <string name="power_off">Išjungiamas maitinimas</string>
     <string name="prepend_shortcut_label">Meniu+</string>
     <string name="preposition_for_date">%s</string>
@@ -2554,6 +2559,8 @@ dėl %s paskyros"</string>
     <string name="print_service_installed_title">Paslauga „%s“ įdiegta</string>
     <string name="printing_disabled_by">Neleidžiama spausdinti (%s).</string>
     <string name="private_dns_broken_detailed">Privataus DNS serverio negalima pasiekti</string>
+    <string name="private_profile_label_badge">Privat. „%1$s“</string>
+    <string name="private_space_set_up_screen_lock_message">Jei norite naudoti privačią erdvę, nustatykite ekrano užraktą šiame įrenginyje</string>
     <string name="profile_encrypted_detail">Darbo profilis užrakintas</string>
     <string name="profile_encrypted_detail_workspace_premium">%s užrakinta</string>
     <string name="profile_encrypted_detail_workspace_prime">Darbo profilis užrakintas</string>
@@ -2563,6 +2570,13 @@ dėl %s paskyros"</string>
     <string name="profile_encrypted_message_workspace_prime">Atrakinkite savo darbo profilį ir gaukite pranešimus apie darbo programas.</string>
     <string name="profile_encrypted_title">Kai kurios funkcijos ribojamos</string>
     <string name="profile_encrypted_title_secure_folder">Saugusis aplankas užrakintas.</string>
+    <string name="profile_label_clone">Identiška kopija</string>
+    <string name="profile_label_communal">Bendruomenės</string>
+    <string name="profile_label_private">Privatu</string>
+    <string name="profile_label_test">Bandymas</string>
+    <string name="profile_label_work">Darbas</string>
+    <string name="profile_label_work_2">Darbas (2)</string>
+    <string name="profile_label_work_3">Darbas (3)</string>
     <string name="profile_restarting_message_premium">Kai %1$s užrakintas, negausite jokių pranešimų iš darbo programų. Bakstelėkite čia ir atrakinkite %2$s.</string>
     <string name="profile_restarting_message_prime">Kai jūsų darbo profilis užrakintas, negausite jokių pranešimų iš darbo programų. Bakstelėkite čia ir atrakinkite savo darbo profilį.</string>
     <string name="profile_restarting_title_premium">%s užrakinta</string>
@@ -2588,9 +2602,11 @@ dėl %s paskyros"</string>
     <string name="recent_tasks_title">Naujos</string>
     <string name="recording_fail">Mikrofono negalima naudoti %1$s, kai jis naudojamas %2$s.</string>
     <string name="recording_popup">%s naudoja mikrofoną.</string>
-    <string name="recording_popup_device">Planšetinis kompiuteris</string>
+    <string name="recording_popup_device">Telefonas</string>
     <string name="recording_popup_with_bluetooth">%s naudoja „Bluetooth“ mikrofoną.</string>
     <string name="recording_popup_with_device">%1$s naudoja %2$s mikrofoną.</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">Neskelbtinos informacijos pranešimo turinys paslėptas</string>
     <string name="redo">Perdaryti</string>
     <string name="reduce_bright_colors_feature_name">"Papildomas
 tamsinimas"</string>
@@ -2722,6 +2738,29 @@ Ilgai klausydami dideliu garsu galite pažeisti klausą."</string>
     <string name="samsung_global_action_restart">Paleisti iš naujo</string>
     <string name="samsung_keyboard_settings">„Samsung“ klaviatūros nustatymai</string>
     <string name="sanitized_content_text_sf">Turinys paslėptas</string>
+    <string name="satellite_notification_how_it_works">Kaip tai veikia</string>
+    <string name="satellite_notification_manual_summary">Siųskite ir gaukite pranešimus be mobiliojo ryšio ar „Wi-Fi“ tinklo</string>
+    <string name="satellite_notification_manual_title">Naudoti susirašinėjimą palydoviniais pranešimais?</string>
+    <string name="satellite_notification_open_message">Atidaryti programą „Messages“</string>
+    <string name="satellite_notification_summary">Galite siųsti ir gauti pranešimus be mobiliojo ryšio ar „Wi-Fi“ tinklo</string>
+    <string name="satellite_notification_title">Automatiškai prisijungta prie palydovinio ryšio</string>
+    <string name="scCellularNetworkSecuritySummary">Šifruotė, nešifruotų tinklų pranešimai</string>
+    <string name="scCellularNetworkSecurityTitle">Mobiliojo ryšio tinklo apsauga</string>
+    <string name="scIdentifierDisclosureIssueSummary">"%1$s netoliese esantis tinklas įrašė jūsų įrenginio unikalų ID (IMSI arba IMEI), kol buvo naudojama jūsų „%2$s“ SIM kortelė.
+
+Tai reiškia, kad jūsų vietovė, veikla ar tapatybė buvo užregistruoti. Tai įprasta praktika, bet žmonėms, kurie nerimauja dėl privatumo, gali kilti problemų."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">%1$s netoliese esantis tinklas įrašė jūsų įrenginio unikalų ID (IMSI arba IMEI), kol buvo naudojama jūsų „%2$s“ SIM kortelė.</string>
+    <string name="scIdentifierDisclosureIssueTitle">Pasiektas įrenginio ID</string>
+    <string name="scNullCipherIssueActionGotIt">Supratau</string>
+    <string name="scNullCipherIssueActionLearnMore">Sužinokite daugiau</string>
+    <string name="scNullCipherIssueActionSettings">Mobiliojo ryšio tinklo saugos nustatymai</string>
+    <string name="scNullCipherIssueEncryptedSummary">„%1$s“ SIM kortelės ryšys dabar saugesnis</string>
+    <string name="scNullCipherIssueEncryptedTitle">Prisijungta prie šifruoto tinklo „%1$s“</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"Skambučiai, pranešimai ir duomenys dabar gerokai pažeidžiamesni, kol naudojama „%1$s“ SIM kortelė.
+
+Kai ryšys vėl bus užšifruotas, gausite kitą pranešimą."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">Skambučiai, pranešimai ir duomenys dabar gerokai pažeidžiamesni, kol naudojama „%1$s“ SIM kortelė.</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">Prisijungta prie nešifruoto tinklo</string>
     <string name="scan_text">Išimt tekstą</string>
     <string name="screen_compat_mode_hint">Įgalinkite jį iš naujo nuėję į „Sistemos nustatymai“ > „Programos“ > „Atsisiųsta“.</string>
     <string name="screen_compat_mode_scale">Mastelis</string>
@@ -2732,16 +2771,17 @@ Ilgai klausydami dideliu garsu galite pažeisti klausą."</string>
     <string name="screen_lock">Ekrano užraktas</string>
     <string name="screen_lock_app_setting_name">Naudoti ekrano užraktą</string>
     <string name="screen_lock_dialog_default_subtitle">Jei norite tęsti, įveskite ekrano užraktą</string>
+    <string name="screen_not_shared_sensitive_content">Programos turinys paslėptas bendrinant ekraną saugumo sumetimais</string>
     <string name="screencapture_restrict">Saugos politika neleidžia naudotis ekrano nuotrauka.</string>
     <string name="screenshot_edit">Redaguoti</string>
     <string name="sd_card_unavailable_message">Negalite naudoti SD kortelės, nes ji buvo įdėta naudojant kitą naudotojo profilį.</string>
     <string name="sd_card_unavailable_title">SD kortelė nepasiekiama</string>
-    <string name="sdcard_bad_removal_message">SD kortelė išimta nesaugiai. Kad planšetinis kompiuteris nebūtų netikėtai paleistas iš naujo, išsaugokite neišsaugotus duomenis ir jį paleiskite iš naujo dabar.</string>
+    <string name="sdcard_bad_removal_message">SD kortelė išimta nesaugiai. Kad telefonas nebūtų netikėtai paleistas iš naujo, išsaugokite neišsaugotus duomenis ir jį paleiskite iš naujo dabar.</string>
     <string name="sdcard_batch_decrypt_noti_content">Iššifruoti SD kortelę</string>
     <string name="sdcard_batch_decrypt_noti_title">SD kortelės iššifravimas</string>
     <string name="sdcard_batch_decrypt_popup_content">Prieš naudojant užšifruotą SD kortelę reikia iššifruoti. Iššifravimas trunka valandą arba ilgiau. Pradėkite įkrovę akumuliatorių ir laikykite įrenginį prijungtą prie maitinimo šaltinio tol, kol bus baigtas iššifravimas. Nutraukus iššifravimą, gali būti prarasti kai kurie ar visi duomenys.</string>
     <string name="sdcard_decrypt_err_notification">Iššifruojant SD kortelę įvyko klaida.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Kai kurie jūsų SD kortelėje esantys failai buvo užšifruoti kitame įrenginyje, todėl jų negalima naudoti šiame planšetiniame kompiuteryje.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Kai kurie jūsų SD kortelėje esantys failai buvo užšifruoti kitame įrenginyje, todėl jų negalima naudoti šiame telefone.</string>
     <string name="sdcard_decrypt_notification">SD kortelė iššifruota.</string>
     <string name="sdcard_decrypt_title_notification">SD kortelės iššifravimas</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Iššifruojama SD kort…</string>
@@ -2765,14 +2805,6 @@ Ilgai klausydami dideliu garsu galite pažeisti klausą."</string>
     <string name="searchview_description_submit">Patvirtinti užklausą</string>
     <string name="searchview_description_voice">Paieška balsu</string>
     <string name="sec_bluetooth_airplane_mode_toast">„Bluetooth“ liks įjungtas veikiant lėktuvo režimui.</string>
-    <string name="sec_immersive_cling_button_ok">Gerai</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Ši programa naudoja visą ekraną. Naršymo gestais braukiant bus parodyta būsenos juosta. Jei norite naršyti, rodant būsenos juostą braukite dar kartą.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Ši programa naudoja visą ekraną. Pradžios, grįžimo ir vėliausiųjų mygtukai yra paslėpti, kad nutrukdytų ir kad netyčia neišjungtumėte programos.
-
-Net jei telefoną pasuksite, mygtukai visada bus rodomi šalia įkrovimo lizdo. Braukdami į vidų nuo ekrano krašto, kaip parodyta rodykle, mygtukus galite vėl įjungti."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Ši programa naudoja visą ekraną. Pradžios, grįžimo ir vėliausiųjų mygtukai yra paslėpti, kad netrukdytų ir kad netyčia neišjungtumėte programos.
-
-Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta rodykle."</string>
     <string name="sec_monotype_default">Numatytoji</string>
     <string name="sec_ringtone_category_brand_sound">„Samsung“ prekių ženklo garsas</string>
     <string name="sec_ringtone_category_calm">Ramus</string>
@@ -2782,6 +2814,10 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="sec_ringtone_category_open_theme">Dabartinės numatytosios temos</string>
     <string name="sec_ringtone_category_retro">Retro</string>
     <string name="sec_ringtone_silent">Tylusis</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Atšaukti</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Kad galėtumėte jungtis prie palydovo, jūsų tinklo operatorius turi būti nustatytas kaip „Pasirinkti automatiškai“.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Įjungti</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Įjungti automatinį tinklo pasirinkimą?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Jei norite kalbėti, suteikite prieigą prie mikrofono.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Įjunkite fotoaparato prieigą, jei norite naudoti %s.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Įjunkite mikrofono prieigą, jei norite naudoti %s.</string>
@@ -2889,6 +2925,8 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="sem_face_error_already_in_use_by_VT">Vaizdo skambučių metu negalima naudoti veido atpažinimo.</string>
     <string name="sem_face_error_camera_access_off">Veido atpažinimo negalima naudoti, nes nesuteikta prieiga prie fotoaparato</string>
     <string name="sem_face_error_camera_fail">Nepavyko atidaryti fotoaparato. Bandykite dar kartą.</string>
+    <string name="sem_face_error_lockout">Patvirtinimas biometriniais duomenims negalimas dėl per daug neteisingų bandymų.</string>
+    <string name="sem_face_error_lockout_permanent">Patvirtinimas biometriniais duomenims negalimas dėl per daug neteisingų bandymų.</string>
     <string name="sem_face_error_ppp_timeout">Jau senokai tvirtinote savo tapatybę. Jei norite užregistruoti savo veidą, turėsite pradėti iš naujo.</string>
     <string name="sem_face_error_too_dark">Per tamsu, kad būtų galima aptikti veidą</string>
     <string name="sem_face_error_too_dark_to_enroll">Per tamsu. Pabandykite įjungti šviesą arba eikite į šviesesnę vietą.</string>
@@ -2904,13 +2942,18 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="sem_fingerprint_acquired_tsp_block">Patraukite „S Pen“ galiuką nuo ekrano, kad būtų galima nuskaityti piršto atspaudą.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Jei norite naudoti pirštų atspaudus, pirma nustatykite saugų ekrano užrakto tipą (šabloną, PIN arba slaptažodį).</string>
+    <string name="sem_fingerprint_error_lockout">Patvirtinimas biometriniais duomenims negalimas dėl per daug neteisingų bandymų.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Patvirtinimas biometriniais duomenims negalimas dėl per daug neteisingų bandymų.</string>
     <string name="sem_fingerprint_error_onehand_mode">Veikiant valdymo viena ranka režimui negalima naudoti pirštų atspaudų skaitytuvo.</string>
     <string name="sem_fingerprint_error_smart_view">Naudojantis %s negalima nuskaityti piršto atspaudo.</string>
+    <string name="sem_fingerprint_error_system_failure">Pirštų atspaudų jutiklis neatsako. Bandykite dar kartą vėliau. Jei tai tęsiasi, pabandykite paleisti telefoną iš naujo.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Pirštų atspaudų duomenys sugadinti. Pridėkite pirštų atspaudus dar kartą.</string>
     <string name="sem_fingerprint_error_wireless_charger">Jei norite naudoti piršto atspaudą, atjunkite belaidį kroviklį</string>
     <string name="sem_fingerprint_name_template">%d piršto atspaudas</string>
     <string name="sem_fingerprint_register_dialog_button_later">Vėliau</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Ne dabar</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Pašalinti ir registruoti</string>
+    <string name="sem_fingerprint_register_dialog_message">Naujausiame programinės įrangos naujinyje patobulintas pirštų atspaudų atpažinimas. Negalėsite naudoti pirštų atspaudų atpažinimo, kol neištrinkite pirštų atspaudų ir neužregistruosite jų iš naujo.</string>
     <string name="sem_fingerprint_register_dialog_title">Registruot pirštų atspaudus vėl</string>
     <string name="sem_fingerprint_result_failed">Atitikmenų nėra.</string>
     <string name="sem_fingerprint_result_retry">Bandykite dar kartą.</string>
@@ -2930,7 +2973,7 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="sem_resolver_button_always_accessibility">Visada naudoti pasirinktą programą</string>
     <string name="sem_resolver_button_just_once_accessibility">Naudoti pasirinktą programą tik kartą</string>
     <string name="sem_resolver_choose_what_to_do">Pasirinkite, ką norite daryti</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Jei norite keisti numatytųjų programų nustatymus, eikite į Nustatymai > Programos > Rinktis numatytąsias programas.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Jei norite pakeisti šio tipo failui atidaryti naudojamą programą, eikite į Nustatymai > Programos, pasirinkite dabartinę numatytąją programą, tada bakstelėkite Nustatyti kaip numatytąją > Valyti numatytuosius nustatymus.</string>
     <string name="sem_resolver_icon_content_description">Informacija</string>
     <string name="sem_resolver_personal_tab_accessibility">Asmeninis</string>
     <string name="sem_resolver_share_live_default_text">Bendrinkite iškart su netoliese esančiais žmonėmis. Čia rodomi žmonės, kurie įrenginius yra nustatę kaip matomus.</string>
@@ -2946,9 +2989,9 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="sending">Siunčiama…</string>
     <string name="sensor_notification_service">Jutiklių pranešimų paslauga</string>
     <string name="sensor_privacy_notification_channel_label">Jutiklių privatumas</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Fotoaparato prieiga išj. visoms programoms</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Įjungti</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Mikrofono prieiga išj. visoms programoms</string>
+    <string name="sensor_privacy_start_use_camera_notification_content_title">Panaikinkite įrenginio fotoaparato blokavimą</string>
+    <string name="sensor_privacy_start_use_dialog_turn_on_button">Panaikinti blokavimą</string>
+    <string name="sensor_privacy_start_use_mic_notification_content_title">Panaikinkite įrenginio mikrofono blokavimą</string>
     <string name="sensor_privacy_start_use_notification_content_text"><b>%s</b> ir visoms programoms bei paslaugoms</string>
     <string name="serial_number">Serijos numeris:</string>
     <string name="serviceClassData">Duomenys</string>
@@ -2973,6 +3016,9 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="serviceRegistered">Registracija sėkminga.</string>
     <string name="serviceisDisabled">Paslauga yra išjungta.</string>
     <string name="serviceisEnabled">Paslauga yra įjungta.</string>
+    <string name="set_up_screen_lock_action_label">Nustatykite ekrano užraktą</string>
+    <string name="set_up_screen_lock_title">Ekrano užrako nustatymas</string>
+    <string name="settings">Nustatymai</string>
     <string name="sf_quick_switch_not_supported">Greitas perjungimas šioje situacijoje nepalaikomas.</string>
     <string name="sf_quick_switch_securefolder_view">Perjungta į %s.</string>
     <string name="sha1_fingerprint">SHA-1 piršto antspaudas</string>
@@ -2996,12 +3042,14 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="show_ime">Palikti ekrane, kol fizinė klaviatūra aktyvi</string>
     <string name="show_keyboard_button">Rodyti klaviatūros mygtuką</string>
     <string name="show_keyboard_button_description">Rodyti %s naršymo juostoje.</string>
+    <string name="showing_esc_dialog">Galite nustatyti, kad „Esc“ klavišas veiktų kaip grįžimo mygtukas.</string>
     <string name="showing_touch_sensitivity_noti_action">Įjungti</string>
     <string name="showing_touch_sensitivity_noti_text">Kad lietimas būtų tikslesnis naudojantis „Privacy Screen“ arba „Notepaper Screen“, įjunkite „Lietimo jautrumas“.</string>
     <string name="showing_touch_sensitivity_noti_title">Padidinti lietimo jautrumą</string>
-    <string name="shutdown_confirm">Planšetinio kompiuterio veikimas bus sustabdytas.</string>
+    <string name="shutdown_confirm">Telefonas bus išjungtas.</string>
     <string name="shutdown_confirm_question">Ar norite išjungti?</string>
     <string name="shutdown_progress">Išsijungia...</string>
+    <string name="side_key_double_press_archived_app">Programa archyvuota. Pasirinkite ką nors kitą.</string>
     <string name="side_key_double_press_deleted_app">Programa pašalinta. Pasirinkite ką nors kitą.</string>
     <string name="side_key_double_press_disabled_app">„%s“ išjungta. Pasirinkite ką nors kitą.</string>
     <string name="signature_identity_toast">%s pasirašyta</string>
@@ -3014,18 +3062,20 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="sim_added_message">Jei norite pasiekti mobiliojo ryšio tinklą, reikia iš naujo paleisti įrenginį.</string>
     <string name="sim_added_title">SIM kortelė pridėta</string>
     <string name="sim_check_old_sim_message">Dėl senų ar pažeistų SIM kortelių gali kilti tinklo ryšio problemų. Susisiekite su paslaugos teikėju arba apsilankykite vienoje iš parduotuvių ir patikrinkite, ar ją reikia pakeisti.</string>
+    <string name="sim_check_old_sim_message_skt">Dėl senų ar pažeistų SIM kortelių gali kilti tinklo ryšio problemų. Susisiekite su paslaugos teikėju arba apsilankykite vienoje iš parduotuvių ir patikrinkite, ar ją reikia pakeisti.</string>
     <string name="sim_check_old_sim_title">Galbūt reikia pakeisti SIM</string>
+    <string name="sim_check_old_sim_title_skt">Galbūt reikia pakeisti SIM</string>
     <string name="sim_count_mismatched_ds_to_ss">SIM kortelės režimas perjungtas į vienos SIM kortelės režimą iš dviejų SIM kortelių režimo. Kad būtų pritaikytas šis nustatymas, įrenginiui reikia grąžinti gamyklinius numatytuosius nustatymus ir paleisti iš naujo.</string>
     <string name="sim_count_mismatched_ss_to_ds">SIM kortelės režimas perjungtas į dviejų SIM kortelių režimą iš vienos SIM kortelės režimo. Kad būtų pritaikytas šis nustatymas, įrenginiui reikia grąžinti gamyklinius numatytuosius nustatymus ir paleisti iš naujo.</string>
     <string name="sim_count_mismatched_title">Perjungtas SIM kortelės režimas</string>
     <string name="sim_done_button">Atlikta</string>
-    <string name="sim_imsreg_error_message_lgt">Jūsų telefonu nebus galima atlikti balso skambučių, nes jis neatpažįsta SIM kortelės. Pabandykite išimti SIM kortelę ir vėl ją įdėti. Jei ši problema išlieka, gali tekti pakeisti SIM kortelę. Jei reikia pagalbos, apsilankykite „LG U+“ parduotuvėje arba kreipkitės į „LG U+“ klientų aptarnavimo centrą numeriu 1544 0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Jūsų planšetiniu kompiuteriu nebus galima atlikti balso skambučių, nes jis neatpažįsta SIM kortelės. Pabandykite išimti SIM kortelę ir vėl ją įdėti. Jei ši problema išlieka, gali tekti pakeisti SIM kortelę. Jei reikia pagalbos, apsilankykite „LG U+“ parduotuvėje arba kreipkitės į „LG U+“ klientų aptarnavimo centrą numeriu 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">Jūsų telefonu nebus galima atlikti balso skambučių, nes jis neatpažįsta SIM kortelės. Pabandykite išimti SIM kortelę ir vėl ją įdėti. Jei problema išlieka, turimą SIM kortelę gali tekti pakeisti apsilankius LG U+ parduotuvėje.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Jūsų planšetiniu kompiuteriu nebus galima atlikti balso skambučių, nes jis neatpažįsta SIM kortelės. Pabandykite išimti SIM kortelę ir vėl ją įdėti. Jei problema išlieka, turimą SIM kortelę gali tekti pakeisti apsilankius LG U+ parduotuvėje.</string>
     <string name="sim_off_noti_message">Kai visos SIM išjungtos, negalite skambinti, siųsti žinučių ar naudotis duomenimis. Bakstelėkite čia ir įjunkite SIM.</string>
     <string name="sim_off_noti_title">Visos SIM yra išjungtos</string>
     <string name="sim_off_toast_message">Jūsų įdėta SIM kortelė yra išjungta. Jei norite ją naudoti, eikite į Nustatymai > Ryšiai > SIM tvarkyklė ir ją įjunkite.</string>
     <string name="sim_recognize_error_message_kt">Jūsų SIM kortelė neatpažinta. Pabandykite išimti SIM kortelę ir vėl ją įdėti. Jei ši problema išlieka, gali tekti pakeisti SIM kortelę. Jei reikia pagalbos, apsilankykite KT parduotuvėje arba kreipkitės į KT klientų aptarnavimo centrą numeriu 1588 0010.</string>
-    <string name="sim_recognize_error_message_lgt">Jūsų SIM kortelė neatpažinta. Pabandykite išimti SIM kortelę ir vėl ją įdėti. Jei ši problema išlieka, gali tekti pakeisti SIM kortelę. Jei reikia pagalbos, apsilankykite „LG U+“ parduotuvėje arba kreipkitės į „LG U+“ klientų aptarnavimo centrą numeriu 1544 0010.</string>
+    <string name="sim_recognize_error_message_lgt">Jūsų SIM kortelė neatpažinta. Pabandykite išimti SIM kortelę ir vėl ją įdėti. Jei problema išlieka, turimą SIM kortelę gali tekti pakeisti apsilankius LG U+ parduotuvėje.</string>
     <string name="sim_recognize_error_message_skt">Nepavyksta nuskaityti SIM kortelės. Kai kurios programos ir funkcijos gali neveikti. Išimkite ir vėl įstatykite SIM kortelę, tada paleiskite telefoną iš naujo. Jei taip problemos nepavyksta išspręsti, telefoną ir SIM kortelę nuneškite į klientų aptarnavimo centrą.</string>
     <string name="sim_recognize_error_message_skt_tablet">Nepavyksta nuskaityti SIM kortelės. Kai kurios programos ir funkcijos gali neveikti. Išimkite ir vėl įstatykite SIM kortelę, tada paleiskite planšetinį kompiuterį iš naujo. Jei taip problemos nepavyksta išspręsti, planšetinį kompiuterį ir SIM kortelę nuneškite į klientų aptarnavimo centrą.</string>
     <string name="sim_recognize_error_title_lgt">Nepavyksta atpažinti USIM kortelės</string>
@@ -3045,6 +3095,7 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="skip_button_label">Praleisti</string>
     <string name="slice_more_content">Dar %1$d</string>
     <string name="slices_permission_request">„%1$s“ nori rodyti „%2$s“ fragmentus</string>
+    <string name="smart_tip_action_click_hint_text">Užd.</string>
     <string name="smartclip_restrict">Saugos politika neleidžia naudoti lengvo iškirpimo.</string>
     <string name="sms_control_message">Naudojant <b>%1$s</b> siunčiama daug SMS pranešimų. Ar norite leisti šiai programai toliau siųsti pranešimus?</string>
     <string name="sms_control_no">Uždrausti</string>
@@ -3058,9 +3109,7 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="sms_short_code_confirm_never_allow">Niekada neleisti</string>
     <string name="sms_short_code_details">Taip <b>galite būti apmokestinti</b> mobiliojo ryšio operatoriaus.</string>
     <string name="sms_short_code_remember_choice">Atsiminti mano pasirinkimą</string>
-    <string name="sms_short_code_remember_undo_instruction">Tai galite pakeisti vėliau nuėję į skirtuką Nustatymai > Programos</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Tai galite pakeisti vėliau nuėję į skirtuką Nustatymai > Programos > Mygtukas „Daugiau parinkčių“ > Specialioji prieiga > Naudoti specialias teksto žinučių paslaugas.</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Jei bakstelėsite NIEKADA NELEISTI, ši programa negalės siųsti žinučių fone, net jei suteiksite leidimą „Siųsti teksto žinutes“.</string>
+    <string name="sms_short_code_remember_undo_instruction">Tai vėliau galėsite pakeisti skiltyje „Nustatymai“ > „Programos“</string>
     <string name="smv_application">Programa „%1$s“ (procesas „%2$s“) pažeidė savo vykdomą „StrictMode“ politiką.</string>
     <string name="smv_process">„%1$s“ procesas pažeidė savo vykdomą „StrictMode“ politiką.</string>
     <string name="splash_screen_view_branding_description">Programos prekės ženklo vaizdas</string>
@@ -3145,7 +3194,6 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="time_picker_radial_mode_description">Laiko įvestį pateikti perjungus į laikrodžio režimą.</string>
     <string name="time_picker_text_input_mode_description">Laiko įvestį pateikti perjungus į teksto įvesties režimą.</string>
     <string name="title_dialog_check_rotate_or_not">Išjungti automatinį ekrano pasukimą?</string>
-    <string name="title_uds">Ypat. duomenų taup. rež.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Nustatant telefoną negalima naudoti „Bixby“.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Nustatant planšetinį kompiuterį negalima naudoti „Bixby“.</string>
     <string name="toast_warning_pattern_lock">Šablono užraktas negali būti naudojamas su universaliuoju jungikliu. Pirma įjunkite kitą užrakto tipą.</string>
@@ -3175,6 +3223,7 @@ Kad mygtukai būtų rodomi, braukite aukštyn nuo ekrano apačios, kaip parodyta
     <string name="ucm_smartcard_is_encrypting_phone">„Smartcard“ šifruoja telefoną…</string>
     <string name="ui_translation_accessibility_translated_text">Pranešimas „%1$s“ išverstas.</string>
     <string name="ui_translation_accessibility_translation_finished">Pranešimas išverstas iš %1$s į %2$s.</string>
+    <string name="unarchival_session_app_label">Laukiama...</string>
     <string name="undo">Anuliuoti</string>
     <string name="unknown_install_activity_warning_title">Įtariame kenkėjiška programa</string>
     <string name="unknown_install_blocked_dlg_desc">Šios programos negalima įdiegti, nes ji gali būti kenkėjiška.</string>
@@ -3194,9 +3243,13 @@ Jei norite pašalinti šią apsaugą, eikite į Nustatymai > Saugumas ir privatu
     <string name="unknown_install_blocked_esm_title">Užblokuota nežinoma programa</string>
     <string name="unknown_install_dlg_desc">Ši programa nebuvo atsisiųsta iš patvirtintos parduotuvės. Įdiegus šią programą gali kilti saugumo ir privatumo pavojus. Ši programa gali rinkti asmeninę informaciją arba dėl jos galite prarasti duomenis.</string>
     <string name="unknown_install_dlg_desc2">Ši programa nepalaiko naujausių saugumo funkcijų. Įdiegus šią programą gali kilti toliau nurodyti saugumo pavojai:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Šis programos diegimo failas gali būti nesaugus. Tai gali būti ne ta programa, kuria ji skelbiasi esanti. Kad apsaugotumėte telefoną ir asmeninius duomenis, programą įdiekite iš patikimos programų parduotuvės.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Šis programos diegimo failas gali būti nesaugus. Tai gali būti ne ta programa, kuria ji skelbiasi esanti. Kad apsaugotumėte planšetinį kompiuterį ir asmeninius duomenis, programą įdiekite iš patikimos programų parduotuvės.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Įtariama, kad ši programa yra kenkėjiška ir gali kelti pavojų jūsų telefonui ir duomenims. Šios programos diegti nerekomenduojama.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Įtariama, kad ši programa yra kenkėjiška ir gali kelti pavojų jūsų planšetiniam kompiuteriui ir duomenims. Šios programos diegti nerekomenduojama.</string>
-    <string name="unknown_install_dlg_general_title">Ši programa yra iš nežinomo šaltinio</string>
+    <string name="unknown_install_dlg_desc_phone">Ši programa nėra iš patvirtintos programų parduotuvės. Kad apsaugotumėte savo telefoną ir asmeninę informaciją, programą įdiekite iš patvirtintos parduotuvės, pvz., „Play Store“ arba „Galaxy Store“.</string>
+    <string name="unknown_install_dlg_desc_tablet">Ši programa nėra iš patvirtintos programų parduotuvės. Kad apsaugotumėte savo planšetinį kompiuterį ir asmeninę informaciją, programą įdiekite iš patvirtintos parduotuvės, pvz., „Play Store“ arba „Galaxy Store“.</string>
+    <string name="unknown_install_dlg_general_title">Šios programos diegti nerekomenduojama</string>
     <string name="unknown_install_dlg_negative_button">Nediegti</string>
     <string name="unknown_install_dlg_perm_desc1">Ši programa gali perimti patvirtinimo kodus iš jūsų gautų teksto žinučių.</string>
     <string name="unknown_install_dlg_perm_desc2">Siunčiami skambučiai be jūsų žinios gali būti peradresuojami į kitą telefono numerį.</string>
@@ -3226,7 +3279,7 @@ Jei norite pašalinti šią apsaugą, eikite į Nustatymai > Saugumas ir privatu
     <string name="usb_abnormal_reset_title">USB ryšys nestabilus</string>
     <string name="usb_abnormal_reset_toast">USB ryšys nestabilus. Atjunkite laidą ir vėl jį prijunkite arba pabandykite naudoti kitą laidą.</string>
     <string name="usb_accessory_notification_title">Prisijungta prie USB priedo</string>
-    <string name="usb_bad_removal_message">USB atminties įrenginys atjungtas nesaugiai. Kad planšetinis kompiuteris nebūtų netikėtai paleistas iš naujo, išsaugokite neišsaugotus duomenis ir jį paleiskite iš naujo dabar.</string>
+    <string name="usb_bad_removal_message">USB atmintinė atjungta nesaugiai. Kad telefonas nebūtų netikėtai paleistas iš naujo, išsaugokite neišsaugotus duomenis ir jį paleiskite iš naujo dabar.</string>
     <string name="usb_blocked_by_emergency_mode">Pavojaus režimu kai kurios USB funkcijos neveikia.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Negalima naudoti su prijungtu USB įrenginiu susijusių funkcijų, kai įjungtas itin taupaus energijos vartojimo režimas.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Veikiant itin taupiam energijos vartojimo režimui USB funkcijos bus apribotos.</string>
@@ -3236,7 +3289,9 @@ Jei norite pašalinti šią apsaugą, eikite į Nustatymai > Saugumas ir privatu
     <string name="usb_camera_disconnected_notification_title">Medijos įrenginys atjungtas</string>
     <string name="usb_cd_installer_notification_title">Programinės įrangos naujinys</string>
     <string name="usb_charging_notification_title">Šis įrenginys įkraunamas naudojant USB</string>
-    <string name="usb_charing_only_notification_title">Prisijungta</string>
+    <string name="usb_charing_only_notification_title">Įkrovimas per USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">„Auto Blocker“ įjungtas taikant maks. apribojimus.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB ryšys užblokuotas</string>
     <string name="usb_contaminant_detected_message">USB prievadas automatiškai išjungtas. Palieskite, kad sužinotumėte daugiau.</string>
     <string name="usb_contaminant_detected_title">USB prievade yra skysčių ar smulkių dalelių</string>
     <string name="usb_contaminant_not_detected_message">Telefonas nebeaptinka skysčių ar smulkių dalelių.</string>
@@ -3248,11 +3303,11 @@ Jei norite pašalinti šią apsaugą, eikite į Nustatymai > Saugumas ir privatu
     <string name="usb_host_cable_disconnected_notification_title">USB jungtis atjungta.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Neįmanoma pasiekti šio įrenginio. Prijungtam įrenginiui reikalingas išorinis maitinimas.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Prijungtas galingas USB įrenginys.</string>
-    <string name="usb_host_resource_exceed_message">Jūsų planšetinio kompiuterio USB valdiklyje nepakanka išteklių, kad būtų galima prijungti šį įrenginį. Pabandykite įrenginį atjungti ir vėl jį prijungti.</string>
+    <string name="usb_host_resource_exceed_message">Jūsų telefono USB valdiklyje nepakanka išteklių, kad būtų galima prijungti šį įrenginį. Pabandykite įrenginį atjungti ir vėl jį prijungti.</string>
     <string name="usb_host_resource_exceed_title">Nepakanka USB valdiklio išteklių</string>
-    <string name="usb_hub_depth_exceed_message">Jūsų planšetinis kompiuteris gali palaikyti tik iki 5 USB šakotuvų ryšių vienu metu.</string>
+    <string name="usb_hub_depth_exceed_message">Jūsų telefonas gali palaikyti tik iki 5 USB šakotuvų ryšių vienu metu.</string>
     <string name="usb_hub_depth_exceed_title">Maks. USB šakotuvo ryšių sk.</string>
-    <string name="usb_hub_power_exceed_message">Planšetinis kompiuteris negali tiekti pakankamai energijos į šį USB įrenginį. Prijunkite įrenginį prie maitinamo USB šakotuvo, tada prijunkite jį prie planšetinio kompiuterio.</string>
+    <string name="usb_hub_power_exceed_message">Telefonas negali tiekti pakankamai energijos į šį USB įrenginį. Prijunkite įrenginį prie maitinamo USB šakotuvo, tada prijunkite jį prie telefono.</string>
     <string name="usb_increase_battery_usage">USB ryšys gali padidinti akumuliatoriaus energijos sąnaudas.</string>
     <string name="usb_keyboard_connected_notification_title">Prijungta klaviatūra</string>
     <string name="usb_keyboard_disconnected_notification_title">Klaviatūra atjungta</string>
@@ -3295,8 +3350,9 @@ Jei norite pašalinti šią apsaugą, eikite į Nustatymai > Saugumas ir privatu
     <string name="usb_ums_connected_notification_message_usbhost">USB atmintinė netikėtai atjungta.</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB laikmena prijungta</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB atmintinė saugiai atjungta.</string>
-    <string name="usb_unblock_by_screen_unlock">Atrakinkite planšetinį kompiuterį, jei norite naudoti prijungtą USB įrenginį.</string>
-    <string name="usb_unsupport_accessory_message">Jūsų planšetinis kompiuteris nepalaiko šio USB įrenginio.</string>
+    <string name="usb_unblock_by_screen_unlock">Atrakinkite telefoną, jei norite naudoti prijungtą USB įrenginį.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">Jei norite naudoti USB įrenginį, atrakinkite telefoną ir iš naujo prijunkite USB įrenginį.</string>
+    <string name="usb_unsupport_accessory_message">Jūsų telefonas nepalaiko šio USB įrenginio.</string>
     <string name="usb_unsupport_accessory_title">USB įrenginys nepalaikomas</string>
     <string name="usb_unsupported_audio_accessory_message">Prijungtas įrenginys nesuderinamas su šiuo telefonu. Palieskite, kad sužinotumėte daugiau.</string>
     <string name="usb_unsupported_audio_accessory_title">Aptiktas analoginis garso priedas</string>
@@ -3317,19 +3373,19 @@ Jei norite pašalinti šią apsaugą, eikite į Nustatymai > Saugumas ir privatu
     <string name="usb_water_dialg_method_2_desc_2">Džiuvimą galite paspartinti nukreipdami ventiliatorių ar džiovintuvą (tik šalto oro) į prievadą.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Įkrovimo / USB prievade aptikome drėgmės ar pašalinių medžiagų.
 
-Patikrinkite, ar įkrovimo / USB prievade nėra kokių nors pašalinių medžiagų, pvz., dulkių ar nešvarumų. Kad nesugadintumėte planšetinio kompiuterio, nebandykite nieko prijungti, kol įkrovimo prievadas nebus švarus ir neišdžius.
+Patikrinkite, ar įkrovimo / USB prievade nėra kokių nors pašalinių medžiagų, pvz., dulkių ar nešvarumų. Kad nesugadintumėte telefono, nebandykite nieko prijungti, kol įkrovimo prievadas nebus švarus ir neišdžius.
 
 Norėdami išdžiovinti prievadą, iškratykite visą susikaupusią drėgmę, tada palaukite, kol išdžius – tai gali trukti kelias valandas. Džiūvimas bus greitesnis, jei į prievadą nukreipsite ventiliatorių ar džiovintuvą (tik šaltu oru)."</string>
     <string name="usb_water_dialg_positive_button">Gerai</string>
     <string name="usb_water_dialg_support_wireless_charging">"Įkrovimo / USB prievade aptikome drėgmės ar pašalinių medžiagų.
 
-Patikrinkite, ar įkrovimo / USB prievade nėra kokių nors pašalinių medžiagų, pvz., dulkių ar nešvarumų. Kad nesugadintumėte planšetinio kompiuterio, nebandykite nieko prijungti, kol įkrovimo prievadas nebus švarus ir neišdžius.
+Patikrinkite, ar įkrovimo / USB prievade nėra kokių nors pašalinių medžiagų, pvz., dulkių ar nešvarumų. Kad nesugadintumėte telefono, nebandykite nieko prijungti, kol įkrovimo prievadas nebus švarus ir neišdžius.
 
-Norėdami išdžiovinti prievadą iškratykite visą susikaupusią drėgmę, tada palaukite, kol išdžius – tai gali trukti kelias valandas. Džiuvimas bus greitesnis, jei į prievadą nukreipsite ventiliatorių ar džiovintuvą (tik šaltu oru).
+Norėdami išdžiovinti prievadą, iškratykite visą susikaupusią drėgmę, tada palaukite, kol išdžius – tai gali trukti kelias valandas. Džiūvimas bus greitesnis, jei į prievadą nukreipsite ventiliatorių ar džiovintuvą (tik šaltu oru).
 
-Tuo tarpu planšetinį kompiuterį galite įkrauti belaidžiu būdu."</string>
+Tuo tarpu telefoną galite įkrauti belaidžiu būdu."</string>
     <string name="usb_water_notification_content">Įkrovimo / USB prievade yra drėgmės arba į jį kažkas pateko. Prieš kraudami patikrinkite.</string>
-    <string name="usb_water_notification_message">Kroviklyje/USB prievade užfiksuota drėgmė. Prieš įkraudami planšetinį kompiuterį įsitikinkite, kad jis sausas. Gali šiek tiek užtrukti, kol jis visiškai išdžius.</string>
+    <string name="usb_water_notification_message">Kroviklyje/USB prievade užfiksuota drėgmė. Prieš įkraudami telefoną įsitikinkite, kad jis sausas. Gali šiek tiek užtrukti, kol jis visiškai išdžius.</string>
     <string name="usb_water_notification_message_button">Išsami informacija</string>
     <string name="usb_water_notification_title">Tikrinti kroviklį/USB prievadą</string>
     <string name="usbhostStorage_restrict">Saugos politika neleidžia naudotis USB saugykla.</string>
@@ -3347,7 +3403,7 @@ Tuo tarpu planšetinį kompiuterį galite įkrauti belaidžiu būdu."</string>
     <string name="user_switched">Dabartinis naudotojas: %1$s.</string>
     <string name="user_switching_message">Perjungiama į %1$s…</string>
     <string name="validity_period">Galiojimas:</string>
-    <string name="vdm_camera_access_denied">Nepavyko pasiekti planšetinio kompiuterio fotoaparato iš „%1$s“</string>
+    <string name="vdm_camera_access_denied">Nepavyko pasiekti telefono fotoaparato iš „%1$s“</string>
     <string name="vdm_pip_blocked">Negalima peržiūrėti vaizdo vaizde perduodant srautu</string>
     <string name="vdm_secure_window">Nepavyksta pasiekti perduodant srautu. Pabandykite naudoti telefoną.</string>
     <string name="view_and_control_notification_content">„%s“ gali peržiūrėti ir valdyti jūsų ekraną. Palieskite ir peržiūrėkite.</string>
@@ -3372,6 +3428,8 @@ Tuo tarpu planšetinį kompiuterį galite įkrauti belaidžiu būdu."</string>
     <string name="vpn_allowOnlySecureConnection">VPN profilis nesaugus</string>
     <string name="vpn_error_text">Bakstelėkite, kad prisijungtumėte prie VPN dar kartą.</string>
     <string name="vpn_error_title">VPN ryšio klaida</string>
+    <string name="vpn_fail_text_long">Nepavyko prisijungti prie %s. Bakstelėkite ir tvarkykite šį VPN.</string>
+    <string name="vpn_fail_title">Neprisijungta prie VPN</string>
     <string name="vpn_lockdown_config">Keiskite tinklo arba VPN nustatymus</string>
     <string name="vpn_lockdown_connected">Prisijungta prie visada įjungto VPN</string>
     <string name="vpn_lockdown_connecting">Prisijungiama prie visada įjungto VPN…</string>
@@ -3498,6 +3556,7 @@ Ar norite jį uždaryti?"</string>
     <string name="wifi_networks_available_detailed">Pasiekiami atviri „Wi-Fi“ tinklai.</string>
     <string name="wifi_no_internet">„%1$s“ negali pasiekti interneto</string>
     <string name="wifi_no_internet_detailed">Palieskite, kad būtų rodomos parinktys.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s naudoja mobiliuosius duomenis, nes WLAN ryšys yra lėtas arba nestabilus.</string>
     <string name="wifi_notification_switch_wifi_detail">Telefonas persijungė prie mobiliųjų tinklų, nes „Wi-Fi“ tinklo ryšys buvo nestabilus.</string>
     <string name="wifi_notification_switch_wifi_title">Perjungti mobilieji duomenys</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Pavojaus pranešimai</string>
@@ -3539,9 +3598,9 @@ Ar norite jį uždaryti?"</string>
     <string name="work_profile_on_message">Taip suteiksite prieigą prie darbo programų, pranešimų, duomenų ir kitų darbo profilio funkcijų.</string>
     <string name="work_profile_on_title">Įjungti darbo profilį?</string>
     <string name="work_profile_restricted">„Auto Blocker“ įjungtas su maks. apribojimais. Siekiant apsaugoti jūsų saugumą, negalima kurti darbo profilių.</string>
-    <string name="work_profile_telephony_paused_text">Pristabdėte savo darbo programas. Iš negausite telefono skambučių ar teksto žinučių.</string>
-    <string name="work_profile_telephony_paused_title">Skambučiai ir žinutės išjungti</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Įjungti darbo profilį?</string>
+    <string name="work_profile_telephony_paused_text">Pristabdėte darbo programas. Negausite skambučių ir teksto pranešimų.</string>
+    <string name="work_profile_telephony_paused_title">Skambučiai ir pranešimai išjungti</string>
+    <string name="work_profile_telephony_paused_turn_on_button">Atš. darbo progr. pristabd.</string>
     <string name="workspace_title">Workspace</string>
     <string name="write_fail_reason_cancelled">Atšaukta</string>
     <string name="write_fail_reason_cannot_write">Klaida rašant turinį</string>
@@ -3562,9 +3621,15 @@ Ar norite jį uždaryti?"</string>
     <string name="zen_mode_duration_minutes_summary">{count,plural, =1{Vieną minutę (iki {formattedTime})}one{# minutę (iki {formattedTime})}few{# minutes (iki {formattedTime})}many{# minutės (iki {formattedTime})}other{# minučių (iki {formattedTime})}}</string>
     <string name="zen_mode_duration_minutes_summary_short">{count,plural, =1{1 min. (iki {formattedTime})}one{# min. (iki {formattedTime})}few{# min. (iki {formattedTime})}many{# min. (iki {formattedTime})}other{# min. (iki {formattedTime})}}</string>
     <string name="zen_mode_feature_name">Netrukdyti</string>
-    <string name="zen_mode_forever">Kol išjungsiu</string>
+    <string name="zen_mode_forever">Kol išjungsite</string>
     <string name="zen_mode_forever_dnd">Kol neišjungsite režimo „Netrukdyti“</string>
+    <string name="zen_mode_implicit_activated">Įjungti</string>
+    <string name="zen_mode_implicit_deactivated">Išjungti</string>
+    <string name="zen_mode_implicit_trigger_description">Tvarko „%1$s“</string>
     <string name="zen_mode_rule_name_combination">%1$s / %2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">Bet kuris kalendorius</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s–%2$s</string>
     <string name="zen_mode_until">Iki %1$s</string>
     <string name="zen_mode_until_next_day">Iki %1$s</string>
     <string name="zen_upgrade_notification_content">Palieskite, kad patikrintumėte, kas blokuojama.</string>

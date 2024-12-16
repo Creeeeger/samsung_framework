@@ -74,6 +74,12 @@
         <column default="NULL" name="blockedProviders" type="text" />
         <column default="0" name="forceProviders" type="numeric" />
     </table>
+    <table name="AUTHORIZATION">
+        <column name="adminUid" properties="NOT NULL" type="int" />
+        <column name="packageName" properties="NOT NULL" type="text" />
+        <column default="NULL" name="signature" type="text" />
+        <column name="scopeMask" properties="NOT NULL" type="int" />
+    </table>
     <table foreignkeyname="adminUid" foreignreferkey="adminUid" foreignrefertable="ADMIN" name="KNOX_CUSTOM">
         <column name="adminUid" primarykey="true" type="int" />
         <column default="0" name="sealedState" type="numeric" />
@@ -312,6 +318,12 @@
         <column default="0" name="innerPasswordMinLen" type="int" />
     </table>
     <table name="DUAL_DAR_CONFIG">
+        <column default="0" name="configValue" type="int" />
+        <column default="unknown" name="clientAppPackageName" primarykey="true" type="text" />
+        <column default="unknown" name="clientAppSignature" primarykey="true" type="text" />
+        <column default="unknown" name="clientAppLocation" primarykey="true" type="text" />
+    </table>
+    <table name="UCM_CONFIG">
         <column default="0" name="configValue" type="int" />
         <column default="unknown" name="clientAppPackageName" primarykey="true" type="text" />
         <column default="unknown" name="clientAppSignature" primarykey="true" type="text" />
@@ -760,6 +772,11 @@
         <column default="NULL" name="callerPkgName" type="text" />
         <column default="NULL" name="settingsTileBlacklist" type="text" />
     </table>
+    <table name="ENT_APP_MGMT_RT">
+        <column name="pkgName" primarykey="true" type="text" />
+        <column name="signature" type="blob" />
+        <column name="permission" type="blob" />
+    </table>
     <table name="LICENSE_LOG">
         <column name="pkgName" primarykey="true" type="text" />
         <column name="id" primarykey="true" type="text" />
@@ -796,10 +813,10 @@
     <table name="VpnAnalyticsTable">
         <column default="0" name="profileCount" properties="NULL" type="int" />
     </table>
-    <table foreignkeyname="adminUid" foreignreferkey="adminUid" foreignrefertable="ADMIN" name="VpnNotificationTable">
-        <column default="0" name="adminUid" type="int" />
+    <table foreignkeyname="adminUid" foreignreferkey="adminUid" foreignrefertable="ADMIN" name="VpnNotificationFlagTable">
+        <column name="notificationUserId" primarykey="true" properties="NOT NULL" type="int" />
+        <column name="adminUid" primarykey="true" properties="NOT NULL" type="int" />
         <column default="1" name="dismissFlag" properties="NULL" type="int" />
-        <column name="notificationUserId" primarykey="true" properties="NULL" type="int" />
     </table>
     <table foreignkeyname="profileName" foreignreferkey="profileName" foreignrefertable="VpnProfileInfo" name="VpnPackageInfo">
         <column name="profileName" properties="NULL" type="text" />
@@ -875,6 +892,11 @@
         <column name="socketConfig" properties="NULL" type="text" />
         <column name="pkgName" properties="NOT NULL" type="text" />
         <column default="0" name="pkgUid" type="int" />
+    </table>
+    <table name="UnManagedNwFilterMgr">
+        <column name="pkgName" primarykey="true" properties="NOT NULL" type="text" />
+        <column default="0" name="pkgUid" type="int" />
+        <column name="bundleInfo" properties="NULL" type="blob" />
     </table>
     <table foreignkeyname="adminUid" foreignreferkey="adminUid" foreignrefertable="ADMIN" name="EnterpriseVpn">
         <column name="adminUid" properties="NOT NULL" type="int" />

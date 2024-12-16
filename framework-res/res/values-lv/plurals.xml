@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Jūsu planšetdatora darbība nav stabila, jo ir izņemta SD karte, kurā ir instalētas programmas. Lai atjaunotu normālu darbību, jūsu planšetdators pēc %d sekundēm tiks restartēts. Pirms planšetdatora restartēšanas saglabājiet visus datus.</item>
-        <item quantity="zero">Jūsu planšetdatora darbība nav stabila, jo ir izņemta SD karte, kurā ir instalētas programmas. Lai atjaunotu normālu darbību, jūsu planšetdators pēc %d sekundēm tiks restartēts. Pirms planšetdatora restartēšanas saglabājiet visus datus.</item>
-        <item quantity="one">Jūsu planšetdatora darbība nav stabila, jo ir izņemta SD karte, kurā ir instalētas programmas. Lai atjaunotu normālu darbību, jūsu planšetdators pēc %d sekundes tiks restartēts. Pirms planšetdatora restartēšanas saglabājiet visus datus.</item>
+        <item quantity="other">Jūsu tālruņa darbība nav stabila, jo ir izņemta SD karte, kurā ir instalētas programmas. Lai atjaunotu normālu darbību, jūsu tālrunis pēc %d sekundēm tiks restartēts. Pirms tālruņa restartēšanas saglabājiet visus datus.</item>
+        <item quantity="zero">Jūsu tālruņa darbība nav stabila, jo ir izņemta SD karte, kurā ir instalētas programmas. Lai atjaunotu normālu darbību, jūsu tālrunis pēc %d sekundēm tiks restartēts. Pirms tālruņa restartēšanas saglabājiet visus datus.</item>
+        <item quantity="one">Jūsu tālruņa darbība nav stabila, jo ir izņemta SD karte, kurā ir instalētas programmas. Lai atjaunotu normālu darbību, jūsu tālrunis pēc %d sekundes tiks restartēts. Pirms tālruņa restartēšanas saglabājiet visus datus.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Planšetdators tiks rest. pēc %d sek.</item>
-        <item quantity="zero">Planšetdators tiks rest. pēc %d sek.</item>
-        <item quantity="one">Planšetdators tiks rest. pēc %d sek.</item>
+        <item quantity="other">Tālrunis tiks restartēts pēc %d sek.</item>
+        <item quantity="zero">Tālrunis tiks restartēts pēc %d sek.</item>
+        <item quantity="one">Tālrunis tiks restartēts pēc %d sek.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
@@ -104,14 +104,6 @@
         <item quantity="other">%d objekti</item>
         <item quantity="zero">%d objekti</item>
         <item quantity="one">%d objekts</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">N/A</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">Wi-Fi tīklam, ar kuru vēlaties izveidot savienojumu, vienlaikus var pievienot tikai %d ierīces. Atvienojiet visas citas ierīces no šī tīkla un pēc tam mēģiniet vēlreiz.</item>
-        <item quantity="zero">Wi-Fi tīklam, ar kuru vēlaties izveidot savienojumu, vienlaikus var pievienot tikai %d ierīces. Atvienojiet visas citas ierīces no šī tīkla un pēc tam mēģiniet vēlreiz.</item>
-        <item quantity="one">Wi-Fi tīklam, ar kuru vēlaties izveidot savienojumu, vienlaikus var pievienot tikai %d ierīci. Atvienojiet visas citas ierīces no šī tīkla un pēc tam mēģiniet vēlreiz.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

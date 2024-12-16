@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ThemeMetaData FormatVersion="1.3" GuideVersion="6.1">
-    <AppMetaData Name="AppsEdge" PackageNameSuffix="appsedge" TargetApi="21" TargetPackageName="com.sec.android.app.launcher" VersionCode="1" VersionName="">
+    <AppMetaData Name="AppsEdge" TargetApi="21" TargetPackageName="com.samsung.android.app.appsedge" VersionCode="1" VersionName="">
         <Property Comment="Status bar background color" DefaultValue="#fff2f2f2" DestAttribName="apps_edge_settings_status_bar_color" DestQualifiers="" UID="44_1-S-1" ValueRef="1-51" ValueType="Color" />
         <Property Comment="Status bar icon color" DefaultValue="true" DestAttribName="use_light_status_bar" UID="44_1-S-2" ValueRef="1-51-1" ValueType="Bool" />
         <Property Comment="App label text color" DefaultValue="#ff252525" DestAttribName="app_label_text_color" DestQualifiers="" UID="44_1-1-1" ValueRef="1-3-1" ValueType="Color" />
@@ -25,7 +25,6 @@
         <Property Comment="Search bar input text color" DefaultValue="#ff252525" DestAttribName="search_bar_input_text_color" DestQualifiers="" UID="44_1-7-3" ValueRef="1-59-3" ValueType="Color" />
         <Property Comment="Search bar icon tint color" DefaultValue="#ff252525" DestAttribName="search_bar_icon_tint_color" DestQualifiers="" UID="44_1-7-4" ValueRef="1-59-8" ValueType="Color" />
         <Property Comment="Input primary text color" DefaultValue="#ff0072de" DestAttribName="input_primary_text_color" DestQualifiers="" UID="44_1-7-5" ValueRef="1-59-9" ValueType="Color" />
-        <Property Comment="all apps search cursor color" DefaultValue="#ff0381fe" DestAttribName="all_apps_search_cursor_color" DestQualifiers="" POption="AlwaysOverriden" UID="44_1-7-6" ValueRef="1-A" ValueType="Color" />
         <Property Comment="spinner pop up background color" DefaultValue="#ccfcfcfc" DestAttribName="spinner_pop_up_background_color" DestQualifiers="" POption="AlwaysOverriden" UID="44_1-8-1" ValueRef="1-9-1" ValueType="Color" />
         <Property Comment="spinner pop up background" DefaultValue="" DestAttribName="spinner_pop_up_background" DestQualifiers="xxxhdpi" ImageSize="20X20" POption="FIXEDSIZE" UID="44_1-8-2" ValueRef="1-10-1-1" ValueType="BgImage" />
         <Property Comment="spinner pop up background stroke color" DefaultValue="#26cccccc" DestAttribName="spinner_pop_up_background_stroke_color" DestQualifiers="" POption="AlwaysOverriden" UID="44_1-8-3" ValueRef="1-C" ValueType="Color" />

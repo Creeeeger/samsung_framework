@@ -43,7 +43,7 @@
     <string name="ColrMmi">Sekatan ID Laluan yang disambungkan</string>
     <string name="CwMmi">Panggilan menunggu</string>
     <string name="DndMmi">Jangan ganggu</string>
-    <string name="EmergencyCallWarningSummary">Tidak boleh membuat panggilan kecemasan melalui Wi-Fi</string>
+    <string name="EmergencyCallWarningSummary">Rangkaian mudah alih diperlukan untuk membuat panggilan kecemasan</string>
     <string name="EmergencyCallWarningTitle">Panggilan kecemasan tidak tersedia</string>
     <string name="Midnight">Tengah malam</string>
     <string name="NetworkPreferenceSwitchSummary">Cuba tukar rangkaian pilihan. Ketik untuk menukar.</string>
@@ -174,18 +174,23 @@
     <string name="accessibility_button_prompt_text">Pilih ciri yang hendak digunakan apabila anda mengetik butang kebolehaksesan:</string>
     <string name="accessibility_dialog_button_allow">Benarkan</string>
     <string name="accessibility_dialog_button_deny">Tolak</string>
+    <string name="accessibility_dialog_button_uninstall">Nyahpasang</string>
+    <string name="accessibility_dialog_touch_filtered_warning">Apl menghalang permintaan kebenaran, maka jawapan anda tidak dapat disahkan.</string>
     <string name="accessibility_edit_shortcut_menu_button_title">Pilih ciri untuk digunakan dengan butang kebolehaksesan</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">Pilih ciri untuk digunakan dengan pintasan kekunci kelantangan</string>
     <string name="accessibility_enable_service_title">Benarkan %1$s mempunyai kawalan penuh atas peranti anda?</string>
-    <string name="accessibility_freeform_caption">Bar kapsyen %1$s.</string>
     <string name="accessibility_gesture_3finger_instructional_text">Untuk beralih antara ciri, leret ke atas menggunakan tiga jari dan tahan.</string>
     <string name="accessibility_gesture_3finger_prompt_text">Pilih ciri untuk digunakan dengan gerak isyarat kebolehaksesan (leret ke atas dari bahagian bawah skrin menggunakan tiga jari):</string>
     <string name="accessibility_gesture_instructional_text">Untuk beralih antara ciri, leret ke atas menggunakan dua jari dan tahan.</string>
     <string name="accessibility_gesture_prompt_text">Pilih ciri untuk digunakan dengan gerak isyarat kebolehaksesan (leret ke atas dari bahagian bawah skrin menggunakan dua jari):</string>
+    <string name="accessibility_label_clone_profile">Klon</string>
+    <string name="accessibility_label_communal_profile">Umum</string>
+    <string name="accessibility_label_managed_profile">Profil kerja</string>
+    <string name="accessibility_label_private_profile">Ruang persendirian</string>
     <string name="accessibility_magnification_chooser_text">Pembesaran</string>
     <string name="accessibility_select_shortcut_menu_title">Ketik ciri untuk mula menggunakan ciri itu:</string>
     <string name="accessibility_service_action_perform_description">Ciri ini boleh menjejaki interaksi anda dengan apl atau penderia perkakasan dan berinteraksi dengan apl bagi pihak anda.</string>
-    <string name="accessibility_service_action_perform_title">Lihat dan laksanakan tindakan</string>
+    <string name="accessibility_service_action_perform_title">Melihat dan melaksanakan tindakan</string>
     <string name="accessibility_service_screen_control_description">Ciri ini boleh membaca semua kandungan pada skrin dan memaparkan kandungan di atas apl lain.</string>
     <string name="accessibility_service_screen_control_title">Melihat dan mengawal skrin</string>
     <string name="accessibility_service_warning_description">Kawalan penuh sesuai untuk apl yang membantu anda berkaitan dengan keperluan kebolehaksesan tetapi bukan untuk kebanyakan apl.</string>
@@ -263,18 +268,21 @@ Anda boleh menukar pintasan ini kepada ciri lain dalam Tetapan > Kebolehaksesan.
     <string name="aerr_wait">Tunggu</string>
     <string name="alert_windows_notification_channel_group_name">Paparkan di atas apl lain</string>
     <string name="alert_windows_notification_channel_name">%s dipaparkan di atas apl lain</string>
-    <string name="alert_windows_notification_message">Jika anda tidak mahu %s menggunakan ciri ini, ketik untuk membuka tetapan dan matikannya.</string>
+    <string name="alert_windows_notification_message">Jika anda tidak mahu %s menggunakan ciri ini, ketik untuk membuka tetapan dan matikan ciri tersebut.</string>
     <string name="alert_windows_notification_title">%s dipaparkan di atas apl lain</string>
     <string name="alert_windows_notification_turn_off_action">Matikan</string>
     <string name="allow">Benarkan</string>
+    <string name="alternative_face_setup_notification_content">Gunakan Buka Kunci Wajah apabila cap jari anda tidak dapat dicam, seperti apabila jari anda basah</string>
+    <string name="alternative_fp_setup_notification_content">Gunakan Buka Kunci Cap Jari apabila wajah anda tidak dapat dicam, seperti apabila cahaya tidak mencukupi</string>
+    <string name="alternative_unlock_setup_notification_title">Cuba cara lain untuk membuka kunci</string>
     <string name="alwaysUse">Gunakannya secara lalai untuk tindakan ini.</string>
     <string name="android_preparing_apk">Menyediakan %1$s.</string>
-    <string name="android_start_title">Tablet sedang dimulakan…</string>
+    <string name="android_start_title">Telefon sedang dimulakan…</string>
     <string name="android_system_label">Sistem Android</string>
     <string name="android_upgrading_complete">But akhir.</string>
     <string name="android_upgrading_notification_title">Menyelesaikan kemas kini sistem…</string>
     <string name="android_upgrading_starting_apps">Memulakan apl.</string>
-    <string name="android_upgrading_title">Tablet sedang mengemas kini…</string>
+    <string name="android_upgrading_title">Telefon sedang mengemas kini…</string>
     <string name="anr_activity_application">%2$s tidak bertindak balas</string>
     <string name="anr_activity_process">%1$s tidak bertindak balas</string>
     <string name="anr_application_process">%1$s tidak bertindak balas</string>
@@ -295,16 +303,17 @@ Anda boleh menukar pintasan ini kepada ciri lain dalam Tetapan > Kebolehaksesan.
     <string name="app_not_found">Tidak menemui aplikasi untuk mengendalikan tindakan ini</string>
     <string name="app_running_notification_text">Ketik untuk mendapatkan maklumat lanjut atau menghentikan apl.</string>
     <string name="app_running_notification_title">%1$s sedang berjalan</string>
-    <string name="app_streaming_blocked_message">Aplikasi ini tidak boleh diakses pada %1$s anda pada masa ini. Cuba pada tablet anda.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Apl ini meminta keselamatan tambahan. Cuba pada tablet anda.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Apl ini tidak boleh diakses pada %1$s anda. Cuba pada tablet anda.</string>
+    <string name="app_streaming_blocked_message">Aplikasi ini tidak boleh diakses pada %1$s anda pada masa ini. Cuba pada telefon anda.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Apl ini meminta keselamatan tambahan. Cuba pada telefon anda.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">Apl ini meminta kebenaran tambahan tetapi kebenaran tidak boleh diberikan dalam sesi penstriman. Berikan kebenaran pada telefon anda dahulu.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Apl ini tidak boleh diakses pada %1$s anda. Cuba pada telefon anda.</string>
     <string name="app_streaming_blocked_title">%1$s tidak tersedia</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kamera tidak tersedia</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Teruskan pada telefon</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofon tidak tersedia</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">Kebenaran diperlukan</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">Permintaan kebenaran disekat</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store tidak tersedia</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Tetapan tablet tidak tersedia</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Tetapan telefon tidak tersedia</string>
     <string name="app_suspended_default_message">%1$s tidak tersedia sekarang. Ini diurus oleh %2$s.</string>
     <string name="app_suspended_more_details">Ketahui lebih lanjut</string>
     <string name="app_suspended_title">Apl tidak tersedia</string>
@@ -337,27 +346,30 @@ Anda boleh menukar pintasan ini kepada ciri lain dalam Tetapan > Kebolehaksesan.
     <string name="autofill_save_yes">Simpan</string>
     <string name="autofill_update_title">Kemas kini dalam <b>%1$s</b>?</string>
     <string name="autofill_update_title_with_2types">Kemas kini %1$s dan %2$s dalam <b>%3$s</b>?</string>
-    <string name="autofill_update_title_with_3types">Kemas kini item ini dalam <b>%4$s</b>: %1$s, %2$s dan %3$s ?</string>
+    <string name="autofill_update_title_with_3types">Kemas kinikan item ini dalam <b>%4$s</b>: %1$s, %2$s dan %3$s ?</string>
     <string name="autofill_update_title_with_type">Kemas kini %1$s dalam <b>%2$s</b>?</string>
     <string name="autofill_update_yes">Kemas kini</string>
     <string name="autofill_window_title">Autolengkap dengan %1$s</string>
     <string name="back_button_label">Kembali</string>
     <string name="badPin">PIN lama yang anda taipkan tidak betul.</string>
     <string name="badPuk">Kod PUK yang anda taipkan tidak betul.</string>
-    <string name="battery_saver_charged_notification_summary">Cas tablet mencukupi. Ciri tidak lagi dihadkan.</string>
+    <string name="battery_saver_charged_notification_summary">Cas telefon mencukupi. Ciri tidak lagi dihadkan.</string>
     <string name="battery_saver_description">Penjimat Bateri menghidupkan tema Gelap dan mengehadkan atau mematikan aktiviti latar, sesetengah kesan visual, ciri tertentu dan sesetengah sambungan rangkaian.</string>
     <string name="battery_saver_description_with_learn_more">Penjimat Bateri menghidupkan tema Gelap dan mengehadkan atau mematikan aktiviti latar, sesetengah kesan visual, ciri tertentu dan sesetengah sambungan rangkaian.</string>
     <string name="battery_saver_notification_channel_name">Penjimat Bateri</string>
     <string name="battery_saver_off_notification_title">Penjimat Bateri dimatikan</string>
     <string name="beforeOneMonthDurationPast">Sebelum 1 bulan yang lalu</string>
     <string name="biometric_app_setting_name">Gunakan biometrik</string>
+    <string name="biometric_dangling_notification_action_not_now">Bukan sekarang</string>
+    <string name="biometric_dangling_notification_action_set_up">Sediakan</string>
     <string name="biometric_dialog_default_subtitle">Gunakan biometrik anda untuk meneruskan</string>
-    <string name="biometric_dialog_default_title">Sahkan itu anda</string>
+    <string name="biometric_dialog_default_title">Sahkan diri anda</string>
     <string name="biometric_error_canceled">Pengesahan dibatalkan</string>
     <string name="biometric_error_device_not_secured">Pin, corak atau kata laluan tidak ditetapkan</string>
     <string name="biometric_error_generic">Ralat semasa membuat pengesahan</string>
     <string name="biometric_error_hw_unavailable">Perkakasan biometrik tidak tersedia</string>
     <string name="biometric_error_user_canceled">Pengesahan dibatalkan</string>
+    <string name="biometric_face_not_recognized">Wajah tidak dikenali</string>
     <string name="biometric_not_recognized">Tidak dikenali</string>
     <string name="biometric_or_screen_lock_app_setting_name">Gunakan biometrik atau kunci skrin</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">Gunakan biometrik atau kunci skrin anda untuk meneruskan pengesahan</string>
@@ -411,7 +423,7 @@ Anda boleh menukar pintasan ini kepada ciri lain dalam Tetapan > Kebolehaksesan.
     <string name="chooseUsbActivity">Pilih aplikasi untuk peranti USB.</string>
     <string name="choose_account_label">Pilih akaun</string>
     <string name="chooser_all_apps_button_label">Senarai apl</string>
-    <string name="chooser_no_direct_share_targets">Tiada orang yang disyorkan untuk berkongsi</string>
+    <string name="chooser_no_direct_share_targets">Tiada orang yang disyorkan untuk membuat perkongsian</string>
     <string name="chooser_wallpaper">Tukar hiasan latar</string>
     <string name="clearDefaultHintMsg">Padam bersih lalai dalam tetapan Sistem > Apl > Dimuat turun.</string>
     <string name="clone_profile_label_badge">%1$s Klon</string>
@@ -424,7 +436,7 @@ Anda boleh menukar pintasan ini kepada ciri lain dalam Tetapan > Kebolehaksesan.
     <string name="concurrent_display_notification_name">Dwiskrin</string>
     <string name="concurrent_display_notification_power_save_content">Dual Screen tidak tersedia kerana Penjimat Bateri dihidupkan. Anda boleh mematikan ciri ini dalam Tetapan.</string>
     <string name="concurrent_display_notification_power_save_title">Dual Screen tidak tersedia</string>
-    <string name="concurrent_display_notification_thermal_content">Dwiskrin tidak tersedia kerana telefon anda terlalu panas</string>
+    <string name="concurrent_display_notification_thermal_content">Dual Screen tidak tersedia kerana telefon anda terlalu panas</string>
     <string name="concurrent_display_notification_thermal_title">Peranti terlalu panas</string>
     <string name="condition_provider_service_binding_label">Pembekal keadaan</string>
     <string name="conference_call">Panggilan Sidang</string>
@@ -433,11 +445,16 @@ Anda boleh menukar pintasan ini kepada ciri lain dalam Tetapan > Kebolehaksesan.
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">OK</string>
+    <string name="connected_display_thermally_unavailable_notification_content">Peranti anda terlalu panas dan tidak dapat dicerminkan kepada paparan sehingga peranti sejuk</string>
+    <string name="connected_display_unavailable_notification_content">Gunakan kabel lain dan cuba lagi</string>
+    <string name="connected_display_unavailable_notification_title">Tidak dapat menyegerakkan kepada paparan</string>
     <string name="console_running_notification_message">Prestasi terjejas. Untuk melumpuhkan, semak pemuat but.</string>
     <string name="console_running_notification_title">Konsol bersiri didayakan</string>
     <string name="contentServiceSync">Penyegerakan</string>
     <string name="contentServiceSyncNotificationTitle">Tidak dapat menyegerak</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">Cuba memadamkan terlalu banyak %s.</string>
+    <string name="content_description_collapsed">Dikuncupkan</string>
+    <string name="content_description_expanded">Dikembangkan</string>
     <string name="content_description_sliding_handle">Pemegang gelongsor. Sentuh &amp; tahan.</string>
     <string name="conversation_single_line_image_placeholder">menghantar imej</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -454,7 +471,7 @@ Kelantangan fon kepala tinggi melebihi tempoh yang disyorkan. Kelantangan ini bo
     <string name="csd_momentary_exposure_warning">"Bunyi kuat telah dikesan
 
 Kelantangan fon kepala lebih tinggi daripada tahap yang disyorkan. Kelantangan ini boleh merosakkan pendengaran anda"</string>
-    <string name="data_saver_description">Untuk membantu penggunaan data dikurangkan, Penjimat Data menghalang sesetengah apl daripada menghantar atau menerima data di latar. Apl yang sedang digunakan boleh mengakses data tetapi mungkin tidak secara kerap. Perkara ini mungkin bermaksud bahawa imej tidak dipaparkan sehingga anda mengetik pada imej itu, contohnya.</string>
+    <string name="data_saver_description">Untuk mengurangkan penggunaan data, Penjimat Data menghalang sesetengah apl daripada menghantar atau menerima data di latar. Apl yang sedang digunakan boleh mengakses data tetapi mungkin tidak secara kerap. Sebagai contoh, imej tidak dipaparkan sehingga anda mengetik pada imej itu.</string>
     <string name="data_saver_enable_button">Hidupkan</string>
     <string name="data_saver_enable_title">Hidupkan Penjimat Data?</string>
     <string name="data_usage_limit_body">Data dijeda untuk baki kitaran anda</string>
@@ -486,7 +503,7 @@ Kelantangan fon kepala lebih tinggi daripada tahap yang disyorkan. Kelantangan i
     <string name="decline">Tolak</string>
     <string name="decline_remote_bugreport_action">TOLAK</string>
     <string name="default_audio_route_category_name">Sistem</string>
-    <string name="default_audio_route_name">Tablet</string>
+    <string name="default_audio_route_name">Telefon</string>
     <string name="default_audio_route_name_dock_speakers">Pembesar suara dok</string>
     <string name="default_audio_route_name_external_device">Peranti Luar</string>
     <string name="default_audio_route_name_headphones">Fon kepala</string>
@@ -508,6 +525,7 @@ Kelantangan fon kepala lebih tinggi daripada tahap yang disyorkan. Kelantangan i
     <string name="device_state_notification_settings_button">Akses Tetapan</string>
     <string name="device_state_notification_turn_off_button">Matikan</string>
     <string name="device_storage_monitor_notification_channel">Storan peranti</string>
+    <string name="device_unlock_notification_name">Buka kunci peranti</string>
     <string name="dial_number_using">"Dail nombor
 menggunakan %s"</string>
     <string name="disable_accessibility_shortcut">Matikan pintasan</string>
@@ -525,6 +543,7 @@ menggunakan %s"</string>
     <string name="dlg_ok">OK</string>
     <string name="done_accessibility_shortcut_menu_button">Selesai</string>
     <string name="done_label">Selesai</string>
+    <string name="dream_accessibility_action_click">ketepikan</string>
     <string name="dream_preview_title">Pratonton, %1$s</string>
     <string name="dump_heap_notification">%1$s melebihi had memori</string>
     <string name="dump_heap_notification_detail">Longgokan timbunan dikumpulkan. Ketik untuk berkongsi.</string>
@@ -551,7 +570,9 @@ menggunakan %s"</string>
     <string name="duration_years_shortest_future">dalam %dt</string>
     <string name="dynamic_mode_notification_channel_name">Pemberitahuan maklumat Mod Rutin</string>
     <string name="dynamic_mode_notification_summary">Mengurangkan penggunaan bateri untuk melanjutkan hayat bateri</string>
+    <string name="dynamic_mode_notification_summary_v2">Penjimat Bateri dihidupkan untuk melanjutkan hayat bateri</string>
     <string name="dynamic_mode_notification_title">Penjimat Bateri dihidupkan</string>
+    <string name="dynamic_mode_notification_title_v2">Penjimat Bateri dihidupkan</string>
     <string name="editTextMenuTitle">Tindakan teks</string>
     <string name="edit_accessibility_shortcut_menu_button">Edit pintasan</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
@@ -564,8 +585,10 @@ menggunakan %s"</string>
     <string name="emergency_call_dialog_number_for_display">Nombor kecemasan</string>
     <string name="emergency_calls_only">Panggilan kecemasan sahaja</string>
     <string name="enablePin">Tidak berjaya, dayakan Kunci SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s ingin mendayakan Teroka melalui Sentuhan. Apabila Teroka melalui Sentuhan didayakan, anda boleh mendengar atau melihat penerangan tentang apa-apa di bawah jari anda atau melakukan gerak isyarat untuk berinteraksi dengan tablet.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s ingin mendayakan Teroka melalui Sentuhan. Apabila Teroka melalui Sentuhan didayakan, anda boleh mendengar atau melihat penerangan tentang apa-apa di bawah jari anda atau melakukan gerak isyarat untuk berinteraksi dengan telefon.</string>
     <string name="enable_explore_by_touch_warning_title">Dayakan Teroka melalui Sentuhan?</string>
+    <string name="error_handwriting_unsupported">Tulisan tangan tidak disokong dalam medan ini</string>
+    <string name="error_handwriting_unsupported_password">Tulisan tangan tidak disokong dalam medan kata laluan</string>
     <string name="error_message_change_not_allowed">Perubahan ini tidak dibenarkan oleh pentadbir anda</string>
     <string name="error_message_title">Ralat</string>
     <string name="etws_primary_default_message_earthquake">Bertenang dan cari perlindungan di kawasan yang berdekatan.</string>
@@ -634,7 +657,7 @@ menggunakan %s"</string>
     <string name="face_acquired_dark_glasses_detected_alt">Cermin mata gelap dikesan. Wajah anda mesti terlihat sepenuhnya.</string>
     <string name="face_acquired_insufficient">Tidak dapat membuat model wajah anda. Cuba lagi.</string>
     <string name="face_acquired_mouth_covering_detected_alt">Pelitup muka dikesan. Wajah anda mesti kelihatan sepenuhnya.</string>
-    <string name="face_acquired_not_detected">Wajah tidak kelihatan. Pegang telefon pada paras mata.</string>
+    <string name="face_acquired_not_detected">Wajah tidak kelihatan. Pegang telefon pada aras mata.</string>
     <string name="face_acquired_obscured">Tanggalkan apa-apa yang menutup wajah anda.</string>
     <string name="face_acquired_pan_too_extreme">Lihat lebih lurus pada telefon</string>
     <string name="face_acquired_poor_gaze">Sila lihat terus pada peranti anda.</string>
@@ -646,17 +669,19 @@ menggunakan %s"</string>
     <string name="face_acquired_too_bright">Terlalu terang. Cuba pencahayaan yang lebih lembut.</string>
     <string name="face_acquired_too_close">Jauhkan telefon</string>
     <string name="face_acquired_too_dark">Cahaya tidak mencukupi</string>
-    <string name="face_acquired_too_different">Tidak dapat mengecam wajah. Cuba lagi.</string>
+    <string name="face_acquired_too_different">Wajah tidak dikenali. Cuba lagi.</string>
     <string name="face_acquired_too_far">Dekatkan telefon</string>
     <string name="face_acquired_too_high">Tinggikan lagi telefon</string>
-    <string name="face_acquired_too_left">Gerakkan telefon ke kanan anda</string>
+    <string name="face_acquired_too_left">Gerakkan telefon ke kanan</string>
     <string name="face_acquired_too_low">Rendahkan lagi telefon</string>
     <string name="face_acquired_too_much_motion">Terlalu bnyk gerakan. Pegang telefon dgn stabil.</string>
-    <string name="face_acquired_too_right">Gerakkan telefon ke kiri anda</string>
+    <string name="face_acquired_too_right">Gerakkan telefon ke kiri</string>
     <string name="face_acquired_too_similar">Tukar sedikit kedudukan kepala anda</string>
     <string name="face_app_setting_name">Gunakan Buka Kunci Wajah</string>
     <string name="face_authenticated_confirmation_required">Wajah disahkan, sila tekan sahkan</string>
     <string name="face_authenticated_no_confirmation_required">Wajah disahkan</string>
+    <string name="face_dangling_notification_msg">Model wajah anda tidak dapat dicam lagi. Sediakan semula Buka Kunci Wajah.</string>
+    <string name="face_dangling_notification_title">Sediakan semula Buka Kunci Wajah</string>
     <string name="face_dialog_default_subtitle">Gunakan wajah untuk teruskan</string>
     <string name="face_error_canceled">Pengendalian wajah dibatalkan.</string>
     <string name="face_error_hw_not_available">Tdk dpt sahkan wajah. Perkakasan tidak tersedia.</string>
@@ -679,8 +704,6 @@ menggunakan %s"</string>
     <string name="face_recalibrate_notification_name">Buka Kunci Wajah</string>
     <string name="face_recalibrate_notification_title">Isu dengan Buka Kunci Wajah</string>
     <string name="face_sensor_privacy_enabled">Untuk menggunakan Buka Kunci Wajah, hidupkan <b>akses Kamera</b> dalam Tetapan > Privasi</string>
-    <string name="face_setup_notification_content">Buka kunci telefon anda dengan melihat telefon anda</string>
-    <string name="face_setup_notification_title">Sediakan Buka Kunci Wajah</string>
     <string name="faceunlock_multiple_failures">Telah melepasi had cubaan Buka Kunci Wajah</string>
     <string name="factory_reset_message">"Apl pentadbir tidak dapat digunakan. Peranti anda akan dipadamkan sekarang.
 
@@ -705,7 +728,7 @@ Jika anda ingin mengemukakan soalan, hubungi pentadbir organisasi anda."</string
     <string name="fingerprint_acquired_imager_dirty">Bersihkan penderia cap jari dan cuba lagi</string>
     <string name="fingerprint_acquired_imager_dirty_alt">Bersihkan penderia dan cuba lagi</string>
     <string name="fingerprint_acquired_immobile">Ubah sedikit kedudukan jari pada setiap percubaan</string>
-    <string name="fingerprint_acquired_insufficient">Tidak dapat mengecam cap jari. Cuba lagi.</string>
+    <string name="fingerprint_acquired_insufficient">Cap jari tidak dikenali. Cuba lagi.</string>
     <string name="fingerprint_acquired_partial">Tekan penderia dengan kuat</string>
     <string name="fingerprint_acquired_power_press">Penekanan Kuasa dikesan</string>
     <string name="fingerprint_acquired_too_bright">Terlalu terang</string>
@@ -714,21 +737,27 @@ Jika anda ingin mengemukakan soalan, hubungi pentadbir organisasi anda."</string
     <string name="fingerprint_acquired_try_adjusting">Cuba selaraskan</string>
     <string name="fingerprint_app_setting_name">Gunakan cap jari</string>
     <string name="fingerprint_authenticated">Cap jari disahkan</string>
+    <string name="fingerprint_dangling_notification_msg_1">%s tidak dapat dicam lagi.</string>
+    <string name="fingerprint_dangling_notification_msg_2">%1$s dan %2$s tidak dapat dicam lagi.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_1">%s tidak dapat dicam lagi. Sediakan semula Buka Kunci Cap Jari.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_2">%1$s dan %2$s tidak dapat dicam lagi. Sediakan semula Buka Kunci Cap Jari.</string>
+    <string name="fingerprint_dangling_notification_title">Sediakan Buka Kunci Cap Jari sekali lagi</string>
     <string name="fingerprint_dialog_default_subtitle">Gunakan cap jari anda untuk teruskan</string>
-    <string name="fingerprint_error_bad_calibration">Tidak boleh menggunakan penderia cap jari. Lawati penyedia pembaikan</string>
-    <string name="fingerprint_error_canceled">Pengendalian cap jari dibatalkan.</string>
-    <string name="fingerprint_error_hw_not_available">Perkakasan cap jari tidak tersedia.</string>
-    <string name="fingerprint_error_hw_not_present">Peranti ini tiada penderia cap jari.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">Wajah tidak dikenali. Gunakan cap jari.</string>
+    <string name="fingerprint_error_bad_calibration">Tidak dapat menggunakan penderia cap jari. Lawati penyedia pembaikan.</string>
+    <string name="fingerprint_error_canceled">Pengendalian cap jari dibatalkan</string>
+    <string name="fingerprint_error_hw_not_available">Perkakasan cap jari tidak tersedia</string>
+    <string name="fingerprint_error_hw_not_present">Peranti ini tiada penderia cap jari</string>
     <string name="fingerprint_error_lockout">Terlalu banyak percubaan. Gunakan kunci skrin.</string>
     <string name="fingerprint_error_lockout_permanent">Terlalu banyak percubaan. Gunakan kunci skrin.</string>
-    <string name="fingerprint_error_no_fingerprints">Tiada cap jari didaftarkan.</string>
+    <string name="fingerprint_error_no_fingerprints">Tiada cap jari didaftarkan</string>
     <string name="fingerprint_error_no_space">Tidak dapat menyediakan cap jari</string>
     <string name="fingerprint_error_not_match">Cap jari tidak dikenali</string>
     <string name="fingerprint_error_power_pressed">Butang kuasa ditekan</string>
-    <string name="fingerprint_error_security_update_required">Penderia dilumpuhkan sementara.</string>
+    <string name="fingerprint_error_security_update_required">Penderia dilumpuhkan untuk sementara</string>
     <string name="fingerprint_error_timeout">Persediaan cap jari telah tamat masa. Cuba lagi.</string>
     <string name="fingerprint_error_unable_to_process">Tidak dapat memproses cap jari. Cuba lagi.</string>
-    <string name="fingerprint_error_user_canceled">Pengendalian cap jari dibatalkan oleh pengguna.</string>
+    <string name="fingerprint_error_user_canceled">Pengendalian cap jari dibatalkan oleh pengguna</string>
     <string name="fingerprint_error_vendor_unknown">Kesilapan telah berlaku. Cuba lagi.</string>
     <string name="fingerprint_name_template">Jari %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">Gunakan cap jari atau kunci skrin</string>
@@ -736,8 +765,6 @@ Jika anda ingin mengemukakan soalan, hubungi pentadbir organisasi anda."</string
     <string name="fingerprint_recalibrate_notification_content">Lawati penyedia pembaikan.</string>
     <string name="fingerprint_recalibrate_notification_name">Buka Kunci Cap Jari</string>
     <string name="fingerprint_recalibrate_notification_title">Tidak boleh menggunakan penderia cap jari</string>
-    <string name="fingerprint_setup_notification_content">Ketik untuk menambahkan cap jari</string>
-    <string name="fingerprint_setup_notification_title">Sediakan lebih banyak cara untuk membuka kunci</string>
     <string name="fingerprint_udfps_error_not_match">Cap jari tidak dikenali</string>
     <string name="fingerprints">Cap jari:</string>
     <string name="floating_toolbar_close_overflow_description">Tutup limpahan</string>
@@ -779,7 +806,7 @@ Cuba ketik dengan perlahan semasa menetapkan cap jari anda."</string>
     <string name="global_action_silent_mode_on_status">Bunyi DIMATIKAN</string>
     <string name="global_action_toggle_silent_mode">Mod senyap</string>
     <string name="global_action_voice_assist">Bantuan Suara</string>
-    <string name="global_actions">Pilihan tablet</string>
+    <string name="global_actions">Pilihan telefon</string>
     <string name="global_actions_airplane_mode_off_status">Mod Pesawat DIMATIKAN</string>
     <string name="global_actions_airplane_mode_on_status">Mod Pesawat DIHIDUPKAN</string>
     <string name="global_actions_toggle_airplane_mode">Mod pesawat</string>
@@ -798,7 +825,7 @@ Cuba ketik dengan perlahan semasa menetapkan cap jari anda."</string>
     <string name="granularity_label_link">pautan</string>
     <string name="granularity_label_word">perkataan</string>
     <string name="guest_name">Tetamu</string>
-    <string name="hardware">Tunjukkan papan kekunci maya</string>
+    <string name="hardware">Guna papan kekunci pada skrin</string>
     <string name="harmful_app_warning_open_anyway">BUKA JUGA</string>
     <string name="harmful_app_warning_title">Apl berbahaya dikesan</string>
     <string name="harmful_app_warning_uninstall">NYAHPASANG</string>
@@ -846,7 +873,7 @@ Cuba ketik dengan perlahan semasa menetapkan cap jari anda."</string>
     <string name="ime_action_search">Cari</string>
     <string name="ime_action_send">Hantar</string>
     <string name="imei">IMEI</string>
-    <string name="immersive_cling_description">Untuk keluar, leret dari atas ke bawah.</string>
+    <string name="immersive_cling_description">Untuk keluar, leret ke bawah daripada bahagian atas skrin anda</string>
     <string name="immersive_cling_positive">Faham</string>
     <string name="immersive_cling_title">Melihat skrin penuh</string>
     <string name="importance_from_person">Mesej ini penting disebabkan orang yang terlibat.</string>
@@ -920,11 +947,11 @@ Adakah anda pasti anda mahu menavigasi keluar dari halaman ini?"</string>
     <string name="keyguard_password_entry_touch_hint"><font size="17">Ketik untuk menaip kata laluan</font></string>
     <string name="keyguard_password_wrong_pin_code">Kod PIN salah.</string>
     <string name="kg_enter_confirm_pin_hint">Sahkan kod PIN yang diingini</string>
-    <string name="kg_failed_attempts_almost_at_login">"Anda telah tersilap melukis corak buka kunci sebanyak %1$d kali. Selepas %2$d lagi percubaan yang tidak berjaya, anda akan diminta membuka kunci tablet anda menggunakan log masuk Google anda.
+    <string name="kg_failed_attempts_almost_at_login">"Anda telah tersilap lukis corak buka kunci sebanyak %1$d kali. Selepas %2$d lagi percubaan yang tidak berjaya, anda akan diminta membuka kunci telefon anda menggunakan log masuk Google anda.
 
  Cuba lagi dalam %3$d saat."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Anda telah mencuba untuk membuka kunci tablet dengan salah sebanyak %1$d kali. Selepas %2$d lagi percubaan yang tidak berjaya, tablet akan ditetapkan semula kepada tetapan lalai kilang dan semua data pengguna akan hilang.</string>
-    <string name="kg_failed_attempts_now_wiping">Anda telah mencuba untuk membuka kunci tablet secara salah sebanyak %d kali. Tablet kini akan ditetapkan semula ke tetapan lalai kilang.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Anda telah mencuba untuk membuka kunci telefon dengan salah sebanyak %1$d kali. Selepas %2$d lagi percubaan yang tidak berjaya, telefon akan ditetapkan semula kepada tetapan lalai kilang dan semua data pengguna akan hilang.</string>
+    <string name="kg_failed_attempts_now_wiping">Anda telah mencuba untuk membuka kunci telefon secara salah sebanyak %d kali. Telefon kini akan ditetapkan semula ke tetapan lalai kilang.</string>
     <string name="kg_forgot_pattern_button_text">Lupa Corak</string>
     <string name="kg_invalid_confirm_pin_hint">Kod PIN tidak sepadan</string>
     <string name="kg_invalid_puk">Masukkan semula kod PIN yang betul. Percubaan berulang akan melumpuhkan SIM secara kekal.</string>
@@ -933,7 +960,7 @@ Adakah anda pasti anda mahu menavigasi keluar dari halaman ini?"</string>
     <string name="kg_login_account_recovery_hint">"Lupa nama pengguna atau kata laluan anda?
 Lawati"<b>google.com/accounts/recovery</b>.</string>
     <string name="kg_login_checking_password">Menyemak akaun…</string>
-    <string name="kg_login_instructions">Untuk membuka kunci, log masuk dengan akaun Google anda.</string>
+    <string name="kg_login_instructions">Untuk membuka kunci, log masuk dengan Google Account anda.</string>
     <string name="kg_login_invalid_input">Nama pengguna atau kata laluan tidak sah.</string>
     <string name="kg_login_password_hint">Kata laluan</string>
     <string name="kg_login_submit_button">Log masuk</string>
@@ -989,17 +1016,17 @@ Cuba lagi dalam %2$d saat."</string>
     <string name="lockscreen_access_pattern_start">Corak dimulakan</string>
     <string name="lockscreen_carrier_default">Tiada perkhidmatan</string>
     <string name="lockscreen_emergency_call">Kecemasan</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Anda telah mencuba untuk membuka kunci tablet dengan salah sebanyak %1$d kali. Selepas %2$d lagi percubaan yang tidak berjaya, tablet akan ditetapkan semula kepada tetapan lalai kilang dan semua data pengguna akan hilang.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Anda telah tersilap melukis corak buka kunci sebanyak %1$d kali. Selepas %2$d lagi percubaan yang tidak berjaya, anda akan diminta membuka kunci tablet anda menggunakan log masuk Google anda.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Anda telah mencuba untuk membuka kunci telefon dengan salah sebanyak %1$d kali. Selepas %2$d lagi percubaan yang tidak berjaya, telefon akan ditetapkan semula kepada tetapan lalai kilang dan semua data pengguna akan hilang.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Anda telah tersilap lukis corak buka kunci sebanyak %1$d kali. Selepas %2$d lagi percubaan yang tidak berjaya, anda akan diminta membuka kunci telefon anda menggunakan log masuk Google anda.
 
- Cuba lagi dalam %3$d saat."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Anda telah mencuba untuk membuka kunci tablet secara salah sebanyak %d kali. Tablet kini akan ditetapkan semula ke tetapan lalai kilang.</string>
+ Sila cuba lagi dalam %3$d saat."</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Anda telah mencuba untuk membuka kunci telefon secara salah sebanyak %d kali. Telefon kini akan ditetapkan semula kepada tetapan lalai kilang.</string>
     <string name="lockscreen_forgot_pattern_button_text">Lupa corak?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Lupa nama pengguna atau kata laluan anda?
 Lawati "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_glogin_checking_password">Menyemak…</string>
     <string name="lockscreen_glogin_forgot_pattern">Buka kunci akaun</string>
-    <string name="lockscreen_glogin_instructions">Untuk membuka kunci, log masuk dengan akaun Google anda.</string>
+    <string name="lockscreen_glogin_instructions">Untuk membuka kunci, log masuk dengan Google Account anda.</string>
     <string name="lockscreen_glogin_invalid_input">Nama pengguna atau kata laluan tidak sah.</string>
     <string name="lockscreen_glogin_password_hint">Kata laluan</string>
     <string name="lockscreen_glogin_submit_button">Log masuk</string>
@@ -1009,7 +1036,7 @@ Lawati "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Tekan Menu untuk menyahsekat atau membuat panggilan kecemasan.</string>
     <string name="lockscreen_missing_sim_instructions">Tambah SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM tiada atau tidak boleh dibaca. Tambah SIM.</string>
-    <string name="lockscreen_missing_sim_message">Tiada SIM dalam tablet.</string>
+    <string name="lockscreen_missing_sim_message">Tiada SIM dalam telefon.</string>
     <string name="lockscreen_missing_sim_message_short">Tiada SIM</string>
     <string name="lockscreen_network_locked_message">Rangkaian dikunci</string>
     <string name="lockscreen_password_wrong">Cuba lagi</string>
@@ -1028,7 +1055,7 @@ Lawati "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_sound_off_label">Bunyi dimatikan</string>
     <string name="lockscreen_sound_on_label">Bunyi dihidupkan</string>
     <string name="lockscreen_storage_locked">Buka kunci semua ciri dan data</string>
-    <string name="lockscreen_too_many_failed_attempts_countdown">Cuba lagi dalam %d saat.</string>
+    <string name="lockscreen_too_many_failed_attempts_countdown">Cuba lagi selepas %d saat.</string>
     <string name="lockscreen_too_many_failed_attempts_dialog_message">"Anda telah tersilap melukis corak buka kunci anda sebanyak %1$d kali. 
 
 Sila cuba lagi dalam %2$d saat."</string>
@@ -1049,7 +1076,7 @@ Cuba lagi dalam %2$d saat."</string>
     <string name="low_internal_storage_view_text">Beberapa fungsi sistem mungkin tidak berfungsi</string>
     <string name="low_internal_storage_view_text_no_boot">Tidak cukup storan untuk sistem. Pastikan anda mempunyai 250MB ruang kosong dan mulakan semula.</string>
     <string name="low_internal_storage_view_title">Ruang storan semakin berkurangan</string>
-    <string name="low_memory">Storan tablet penuh. Padamkan beberapa fail untuk mengosongkan ruang.</string>
+    <string name="low_memory">Storan telefon penuh. Padamkan beberapa fail untuk mengosongkan ruang.</string>
     <string name="managed_profile_app_label">Beralih kepada %1$s kerja</string>
     <string name="managed_profile_label">Beralih ke profil kerja</string>
     <string name="managed_profile_label_badge">Kerja %1$s</string>
@@ -1207,6 +1234,8 @@ Cuba lagi dalam %2$d saat."</string>
     <string name="miniresolver_open_in_personal">Buka pada %s peribadi?</string>
     <string name="miniresolver_open_in_work">Buka pada %s kerja?</string>
     <string name="miniresolver_open_work">Buka %s kerja?</string>
+    <string name="miniresolver_private_space_messages_information">Anda hanya boleh menghantar mesej SMS daripada apl Messages peribadi anda.</string>
+    <string name="miniresolver_private_space_phone_information">Anda hanya boleh membuat panggilan telefon daripada apl Telefon peribadi anda. Panggilan yang dibuat dengan apl Telefon peribadi akan ditambahkan pada sejarah panggilan peribadi anda.</string>
     <string name="miniresolver_sms_information">Organisasi anda hanya membenarkan anda menghantar mesej daripada apl kerja</string>
     <string name="miniresolver_switch">Beralih</string>
     <string name="miniresolver_switch_to_work">Beralih kepada apl kerja?</string>
@@ -1285,6 +1314,7 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="notification_channel_developer">Mesej pembangun</string>
     <string name="notification_channel_developer_important">Mesej penting berkaitan pembangun</string>
     <string name="notification_channel_device_admin">Makluman daripada pentadbir IT anda</string>
+    <string name="notification_channel_display">Paparan</string>
     <string name="notification_channel_do_not_disturb">Jangan Ganggu</string>
     <string name="notification_channel_emergency_callback">Mod paggil balik kecemasan</string>
     <string name="notification_channel_foreground_service">Apl yang menggunakan bateri</string>
@@ -1306,6 +1336,7 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="notification_channel_voice_mail">Mesej mel suara</string>
     <string name="notification_channel_vpn">Status VPN</string>
     <string name="notification_channel_wfc">Panggilan Wi-Fi</string>
+    <string name="notification_compact_heads_up_reply">Balas</string>
     <string name="notification_content_abusive_bg_apps">%1$s sedang berfungsi di latar. Ketik untuk mengurus penggunaan bateri.</string>
     <string name="notification_content_long_running_fgs">%1$s mungkin menjejaskan hayat bateri. Ketik untuk menyemak apl aktif.</string>
     <string name="notification_feedback_indicator">Berikan Maklum Balas</string>
@@ -1342,7 +1373,8 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="other_networks_no_internet">Rangkaian tiada akses Internet</string>
     <string name="owner_name">Pemilik</string>
     <string name="package_deleted_device_owner">Dipadamkan oleh pentadbir anda</string>
-    <string name="package_installed_device_owner">Dipasang oleh pentadbir anda</string>
+    <string name="package_installed_device_owner">"Dipasang oleh pentadbir anda.
+Akses tetapan untuk melihat kebenaran yang diberikan"</string>
     <string name="package_updated_device_owner">Dikemas kini oleh pentadbir anda</string>
     <string name="passwordIncorrect">Kata laluan salah</string>
     <string name="password_keyboard_label_alpha_key">ABC</string>
@@ -1359,7 +1391,9 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="permdesc_accessCoarseLocation">Apl ini boleh mendapatkan lokasi anggaran anda daripada perkhidmatan lokasi semasa apl ini sedang digunakan. Perkhidmatan lokasi untuk peranti anda mesti dihidupkan untuk apl mendapatkan lokasi.</string>
     <string name="permdesc_accessDrmCertificates">Membenarkan aplikasi memperuntuk dan menggunakan sijil DRM. Tidak sekali-kali diperlukan untuk apl biasa.</string>
     <string name="permdesc_accessFineLocation">Apl ini boleh mendapatkan lokasi tepat anda daripada perkhidmatan lokasi semasa apl ini sedang digunakan. Perkhidmatan lokasi untuk peranti anda mesti dihidupkan untuk apl mendapatkan lokasi. Hal ini mungkin meningkatkan penggunaan bateri.</string>
+    <string name="permdesc_accessHiddenProfile">Membenarkan apl mengakses profil tersembunyi.</string>
     <string name="permdesc_accessImsCallService">Membenarkan apl menggunakan perkhidmatan IMS untuk membuat panggilan tanpa campur tangan anda.</string>
+    <string name="permdesc_accessLastKnownCellId">Membenarkan apl mengakses identiti sel terakhir yang diketahui yang diberikan oleh telefoni.</string>
     <string name="permdesc_accessLocationExtraCommands">Membenarkan apl mengakses arahan pembekal lokasi tambahan. Ini boleh membenarkan apl untuk campur tangan dengan operasi GPS atau sumber lokasi lain.</string>
     <string name="permdesc_accessNetworkConditions">Membenarkan aplikasi mendengar pemerhatian tentang keadaan rangkaian. Tidak sekali-kali diperlukan untuk apl biasa.</string>
     <string name="permdesc_accessNetworkState">Membenarkan apl melihat maklumat tentang sambungan rangkaian seperti rangkaian mana yang wujud dan bersambung.</string>
@@ -1380,23 +1414,24 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="permdesc_bindNotificationListenerService">Membenarkan pemegang terikat dengan antara muka peringkat tertinggi bagi perkhidmatan pendengar pemberitahuan. Tidak sekali-kali diperlukan untuk apl biasa.</string>
     <string name="permdesc_bind_connection_service">Membenarkan apl berinteraksi dengan perkhidmatan telefoni untuk membuat/menerima panggilan.</string>
     <string name="permdesc_bind_incall_service">Membenarkan apl mengawal masa dan cara pengguna melihat skrin dalam panggilan.</string>
-    <string name="permdesc_bluetooth">Membenarkan apl melihat konfigurasi Bluetooth pada tablet dan untuk membuat serta menerima sambungan dengan peranti yang dipasangkan.</string>
-    <string name="permdesc_bluetoothAdmin">Membenarkan apl mengkonfigurasikan tablet Bluetooth setempat dan menemui serta berpasangan dengan peranti jauh.</string>
+    <string name="permdesc_bluetooth">Membenarkan apl melihat konfigurasi Bluetooth pada telefon dan membuat serta menerima sambungan dengan peranti yang dipasangkan.</string>
+    <string name="permdesc_bluetoothAdmin">Membenarkan apl mengkonfigurasikan telefon Bluetooth setempat dan menemui serta berpasangan dengan peranti jauh.</string>
     <string name="permdesc_bluetooth_advertise">Membenarkan apl menyiarkan kandungan kepada peranti Bluetooth yang berdekatan</string>
     <string name="permdesc_bluetooth_connect">Membenarkan apl untuk menyambung kepada peranti Bluetooth yang digandingkan</string>
     <string name="permdesc_bluetooth_scan">Membenarkan apl menemukan dan berganding dengan peranti Bluetooth yang berdekatan</string>
     <string name="permdesc_bodySensors">Membenarkan apl mengakses data penderia tubuh, seperti kadar denyut jantung, suhu dan peratusan oksigen darah, semasa apl digunakan.</string>
     <string name="permdesc_bodySensors_background">Membenarkan apl mengakses data penderia tubuh, seperti kadar denyut jantung, suhu dan peratusan oksigen darah, semasa apl berjalan di latar belakang.</string>
-    <string name="permdesc_broadcastSticky">Membenarkan apl untuk menghantar siaran melekit, yang kekal selepas siaran berakhir. Penggunaan berlebihan boleh membuatkan tablet perlahan atau tidak stabil kerana menggunakan terlalu banyak memori.</string>
+    <string name="permdesc_broadcastSticky">Membenarkan apl untuk menghantar siaran melekit, yang kekal selepas siaran berakhir. Penggunaan berlebihan boleh membuat telefon perlahan atau tidak stabil dengan menyebabkannya menggunakan memori yang terlalu banyak.</string>
     <string name="permdesc_callCompanionApp">Membenarkan apl melihat dan mengawal panggilan yang sedang berlangsung pada peranti. Ini termasuklah maklumat seperti nombor panggilan untuk panggilan dan keadaan panggilan tersebut.</string>
     <string name="permdesc_callPhone">Membenarkan apl memanggil nombor telefon tanpa campur tangan anda. Tindakan ini boleh menyebabkan caj atau panggilan yang tidak dijangka. Harap maklum bahawa tindakan ini tidak membenarkan apl menghubungi nombor kecemasan. Apl yang berniat jahat mungkin memakan belanja dengan membuat panggilan tanpa pengesahan anda atau mendail kod pembawa yang menyebabkan panggilan masuk dimajukan kepada nombor lain secara automatik.</string>
     <string name="permdesc_camera">Apl ini boleh mengambil gambar dan merakam video menggunakan kamera semasa apl sedang digunakan.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">Apl ini boleh mengakses kamera sebagai Pengguna Sistem Tanpa Kepala.</string>
     <string name="permdesc_cameraOpenCloseListener">Apl ini boleh menerima panggilan balik apabila mana-mana peranti kamera dibuka (oleh aplikasi) atau ditutup.</string>
     <string name="permdesc_changeNetworkState">Membenarkan apl untuk mengubah keadaan kesambungan rangkaian.</string>
     <string name="permdesc_changeTetherState">Membenarkan apl untuk mengubah keadaan kesambungan rangkaian tambatan.</string>
-    <string name="permdesc_changeWifiMulticastState">Membenarkan apl menerima paket yang dihantar kepada semua peranti pada rangkaian Wi-Fi menggunakan alamat multisiar, bukan hanya tablet anda. Apl menggunakan lebih kuasa berbanding mod bukan multisiar.</string>
+    <string name="permdesc_changeWifiMulticastState">Membenarkan apl menerima paket yang dihantar kepada semua peranti pada rangkaian Wi-Fi menggunakan alamat multisiar, bukan hanya telefon anda. Ia menggunakan lebih kuasa berbanding mod bukan multisiar.</string>
     <string name="permdesc_changeWifiState">Membenarkan apl menyambung ke dan memutuskan sambungan dari titik capaian Wi-Fi dan membuat perubahan kepada konfigurasi peranti untuk rangkaian Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">Membenarkan apl untuk menyambungkan tablet ke dan menyahsambungkan tablet dari rangkaian WiMaX.</string>
+    <string name="permdesc_changeWimaxState">Membenarkan apl untuk menyambungkan telefon ke dan menyahsambung telefon dari rangkaian WiMaX.</string>
     <string name="permdesc_companionProfileWatch">Benarkan apl rakan mengurus jam tangan.</string>
     <string name="permdesc_connection_manager">Membenarkan apl mengurus sambungan telekomunikasi.</string>
     <string name="permdesc_control_incall_experience">Membenarkan apl menyediakan pengalaman pengguna dalam panggilan.</string>
@@ -1415,6 +1450,7 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="permdesc_foregroundServiceHealth">Membenarkan apl menggunakan perkhidmatan latar depan dengan jenis \"health\"</string>
     <string name="permdesc_foregroundServiceLocation">Membenarkan apl menggunakan perkhidmatan latar depan dengan jenis \"location\"</string>
     <string name="permdesc_foregroundServiceMediaPlayback">Membenarkan apl menggunakan perkhidmatan latar depan dengan jenis \"mediaPlayback\"</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">Membenarkan apl menggunakan perkhidmatan latar depan dengan jenis \"mediaProcessing\"</string>
     <string name="permdesc_foregroundServiceMediaProjection">Membenarkan apl menggunakan perkhidmatan latar depan dengan jenis \"mediaProjection\"</string>
     <string name="permdesc_foregroundServiceMicrophone">Membenarkan apl menggunakan perkhidmatan latar depan dengan jenis \"microphone\"</string>
     <string name="permdesc_foregroundServicePhoneCall">Membenarkan apl menggunakan perkhidmatan latar depan dengan jenis \"phoneCall\"</string>
@@ -1422,7 +1458,7 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="permdesc_foregroundServiceSpecialUse">Membenarkan apl menggunakan perkhidmatan latar depan dengan jenis \"specialUse\"</string>
     <string name="permdesc_foregroundServiceSystemExempted">Membenarkan apl menggunakan perkhidmatan latar depan dengan jenis \"systemExempted\"</string>
     <string name="permdesc_fullScreenIntent">Membolehkan apl memaparkan pemberitahuan sebagai aktiviti skrin penuh pada peranti yang dikunci</string>
-    <string name="permdesc_getAccounts">Membenarkan apl mendapatkan senarai akaun yang dikenali oleh tablet. Ini mungkin termasuk sebarang akaun yang dibuat oleh aplikasi yang telah anda pasang.</string>
+    <string name="permdesc_getAccounts">Membenarkan apl mendapatkan senarai akaun yang dikenali oleh telefon. Ini mungkin termasuk sebarang akaun yang dibuat oleh aplikasi yang telah anda pasang.</string>
     <string name="permdesc_getPackageSize">Membenarkan apl mendapatkan semula kodnya, datanya dan saiz cachenya</string>
     <string name="permdesc_getTasks">Membenarkan apl mengambil maklumat tentang tugasan yang sedang dan baru berjalan. Ini boleh membenarkan apl untuk menemui maklumat tentang apl mana yang digunakan pada peranti.</string>
     <string name="permdesc_handoverStatus">Membenarkan aplikasi ini menerima maklumat mengenai pemindahan Pancaran Android semasa</string>
@@ -1444,17 +1480,18 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="permdesc_mount_unmount_filesystems">Benarkan aplikasi untuk memasang dan menanggal sistem fail untuk storan boleh ditanggal.</string>
     <string name="permdesc_nearby_wifi_devices">Membenarkan apl mengiklankan, menyambung dan menentukan kedudukan relatif peranti Wi-Fi berdekatan</string>
     <string name="permdesc_nfc">Membenarkan apl berkomunikasi dengan teg, kad dan pembaca Komunikasi Medan Dekat (NFC).</string>
+    <string name="permdesc_nfcTransactionEvent">Membenarkan apl menerima maklumat tentang transaksi yang berlaku pada Unsur Selamat.</string>
     <string name="permdesc_observeCompanionDevicePresence">Benarkan apl rakan memerhatikan kehadiran peranti rakan apabila peranti berada berdekatan atau jauh.</string>
-    <string name="permdesc_persistentActivity">Membenarkan apl untuk membuat sebahagian dirinya berterusan dalam memori. Ini boleh mengehadkan memori yang tersedia kepada apl lain dan menjadikan tablet perlahan.</string>
+    <string name="permdesc_persistentActivity">Membenarkan apl untuk membuat sebahagian dari dirinya berterusan dalam memori. Ini boleh mengehadkan memori yang tersedia kepada apl lain dan menjadikan telefon perlahan.</string>
     <string name="permdesc_postNotification">Membenarkan apl menunjukkan pemberitahuan</string>
     <string name="permdesc_preferredPaymentInfo">Membenarkan apl mendapatkan maklumat perkhidmatan pembayaran nfc pilihan seperti bantuan berdaftar dan destinasi laluan.</string>
     <string name="permdesc_processOutgoingCalls">Membenarkan apl melihat nombor yang didail semasa panggilan keluar dengan pilihan untuk mengubah hala panggilan ke nombor lain atau membatalkan terus panggilan.</string>
     <string name="permdesc_queryAllPackages">Membenarkan apl melihat semua pakej yang dipasang.</string>
     <string name="permdesc_readBasicPhoneState">Membenarkan apl mengakses ciri telefoni asas peranti.</string>
-    <string name="permdesc_readCalendar">Apl ini boleh membaca semua acara kalendar yang disimpan pada tablet anda dan berkongsi atau menyimpan data kalendar anda.</string>
+    <string name="permdesc_readCalendar">Apl ini boleh membaca semua acara kalendar yang disimpan pada telefon anda dan berkongsi atau menyimpan data kalendar anda.</string>
     <string name="permdesc_readCallLog">Apl ini boleh membaca sejarah panggilan anda.</string>
     <string name="permdesc_readCellBroadcasts">Membolehkan apl membaca mesej siaran sel yang diterima oleh peranti anda. Isyarat siaran sel dihantar di beberapa lokasi untuk memberi amaran kepada anda tentang situasi kecemasan. Apl hasad boleh mengganggu prestasi atau operasi peranti anda apabila siaran sel kecemasan diterima.</string>
-    <string name="permdesc_readContacts">Membenarkan apl membaca data tentang kenalan anda yang tersimpan pada tablet anda. Apl juga akan mempunyai akses kepada akaun pada tablet anda yang telah dibuat kenalan. Ini mungkin termasuk akaun yang dibuat oleh apl yang telah anda pasang. Kebenaran ini membolehkan apl menyimpan data kenalan anda dan apl hasad mungkin berkongsi data kenalan tanpa pengetahuan anda.</string>
+    <string name="permdesc_readContacts">Membenarkan apl membaca data tentang kenalan anda yang tersimpan pada telefon anda. Apl juga mempunyai akses kepada akaun pada telefon anda yang telah dibuat kenalan. Ini mungkin termasuk akaun yang dibuat oleh apl yang telah anda pasang. Kebenaran ini membolehkan apl menyimpan data kenalan anda dan apl hasad mungkin berkongsi data kenalan tanpa pengetahuan anda.</string>
     <string name="permdesc_readInstallSessions">Membenarkan aplikasi membaca sesi pemasangan Ini membenarkan apl melihat butiran mengenai pemasangan pakej yang aktif.</string>
     <string name="permdesc_readMediaAudio">Membenarkan apl membaca fail audio daripada storan kongsi anda.</string>
     <string name="permdesc_readMediaImages">Membenarkan apl membaca fail imej daripada storan kongsi anda.</string>
@@ -1462,11 +1499,11 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="permdesc_readNetworkUsageHistory">Membenarkan apl membaca sejarah penggunaan rangkaian untuk rangkaian dan apl khusus.</string>
     <string name="permdesc_readPhoneNumbers">Membenarkan apl mengakses nombor telefon peranti.</string>
     <string name="permdesc_readPhoneState">Membenarkan apl mengakses ciri telefon pada peranti. Kebenaran ini membolehkan apl menentukan nombor telefon dan ID peranti, sama ada panggilan aktif dan nombor jauh yang dihubungkan dengan panggilan.</string>
-    <string name="permdesc_readSms">Apl ini boleh membaca semua mesej SMS (teks) yang disimpan pada tablet anda.</string>
+    <string name="permdesc_readSms">Apl ini boleh membaca semua mesej SMS (teks) yang disimpan pada telefon anda.</string>
     <string name="permdesc_readSyncSettings">Membenarkan apl membaca tetapan segerak untuk akaun. Sebagai contoh, ini boleh menentukan sama ada apl Orang disegerakkan dengan akaun.</string>
     <string name="permdesc_readSyncStats">Membenarkan apl untuk membaca statistik segerak untuk akaun, termasuk sejarah acara segerak dan berapa banyak data disegerakkan.</string>
     <string name="permdesc_readVisualUserSelect">Membenarkan apl membaca fail imej dan video yang anda pilih daripada storan kongsi anda.</string>
-    <string name="permdesc_receiveBootCompleted">Membenarkan apl untuk memulakan dirinya sendiri sebaik sahaja sistem selesai mengebut. Ini boleh membuat masa untuk menghidupkan tablet menjadi lebih lama dan membenarkan apl untuk memperlahankan keseluruhan tablet dengan sentiasa berjalan.</string>
+    <string name="permdesc_receiveBootCompleted">Membenarkan apl bermula sendiri sebaik sahaja sistem telah selesai mengebut. Ini boleh menjadikannya mengambil masa yang lama untuk menghidupkan telefon dan membenarkan apl untuk melambatkan keseluruhan telefon dengan sentiasa berjalan.</string>
     <string name="permdesc_receiveMms">Membenarkan apl menerima dan memproses mesej MMS. Ini bermakna apl boleh memantau atau memadam mesej yang dihantar ke peranti anda tanpa menunjukkannya kepada anda.</string>
     <string name="permdesc_receiveSms">Membenarkan apl menerima dan memproses mesej SMS. Ini bermakna apl boleh memantau atau memadam mesej yang dihantar ke peranti anda tanpa menunjukkannya kepada anda.</string>
     <string name="permdesc_receiveWapPush">Membenarkan apl menerima dan memproses mesej WAP. Kebenaran ini termasuk keupayaan untuk memantau atau memadam mesej yang dihantar kepada anda tanpa menunjukkannya kepada anda.</string>
@@ -1488,7 +1525,7 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="permdesc_sendSms">Membenarkan apl menghantar mesej SMS. Ini boleh menyebabkan caj di luar jangkaan. Apl hasad boleh membuat anda kerugian wang dengan menghantar mesej tanpa pengesahan anda.</string>
     <string name="permdesc_setAlarm">Membenarkan apl untuk menetapkan penggera dalam apl penggera jam yang dipasang. Sesetengah applikasi jam penggera tidak boleh melaksanakan ciri ini.</string>
     <string name="permdesc_setInputCalibration">Membenarkan apl mengubah suai parameter penentukuran skrin sentuh. Ini tidak sekali-kali diperlukan untuk apl biasa.</string>
-    <string name="permdesc_setTimeZone">Membenarkan apl menukar zon waktu tablet.</string>
+    <string name="permdesc_setTimeZone">Membenarkan apl menukar zon waktu telefon.</string>
     <string name="permdesc_setWallpaper">Membenarkan apl menetapkan kertas dinding sistem.</string>
     <string name="permdesc_setWallpaperHints">Membenarkan apl menetapkan pembayang saiz kertas dinding sistem.</string>
     <string name="permdesc_sim_communication">Membenarkan apl menghantar arahan kepada SIM. Ini amat berbahaya.</string>
@@ -1501,7 +1538,7 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="permdesc_subscribedFeedsRead">Membenarkan apl mendapatkan butiran mengenai suapan tersegerak semasa.</string>
     <string name="permdesc_systemAlertWindow">Apl ini boleh muncul di sebelah atas apl lain atau pada bahagian lain skrin. Hal ini mungkin mengganggu penggunaan biasa apl dan mengubah cara apl lain itu muncul.</string>
     <string name="permdesc_systemCamera">Apl terlindung atau apl sistem ini boleh mengambil gambar dan merakam video menggunakan kamera sistem pada bila-bila masa. Apl juga perlu mempunyai kebenaran android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Membenarkan apl menggunakan pemancar inframerah tablet.</string>
+    <string name="permdesc_transmitIr">Membenarkan apl menggunakan pemancar inframerah telefon.</string>
     <string name="permdesc_turnScreenOn">Membenarkan apl untuk menghidupkan skrin.</string>
     <string name="permdesc_uninstall_shortcut">Membenarkan aplikasi mengalih keluar pintasan Skrin Laman Utama tanpa campur tangan pengguna.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">Benarkan pemegang untuk mengemaskinikan apl yang telah dipasang sebelumnya tanpa tindakan pengguna</string>
@@ -1514,12 +1551,13 @@ Pemberitahuan yang dipertingkatkan dapat mengakses kandungan pemberitahuan, term
     <string name="permdesc_vibrate">Membenarkan apl mengawal penggetar.</string>
     <string name="permdesc_vibrator_state">Membenarkan apl mengakses keadaan penggetar.</string>
     <string name="permdesc_videoWrite">Membenarkan apl mengubah suai koleksi video anda.</string>
-    <string name="permdesc_wakeLock">Membenarkan apl menghalang tablet daripada tidur.</string>
-    <string name="permdesc_writeCalendar">Apl ini boleh menambah, mengalih keluar atau mengubah acara kalendar pada tablet anda. Apl ini boleh menghantar mesej yang mungkin kelihatan seperti dihantar oleh pemilik kalendar atau mengubah acara tanpa memaklumi pemilik acara itu.</string>
-    <string name="permdesc_writeCallLog">Membenarkan apl untuk mengubah suai panggilan tablet anda, termasuk data tentang panggilan masuk dan keluar. Apl hasad boleh menggunakannya untuk memadam atau mengubah suai log panggilan anda.</string>
-    <string name="permdesc_writeContacts">Membenarkan apl mengubah suai data tentang kenalan anda yang tersimpan pada tablet anda. Kebenaran ini membenarkan apl memadamkan data kenalan.</string>
+    <string name="permdesc_wakeLock">Membenarkan apl menghalang telefon daripada tidur.</string>
+    <string name="permdesc_writeCalendar">Apl ini boleh menambah, mengalih keluar atau mengubah acara kalendar pada telefon anda. Apl ini boleh menghantar mesej yang mungkin kelihatan seperti dihantar oleh pemilik kalendar atau mengubah acara tanpa memaklumi pemilik acara itu.</string>
+    <string name="permdesc_writeCallLog">Membenarkan apl untuk mengubah suai panggilan telefon anda, termasuk data tentang panggilan masuk dan keluar. Apl hasad boleh menggunakannya untuk memadam atau mengubah suai log panggilan anda.</string>
+    <string name="permdesc_writeContacts">Membenarkan apl mengubah suai data tentang kenalan anda yang tersimpan pada telefon anda. Kebenaran ini membenarkan apl memadamkan data kenalan.</string>
     <string name="permdesc_writeSettings">Membenarkan apl untuk mengubah suai data tetapan sistem. Apl hasad boleh merosakkan konfigurasi sistem anda.</string>
     <string name="permdesc_writeSyncSettings">Membenarkan apl mengubah suai tetapan segerak untuk akaun. Sebagai contoh, ini boleh digunakan untuk mendayakan penyegerakan apl Orang dengan akaun.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">Membenarkan apl mengemaskinikan status pengesahan kunci kenalan E2EE yang dimiliki oleh apl lain</string>
     <string name="permgroupdesc_activityRecognition">akses aktiviti fizikal anda</string>
     <string name="permgroupdesc_calendar">mengakses kalendar</string>
     <string name="permgroupdesc_calllog">baca dan tulis log panggilan telefon</string>
@@ -1560,7 +1598,9 @@ untuk akaun %s."</string>
     <string name="permlab_accessCoarseLocation">akses lokasi anggaran hanya di latar depan</string>
     <string name="permlab_accessDrmCertificates">akses sijil DRM</string>
     <string name="permlab_accessFineLocation">akses lokasi tepat hanya di latar depan</string>
+    <string name="permlab_accessHiddenProfile">Akses profil tersembunyi</string>
     <string name="permlab_accessImsCallService">akses perkhidmatan panggilan IMS</string>
+    <string name="permlab_accessLastKnownCellId">Akses identiti sel terakhir yang diketahui.</string>
     <string name="permlab_accessLocationExtraCommands">akses perintah tambahan pembekal lokasi</string>
     <string name="permlab_accessNetworkConditions">dengar pemerhatian mengenai keadaan rangkaian</string>
     <string name="permlab_accessNetworkState">lihat sambungan rangkaian</string>
@@ -1592,6 +1632,7 @@ untuk akaun %s."</string>
     <string name="permlab_callCompanionApp">lihat dan kawal panggilan melalui sistem.</string>
     <string name="permlab_callPhone">panggil terus nombor telefon</string>
     <string name="permlab_camera">ambil gambar dan video</string>
+    <string name="permlab_cameraHeadlessSystemUser">Benarkan aplikasi atau perkhidmatan mengakses kamera sebagai Pengguna Sistem Tanpa Kepala.</string>
     <string name="permlab_cameraOpenCloseListener">Benarkan aplikasi atau perkhidmatan menerima panggilan balik tentang peranti kamera yang dibuka atau ditutup.</string>
     <string name="permlab_changeNetworkState">tukar kesambungan rangkaian</string>
     <string name="permlab_changeTetherState">tukar kesambungan bertambat</string>
@@ -1616,6 +1657,7 @@ untuk akaun %s."</string>
     <string name="permlab_foregroundServiceHealth">jalankan perkhidmatan latar depan dengan jenis \"health\"</string>
     <string name="permlab_foregroundServiceLocation">jalankan perkhidmatan latar depan dengan jenis \"location\"</string>
     <string name="permlab_foregroundServiceMediaPlayback">jalankan perkhidmatan latar depan dengan jenis \"mediaPlayback\"</string>
+    <string name="permlab_foregroundServiceMediaProcessing">jalankan perkhidmatan latar depan dengan jenis \"mediaProcessing\"</string>
     <string name="permlab_foregroundServiceMediaProjection">jalankan perkhidmatan latar depan dengan jenis \"mediaProjection\"</string>
     <string name="permlab_foregroundServiceMicrophone">jalankan perkhidmatan latar depan dengan jenis \"microphone\"</string>
     <string name="permlab_foregroundServicePhoneCall">jalankan perkhidmatan latar depan dengan jenis \"phoneCall\"</string>
@@ -1645,6 +1687,7 @@ untuk akaun %s."</string>
     <string name="permlab_mount_unmount_filesystems">Capai sistem fail kad SD</string>
     <string name="permlab_nearby_wifi_devices">berinteraksi dengan peranti Wi-Fi berdekatan</string>
     <string name="permlab_nfc">mengawal Komunikasi Medan Dekat</string>
+    <string name="permlab_nfcTransactionEvent">Peristiwa transaksi Unsur Selamat</string>
     <string name="permlab_observeCompanionDevicePresence">Perhatikan kehadiran peranti rakan</string>
     <string name="permlab_persistentActivity">buatkan apl sentiasa berjalan</string>
     <string name="permlab_postNotification">tunjukkan pemberitahuan</string>
@@ -1714,12 +1757,13 @@ untuk akaun %s."</string>
     <string name="permlab_uwb_ranging">tentukan kedudukan relatif antara peranti Ultrajalur Lebar berdekatan</string>
     <string name="permlab_vibrate">kawal getaran</string>
     <string name="permlab_videoWrite">ubah suai koleksi video anda</string>
-    <string name="permlab_wakeLock">menghalang tablet daripada tidur</string>
+    <string name="permlab_wakeLock">halang telefon daripada tidur</string>
     <string name="permlab_writeCalendar">tambah atau ubah suai acara kalendar dan hantar e-mel kepada tetamu tanpa pengetahuan pemilik</string>
     <string name="permlab_writeCallLog">tulis log panggilan</string>
     <string name="permlab_writeContacts">ubah suai kenalan anda</string>
     <string name="permlab_writeSettings">ubah suai tetapan sistem</string>
     <string name="permlab_writeSyncSettings">togol segerak hidup dan mati</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">mengemaskinikan status pengesahan kunci kenalan E2EE yang dimiliki oleh apl lain</string>
     <string name="perms_description_app">Disediakan oleh %1$s.</string>
     <string name="perms_new_perm_prefix"><font fgcolor="#ff33b5e5" size="12">BAHARU: </font></string>
     <string name="personal_apps_suspended_turn_profile_on">Hidupkan</string>
@@ -1757,10 +1801,10 @@ untuk akaun %s."</string>
     <string name="policydesc_limitPassword">"Mengawal panjang dan aksara yang dibenarkan dalam kata laluan  dan PIN kunci skrin."</string>
     <string name="policydesc_resetPassword">Tukar kunci skrin.</string>
     <string name="policydesc_setGlobalProxy">Tetapkan proksi global peranti untuk digunakan sementara dasar didayakan. Hanya pemilik peranti boleh menetapkan proksi global.</string>
-    <string name="policydesc_watchLogin">Memantau bilangan kata laluan yang tersilap ditaip apabila membuka skrin, dan mengunci tablet atau memadam semua data tablet jika terlalu banyak kesilapan menaip kata laluan.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Pantau bilangan kata laluan tidak betul yang ditaip semasa membuka kunci skrin dan kunci tablet atau padam semua data pengguna ini jika terlalu banyak kata laluan yang tidak betul ditaip.</string>
-    <string name="policydesc_wipeData">Memadamkan data tablet tanpa amaran dengan melakukan tetapan semula data kilang.</string>
-    <string name="policydesc_wipeData_secondaryUser">Padam data pengguna ini pada tablet ini tanpa amaran.</string>
+    <string name="policydesc_watchLogin">Memantau bilangan kata laluan salah yang ditaip semasa membuka skrin, dan mengunci telefon atau memadamkan semua data telefon jika terlalu banyak kata laluan salah ditaip.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Pantau bilangan kata laluan tidak betul yang ditaip semasa membuka kunci skrin dan kunci telefon atau padam semua data pengguna ini jika terlalu banyak kata laluan yang tidak betul ditaip.</string>
+    <string name="policydesc_wipeData">Memadam data telefon tanpa amaran dengan melakukan tetapan semula data kilang.</string>
+    <string name="policydesc_wipeData_secondaryUser">Padam data pengguna ini pada telefon ini tanpa amaran.</string>
     <string name="policylab_disableCamera">Lumpuhkan kamera</string>
     <string name="policylab_disableKeyguardFeatures">Lumpuhkan beberapa ciri kunci skrin</string>
     <string name="policylab_encryptedStorage">Tetapkan penyulitan storan</string>
@@ -1777,7 +1821,7 @@ untuk akaun %s."</string>
     <string name="postalTypeHome">Rumah</string>
     <string name="postalTypeOther">Lain-lain</string>
     <string name="postalTypeWork">Kerja</string>
-    <string name="power_dialog">Pilihan tablet</string>
+    <string name="power_dialog">Pilihan telefon</string>
     <string name="power_off">Matikan kuasa</string>
     <string name="prepend_shortcut_label">Menu+</string>
     <string name="preposition_for_date">pada %s</string>
@@ -1787,9 +1831,21 @@ untuk akaun %s."</string>
     <string name="print_service_installed_title">Perkhidmatan %s dipasang</string>
     <string name="printing_disabled_by">Pencetakan dilumpuhkan oleh %s.</string>
     <string name="private_dns_broken_detailed">Pelayan DNS peribadi tidak boleh diakses</string>
+    <string name="private_profile_label_badge">%1$s Peribadi</string>
+    <string name="private_space_biometric_prompt_title">Ruang privasi</string>
+    <string name="private_space_deleted_by_admin">Ruang privasi dialih keluar</string>
+    <string name="private_space_deleted_by_admin_details">Organisasi anda tidak membenarkan ruang privasi pada peranti terurus ini.</string>
+    <string name="private_space_set_up_screen_lock_message">Tetapkan kunci skrin pada peranti untuk menggunakan ruang privasi</string>
     <string name="profile_encrypted_detail">Profil kerja dikunci</string>
     <string name="profile_encrypted_message">Ketik utk membuka profil kerja</string>
     <string name="profile_encrypted_title">Sesetengah fungsi mungkin terhad</string>
+    <string name="profile_label_clone">Klon</string>
+    <string name="profile_label_communal">Umum</string>
+    <string name="profile_label_private">Persendirian</string>
+    <string name="profile_label_test">Ujian</string>
+    <string name="profile_label_work">Kerja</string>
+    <string name="profile_label_work_2">Kerja 2</string>
+    <string name="profile_label_work_3">Kerja 3</string>
     <string name="progress_erasing">Memadamkan storan kongsi…</string>
     <string name="progress_erasing_usbhost">Memformatkan storan USB…</string>
     <string name="progress_unmounting">Menanggal kad SD…</string>
@@ -1807,6 +1863,8 @@ untuk akaun %s."</string>
     <string name="reboot_to_update_reboot">Memulakan semula…</string>
     <string name="reboot_to_update_title">Kemas kini sistem Android</string>
     <string name="recent_tasks_title">Baru-baru ini</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">Kandungan pemberitahuan yang sensitif disembunyikan</string>
     <string name="redo">Buat semula</string>
     <string name="reduce_bright_colors_feature_name">Amat malap</string>
     <string name="region_picker_section_all">Semua rantau</string>
@@ -1884,12 +1942,36 @@ untuk akaun %s."</string>
     <string name="safe_media_volume_warning">"Naikkan kelantangan melebihi paras yang disyokorkan?
 
 Mendengar pada kelantangan yang tinggi untuk tempoh yang lama boleh merosakkan pendengaran anda."</string>
+    <string name="satellite_notification_how_it_works">Cara ciri ini berfungsi</string>
+    <string name="satellite_notification_manual_summary">Hantar dan terima mesej tanpa rangkaian mudah alih atau Wi-Fi</string>
+    <string name="satellite_notification_manual_title">Gunakan pemesejan satelit?</string>
+    <string name="satellite_notification_open_message">Buka Messages</string>
+    <string name="satellite_notification_summary">Anda boleh menghantar dan menerima mesej tanpa rangkaian mudah alih atau Wi-Fi</string>
+    <string name="satellite_notification_title">Disambungkan secara automatik kepada satelit</string>
+    <string name="scCellularNetworkSecuritySummary">Penyulitan, pemberitahuan untuk rangkaian yang tidak disulitkan</string>
+    <string name="scCellularNetworkSecurityTitle">Keselamatan rangkaian mudah alih</string>
+    <string name="scIdentifierDisclosureIssueSummary">"Pada %1$s, rangkaian berdekatan merekodkan ID unik peranti anda (IMSI atau IMEI) semasa menggunakan SIM %2$s anda.
+
+Hal ini bermaksud bahawa lokasi, aktiviti atau identiti anda telah dilog. Amalan ini biasa dilakukan tetapi mungkin menjadi hal kepada pengguna yang bimbang tentang privasi."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">Pada %1$s, rangkaian berdekatan merekodkan ID unik peranti anda (IMSI atau IMEI) semasa menggunakan SIM %2$s anda</string>
+    <string name="scIdentifierDisclosureIssueTitle">ID peranti diakses</string>
+    <string name="scNullCipherIssueActionGotIt">OK</string>
+    <string name="scNullCipherIssueActionLearnMore">Ketahui lebih lanjut</string>
+    <string name="scNullCipherIssueActionSettings">Tetapan keselamatan rangkaian mudah alih</string>
+    <string name="scNullCipherIssueEncryptedSummary">Sambungan SIM %1$s kini lebih selamat</string>
+    <string name="scNullCipherIssueEncryptedTitle">Disambungkan kepada rangkaian %1$s yang disulitkan</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"Panggilan, mesej dan data lebih terdedah pada masa ini semasa menggunakan SIM %1$s anda.
+
+Apabila sambungan anda disulitkan semula, anda akan menerima pemberitahuan lain."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">Panggilan, mesej dan data lebih terdedah pada masa ini semasa menggunakan SIM %1$s anda</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">Disambungkan kepada rangkaian yang tidak disulitkan</string>
     <string name="screen_compat_mode_hint">Dayakan semula kod kompak ini tetapan Sistem > Apl > Dimuat turun.</string>
     <string name="screen_compat_mode_scale">Skala</string>
     <string name="screen_compat_mode_show">Sentiasa tunjukkan</string>
     <string name="screen_lock">Kunci skrin</string>
     <string name="screen_lock_app_setting_name">Gunakan kunci skrin</string>
     <string name="screen_lock_dialog_default_subtitle">Masukkan kunci skrin untuk teruskan</string>
+    <string name="screen_not_shared_sensitive_content">Kandungan apl disembunyikan daripada perkongsian skrin untuk keselamatan</string>
     <string name="screenshot_edit">Edit</string>
     <string name="search_hint">Cari…</string>
     <string name="search_language_hint">Taipkan nama bahasa</string>
@@ -1933,6 +2015,8 @@ Mendengar pada kelantangan yang tinggi untuk tempoh yang lama boleh merosakkan p
     <string name="serviceErased">Pemadaman berjaya.</string>
     <string name="serviceNotProvisioned">Perkhidmatan yang tidak diuntukkan.</string>
     <string name="serviceRegistered">Pendaftaran berjaya.</string>
+    <string name="set_up_screen_lock_action_label">Tetapkan kunci skrin</string>
+    <string name="set_up_screen_lock_title">Tetapkan kunci skrin</string>
     <string name="sha1_fingerprint">Cap jari SHA-1:</string>
     <string name="sha256_fingerprint">Cap jari SHA-256:</string>
     <string name="share">Kongsi</string>
@@ -1949,7 +2033,7 @@ Mendengar pada kelantangan yang tinggi untuk tempoh yang lama boleh merosakkan p
     <string name="shortcut_restore_unknown_issue">Tidak dapat memulihkan pintasan</string>
     <string name="shortcut_restored_on_lower_version">Versi apl diturunkan taraf atau tidak serasi dengan pintasan ini</string>
     <string name="show_ime">Pastikannya pada skrin, semasa papan kekunci fizikal aktif</string>
-    <string name="shutdown_confirm">Tablet anda akan dimatikan.</string>
+    <string name="shutdown_confirm">Telefon anda akan dimatikan.</string>
     <string name="shutdown_confirm_question">Adakah anda mahu menutup?</string>
     <string name="shutdown_progress">Mematikan...</string>
     <string name="silent_mode">Mod senyap</string>
@@ -2047,6 +2131,7 @@ Mendengar pada kelantangan yang tinggi untuk tempoh yang lama boleh merosakkan p
     <string name="twilight_service">Perkhidmatan Twilight</string>
     <string name="ui_translation_accessibility_translated_text">%1$s Diterjemahkan.</string>
     <string name="ui_translation_accessibility_translation_finished">Mesej diterjemahkan daripada %1$s kepada %2$s.</string>
+    <string name="unarchival_session_app_label">Belum selesai...</string>
     <string name="undo">Buat asal</string>
     <string name="unpin_specific_target">Nyahsemat %1$s</string>
     <string name="unpin_target">Nyahsemat</string>
@@ -2121,7 +2206,7 @@ Mendengar pada kelantangan yang tinggi untuk tempoh yang lama boleh merosakkan p
     <string name="user_switched">Pengguna semasa %1$s.</string>
     <string name="user_switching_message">Beralih kepada %1$s…</string>
     <string name="validity_period">Kesahan:</string>
-    <string name="vdm_camera_access_denied">Tidak dapat mengakses kamera tablet daripada %1$s anda</string>
+    <string name="vdm_camera_access_denied">Tidak dapat mengakses kamera telefon daripada %1$s anda</string>
     <string name="vdm_pip_blocked">Tidak dapat melihat gambar dalam gambar semasa penstriman</string>
     <string name="vdm_secure_window">Kandungan ini tidak boleh diakses semasa penstriman. Cuba pada telefon anda.</string>
     <string name="view_and_control_notification_content">%s boleh melihat dan mengawal skrin anda. Ketik untuk membuat semakan.</string>
@@ -2153,7 +2238,7 @@ Mendengar pada kelantangan yang tinggi untuk tempoh yang lama boleh merosakkan p
     <string name="vpn_title_long">VPN diaktifkan oleh %s</string>
     <string name="vr_listener_binding_label">Pendengar VR</string>
     <string name="wait">Tunggu</string>
-    <string name="wallpaper_binding_label">Kertas dinding</string>
+    <string name="wallpaper_binding_label">Hiasan latar</string>
     <string name="webpage_unresponsive">"Laman ini tidak bertindak balas. 
 
 Adakah anda mahu menutupnya?"</string>
@@ -2240,7 +2325,13 @@ Adakah anda mahu menutupnya?"</string>
     <string name="zen_mode_feature_name">Jangan ganggu</string>
     <string name="zen_mode_forever">Sehingga anda matikan</string>
     <string name="zen_mode_forever_dnd">Hingga anda mematikan Jangan Ganggu</string>
+    <string name="zen_mode_implicit_activated">Hidup</string>
+    <string name="zen_mode_implicit_deactivated">Mati</string>
+    <string name="zen_mode_implicit_trigger_description">Diurus oleh %1$s</string>
     <string name="zen_mode_rule_name_combination">%1$s / %2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">Sebarang kalendar</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s - %2$s</string>
     <string name="zen_mode_until">Sehingga %1$s</string>
     <string name="zen_mode_until_next_day">Hingga %1$s</string>
     <string name="zen_upgrade_notification_content">Ketik untuk menyemak item yang disekat.</string>

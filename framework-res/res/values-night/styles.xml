@@ -89,7 +89,9 @@
         <item name="statusBarColor">@color/maintenance_mode_background</item>
         <item name="navigationBarColor">@color/maintenance_mode_background</item>
         <item name="windowLightStatusBar">false</item>
+        <item name="windowLightNavigationBar">false</item>
         <item name="windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
     <style name="Theme.UnknownSource" parent="@style/Theme.DeviceDefault.NoActionBar">
         <item name="windowBackground">@color/unknownsource_background</item>
@@ -101,10 +103,6 @@
         <item name="windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="windowSplashScreenBackground">@color/unknownsource_background</item>
         <item name="windowSplashScreenAnimatedIcon">@color/transparent</item>
-    </style>
-    <style name="dexRestartDialogStyle" parent="@style/Theme.DeviceDefault.Dialog.Alert">
-        <item name="windowCloseOnTouchOutside">false</item>
-        <item name="windowContentTransitions">false</item>
-        <item name="windowActivityTransitions">false</item>
+        <item name="windowOptOutEdgeToEdgeEnforcement">true</item>
     </style>
 </resources>

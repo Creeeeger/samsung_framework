@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">დაელაპარაკეთ Bixby-ს</string>
     <string name="accessibility_corner_action_type_zoom_in">ზომის გაზრდა</string>
     <string name="accessibility_corner_action_type_zoom_out">ზომის შემცირება</string>
+    <string name="accessibility_dialog_button_allow_samsung">დაშვება</string>
+    <string name="accessibility_dialog_button_deny_samsung">უარყოფა</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">დეინსტალ.</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">ჩართვისა და ხმის აწევის ღილაკებზე სწრაფი დაჭერით ჩაირთვება ან გამოირთვება შემდეგი ფუნქციები:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">გვერდითა და ხმის აწევის ღილაკებზე სწრაფი დაჭერით ჩაირთვება ან გამოირთვება შემდეგი ფუნქციები:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">ჩართვისა და ხმის აწევის ღილაკებზე სწრაფი დაჭერით ჩაირთვება ან გამოირთვება %s.</string>
@@ -117,6 +120,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">უსაფრთხოების პოლიტიკა კრძალავს ამ ანგარიშის დამატებას.</string>
     <string name="account_removal_restrict">უსაფრთხოების პოლიტიკა კრძალავს ამ ანგარიშის წაშლას.</string>
+    <string name="action_bar_up_description">ნავიგაცია ზემოთ</string>
     <string name="action_menu_overflow_description">სხვა ოფციები</string>
     <string name="adb_active_notification_message">აირჩიეთ, რომ გამოირთოს USB შეცდომების გასწორება.</string>
     <string name="adb_active_notification_title">USB შეცდომების გასწორება დაკავშირებულია.</string>
@@ -125,6 +129,9 @@
     <string name="advance_wifi_sharing_msg">ნაპოვნია ერთი დაკავშირებადი Wi-Fi ქსელი. დაუკავშირდით, რომ გამოიყენოთ Wi-Fi გაზიარება, „მობილური ცხელი წერტილის“ მობილურ მონაცემთა ნაცვლად.</string>
     <string name="airplanemode_restrict">უსაფრთხოების პოლიტიკა კრძალავს ფრენის რეჟიმის გააქტიურებას.</string>
     <string name="allow_settings_changes">უსაფრთხოების პოლიტიკა კრძალავს პარამეტრების შეცვლას.</string>
+    <string name="always_allow">ყოველთვის დაშვება</string>
+    <string name="app_block_button_open">გახსნა</string>
+    <string name="app_block_content">%1$s გამოთქვამს სურვილს გახსნას %2$s აპლიკაცია.</string>
     <string name="app_clone_storage">შიდა საცავი (Dual Messenger)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">აირჩიეთ აპლიკაციები</string>
     <string name="app_continuity_guide_cling_button_not_now">ახლა არა</string>
@@ -139,32 +146,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">დღეს თქვენ ბოლომდე გამოიყენეთ %s-თვის განკუთვნილი მთელი დრო. ამის შეცვლა შეგიძლიათ პარამეტრებში.</string>
     <string name="app_restricted_message_concentration_mode">%s დაბლოკილია კონცენტრირების რეჟიმში. დამატებითი ინფორმაციისთვის დაუკავშირდით თქვენს IT ადმინისტრატორს.</string>
     <string name="app_updating_message">მიმდინარეობს %s-ის განახლება. მოგვიანებით სცადეთ.</string>
-    <string name="appblock_block_subtitle1_phone">ტელეფონი და პერსონალური მონაცემები დაცული რომ იყოს, ამ აპლიკაციის დაინსტალირება შეუძლებელია, რადგან არსებობს ეჭვი, რომ ის საზიანოა.</string>
-    <string name="appblock_block_subtitle1_tablet">პლანშეტი და პერსონალური მონაცემები დაცული რომ იყოს, ამ აპლიკაციის დაინსტალირება შეუძლებელია, რადგან არსებობს ეჭვი, რომ ის საზიანოა.</string>
-    <string name="appblock_block_subtitle2">ამ აპლიკაციის დაინსტალირება შეუძლებელია, რადგან ის დასახელებულია, როგორც საზიანო.</string>
-    <string name="appblock_block_text1">ამ აპლიკაციის წყარო არ არის დამოწმებული და ის მოითხოვს მოწყვლად ნებართვებს, რომლებიც შეიძლება გამოყენებული იყოს თქვენი პეესონალური მონაცემების მოსაპარად ან გასაჟონად.</string>
-    <string name="appblock_block_text2">"მავნე აპლიკაციებმა შეიძლება თქვენი მოწყვლადი ნებართვები გამოიყენოს თქვენი პერსონალური მონაცემების მოსაპარად, გააყალბოს თქვენი იდენტობა, ან განახორციელოს წვდომა თქვენს ფინანსურ ანგარიშებზე.
-
-იურიდიულ საფინანსო დაწესებულებებს არ სჭირდება ZIP ფაილების, APK ფაილების, ან ფაილების მმართველი აპლიკაციების დაინსტალირება.
-
-ყოველთვის დარწმუნდით, რომ სანდო წყაროებიდან აინსტალირებთ აპლიკაციებს."</string>
-    <string name="appblock_warn_subtitle">ამ აპლიკაციას შეუძლია მოიპაროს თქვენი პერსონალური ინფორმაცია ან გამოიწვიოს მისი გაჟონვა.</string>
+    <string name="appblock_block_text_phone">ამ აპლიკაციის დაინსტალირება შეუძლებელია, რადგან ის მოხსენებულია, როგორც საზიანო, ან რომელიმე მოხსენებული საზიანო აპლიკაციის მსგავსია. სავარაუდოდ, ეს აპლიკაცია გამოიყენება ისეთ დანაშაულებებში, როგორიცაა ფიშინგი. ტელეფონისა და მონაცემების უსაფრთხოება დაცული რომ იყოს, ამ შეზღუდვის იგნორირება შეუძლებელია.</string>
+    <string name="appblock_block_text_tablet">ამ აპლიკაციის დაინსტალირება შეუძლებელია, რადგან ის მოხსენებულია, როგორც საზიანო, ან რომელიმე მოხსენებული საზიანო აპლიკაციის მსგავსია. სავარაუდოდ, ეს აპლიკაცია გამოიყენება ისეთ დანაშაულებებში, როგორიცაა ფიშინგი. პლანშეტისა და მონაცემების უსაფრთხოება დაცული რომ იყოს, ამ შეზღუდვის იგნორირება შეუძლებელია.</string>
+    <string name="appblock_link_text">შეიტყვეთ მეტი</string>
     <string name="appblock_warn_text1">"დაუმოწმებელი წყაროებიდან აპლიკაციების დაინსტალირებით შეიძლება აპლიკაციებმა შეძლოს თქვენი პერსონალური ინფორმაციის შეგროვება ან თქვენს აქტივობაზე თვალთვალი.
 
 ამ აპლიკაციის დაინსტალირება არ არის რეკომენდებული.
 
 თუ მაინც გადაწყვეტთ მის დაინსტალირებას, ყურადღებით გაეცანით აპლიკაციის კონფიდენციალურობის დებულებას და დარწმუნდით, რომ მხოლოდ აუცილებელ ნებართვებს აძლევთ."</string>
-    <string name="appblock_warn_text2">"საზიანო აპლიკაციები ხშირად ცდილობს თქვენი პერსონალური ინფორმაციის მიღებას, რისთვისაც იყენებს კონტაქტების, SMS-სა და ფოტოების გამოყენების ნებართვას.
-
-ამ აპლიკაციის დაინსტალირება არ არის რეკომენდებული.
-
-თუ მაინც აირჩევთ ამ აპლიკაციის დაინსტალირებას, დარწმუნდით, რომ მისი წყარო თქვენთვის სანდოა და სიფრთხილე გამოიჩინეთ ნებართვების ან თქვენს მონაცემებზე სხვაგვარი წვდომის მიცემასთან დაკავშირებით."</string>
     <string name="application_default_restrict">მოწყობილობის ადმინისტრატორმა ნაგულისხმევ ვარიანტად დააყენა სხვა აპლიკაცია.</string>
     <string name="auto_click_paused">ავტომატური დაწკაპუნება დაპაუზებულია.</string>
     <string name="auto_click_resumed">ავტომატური დაწკაპუნება გაგრძელდა.</string>
     <string name="autofill_never_use_for_this_app">%s არასდროს გამოიყენოთ ამ აპლიკაციისთვის</string>
     <string name="autofill_save_cancel">გაუქმება</string>
     <string name="autofill_save_never_OK">OK</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">უსაფრთხოების პოლიტიკა კრძალავს მარქაფის გამოყენებას.</string>
     <string name="badPin2">PIN2 არასწორია. კიდევ მოსინჯეთ.</string>
     <string name="badPuk2">თქვენ მიერ შეყვანილი PUK2 არასწორია</string>
@@ -175,8 +171,6 @@
     <string name="bluetooth_a2dp_restrict">უსაფრთხოების პოლიტიკა კრძალავს Bluetooth მედიის აუდიოს გამოყენებას.</string>
     <string name="bluetooth_avrcp_restrict">უსაფრთხოების პოლიტიკა კრძალავს Bluetooth აუდიო/ვიდეო მართვის გამოყენებას.</string>
     <string name="bluetooth_bpp_restrict">უსაფრთხოების პოლიტიკა კრძალავს Bluetooth-ით ბეჭდვას.</string>
-    <string name="bluetooth_china_popup_message">%1$s ითხოვს ნებართვას, რომ გამოიყენოს %2$s. დართავთ ნებას?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">უსაფრთხოების პოლიტიკა კრძალავს მონაცემთა გადაცემას Bluetooth-ით.</string>
     <string name="bluetooth_desktop_restrict">უსაფრთხოების პოლიტიკა კრძალავს სამუშაო დაფასთან დაკავშირებას Bluetooth-ით.</string>
     <string name="bluetooth_device_restrict">უსაფრთხოების პოლიტიკა კრძალავს ამ Bluetooth მოწყობილობასთან დაწყვილებას.</string>
@@ -187,7 +181,6 @@
     <string name="bluetooth_outgoing_call_restrict">უსაფრთხოების პოლიტიკა კრძალავს დარეკვას Bluetooth-ით.</string>
     <string name="bluetooth_pairing_restrict">უსაფრთხოების პოლიტიკა კრძალავს Bluetooth-ით დაწყვილებას.</string>
     <string name="bluetooth_pbap_restrict">უსაფრთხოების პოლიტიკა კრძალავს Bluetooth მისამართების წიგნის გამოყენებას.</string>
-    <string name="bluetooth_permission_request">Bluetooth–ის უფლების მოთხოვნა</string>
     <string name="bluetooth_restrict">უსაფრთხოების პოლიტიკა კრძალავს Bluetooth-ის გამოყენებას.</string>
     <string name="bluetooth_sap_restrict">უსაფრთხოების პოლიტიკა კრძალავს თქვენს SIM ბარათზე წვდომის განხორციელებას Bluetooth-ით.</string>
     <string name="bluetooth_security_mode_disable">უსაფრთხოების პოლიტიკა კრძალავს Bluetooth-ის გამოყენებას.</string>
@@ -250,11 +243,8 @@
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">ნებადართული მოწყობილობები</string>
     <string name="data_call_restriction">უსაფრთხოების პოლიტიკა კრძალავს მობილურ მონაცემთა გამოყენებას.</string>
-    <string name="data_usage_disable_mobile">გაითიშოს მობილურ მონაცემთა კავშირი?</string>
-    <string name="data_usage_enable_mobile_warning">მონაცემთა პაკეტით კავშირისთვის შეიძლება დამატებითი გადასახადი იყოს. განაგრძობთ?</string>
     <string name="data_usage_limit_body">მობილური მონაცემები დაპაუზებულია ბილინგის ციკლის ბოლომდე.</string>
     <string name="data_usage_mobile_limit_snoozed_title">აჭარბებს მობ. მონაცემთა ლიმიტს</string>
-    <string name="data_usage_mobile_limit_title">მიღწეულია მობ. მონაცემთა ლიმიტი</string>
     <string name="data_usage_rapid_app_body">%s მობილურ მონაცემებს იყენებს ჩვეულებრივზე მეტად.</string>
     <string name="data_usage_rapid_body">თქვენი აპლიკაციები მობილურ მონაცემებს იყენებს ჩვეულებრივზე მეტად.</string>
     <string name="data_usage_rapid_title">მობილური მონაცემების გამოყენების დონე მაღალია</string>
@@ -265,6 +255,7 @@
     <string name="data_usage_warning_title_offpeak_chn">არა-პიკურ დროს გამოყენებულია %s</string>
     <string name="data_usage_warning_title_unlimited_chn">მიღწეულია მონაცემთა მაქს. სიჩქ.</string>
     <string name="device_disabled">მოწყობილობა გამორთულია. დაუკავშირდით IT ადმინისტრატორს</string>
+    <string name="device_info_not_available">მიუწვდომელია.</string>
     <string name="dex_cant_change_user_profile">მომხმარებლის პროფილის შეცვლა Samsung DeX რეჟიმში შეუძლებელია.</string>
     <string name="dex_dialog_launch_toast">შესაძლოა, გახსნილი აპლიკაციები დაიხუროს. შეინახეთ მონაცემები, სანამ ჩართავთ ან გამორთავთ Samsung DeX-ს.</string>
     <string name="dex_disconnected_from_device">DeX-ს კავშირი შეწყდა %s-თან. ტელევიზორში შეამოწმეთ ქსელთან კავშირი.</string>
@@ -273,9 +264,6 @@
     <string name="dex_launcher_mode_change">%s დაიხურება, Samsung DeX-ზე გადასართავად.</string>
     <string name="dex_mirroring_jit_msg">როდესაც Samsung DeX-ს გაუშვებთ პლანშეტით, ეკრანის არეკვლას შეძლებთ HDMI-სთან დაკავშირებულ ნებისმიერ მოწყობილობაში, რომ უფრო დიდი გამოსახულება ნახოთ.</string>
     <string name="dex_mirroring_jit_title">DeX არეკლეთ უფრო დიდ ეკრანზე</string>
-    <string name="dex_restart_app_dialog_button_positive">გადატვირთე</string>
-    <string name="dex_restart_app_dialog_message">ეს აპლიკაცია უკვე გაშვებულია სხვა ეკრანზე. აქ რომ გახსნათ, აპლიკაცია უნდა გადატვირთოთ. გადატვირთვამდე შეინახეთ ყველაფერი, რაც მნიშვნელოვანია.</string>
-    <string name="dex_restart_app_dialog_title">გადატვირთავთ %s-ს?</string>
     <string name="dex_restriction_blockerMessage">უსაფრთხოების პოლიტიკა კრძალავს Samsung DeX-ის გამოყენებას.</string>
     <string name="dex_restriction_ethernetOnly">უსაფრთხოების პოლიტიკა კრძალავს Wi-Fi მონაცემების, მობილური მონაცემებისა და მობილური ინტერნეტის გაზიარების DeX-ში გამოყენებას. ქსელის ფუნქციების გამოსაყენებლად, საჭიროა საკაბელო კავშირი.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">უსაფრთხოების პოლიტიკის გამო, Samsung DeX-იდან გამოსასვლელად შეწყვიტეთ კავშირი გარე ეკრანთან.</string>
@@ -300,7 +288,6 @@
     <string name="digital_signature_failure_user_notification">მომხმარებლის %d-ის ციფრული ხელმოწერა არასწორია</string>
     <string name="disableupdate_application_restrict">უსაფრთხოების პოლიტიკა კრძალავს ამ პროგრამის განახლებას.</string>
     <string name="display_chooser_button_positive">გადატვირთე</string>
-    <string name="display_chooser_dont_show_again">აღარ მაჩვენო</string>
     <string name="dlg_confirm_kill_storage_users_text">USB მეხსიერებასთან დაკავშირების გამო გაჩერდება ზოგიერთი მომუშავე პროგრამა. მათ ვერ გამოიყენებთ, სანამ არ გათიშავთ USB მეხსიერებას.</string>
     <string name="dlg_confirm_kill_storage_users_title">დაუკავშირეთ მეხსიერება კომპიუტერს</string>
     <string name="dlg_error_title">USB ოპერაცია წარუმატებელი იყო</string>
@@ -315,7 +302,7 @@
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">ამ აპლიკაციის გამოყენება შეუძლებელია მრავალფანჯრიან ხედში.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">ამ ფუნქციის გამოყენება შეუძლებელია მრავალფანჯრიან ხედში.</string>
     <string name="edit_contact_at_sim_restriction">უსაფრთხოების პოლიტიკა კრძალავს SIM ბარათზე შენახული კონტაქტების შესწორებას.</string>
-    <string name="edm_policy_not_allow_open_wifiap">ნებადართული მოწყობილობები</string>
+    <string name="edm_policy_not_allow_open_wifiap">უსაფრთხოების პოლიტიკა ზღუდავს დაუცველი მობილური ინტერნეტის გამოყენებას კომპიუტერში, ცხელი წერილისთვის.</string>
     <string name="emergency_calls_only">მხოლოდ საგანგებო ზარები</string>
     <string name="ethernet_cable_connected_notification_message">დააკაკუნეთ და მოაწყეთ.</string>
     <string name="ethernet_cable_connected_notification_title">Ethernet დაკავშირებულია</string>
@@ -335,7 +322,7 @@
     <string name="ext_media_unsupported_notification_message">ამ მოწყობილობას არ აქვს ამ %s მხარდაჭერა. შეეხეთ, რომ დააყენოთ მხარდაჭერილ ფორმატში.</string>
     <string name="ext_media_unsupported_notification_title">%s მხარდაჭერა არ არის</string>
     <string name="ext_storage_bad_removal_button">თავიდან ჩართვა</string>
-    <string name="ext_storage_bad_removal_title">გადატვირთეთ პლანშეტი</string>
+    <string name="ext_storage_bad_removal_title">გადატვირთეთ ტელეფონი</string>
     <string name="extmedia_format_button_format">ფორმატი</string>
     <string name="extmedia_format_message_usbhost">თქვენ USB მეხსიერებაში შენახული ყველა ფაილი წაიშლება. ეს მოქმედება ვეღარ შეიცვლება!</string>
     <string name="extmedia_format_title_usbhost">დავაფორმატო USB მეხსიერება?</string>
@@ -406,6 +393,7 @@
     <string name="globalactions_unable_restart_msg_fmm">ხელახლა ჩართვა შეუძლებელია, რადგან ტელეფონი დისტანციურადაა დაბლოკილი „ჩემი მობილურის ძებნის“ მიერ.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">ხელახლა ჩართვა შეუძლებელია, რადგან პლანშეტი დისტანციურადაა დაბლოკილი „ჩემი მობილურის ძებნის“ მიერ.</string>
     <string name="globalactions_unable_restart_msg_securelock">დაბლოკილი ტელეფონის გადატვირთვა შეუძლებელია. ტელეფონის გადასატვირთად, გახსენით ყდა და განბლოკეთ.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">ტელეფონის გადატვირთვა შეუძლებელია, როდესაც SIM ბარათი დაბლოკილია.</string>
     <string name="hardware_key_restrict">უსაფრთხოების პოლიტიკა კრძალავს ამ ფიზიკური ღილაკის გამოყენებას.</string>
     <string name="hardware_sec">კლავიატურა ეკრანზე</string>
     <string name="hbd_translate">აკრეფილის თარგმნა</string>
@@ -475,16 +463,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">ტექნიკური მსახურების რეჟიმის გამოსართავად უნდა განბლოკოთ პლანშეტი.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">როცა ტექნიკური მსახურების რეჟიმი ჩართულია, არაფერი ინახება, მაგალითად, ჩამოტვირთული მონაცემები, აპლიკაციის ინსტალაციები და შეცვლილი პარამეტრები.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">დააყენე ეკრანის დბლკ.</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">გადატვირთვა ჟურნალის შექმნის გარეშე</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">ჟურნალის შექმნა და გადატვირთვა</string>
     <string name="maintenance_mode_intro_dialog_message_phone">ტელეფონი ხელახლა უნდა ჩართოთ, რომ ჩართოთ ტექნიკური მომსახურების რეჟიმი.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">ჯერ დააყენეთ ეკრანის დაბლოკვა.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">პლანშეტი ხელახლა უნდა ჩართოთ, რომ ჩართოთ ტექნიკური მომსახურების რეჟიმი.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"იმისათვის რომ დავეხმაროთ ჩვენს დამხმარე პერსონალს თქვენი ტელეფონის პრობლემების გაანალიზებაში, გირჩევთ შექმნათ სისტემის ჟურნალი ტექნიკური მომსახურების რეჟიმის დაწყებამდე.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"იმისათვის რომ ჩვენს დამხმარე პერსონალს დაეხმაროთ თქვენი ტელეფონის პრობლემების დიაგნოზირებასა და გაანალიზებაში, გირჩევთ სისტემის ჟურნალი შექმნათ ტექნიკური მომსახურების რეჟიმის დაწყებამდე.
 
-ჟურნალი აჩვენებს, რომელი აპლიკაციები იყო გამოყენებული და რა შეცდომები წარმოიშვა ბოლო დროს, მაგრამ არ შეიცავს რაიმე სხვა პირად ინფორმაციას. ჟურნალის გამოყენება მოხდება მხოლოდ პრობლემის გასაანალიზებლად და არა სხვა მიზნებისთვის. ჩვეულებრივ, ჟურნალის შექმნას 2 წუთი სჭირდება."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"იმისათვის რომ დავეხმაროთ ჩვენს დამხმარე პერსონალს თქვენი პლანშეტის პრობლემების გაანალიზებაში, გირჩევთ შექმნათ სისტემის ჟურნალი ტექნიკური მომსახურების რეჟიმის დაწყებამდე.
+ჟურნალი შეიცავს მხოლოდ ისეთ ინფორმაციას, რომელიც აუცილებელია თქვენი ტელეფონის შესაკეთებლად, მაგალითად, გამოყენებული აპლიკაციები, ბოლო დროს წარმოშობილი შეცდომები, დაბლოკილი ტელეფონის ნომრები და ფაილების საცავის ტევადობა. ჟურნალი გამოყენებული იქნება მხოლოდ პრობლემების დიაგნოსტიკისა და ანალიზისთვის და არა რაიმე სხვა მიზნით. ჩვეულებრივ, ჟურნალის შექმნას დაახლოებით 2 წუთი სჭირდება."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"იმისათვის რომ ჩვენს დამხმარე პერსონალს დაეხმაროთ თქვენი პლანშეტის პრობლემების დიაგნოზირებასა და გაანალიზებაში, გირჩევთ სისტემის ჟურნალი შექმნათ ტექნიკური მომსახურების რეჟიმის დაწყებამდე.
 
-ჟურნალი აჩვენებს, რომელი აპლიკაციები იყო გამოყენებული და რა შეცდომები წარმოიშვა ბოლო დროს, მაგრამ არ შეიცავს რაიმე სხვა პირად ინფორმაციას. ჟურნალის გამოყენება მოხდება მხოლოდ პრობლემის გასაანალიზებლად და არა სხვა მიზნებისთვის. ჩვეულებრივ, ჟურნალის შექმნას 2 წუთი სჭირდება."</string>
+ჟურნალი შეიცავს მხოლოდ ისეთ ინფორმაციას, რომელიც აუცილებელია თქვენი პლანშეტის შესაკეთებლად, მაგალითად, გამოყენებული აპლიკაციები, ბოლო დროს წარმოშობილი შეცდომები, დაბლოკილი ტელეფონის ნომრები და ფაილების საცავის ტევადობა. ჟურნალი გამოყენებული იქნება მხოლოდ პრობლემების დიაგნოსტიკისა და ანალიზისთვის და არა რაიმე სხვა მიზნით. ჩვეულებრივ, ჟურნალის შექმნას დაახლოებით 2 წუთი სჭირდება."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">საცავის ანალიზი</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">ტელეფონის შიდა საცავი თითქმის ბოლომდე სავსეა. თუ საცავში ადგილი არ დარჩება, შეიძლება ზოგიერთი აპლიკაციისა და ფუნქციის მუშაობა შეფერხდეს. სცადეთ წაშალოთ ზოგიერთი ფაილი ან აპლიკაცია, რომლებიც აღარ გჭირდებათ. წაშლის შემდეგ, არ დაგავიწყდეთ ურნის დაცლა.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">პლანშეტის შიდა საცავი თითქმის ბოლომდე სავსეა. თუ საცავში ადგილი არ დარჩება, შეიძლება ზოგიერთი აპლიკაციისა და ფუნქციის მუშაობა შეფერხდეს. სცადეთ წაშალოთ ზოგიერთი ფაილი ან აპლიკაცია, რომლებიც აღარ გჭირდებათ. წაშლის შემდეგ, არ დაგავიწყდეთ ურნის დაცლა.</string>
@@ -506,10 +494,17 @@
     <string name="maintenance_mode_outro_label">ტექნიკური მსახურების რეჟიმიდან გამოსვლა</string>
     <string name="maintenance_mode_outro_textview_message_phone">ტექნიკური მომსახურების რეჟიმის გამოსართავად დაგჭირდებათ ტელეფონის განბლოკვა. როცა ამას გააკეთებთ, ყველაფერი იმ მდგომარეობაში დაბრუნდება, როგორც იყო ტექნიკური მომსახურების რეჟიმის პირველი ჩართვის დროს. არ შეინახება ის ცვლილებები, რომელთა შეტანა მოხდა მაშინ, როცა ჩართული იყო ტექნიკური მომსახურების რეჟიმი, მაგალითად, არ შეინახება ჩამოტვირთული მონაცემები, დაინსტალირებული აპლიკაციები და არც პარამეტრების ცვლილებები.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">ტექნიკური მომსახურების რეჟიმის გამოსართავად დაგჭირდებათ პლანშეტის განბლოკვა. როცა ამას გააკეთებთ, ყველაფერი იმ მდგომარეობაში დაბრუნდება, როგორიც იყო ტექნიკური მომსახურების რეჟიმის პირველი ჩართვის დროს. არ შეინახება ის ცვლილებები, რომელთა შეტანა მოხდა მაშინ, როცა ჩართული იყო ტექნიკური მომსახურების რეჟიმი, მაგალითად, არ შეინახება ჩამოტვირთული მონაცემები, დაინსტალირებული აპლიკაციები და არც პარამეტრების ცვლილებები.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">ტექნიკური მსახურების რეჟიმის გამოყენება შეუძლებელია, როდესაც %s აქტიურია.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">ტექნიკური მომსახურების რეჟიმს ვერ გამოიყენებთ, როცა ჩართულია ენერგიის დაზოგვა აპებისა და საწყისი გვერდის შეზღუდვით.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">ამ ტელეფონს არ აქვს ტექნიკური მსახურების რეჟიმის მხარდაჭერა.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">ამ პლანშეტს არ აქვს ტექნიკური მსახურების რეჟიმის მხარდაჭერა.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">მხოლოდ მოწყობილობის მფლობელს შეუძლია გამოიყენოს %s.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">შეწყდეს მონაცემთა დამარქაფება და ჩაირთოს ტექნიკური მსახურების რეჟიმი?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">ტექნიკური მომსახურების რეჟიმი რომ ჩართოთ, უნდა დაასრულოთ ან წაშალოთ დაუსრულებელი სამარქაფო ასლი.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">ტექნიკური მომსახურების რეჟიმი რომ ჩართოთ, უნდა შეწყვიტოთ მიმდინარე დამარქაფება.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">ტექნიკური მომსახურების რეჟიმი რომ ჩართოთ, უნდა შეწყვიტოთ სამარქაფო მონაცემებიდან აღდგენა.</string>
+    <string name="maintenance_mode_toast_text_device_admin">მოწყობილობის ადმინისტრატორის აპლიკაცია</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">ჟურნალი იქმნება…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">ჩვეულებრივ, ამას დაახლოებით 2 წუთი სჭირდება. ჟურნალის შექმნის შემდეგ ტელეფონი ხელახლა ჩაირთვება ტექნიკური მომსახურების რეჟიმში და უსაფრთხოდ შეძლებთ ტელეფონის შეკეთებას.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">ჩვეულებრივ, ამას დაახლოებით 2 წუთი სჭირდება. ჟურნალის შექმნის შემდეგ პლანშეტი ხელახლა ჩაირთვება ტექნიკური მომსახურების რეჟიმში და უსაფრთხოდ შეძლებთ პლანშეტის შეკეთებას.</string>
@@ -532,13 +527,8 @@
     <string name="media_checking_usbhost">USB მეხსიერება ამჟამად შემოწმების პროცესშია.</string>
     <string name="media_unknown_state">გარე მედია უცნობ მდგომარეობაშია.</string>
     <string name="mediaplayer_restrict">უსაფრთხოების პოლიტიკა კრძალავს MTP მედია პლეერის გამოყენებას.</string>
+    <string name="message_on_crash">დაბლოკა ავტომატურმა დამბლოკმა</string>
     <string name="microphone_restrict">უსაფრთხოების პოლიტიკა კრძალავს მიკროფონის გამოყენებას.</string>
-    <string name="miniresolver_call">დარეკვა</string>
-    <string name="miniresolver_call_in_work">დარეკავთ სამუშაო აპლიკაციიდან?</string>
-    <string name="miniresolver_call_information">თქვენი ორგანიზაცია სამუშაო აპლიკაციებიდან მხოლოდ ზარების განხორციელების ნებართვას გაძლევთ.</string>
-    <string name="miniresolver_sms_information">თქვენი ორგანიზაცია სამუშაო აპლიკაციებიდან მხოლოდ შეტყობინებების გაგზავნის ნებართვას გაძლევთ.</string>
-    <string name="miniresolver_switch">გადართვა</string>
-    <string name="miniresolver_switch_to_work">გადართავთ სამუშაო აპლიკაციაზე?</string>
     <string name="mmcc_authentication_reject_name_template">%s აკრძალულია</string>
     <string name="mmcc_illegal_me_name_template">%s აკრძალულია</string>
     <string name="mmcc_illegal_ms_name_template">%s აკრძალულია</string>
@@ -550,30 +540,6 @@
     <string name="mock_location_reminder_disable">გამორთვა</string>
     <string name="mock_location_reminder_title">იმიტირებული ლოკაცია ჩართულია</string>
     <string name="more_apps">სხვა აპები</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s სერვისის მხარდაჭერა არ არის. დაუკავშირდით მომხმარებელთა მომსახურების სამსახურს.</string>
-    <string name="mptcp_message_address_type_not_supported">%s კავშირი სუსტია. თავიდან მყარდება კავშირი მისაწვდომ ქსელებთან…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s კავშირი სუსტია. თავიდან მყარდება კავშირი მისაწვდომ ქსელებთან…</string>
-    <string name="mptcp_message_cmd_not_supported">%s ქსელი დროებით მიუწვდომელია. თავიდან მყარდება კავშირი მისაწვდომ ქსელებთან…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s კავშირი სუსტია. თავიდან მყარდება კავშირი მისაწვდომ ქსელებთან…</string>
-    <string name="mptcp_message_connection_refused">%s კავშირი სუსტია. თავიდან მყარდება კავშირი მისაწვდომ ქსელებთან…</string>
-    <string name="mptcp_message_data_usage_limit">მიღწეულია მონაცემთა ლიმიტი. მონაცემთა გამოყენების ლიმიტის შესაცვლელად, გადადით პარამეტრებში.</string>
-    <string name="mptcp_message_host_unreachable">%s კავშირი სუსტია. თავიდან მყარდება კავშირი მისაწვდომ ქსელებთან…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">%s ვერ ჩაირთვება. მოწყობილობა არ არის დაკავშირებული LTE ქსელთან.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">%s ვერ ჩაირთვება საერთაშორისო როუმინგში.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">%s ვერ ჩაირთვება, სანამ გააქტიურებულია „მობილური ცხელი წერტილი“ ან „მობილური ქსელი USB-თი“.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">%s ვერ ჩაირთვება, სანამ ჩართულია Wi-Fi Direct.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">%s ვერ ჩაირთვება, სანამ ჩართულია ფრენის რეჟიმი.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">%s ვერ ჩაირთვება, როდესაც გამორთულია მობილურ მონაცემთა ქსელები.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">მომსახურების მომწოდებლისგან პასუხი არ არის.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">%1$s ვერ ჩაირთვება. %2$s მიუწვდომელია თქვენი ინტერნეტ-პაკეტით, ან %3$s სერვერიდან პასუხი არ არის მიღებული.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">%s-ის აქტივაციის მოთხოვნა ვერ გაიგზავნა. თავიდან მყარდება კავშირი მისაწვდომ ქსელებთან…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">%s ვერ ჩაირთვება. ჩადებული SIM ბარათი არასწორია.</string>
-    <string name="mptcp_message_network_unreachable">%s კავშირი სუსტია. თავიდან მყარდება კავშირი მისაწვდომ ქსელებთან…</string>
-    <string name="mptcp_message_non_mptcp_plan">Giga Multi-Path-ის ჩართვა შეუძლებელია. ფუნქცია არ მუშაობს სატარიფო გეგმაში.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s გამოირთო, მოწყობილობის გადახურების ასარიდებლად. სანაცვლოდ, იტვირთება მობილური ქსელით…</string>
-    <string name="mptcp_message_server_error">%s კავშირი სუსტია. თავიდან მყარდება კავშირი მისაწვდომ ქსელებთან…</string>
-    <string name="mptcp_message_setting_disabled_overheating">%s ვერ ჩაირთვება. მოწყობილობის გადახურების პირასაა. დაელოდეთ მოწყობილობის გაგრილებას და ისევ სცადეთ.</string>
-    <string name="mptcp_message_ttl_expired">%s ქსელი დროებით მიუწვდომელია. თავიდან მყარდება კავშირი მისაწვდომ ქსელებთან…</string>
     <string name="multi_user_capability_restrict">უსაფრთხოების პოლიტიკა კრძალავს მოწყობილობის გამოყენებას რამდენიმე მომხმარებლის მიერ.</string>
     <string name="multi_user_creation_restrict">უსაფრთხოების პოლიტიკა კრძალავს ახალი მომხმარებლის ანგარიშების შექმნას მოწყობილობაში.</string>
     <string name="multi_user_removal_restrict">უსაფრთხოების პოლიტიკა კრძალავს ახალი მომხმარებლის ანგარიშების წაშლას მოწყობილობაში.</string>
@@ -592,27 +558,25 @@
     <string name="multisound_sound_via_bluetooth_multiselection">ხმა ისმის Bluetooth აუდიო მოწყობილობაში. შეეხეთ აქ, მის გამოსართავად</string>
     <string name="multisound_sound_via_headphone">%s უკრავს ყურსასმენით. შეეხეთ აქ, მის გამოსართავად.</string>
     <string name="multisound_sound_via_headphone_multiselection">ხმა ისმის ყურსასმენში. შეეხეთ აქ, მის გამოსართავად.</string>
-    <string name="multisound_sound_via_phone_speaker">%s უკრავს პლანშეტის დინამიკში. შეეხეთ აქ, მის გამოსართავად.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">ხმა ისმის პლანშეტის დინამიკით. შეეხეთ აქ, მის გამოსართავად.</string>
+    <string name="multisound_sound_via_phone_speaker">%s უკრავს ტელეფონის დინამიკში. შეეხეთ აქ, მის გამოსართავად.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">ხმა ისმის ტელეფონის დინამიკით. შეეხეთ აქ, მის გამოსართავად.</string>
     <string name="multisound_sound_via_usb_audio">%s-ის ხმა ისმის USB აუდიო მოწყობილობაში. შეეხეთ აქ, მის გამოსართავად.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">ხმა ისმის USB აუდიო მოწყობილობაში. შეეხეთ აქ, მის გამოსართავად.</string>
     <string name="multisound_title">აპლიკაციის ხმის განცალკევება</string>
     <string name="multisound_turn_off_multisound">გამორთვა</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s ვერ გაეშვება Samsung DeX-ში. სცადეთ პლანშეტის რეჟიმში გაშვება.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s ვერ გაეშვება Samsung DeX-ში. ის შექმნილია პლანშეტის „საწყისი ეკრანებისთვის“.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ზოგიერთი თამაში მუშაობს მხოლოდ სენსორული ეკრანებით. თუ მაუსით მართვა შეუძლებელია Samsung DeX-ში, სანაცვლოდ სცადეთ თამაში პლანშეტის რეჟიმში.</string>
-    <string name="my_device">ეს პლანშეტი</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s ვერ გაეშვება Samsung DeX-ში. სცადეთ ტელეფონის რეჟიმში გაშვება.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s ვერ გაეშვება Samsung DeX-ში. ის შექმნილია ტელეფონის „საწყისი ეკრანებისთვის“.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">ზოგიერთი თამაში მუშაობს მხოლოდ სენსორული ეკრანებით. თუ მაუსით მართვა შეუძლებელია Samsung DeX-ში, სანაცვლოდ სცადეთ თამაში ტელეფონის რეჟიმში.</string>
+    <string name="my_device">ეს ტელეფონი</string>
     <string name="network_locked_sim_dialog_message_ais">თქვენი SIM ბარათი სრულყოფილად არ მუშაობს ამ ტელეფონით, რადგან ის არ აკმაყოფილებს გამოწერის წესებსა და პირობებს. თუ შეკითხვები გაქვთ ან დამატებითი ინფორმაცია გჭირდებათ ამ საკითხთან დაკავშირებით, გთხოვთ, მიმართოთ Samsung-ის მომხმარებელთა მომსახურების ცენტრს ან იმ მაღაზიას, სადაც შეიძინეთ ეს პროდუქტი.</string>
     <string name="network_locked_sim_notification_text">დევს ქსელის მიერ დაბლოკილი SIM.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">საწყისი ეკრანის აპლიკაცია შეცვალეთ One UI Home-ით.</string>
     <string name="nfc_restrict">უსაფრთხოების პოლიტიკა კრძალავს NFC-ის გამოყენებას.</string>
     <string name="nosim_limited_service">შეზღუდული მომსახურება</string>
-    <string name="not_support_ai_key">ხელოვნური ინტელექტის გასაღები ჯერ არ მუშაობს თქვენს პლანშეტში. განახლება მალე იქნება ხელმისაწვდომი.</string>
-    <string name="notification_app_name_settings">პარამეტრები</string>
     <string name="notification_channel_dex_policy">Samsung DeX-ის წესები</string>
-    <string name="ntfs_usb_storage_readonly_mount_message">ამ მეხსიერებიდან მხოლოდ წაკითხვა შეიძლება, რადგან ის იყენებს NTFS ფორმატს.</string>
-    <string name="ntfs_usb_storage_readonly_mount_title">მხოლოდ წაკითხვადი USB დაემატა</string>
+    <string name="ntfs_usb_storage_readonly_mount_message">ამ საცავიდან მხოლოდ წაკითხვა შეიძლება, რადგან ის იყენებს NTFS ფორმატს.</string>
+    <string name="ntfs_usb_storage_readonly_mount_title">მხოლოდ წაკითხვადი USB საცავი დაემატა</string>
     <string name="overheat_limit_ok">OK</string>
     <string name="overheat_warning_title_v2_phone">ტელეფონი გადახურების პირასაა</string>
     <string name="overheat_warning_title_v2_tablet">პლანშეტი გადახურების პირასაა</string>
@@ -784,7 +748,6 @@
     <string name="permlab_scheduleExactAlarm">სიგნალიებსა და შეხსენებების დაყენება</string>
     <string name="permlab_spdControl">უსაფრთხოების პოლიტიკის განახლებების მართვა</string>
     <string name="permlab_ucsPlugin">ავტორიზაციის უნივერსალური მართვის ჩაშენება</string>
-    <string name="personal_apps_suspended_turn_profile_on">ჩართვა</string>
     <string name="phoneTypeConference">კონფერენცია</string>
     <string name="policydesc_allow_bluetoothmode">აკრძალეთ Bluetooth-ის გამოყენება.</string>
     <string name="policydesc_allow_browser">აკრძალეთ ინტერნეტის გამოყენება.</string>
@@ -792,7 +755,7 @@
     <string name="policydesc_allow_desktopsync">აკრძალეთ სამუშაო მაგიდის სინქრონიზაციის გამოყენება.</string>
     <string name="policydesc_allow_internetsharing">აკრძალეთ „მობილური ცხელი წერტილის“ გამოყენება.</string>
     <string name="policydesc_allow_irda">აკრძალეთ IrDA-ს გამოყენება.</string>
-    <string name="policydesc_allow_popimapemail">პლანშეტში აკრძალეთ POP და IMAP ელფოსტების გამოყენება.</string>
+    <string name="policydesc_allow_popimapemail">ტელეფონში აკრძალეთ POP და IMAP ელფოსტების გამოყენება.</string>
     <string name="policydesc_allow_storagecard">აკრძალეთ SD ბარათის გამოყენება.</string>
     <string name="policydesc_allow_textmessaging">აკრძალეთ ტექსტური და მულტიმედიური შეტყობინების გამოყენება.</string>
     <string name="policydesc_allow_thirdParty">ამ აპლიკაციას შეუძლია, ხელი შეუშალოს მესამე მხარის აპლიკაციების გაშვებას.</string>
@@ -838,7 +801,7 @@
     <string name="pwd_change_enforced">უსაფრთხოების პოლიტიკით მოგეთხოვებათ შეცვალოთ პაროლი.</string>
     <string name="recording_fail">%1$s ვერ გამოიყენებს მიკროფონს, როდესაც მას იყენებს %2$s.</string>
     <string name="recording_popup">%s იყენებს მიკროფონს.</string>
-    <string name="recording_popup_device">პლანშეტი</string>
+    <string name="recording_popup_device">ტელეფონი</string>
     <string name="recording_popup_with_bluetooth">%s იყენებს Bluetooth მიკროფონს.</string>
     <string name="recording_popup_with_device">%1$s იყენებს %2$s-ის მიკროფონს.</string>
     <string name="redo">გამეორება</string>
@@ -904,12 +867,12 @@
     <string name="screencapture_restrict">უსაფრთხოების პოლიტიკა კრძალავს ეკრანის გადაღების ფუნქციის გამოყენებას.</string>
     <string name="sd_card_unavailable_message">SD ბარათს ვერ გამოიყენებთ, რადგან ის ჩადებული იყო, როდესაც გამოყენებული იყო სხვა მომხმარებლის პროფილი.</string>
     <string name="sd_card_unavailable_title">SD ბარათი მიუწვდომელია</string>
-    <string name="sdcard_bad_removal_message">SD ბარათის ამოღება არ იყო უსაფრთხო. იმისათვის რომ პლანშეტი უეცრად არ გადაიტვირთოს, შეინახეთ შეუნახავი მონაცემები და გადატვირთეთ ახლა.</string>
+    <string name="sdcard_bad_removal_message">SD ბარათის ამოღება არ იყო უსაფრთხო. იმისათვის რომ ტელეფონი უეცრად არ გადაიტვირთოს, შეინახეთ შეუნახავი მონაცემები და გადატვირთეთ ახლა.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD ბარათის გაშიფვრა</string>
     <string name="sdcard_batch_decrypt_noti_title">SD ბარათის გაშიფვრა</string>
     <string name="sdcard_batch_decrypt_popup_content">დაშიფრული SD ბარათი უნდა გაიშიფროს მის გამოყენებამდე. გაშიფვრას შეიძლება დასჭირდეს ერთი საათი ან მეტი. დაიწყეთ დატენილი კვების ელემენტით და არ მოაცილოთ აპარატს დამტენი გაშიფვრის დასრულებამდე. გაშიფვრის პროცესის შეწყვეტამ შეიძლება გამოიწვიოს მონაცემთა ნაწილის ან ყველა მონაცემის დაკარგვა.</string>
     <string name="sdcard_decrypt_err_notification">SD ბარათის გაშიფვრის დროს მოხდა შეცდომა.</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD ბარათზე ზოგიერთი ფაილი დაშიფრულია სხვა მოწყობილობით და მათი გამოყენება ამ პლანშეტით შეუძლებელია.</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD ბარათზე ზოგიერთი ფაილი დაშიფრულია სხვა მოწყობილობით და მათი გამოყენება ამ ტელეფონით შეუძლებელია.</string>
     <string name="sdcard_decrypt_notification">SD ბარათი გაიშიფრა.</string>
     <string name="sdcard_decrypt_title_notification">SD ბარათის გაშიფვრა</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD ბარათის გაშიფვრა…</string>
@@ -926,14 +889,6 @@
     <string name="sdcard_unmount_policy_noti_title">SD ბარათთან კავშირი შეწყდა IT პოლიტიკის გამო.</string>
     <string name="sdhms_nr_control_low_battery">გამორთეთ 5G, რომ დაზოგოთ ენერგია, როდესაც ტელეფონში ენერგიის შევსების დონე 15%-ზე ნაკლები იქნება.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth დარჩება თვითმფრინავის რეჟიმში.</string>
-    <string name="sec_immersive_cling_button_ok">კი</string>
-    <string name="sec_immersive_cling_guide_text_gesture">ეს აპლიკაცია იყენებს მთელ ეკრანს. ნავიგაციისთვის თითის გადასმით შესასრულებელი ჟესტები აჩვენებს სტატუსის ზოლს. ნავიგაციის შესასრულებლად ისევ გადაუსვით თითი, სანამ სტატუსის ზოლი ჩანს.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"ეს აპლიკაცია იყენებს მთელ ეკრანს. „საწყისი ეკრანის“, „უკან“ და „ბოლოდროინდელთა“ ღილაკები დამალულია, რომ მინიმუმამდე შემცირდეს ყურადღების გაფანტვა და უნებლიედ არ გახვიდეთ აპლიკაციიდან.
-
-ტელეფონის მობრუნების შემთხვევაშიც კი, ღილაკები ყოველთვის მოთავსებულია დამტენის პორტის გვერდით. ღილაკების ხელახლა გამოსაჩენად კიდედან ცენტრისკენ გადაუსვით ეკრანს თითი, როგორც ეს ნაჩვენებია ისრით."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"ეს აპლიკაცია იყენებს მთელ ეკრანს. „საწყისი ეკრანის“, „უკან“ და „ბოლოდროინდელთა“ ღილაკები დამალულია, რომ მინიმუმამდე შემცირდეს ყურადღების გაფანტვა და უნებლიედ არ გახვიდეთ აპლიკაციიდან.
-
-ღილაკები რომ ისევ გამოჩნდეს, აუსვით ეკრანს თითი ქვემოდან ზემოთ, როგორც ეს ნაჩვენებია ისრით."</string>
     <string name="sec_monotype_default">ნაგულისხმევი</string>
     <string name="sec_ringtone_category_brand_sound">Samsung-ის ბრენდის ხმა</string>
     <string name="sec_ringtone_category_calm">მშვიდი</string>
@@ -943,6 +898,10 @@
     <string name="sec_ringtone_category_open_theme">მიმდინარე თემის ნაგულისხმევი</string>
     <string name="sec_ringtone_category_retro">რეტრო</string>
     <string name="sec_ringtone_silent">ჩუმი</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">გაუქმება</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">სატელიტთან დასაკავშირებლად დაყენებული უნდა იყოს ქსელის ოპერატორის ავტომატური არჩევა.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">ჩართვა</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">ჩაირთოს ქსელის ავტომატური არჩევა?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">ჩართეთ მიკროფონზე წვდომა, რომ ისაუბროთ.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">ჩართეთ კამერაზე წვდომას, რომ გამოიყენოთ %s.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">ჩართეთ მიკროფონზე წვდომას, რომ გამოიყენოთ %s.</string>
@@ -1038,6 +997,8 @@
     <string name="sem_face_error_already_in_use_by_VT">სახის ამოცნობის გამოყენება შეუძლებელია ვიდეოზარების დროს.</string>
     <string name="sem_face_error_camera_access_off">სახის ამოცნობის გამოყენება შეუძლებელია, რადგან კამერაზე წვდომა გამორთულია</string>
     <string name="sem_face_error_camera_fail">„კამერა“ ვერ გაიხსნა. ისევ სცადეთ.</string>
+    <string name="sem_face_error_lockout">ბიომეტრიული დამოწმება შეუძლებელია ზედმეტად ბევრი არასწორი მცდელობის გამო.</string>
+    <string name="sem_face_error_lockout_permanent">ბიომეტრიული დამოწმება შეუძლებელია ზედმეტად ბევრი არასწორი მცდელობის გამო.</string>
     <string name="sem_face_error_ppp_timeout">დიდი დრო გავიდა მას შემდეგ, რაც დაამოწმეთ თქვენი პირადობა. ხელახლა უნდა დაარეგისტრიროთ თქვენი სახე.</string>
     <string name="sem_face_error_too_dark">ისე ბნელა, რომ სახის ამოცნობა შეუძლებელია</string>
     <string name="sem_face_error_too_dark_to_enroll">ძალიან ბნელია. სცადეთ შუქის ანთება, ან გადადით უფრო ნათელ ადგილზე.</string>
@@ -1053,13 +1014,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">S Pen-ის წვერი მოაშორეთ ეკრანს, რომ დაასკანეროთ თითის ანაბეჭდი.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">თითის ანაბეჭდების გამოსაყენებლად ჯერ დააყენეთ ეკრანის დაბლოკვის უსაფრთხო ტიპი (ნიმუში, PIN, ან პაროლი).</string>
+    <string name="sem_fingerprint_error_lockout">ბიომეტრიული დამოწმება შეუძლებელია ზედმეტად ბევრი არასწორი მცდელობის გამო.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">ბიომეტრიული დამოწმება შეუძლებელია ზედმეტად ბევრი არასწორი მცდელობის გამო.</string>
     <string name="sem_fingerprint_error_onehand_mode">თითის ანაბეჭდის გამოყენება „ცალი ხელით მოქმედების რეჟიმში“ შეუძლებელია.</string>
     <string name="sem_fingerprint_error_smart_view">თითის ანაბეჭდის დასკანერება შეუძლებელია, როდესაც გამოყენებულია %s.</string>
+    <string name="sem_fingerprint_error_system_failure">თითის ანაბეჭდის სენსორი არ რეაგირებს. მოგვიანებით სცადეთ. თუ პრობლემა არ მოგვარდება, სცადეთ ტელეფონის ხელახლა ჩართვა.</string>
+    <string name="sem_fingerprint_error_template_corrupt">თითის ანაბეჭდის მონაცემები დაზიანებულია. თავიდან დაამატეთ თითის ანაბეჭდი.</string>
     <string name="sem_fingerprint_error_wireless_charger">შეწყვიტეთ კავშირი უსადენო დამტენთან, რომ გამოიყენოთ თითის ანაბეჭდი</string>
     <string name="sem_fingerprint_name_template">თითის ანაბეჭდი %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">მოგვიანებით</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">ახლა არა</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">წაშლა და დარეგისტრირება</string>
+    <string name="sem_fingerprint_register_dialog_message">თითის ანაბეჭდის ამოცნობა გაუმჯობესდა პროგრამული უზრუნველყოფის უახლეს განახლებაში. თითის ანაბეჭდის ამოცნობის გამოყენებას ვერ შეძლებთ, სანამ არ წაშლით თითის ანაბეჭდებს და ხელახლა არ დაარეგისტრირებთ მათ.</string>
     <string name="sem_fingerprint_register_dialog_title">ისევ დაარეგისტრირეთ ანაბეჭდები</string>
     <string name="sem_fingerprint_result_failed">შესაბამისი არ არის.</string>
     <string name="sem_fingerprint_result_retry">ისევ სცადეთ.</string>
@@ -1079,7 +1045,7 @@
     <string name="sem_resolver_button_always_accessibility">ყოველთვის გამოიყენეთ არჩეული აპლიკაცია</string>
     <string name="sem_resolver_button_just_once_accessibility">მხოლოდ ერთხელ გამოიყენეთ არჩეული აპლიკაცია</string>
     <string name="sem_resolver_choose_what_to_do">აირჩიეთ რისი გაკეთება გსურთ</string>
-    <string name="sem_resolver_go_to_settings_tips_description">აპლიკაციის ნაგულისხმევი პარამეტრების შესაცვლელად გახსენით „პარამეტრები“ > „აპლიკაციები“ > „აირჩიე ნაგულისხმევი აპლიკაციები“.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">ამ ტიპის ფაილის გასახსნელად გამოყენებული აპლიკაციის შესაცვლელად გახსენით „პარამეტრები“ > „აპლიკაციები“, აირჩიეთ მიმდინარე ნაგულისხმევი აპლიკაცია, შემდეგ კი შეხებით აირჩიეთ „ნაგულისხმევად დაყენება“ > „ნაგულისხმევის წაშლა“.</string>
     <string name="sem_resolver_icon_content_description">ინფორმაცია</string>
     <string name="sem_resolver_personal_tab_accessibility">პერსონალური</string>
     <string name="sem_resolver_share_live_default_text">მომენტალურად გააზიარეთ ახლო მყოფ ადამიანებთან. ისინი, რომლებმაც ხილულად აქციეს თავიანთი მოწყობილობები, ჩანან აქ.</string>
@@ -1091,9 +1057,6 @@
     <string name="sem_resolver_work_tab_accessibility">სამსახური</string>
     <string name="sem_switch_off">გამორთული</string>
     <string name="sem_switch_on">ჩართული</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">კამერაზე წვდომა გამორთული აქვს ყველა აპს</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">ჩართვა</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">მიკროფონზე წვდომა გამორთული აქვს ყველა აპს</string>
     <string name="serviceErased">წარმატებით ამოიშალა.</string>
     <string name="serviceModeAll">ყველა</string>
     <string name="serviceModeAllConditional">პირობებით.</string>
@@ -1103,6 +1066,7 @@
     <string name="serviceModeUnconditional">უპირობოდ.</string>
     <string name="serviceisDisabled">სერვისი გამორთულია.</string>
     <string name="serviceisEnabled">სერვისი ჩართულია.</string>
+    <string name="settings">პარამეტრები</string>
     <string name="sf_quick_switch_not_supported">სწრაფი გადართვის მხარდაჭერა არ არის ამ სიტუაციაში.</string>
     <string name="sf_quick_switch_securefolder_view">ჩაირთო %s.</string>
     <string name="share">გაზიარება</string>
@@ -1111,26 +1075,30 @@
     <string name="sharelist_restrict">უსაფრთხოების დებულება კრძალავს მონაცემთა გაზიარებას.</string>
     <string name="show_keyboard_button">კლავიატურის ღილაკის ჩვენება</string>
     <string name="show_keyboard_button_description">%s გამოჩნდეს ნავიგაციის ზოლზე.</string>
+    <string name="showing_esc_dialog">შეგიძლიათ დააყენოთ, რომ Esc ღილაკმა იმუშაოს, როგორც უკუსვლის ღილაკმა.</string>
     <string name="showing_touch_sensitivity_noti_action">ჩართვა</string>
     <string name="showing_touch_sensitivity_noti_text">Privacy Screen-ის ან Notepaper Screen-ის გამოყენებისას შეხების უფრო ზუსტი რეაგირებისთვის ჩართეთ სენსორის აღქმა.</string>
     <string name="showing_touch_sensitivity_noti_title">სენსორის აღქმის გაზრდა</string>
+    <string name="side_key_double_press_archived_app">აპლიკაცია დაარქივებულია. აირჩიეთ სხვა რამ.</string>
     <string name="side_key_double_press_deleted_app">აპლიკაციის ინსტალაცია გაუქმდა. აირჩიეთ სხვა.</string>
     <string name="side_key_double_press_disabled_app">%s გამორთულია. აირჩიეთ სხვა.</string>
     <string name="signature_identity_toast">„%s“-ს ხელს აწერს</string>
     <string name="simRefresh">ახლდება SIM მონაცემები</string>
     <string name="simReset">მიმდინარეობს SIM-ის მონაცემთა განახლება…</string>
     <string name="sim_check_old_sim_message">ძველმა და დაზიანებულმა SIM ბარათებმა შეიძლება ქსელთან კავშირის პრობლემები გამოიწვიოს. დაუკავშირდით თქვენს პროვაიდერს, ან ეწვიეთ მის რომელიმე პუნქტს, რომ შეამოწმოთ, საჭიროა თუ არა გამოცვლა.</string>
+    <string name="sim_check_old_sim_message_skt">ძველი ან დაზიანებული SIM ბარათები შეიძლება იყოს ქსელთან კავშირის პრობლემების მიზეზი. დაუკავშირდით თქვენს პროვაიდერს, ან ეწვიეთ მის რომელიმე მაღაზიას და გაიგეთ, ხომ არ არის საჭირო მისი გამოცვლა.</string>
     <string name="sim_check_old_sim_title">შესაძლოა, თქვენი SIM გამოსაცვლელი იყოს</string>
+    <string name="sim_check_old_sim_title_skt">შესაძლოა, თქვენი SIM გამოსაცვლელი იყოს</string>
     <string name="sim_count_mismatched_ds_to_ss">SIM ბარათის რეჟიმი გადაირთო „ორი SIM“-დან „ერთი SIM“-ზე. ამ პარამეტრის გამოსაყენებლად, დაბრუნდება ნაგულისხმევი ქარხნული პარამეტრები და მოწყობილობა გადაიტვირთება.</string>
     <string name="sim_count_mismatched_ss_to_ds">SIM ბარათის რეჟიმი გადაირთო „ერთი SIM“-დან „ორი SIM“-ზე. ამ პარამეტრის გამოსაყენებლად, დაბრუნდება ნაგულისხმევი ქარხნული პარამეტრები და მოწყობილობა გადაიტვირთება.</string>
     <string name="sim_count_mismatched_title">SIM ბარათის რეჟიმი გადაირთო</string>
-    <string name="sim_imsreg_error_message_lgt">თქვენი ტელეფონი ვერ განახორციელებს ხმოვან ზარებს, რადგან ის ვერ ცნობს SIM ბარათს. სცადეთ SIM ბარათის ამოღება და ხელახლა ჩადება. თუ ეს პრობლემა არ მოგვარდება, შეიძლება დაგჭირდეთ SIM ბარათის გამოცვლა. დახმარებისთვის ეწვიეთ LG U+ მაღაზიას ან დაუკავშირდით LG U+ სერვისის მომხმარებელთა მომსახურების სამსახურს ნომერზე: 1544-0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">თქვენი პლანშეტი ვერ განახორციელებს ხმოვან ზარებს, რადგან ის ვერ ცნობს SIM ბარათს. სცადეთ SIM ბარათის ამოღება და ხელახლა ჩადება. თუ ეს პრობლემა არ მოგვარდება, შეიძლება დაგჭირდეთ SIM ბარათის გამოცვლა. დახმარებისთვის ეწვიეთ LG U+ მაღაზიას ან დაუკავშირდით LG U+ სერვისის მომხმარებელთა მომსახურების სამსახურს ნომერზე: 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">თქვენი ტელეფონი ხმოვან ზარებს ვერ განახორციელებს, რადგან ის ვერ ცნობს SIM ბარათს. სცადეთ SIM ბარათის ამოღება და ხელახლა ჩადება. თუ პრობლემა არ მოგვარდება, შეიძლება საჭირო გახდეს SIM ბარათის გამოცვლა LG U+ მაღაზიაში.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">თქვენი პლანშეტი ხმოვან ზარებს ვერ განახორციელებს, რადგან ის ვერ ცნობს SIM ბარათს. სცადეთ SIM ბარათის ამოღება და ხელახლა ჩადება. თუ პრობლემა არ მოგვარდება, შეიძლება საჭირო გახდეს SIM ბარათის გამოცვლა LG U+ მაღაზიაში.</string>
     <string name="sim_off_noti_message">თქვენ ვერ განახორციელებთ ზარებს, ვერ გაგზავნით შეტყობინებებს და ვერ გამოიყენებთ მონაცემებს, როცა ყველა SIM გამორთულია. SIM-ების ჩასართავად შეეხეთ აქ.</string>
     <string name="sim_off_noti_title">ყველა SIM გამორთულია</string>
     <string name="sim_off_toast_message">თქვენ მიერ ჩადებული SIM ბარათი გამორთულია. მის გამოსაყენებლად გახსენით „პარამეტრები“ > „დაკავშირებები“ > „SIM-ის მმართველი“, შემდეგ კი ჩართეთ.</string>
     <string name="sim_recognize_error_message_kt">თქვენი SIM ბარათის ამოცნობა ვერ მოხერხდა. სცადეთ SIM ბარათის ამოღება და ხელახლა ჩადება. თუ ეს პრობლემა არ მოგვარდება, შეიძლება დაგჭირდეთ SIM ბარათის გამოცვლა. დახმარებისთვის ეწვიეთ KT მაღაზიას ან დაუკავშირდით KT-ს მომხმარებელთა მომსახურების სამსახურს ნომერზე: 1588-0010.</string>
-    <string name="sim_recognize_error_message_lgt">თქვენი SIM ბარათის ამოცნობა ვერ მოხერხდა. სცადეთ SIM ბარათის ამოღება და ხელახლა ჩადება. თუ ეს პრობლემა არ მოგვარდება, შეიძლება დაგჭირდეთ SIM ბარათის გამოცვლა. დახმარებისთვის ეწვიეთ LG U+ მაღაზიას ან დაუკავშირდით LG U+ სერვისის მომხმარებელთა მომსახურების სამსახურს ნომერზე: 1544-0010.</string>
+    <string name="sim_recognize_error_message_lgt">თქვენი SIM ბარათის ამოცნობა ვერ მოხერხდა. სცადეთ SIM ბარათის ამოღება და ხელახლა ჩადება. თუ პრობლემა არ მოგვარდება, შეიძლება საჭირო გახდეს SIM ბარათის გამოცვლა LG U+ მაღაზიაში.</string>
     <string name="sim_recognize_error_message_skt">SIM ბარათის წაკითხვა შეუძლებელია. ზოგიერთმა აპლიკაციამ და ფუნქციამ შეიძლება არ იმუშაოს. ამოიღეთ და ხელახლა ჩადეთ SIM ბარათი, შემდეგ კი გადატვირთეთ ტელეფონი. თუ ამით პრობლემა არ მოგვარდება, ტელეფონი და SIM ბარათი წაიღეთ მომხმარებელთა მომსახურების პუნქტში.</string>
     <string name="sim_recognize_error_message_skt_tablet">SIM ბარათის წაკითხვა შეუძლებელია. ზოგიერთმა აპლიკაციამ და ფუნქციამ შეიძლება არ იმუშაოს. ამოიღეთ და ხელახლა ჩადეთ SIM ბარათი, შემდეგ კი გადატვირთეთ პლანშეტი. თუ ამით პრობლემა არ მოგვარდება, პლანშეტი და SIM ბარათი წაიღეთ მომხმარებელთა მომსახურების პუნქტში.</string>
     <string name="sim_recognize_error_title_lgt">USIM ბარათი ამოუცნობია</string>
@@ -1140,10 +1108,8 @@
     <string name="sim_removed_message_hotswap_us_tablet">დაუკავშირდით Wi-Fi ქსელს, ან ჩადეთ SIM ბარათი, რომ გამოიყენოთ მობილური მონაცემები.</string>
     <string name="sim_removed_title_hotswap">SIM ბარათი არ დევს</string>
     <string name="sim_removed_title_hotswap_us_tablet">ჩადეთ SIM ბარათი</string>
+    <string name="smart_tip_action_click_hint_text">დხრვ.</string>
     <string name="smartclip_restrict">უსაფრთხოების პოლიტიკა კრძალავს მარტივი ამოჭრის გამოყენებას.</string>
-    <string name="sms_short_code_remember_undo_instruction">ამის შესაცვლელად შეგიძლიათ მოგვიანებით გახსნათ პარამეტრები > პროგრამები</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">მოგვიანებით ამის შეცვლა შეგიძლიათ ადგილზე: „პარამეტრები“ > „აპლიკაციები“ > „სხვა ვარიანტების ღილაკი“ > „სპეციალური წვდომა“ > „გამოიყენეთ premium SMS სერვისები“.</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">თუ შეეხებით „არასდროს ჰქონდეს ნება“-ს, ეს აპლიკაცია ვერ შეძლებს შეტყობინებების გაგზავნას ფონზე, მაშინაც კი, თუ მას აქვს ტექსტური შეტყობინებების გაგზავნის ნებართვა.</string>
     <string name="ss_do_not_show_again_us">აღარ მაჩვენო</string>
     <string name="sss_translate">თარგმნა</string>
     <string name="ssu_lock_body_vzw">უკაცრავად, ამ მომენტისთვის თქვენი მოწყობილობის გააქტიურება სხვა პროვაიდერის ქსელში შეუძლებელია. დახმარებისთვის მიმართეთ Verizon-ს: %1$s ან %2$s (წინასწარი გადახდის სატარიფო გეგმები)</string>
@@ -1174,7 +1140,6 @@
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">მობილური ცხელი წერტილი</string>
     <string name="title_dialog_check_rotate_or_not">გამოირთოს ეკრანის ავტომატური ბრუნვა?</string>
-    <string name="title_uds">მონაცემთა დაზოგვის ულტრა რეჟიმი</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Bixby-ს ვერ გამოიყენებთ ტელეფონის პარამეტრების დაყენების დროს.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Bixby-ს ვერ გამოიყენებთ პლანშეტის პარამეტრების დაყენების დროს.</string>
     <string name="toast_warning_pattern_lock">ნიმუშით დაბლოკვის გამოყენება შეუძლებელია უნივერსალური გადამრთველით. ჯერ შეცვალეთ დაბლოკვის სხვა ტიპით.</string>
@@ -1214,9 +1179,13 @@
     <string name="unknown_install_blocked_esm_title">უცნობი აპლიკაცია დაიბლოკა</string>
     <string name="unknown_install_dlg_desc">ეს აპლიკაცია არ არის ჩამოტვირთული დამოწმებული მაღაზიიდან. ამ აპლიკაციების დაინსტალირებით შეიძლება რისკის ქვეშ დადგეს თქვენი უსაფრთხოება და კონფიდენციალურობა. ამ აპლიკაციამ შეიძლება შეაგროვოს თქვენი პერსონალური ინფორმაცია ან გამოიწვიოს თქვენი მონაცემების დაკარგვა.</string>
     <string name="unknown_install_dlg_desc2">ამ აპლიკაციას არ აქვს უსაფრთხოების უახლესი ფუნქციები. ამ აპლიკაციის დაინსტალირებამ შეიძლება გამოიწვიოს უსაფრთხოებასთან დაკავშირებული შემდეგი რისკები:</string>
+    <string name="unknown_install_dlg_desc_global_phone">ამ აპლიკაციის საინსტალაციო ფაილი შეიძლება არ იყოს უსაფრთხო. ის შეიძლება არ იყოს ის აპლიკაცია, რომელადაც დასახელებულია. თქვენი ტელეფონი და პერსონალური მონაცემები რომ დაიცვათ, სანაცვლოდ, აპლიკაცია დააინსტალირეთ აპლიკაციების იმ მაღაზიიდან, რომელსაც ენდობით.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">ამ აპლიკაციის საინსტალაციო ფაილი შეიძლება არ იყოს უსაფრთხო. ის შეიძლება არ იყოს ის აპლიკაცია, რომელადაც დასახელებულია. თქვენი პლანშეტი და პერსონალური მონაცემები რომ დაიცვათ, სანაცვლოდ, აპლიკაცია დააინსტალირეთ აპლიკაციების იმ მაღაზიიდან, რომელსაც ენდობით.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">სავარაუდოდ, ეს აპლიკაცია საზიანოა და შეიძლება რისკის ქვეშ დააყენოს თქვენი ტელეფონი და მონაცემები. ამ აპლიკაციის დაინსტალირება არ არის რეკომენდებული.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">სავარაუდოდ, ეს აპლიკაცია საზიანოა და შეიძლება რისკის ქვეშ დააყენოს თქვენი პლანშეტი და მონაცემები. ამ აპლიკაციის დაინსტალირება არ არის რეკომენდებული.</string>
-    <string name="unknown_install_dlg_general_title">ეს აპლიკაცია უცნობი წყაროდანაა</string>
+    <string name="unknown_install_dlg_desc_phone">ეს აპლიკაცია არ არის ავტორიზებული აპლიკაციების მაღაზიიდან. თქვენი ტელეფონი და პირადი ინფორმაცია რომ დაცული იყოს, აპლიკაცია დააინსტალირეთ ავტორიზებული მაღაზიიდან, როგორიცაა Play Store ან Galaxy Store.</string>
+    <string name="unknown_install_dlg_desc_tablet">ეს აპლიკაცია არ არის ავტორიზებული აპლიკაციების მაღაზიიდან. თქვენი პლანშეტი და პირადი ინფორმაცია რომ დაცული იყოს, აპლიკაცია დააინსტალირეთ ავტორიზებული მაღაზიიდან, როგორიცაა Play Store ან Galaxy Store.</string>
+    <string name="unknown_install_dlg_general_title">ამ აპლიკაციის დაინსტალირება არ არის რეკომენდებული</string>
     <string name="unknown_install_dlg_negative_button">არ დაინსტალირდეს</string>
     <string name="unknown_install_dlg_perm_desc1">ამ აპლიკაციამ შეძლება ჩაიჭიროს დადასტურების კოდები თქვენ მიერ მიღებული ტექსტური შეტყობინებებიდან.</string>
     <string name="unknown_install_dlg_perm_desc2">გამავალი ზარები შეიძლება სხვა ტელეფონის ნომერზე გადამისამართდეს ისე, რომ არ იცოდეთ.</string>
@@ -1235,7 +1204,7 @@
     <string name="usb_abnormal_reset_title">USB კავშირი არასტაბილურია</string>
     <string name="usb_abnormal_reset_toast">USB კავშირი არასტაბილურია. გამოაძრეთ სადენი და შემდეგ ისევ მიუერთეთ, ან მოსინჯეთ სხვა სადენი.</string>
     <string name="usb_accessory_notification_title">დაკავშირებულია USB აქსესუართან</string>
-    <string name="usb_bad_removal_message">USB მეხსიერების მოწყობილობასთან კავშირის შეწყვეტა არ მოხდა უსაფრთხოდ. იმისათვის რომ პლანშეტი უეცრად არ გადაიტვირთოს, შეინახეთ შეუნახავი მონაცემები და გადატვირთეთ ახლა.</string>
+    <string name="usb_bad_removal_message">USB საცავის მოწყობილობასთან კავშირის შეწყვეტა არ მოხდა უსაფრთხოდ. იმისათვის რომ ტელეფონი უეცრად არ გადაიტვირთოს, შეინახეთ შეუნახავი მონაცემები და გადატვირთეთ ახლა.</string>
     <string name="usb_blocked_by_emergency_mode">ზოგიერთი USB ფუნქცია მიუწვდომელია საგანგებო რეჟიმში.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">დაკავშირებული USB მოწყობილობის შესაბამისი ფუნქციების გამოყენება შეუძლებელია, როდესაც ჩართულია „ენერგიის მაქსიმალური დაზოგვის რეჟიმი“.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">ზოგიერთი USB ფუნქციები იზღუდება, როდესაც ჩართულია „ენერგიის მაქსიმალური დაზოგვის რეჟიმი“.</string>
@@ -1244,13 +1213,15 @@
     <string name="usb_camera_connected_notification_title">მედია მოწყობილობა დაკავშირდა</string>
     <string name="usb_camera_disconnected_notification_title">მედია მოწყობილობასთან კაშირი შეწყდა</string>
     <string name="usb_cd_installer_notification_title">პროგრამის განახლება</string>
-    <string name="usb_charing_only_notification_title">დაკავშირებული</string>
+    <string name="usb_charing_only_notification_title">USB-თი დამუხტვა</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">ავტომატური დამბლოკი ჩართულია მაქსიმალური შეზღუდვებით.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB კავშირის დაიბლოკა</string>
     <string name="usb_debugging_only_notification_title">მხოლოდ შეცდომების გასწორება</string>
-    <string name="usb_host_resource_exceed_message">თქვენი პლანშეტის USB კონტროლერს არ აქვს საკმარისი რესურსები ამ მოწყობილობის დასაკავშირებლად. სცადეთ მოწყობილობის კავშირის შეწყვეტა და ხელახლა დაკავშირება.</string>
+    <string name="usb_host_resource_exceed_message">თქვენი ტელეფონის USB კონტროლერს არ აქვს საკმარისი რესურსები ამ მოწყობილობის დასაკავშირებლად. სცადეთ მოწყობილობის კავშირის შეწყვეტა და ხელახლა დაკავშირება.</string>
     <string name="usb_host_resource_exceed_title">USB მართვის რესურსები არ არის საკმარისი</string>
-    <string name="usb_hub_depth_exceed_message">თქვენს პლანშეტს შეუძლია ერთდროულად მაქსიმუმ 5 USB კავშირი ჰქონდეს ცენტრთან.</string>
+    <string name="usb_hub_depth_exceed_message">თქვენს ტელეფონს შეუძლია ერთდროულად მაქსიმუმ 5 USB კავშირი ჰქონდეს ცენტრთან.</string>
     <string name="usb_hub_depth_exceed_title">მაქს. კავშირი USB ცენტრთან</string>
-    <string name="usb_hub_power_exceed_message">თქვენს პლანშეტს არ აქვს ამ USB მოწყობილობისთვის საკმარისი ენერგია. დააკავშირეთ მოწყობილობა საკუთარი ენერგიის მქონე USB ცენტრთან, სანამ დაუკავშირებთ მას პლანშეტს.</string>
+    <string name="usb_hub_power_exceed_message">თქვენს ტელეფონს არ აქვს ამ USB მოწყობილობისთვის საკმარისი ენერგია. დააკავშირეთ მოწყობილობა საკუთარი ენერგიის მქონე USB ცენტრთან, სანამ დაუკავშირებთ მას ტელეფონს.</string>
     <string name="usb_increase_battery_usage">USB კავშირმა შეიძლება გაზარდოს ენერგიის ხარჯვა.</string>
     <string name="usb_mass_storage_restrict">უსაფრთხოების პოლიტიკა კრძალავს მასიური USB საცავის გამოყენებას.</string>
     <string name="usb_midi_notification_title">MIDI-ს USB</string>
@@ -1276,8 +1247,9 @@
     <string name="usb_storage_stop_title">გამოყენებულია USB მეხსიერება.</string>
     <string name="usb_storage_title">USB დაკავშირდა.</string>
     <string name="usb_type_c_supply_power_notification_title">დაკავშირებულს დამუხტვა USB-თი</string>
-    <string name="usb_unblock_by_screen_unlock">დაკავშირებული USB მოწყობილობის გამოსაყენებლად განბლოკეთ პლანშეტი.</string>
-    <string name="usb_unsupport_accessory_message">ამ USB მოწყობილობას არ აქვს თქვენი პლანშეტის მხარდაჭერა.</string>
+    <string name="usb_unblock_by_screen_unlock">დაკავშირებული USB მოწყობილობის გამოსაყენებლად განბლოკეთ ტელეფონი.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USB მოწყობილობა რომ გამოიყენოთ, განბლოკეთ ტელეფონი და ხელახლა დააკავშირეთ USB მოწყობილობა.</string>
+    <string name="usb_unsupport_accessory_message">ამ USB მოწყობილობას არ აქვს თქვენი ტელეფონის მხარდაჭერა.</string>
     <string name="usb_unsupport_accessory_title">USB მოწყობილობა მხარდაუჭერელია</string>
     <string name="usb_unsupported_device">დაკავშირებული USB მოწყობილობის მხარდაჭერა არ არის.</string>
     <string name="usb_unsupported_device_title">მოწყობილობის მხარდაჭერა არ არის</string>
@@ -1295,31 +1267,33 @@
     <string name="usb_water_dialg_method_2_desc_2">გაშრობის დასაჩქარებლად, ფენი ან საშრობი (მხოლოდ გრილი ჰაერი) მიუშვირეთ პორტს.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"დამტენის/USB პორტში ამოცნობილია სინესტე ან უცხო ნივთიერება.
 
-შეამოწმეთ, დამტენის/USB პორტში ხომ არ არის უცხო ნივთიერება, როგორიცაა მტვერი ან ჭუჭყი. პლანშეტის დაზიანების ასაცილებლად არაფერი მიუერთოთ მას, სანამ დამტენის პორტი არ გაიწმინდება და არ გაშრება.
+შეამოწმეთ, დამტენის/USB პორტში ხომ არ არის უცხო ნივთიერება, როგორიცაა მტვერი ან ჭუჭყი. ტელეფონის დაზიანების ასაცილებლად არაფერი მიუერთოთ მას, სანამ დამტენის პორტი არ გაიწმინდება და არ გაშრება.
 
 პორტის გასამშრალებლად დაფერთხეთ სითხის მოსაცილებლად, შემდეგ კი დაელოდეთ გაშრობას, რასაც შეიძლება რამდენიმე საათი დასჭირდეს. გაშრობის დასაჩქარებლად ფენი ან საშრობი (მხოლოდ გრილი ჰაერი) მიუშვირეთ პორტს."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"დამტენის/USB პორტში ამოცნობილია სინესტე ან უცხო ნივთიერება.
 
-შეამოწმეთ, დამტენის/USB პორტში ხომ არ არის უცხო ნივთიერება, როგორიცაა მტვერი ან ჭუჭყი. პლანშეტის დაზიანების ასაცილებლად არაფერი მიუერთოთ მას, სანამ დამტენის პორტი არ გაიწმინდება და არ გაშრება.
+შეამოწმეთ, დამტენის/USB პორტში ხომ არ არის უცხო ნივთიერება, როგორიცაა მტვერი ან ჭუჭყი. ტელეფონის დაზიანების ასაცილებლად არაფერი მიუერთოთ მას, სანამ დამტენის პორტი არ გაიწმინდება და არ გაშრება.
 
 პორტის გასამშრალებლად დაფერთხეთ სითხის მოსაცილებლად, შემდეგ კი დაელოდეთ გაშრობას, რასაც შეიძლება რამდენიმე საათი დასჭირდეს. გაშრობის დასაჩქარებლად ფენი ან საშრობი (მხოლოდ გრილი ჰაერი) მიუშვირეთ პორტს.
 
-ამასობაში, შეგიძლიათ პლანშეტი დატენოთ უსადენოდ."</string>
+ამასობაში, შეგიძლიათ ტელეფონი დატენოთ უსადენოდ."</string>
     <string name="usb_water_notification_content">დამტენის/USB პორტი ნესტიანია ან მასში უცხო სხეულია. შეამოწმეთ დატენვამდე.</string>
-    <string name="usb_water_notification_message">დამტენში/USB პორტში ამოცნობილია სინესტე. პლანშეტის დამუხტვამდე დარწმუნდით, რომ ის მშრალია. შესაძლოა, ბოლომდე გაშრობას გარკვეული დრო დასჭირდეს.</string>
+    <string name="usb_water_notification_message">დამტენში/USB პორტში ამოცნობილია სინესტე. ტელეფონის დამუხტვამდე დარწმუნდით, რომ ის მშრალია. შესაძლოა, ბოლომდე გაშრობას გარკვეული დრო დასჭირდეს.</string>
     <string name="usb_water_notification_message_button">დეტალები</string>
     <string name="usb_water_notification_title">შეამოწმეთ დამტენი/USB პორტი</string>
     <string name="usbhostStorage_restrict">უსაფრთხოების პოლიტიკა კრძალავს მასპინძლის USB საცავის გამოყენებას.</string>
-    <string name="usbmemory_added_notification_title">USB მეხსიერება დაემატა</string>
-    <string name="usbmemory_readonly_mount_notification_message">USB მეხსიერება არ მუშაობს სწორად და დაყენებულია მხოლოდ წაკითხვაზე, რომ არ მოხდეს მონაცემთა დაკარგვა. გირჩევთ, მონაცემები დაამარქაფოთ USB მეხსიერებაზე.</string>
-    <string name="usbmemory_readonly_mount_notification_title">USB მეხსიერებაზე ვერ ჩაწერთ</string>
+    <string name="usbmemory_added_notification_title">USB საცავი დაემატა</string>
+    <string name="usbmemory_readonly_mount_notification_message">USB საცავი მოწყობილობა არ მუშაობს სწორად და დაყენებულია მხოლოდ წაკითხვაზე, რომ არ მოხდეს მონაცემთა დაკარგვა. გირჩევთ, მონაცემები დაამარქაფოთ USB საცავში.</string>
+    <string name="usbmemory_readonly_mount_notification_title">USB საცავში ვერ ჩაწერთ</string>
     <string name="user_encrypted_title_phone">ტელეფონი ხელახლა ჩაირთო</string>
     <string name="user_encrypted_title_tablet">პლანშეტი ხელახლა ჩაირთო</string>
     <string name="voice_to_text_message_guide_toast">ეს ფუნქცია რომ გამოიყენოთ, ნაგულისხმევ ვარიანტად უნდა დააყენოთ Samsung-ის კლავიატურა.</string>
     <string name="vpn_allowOnlySecureConnection">VPN პროფილი არ არის დაცული</string>
     <string name="vpn_error_text">შეეხეთ და მოსინჯეთ VPN-თან თავიდან დაკავშირება.</string>
     <string name="vpn_error_title">VPN კავშირის შეცდომა</string>
+    <string name="vpn_fail_text_long">%s ვერ დაკავშირდა. შეეხეთ, რომ მართოთ ეს VPN.</string>
+    <string name="vpn_fail_title">VPN არ არის დაკავშირებული</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">აპები იხურება, რომ პლანშეტი გაგრილდეს</string>
     <string name="vzw_cooldown_mode_ok">კი</string>
@@ -1382,6 +1356,7 @@
     <string name="wifi_network_available_detailed">ხელმისაწვდომია ღია Wi-Fi ქსელი.</string>
     <string name="wifi_networks_available">Wi-Fi ქსელები მისაწვდომია</string>
     <string name="wifi_networks_available_detailed">ხელმისაწვდომია ღია Wi-Fi ქსელები.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s მობილურ მონაცემებს იყენებს, რადგან WLAN კავშირი ნელი ან არასტაბილურია.</string>
     <string name="wifi_notification_switch_wifi_detail">ტელეფონი გადაირთო მობილურ მონაცემთა გამოყენებაზე, რადგან Wi-Fi ქსელი არასტაბილური იყო.</string>
     <string name="wifi_notification_switch_wifi_title">გადაირთო მობილურ მონაცემებზე</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">საგანგებო შეტყობინებები</string>
@@ -1413,9 +1388,5 @@
     <string name="work_profile_on_message">ეს მოგცემთ წვდომას სამსახურის აპლიკაციებზე, შეტყობინებებზე, მონაცემებსა და სამსახურის პროფილის სხვა ფუნქციებზე.</string>
     <string name="work_profile_on_title">ჩაირთოს სამსახურის პროფილი?</string>
     <string name="work_profile_restricted">ავტომატური დამბლოკი ჩართულია მაქსიმალური შეზღუდვების რეჟიმით. თქვენი უსაფრთხოება დაცული რომ იყოს, სამსახურის პროფილების შექმნა შეუძლებელია.</string>
-    <string name="work_profile_telephony_paused_text">თქვენ დააპაუზეთ სამუშაო აპლიკაციები. მათგან არ მიიღებთ არც სატელეფონო ზარებს და არც ტექსტურ შეტყობინებებს.</string>
-    <string name="work_profile_telephony_paused_title">ზარი და შეტყობინება გამორთულია</string>
-    <string name="work_profile_telephony_paused_turn_on_button">ჩაირთოს სამსახურის პროფილი?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">სანამ არ გამოვრთავ</string>
 </resources>

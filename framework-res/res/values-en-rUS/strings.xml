@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Talk to Bixby</string>
     <string name="accessibility_corner_action_type_zoom_in">Zoom in</string>
     <string name="accessibility_corner_action_type_zoom_out">Zoom out</string>
+    <string name="accessibility_dialog_button_allow_samsung">Allow</string>
+    <string name="accessibility_dialog_button_deny_samsung">Deny</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Uninstall</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Pressing the Power and Volume up keys quickly will turn on or off the following functions:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Pressing the Side and Volume up buttons quickly will turn on or off the following functions:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Pressing the Power and Volume up keys quickly will turn %s on or off.</string>
@@ -117,12 +120,16 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">Security policy prevents addition of this account.</string>
     <string name="account_removal_restrict">Security policy prevents removal of this account.</string>
+    <string name="action_bar_up_description">Navigate up</string>
     <string name="action_menu_overflow_description">More options</string>
     <string name="add_contact_to_sim_restriction">Security policy prevents adding contacts to SIM card.</string>
     <string name="admin_device_restart">Your administrator will restart your <cst>device</cst>.</string>
     <string name="advance_wifi_sharing_msg">An available <cst>Wi-Fi</cst> network has been detected. Connect to use <cst>Wi-Fi</cst> sharing instead of mobile data for your Mobile Hotspot.</string>
     <string name="airplanemode_restrict">Security policy prevents the turning on of Airplane mode.</string>
     <string name="allow_settings_changes">Security policy prevents changing settings.</string>
+    <string name="always_allow">Always allow</string>
+    <string name="app_block_button_open">Open</string>
+    <string name="app_block_content">%1$s wants to open the %2$s app.</string>
     <string name="app_clone_storage">Internal storage (Dual Messenger)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Choose apps</string>
     <string name="app_continuity_guide_cling_button_not_now">Not now</string>
@@ -137,32 +144,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">"You've used all your time for %s today. You can change this in Settings."</string>
     <string name="app_restricted_message_concentration_mode">%s is blocked during Concentration mode. Contact your IT admin to learn more.</string>
     <string name="app_updating_message">%s is being updated. Try again later.</string>
-    <string name="appblock_block_subtitle1_phone">"To protect your phone and personal data, this app can't be installed because it is suspected of being malicious."</string>
-    <string name="appblock_block_subtitle1_tablet">"To protect your tablet and personal data, this app can't be installed because it is suspected of being malicious."</string>
-    <string name="appblock_block_subtitle2">"This app can't be installed because it has been reported as malicious."</string>
-    <string name="appblock_block_text1">"This app isn't from a verified source and requires sensitive permissions which may be used to steal or leak your personal data."</string>
-    <string name="appblock_block_text2">"Malicious apps may use sensitive permissions to steal your personal data, impersonate your identity, or access your financial accounts.
-
-Legitimate financial institutions don't require the installation ZIP files, APK files, or file manager apps.
-
-Always make sure that apps you install are from a trusted source."</string>
-    <string name="appblock_warn_subtitle">This app may steal or leak your personal information.</string>
+    <string name="appblock_block_text_phone">"This app can't be installed because it has been reported as malicious or is similar to an app reported as malicious. This app is likely to be used in crimes such as phishing. To keep your phone and data safe, this restriction can't be bypassed."</string>
+    <string name="appblock_block_text_tablet">"This app can't be installed because it has been reported as malicious or is similar to an app reported as malicious. This app is likely to be used in crimes such as phishing. To keep your tablet and data safe, this restriction can't be bypassed."</string>
+    <string name="appblock_link_text">Learn more</string>
     <string name="appblock_warn_text1">"Installing apps from unverified sources may allow the apps to collect your personal information or track your activity.
 
 Installing this app isn't recommended.
 
 If you choose to install it anyway, carefully review the app's Privacy Notice and make sure you only allow permissions that are necessary."</string>
-    <string name="appblock_warn_text2">"Malicious apps often try to obtain your personal information using the Contacts, SMS, and Photos permissions.
-
-Installing this app isn't recommended.
-
-If you choose to install this app anyway, make sure it comes from a source you trust and be careful about allowing permissions or other access to your data."</string>
     <string name="application_default_restrict">Another app set as default by device administrator.</string>
     <string name="auto_click_paused">Auto click paused.</string>
     <string name="auto_click_resumed">Auto click resumed.</string>
     <string name="autofill_never_use_for_this_app">Never use %s for this app</string>
     <string name="autofill_save_cancel">Cancel</string>
     <string name="autofill_save_never_OK">OK</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">Security policy prevents use of Backup.</string>
     <string name="badPin2">The PIN2 is incorrect. Try again.</string>
     <string name="badPuk2">The PUK2 you entered is incorrect.</string>
@@ -173,8 +169,6 @@ If you choose to install this app anyway, make sure it comes from a source you t
     <string name="bluetooth_a2dp_restrict">Security policy prevents use of Bluetooth media audio.</string>
     <string name="bluetooth_avrcp_restrict">Security policy prevents use of Bluetooth audio/video control.</string>
     <string name="bluetooth_bpp_restrict">Security policy prevents printing via Bluetooth.</string>
-    <string name="bluetooth_china_popup_message">%1$s is requesting permission to use %2$s. Allow?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Security policy prevents data transfers via Bluetooth.</string>
     <string name="bluetooth_desktop_restrict">Security policy prevents connecting to your computer via Bluetooth.</string>
     <string name="bluetooth_device_restrict">Security policy prevents pairing with this Bluetooth device.</string>
@@ -185,7 +179,6 @@ If you choose to install this app anyway, make sure it comes from a source you t
     <string name="bluetooth_outgoing_call_restrict">Security policy prevents making outgoing calls via Bluetooth.</string>
     <string name="bluetooth_pairing_restrict">Security policy prevents Bluetooth pairing.</string>
     <string name="bluetooth_pbap_restrict">Security policy prevents use of Bluetooth address book.</string>
-    <string name="bluetooth_permission_request">Bluetooth permission request</string>
     <string name="bluetooth_restrict">Security policy prevents use of Bluetooth.</string>
     <string name="bluetooth_sap_restrict">Security policy prevents your SIM card from being accessed via Bluetooth.</string>
     <string name="bluetooth_security_mode_disable">Security policy prevents use of Bluetooth.</string>
@@ -252,11 +245,8 @@ If you choose to install this app anyway, make sure it comes from a source you t
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">Allowed devices</string>
     <string name="data_call_restriction">The security policy restricts the use of mobile data.</string>
-    <string name="data_usage_disable_mobile">Turn off mobile data connection?</string>
-    <string name="data_usage_enable_mobile_warning">Connecting via packet data may incur additional charges. Continue?</string>
     <string name="data_usage_limit_body">Mobile data is paused until the end of your billing cycle.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Over your mobile data limit</string>
-    <string name="data_usage_mobile_limit_title">Mobile data limit reached</string>
     <string name="data_usage_rapid_app_body">%s has used more data than usual.</string>
     <string name="data_usage_rapid_body">Your apps have used more data than usual.</string>
     <string name="data_usage_rapid_title">High mobile data usage</string>
@@ -269,6 +259,7 @@ If you choose to install this app anyway, make sure it comes from a source you t
     <string name="date_and_time" formatted="false">%b %-e, %Y, %-l:%M:%S %p</string>
     <string name="date_time">%1$s, %2$s</string>
     <string name="device_disabled"><cst>Device</cst> turned off. Contact IT administrator.</string>
+    <string name="device_info_not_available">Not available.</string>
     <string name="dex_cant_change_user_profile">"Can't change user profile while in Samsung DeX mode."</string>
     <string name="dex_dialog_launch_toast">Open apps may close. Save your data before starting or exiting Samsung DeX.</string>
     <string name="dex_disconnected_from_device">DeX disconnected from %s. Check the network connection on your TV.</string>
@@ -277,9 +268,6 @@ If you choose to install this app anyway, make sure it comes from a source you t
     <string name="dex_launcher_mode_change">%s closed to switch to Samsung DeX.</string>
     <string name="dex_mirroring_jit_msg">When you run Samsung DeX on your tablet, you can mirror the screen on any HDMI-connected display for a bigger view.</string>
     <string name="dex_mirroring_jit_title">Mirror DeX on a bigger screen</string>
-    <string name="dex_restart_app_dialog_button_positive">Restart</string>
-    <string name="dex_restart_app_dialog_message">This app is already running on another display. To open it here, the app needs to restart. Save anything important before you restart it.</string>
-    <string name="dex_restart_app_dialog_title">Restart %s?</string>
     <string name="dex_restriction_blockerMessage">Security policy prevents use of Samsung DeX.</string>
     <string name="dex_restriction_ethernetOnly">The security policy prevents the use of <cst>Wi-Fi</cst> data, mobile data, and tethering in DeX. A wired connection is required for network features.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Due to security policy, disconnect external display to exit Samsung DeX.</string>
@@ -304,7 +292,6 @@ If you choose to install this app anyway, make sure it comes from a source you t
     <string name="digital_signature_failure_user_notification">Digital signature not valid for user %d</string>
     <string name="disableupdate_application_restrict">Security policy prevents updating this application.</string>
     <string name="display_chooser_button_positive">Restart</string>
-    <string name="display_chooser_dont_show_again">"Don't show again"</string>
     <string name="dlg_ics_security_policy">Security policy restricts use of Internet sharing.</string>
     <string name="do_change_lock_type_noti_msg">Change your screen lock type. This is required by the security policy.</string>
     <string name="do_change_lock_type_noti_title">Change your lock</string>
@@ -316,7 +303,7 @@ If you choose to install this app anyway, make sure it comes from a source you t
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">"Can't use this app in Multi window view."</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">"Can't use this feature in Multi window view."</string>
     <string name="edit_contact_at_sim_restriction">Security policy prevents editing SIM card contacts.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Allowed devices</string>
+    <string name="edm_policy_not_allow_open_wifiap">The security policy restricts the use of unsecured tethering for hotspot.</string>
     <string name="emergency_calls_only">Emergency calls only</string>
     <string name="ethernet_cable_connected_notification_message">Tap to set up</string>
     <string name="ethernet_cable_connected_notification_title">Ethernet cable connected.</string>
@@ -333,7 +320,7 @@ If you choose to install this app anyway, make sure it comes from a source you t
     <string name="ext_media_unsupported_notification_message">This <cst>device</cst> doesn’t support this %s. Tap to set up in a supported format.</string>
     <string name="ext_media_unsupported_notification_title">Unsupported %s</string>
     <string name="ext_storage_bad_removal_button">Restart</string>
-    <string name="ext_storage_bad_removal_title">Restart your tablet</string>
+    <string name="ext_storage_bad_removal_title">Restart your phone</string>
     <string name="factoryreset_restrict">Security policy restricts factory reset.</string>
     <string name="firmwarerecovery_restrict">Security policy restricts firmware recovery.</string>
     <string name="foldable_restart_app_dialog_checkbox">"Don't ask again for all apps"</string>
@@ -400,6 +387,7 @@ If you choose to install this app anyway, make sure it comes from a source you t
     <string name="globalactions_unable_restart_msg_fmm">"Can't restart because the phone has been locked remotely by Find My Mobile."</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">"Can't restart because the tablet has been locked remotely by Find My Mobile."</string>
     <string name="globalactions_unable_restart_msg_securelock">"Can't restart phone while locked. Open cover and unlock to restart phone."</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">"Can't restart phone while SIM card is locked."</string>
     <string name="hardware_key_restrict">Security policy prevents use of this hardware key.</string>
     <string name="hardware_sec">On-screen keyboard</string>
     <string name="hbd_translate">Translate typed text</string>
@@ -469,16 +457,16 @@ If you choose to install this app anyway, make sure it comes from a source you t
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">"You'll need to unlock your tablet to turn off Maintenance mode."</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Nothing will be saved that happens while Maintenance mode is on, such as downloaded data, app installations, or settings changes.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Set screen lock</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Restart without creating log</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Create log and restart</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Your phone needs to restart to turn on Maintenance mode.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Set a screen lock first.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Your tablet needs to restart to turn on Maintenance mode.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"To help our support staff analyze any problems with your phone, we recommend creating a system log before starting Maintenance mode.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"To help our support staff diagnose and analyze any problems with your phone, we recommend creating a system log before starting Maintenance mode.
 
-The log shows which apps were used and any errors that may have occurred recently, but doesn't include any other personal information. The log will only be used to analyze problems and not for any other purpose. It normally takes around 2 minutes to create the log."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"To help our support staff analyze any problems with your tablet, we recommend creating a system log before starting Maintenance mode.
+The log only includes information essential for repairing your phone, such as which apps were used, errors that occurred recently, blocked phone numbers, and file storage capacity. The log will only be used to diagnose and analyze problems and not for any other purpose. It normally takes about 2 minutes to create the log."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"To help our support staff diagnose and analyze any problems with your tablet, we recommend creating a system log before starting Maintenance mode.
 
-The log shows which apps were used and any errors that may have occurred recently, but doesn't include any other personal information. The log will only be used to analyze problems and not for any other purpose. It normally takes around 2 minutes to create the log."</string>
+The log only includes information essential for repairing your tablet, such as which apps were used, errors that occurred recently, blocked phone numbers, and file storage capacity. The log will only be used to diagnose and analyze problems and not for any other purpose. It normally takes about 2 minutes to create the log."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Analyze storage</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">"Your phone's internal storage is almost completely full. If you run out of storage space, some apps and features might stop working correctly. Try deleting some files or apps you don't need anymore. After deleting, don't forget to empty the Trash."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">"Your tablet's internal storage is almost completely full. If you run out of storage space, some apps and features might stop working correctly. Try deleting some files or apps you don't need anymore. After deleting, don't forget to empty the Trash."</string>
@@ -500,10 +488,17 @@ The log shows which apps were used and any errors that may have occurred recentl
     <string name="maintenance_mode_outro_label">Exit Maintenance mode</string>
     <string name="maintenance_mode_outro_textview_message_phone">"You'll need to unlock your phone to turn off Maintenance mode. When you do, everything will go back to the way it was when Maintenance mode was first turned on. Changes made while Maintenance mode is on, such as downloaded data, installed apps, or settings changes, aren't saved."</string>
     <string name="maintenance_mode_outro_textview_message_tablet">"You'll need to unlock your tablet to turn off Maintenance mode. When you do, everything will go back to the way it was when Maintenance mode was first turned on. Changes made while Maintenance mode is on, such as downloaded data, installed apps, or settings changes, aren't saved."</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">"Maintenance mode can't be used while %s is active."</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">"Can't use Maintenance mode while Power saving is on with limited apps and Home screen."</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">"Maintenance mode isn't supported on this phone."</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">"Maintenance mode isn't supported on this tablet."</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s can only be used by the owner of the device.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Stop backing up your data and turn on Maintenance mode?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">To turn on Maintenance mode, you need to finish or delete your incomplete backup.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">To turn on Maintenance mode, you need to stop your ongoing backup.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">To turn on Maintenance mode, you need to stop restoring your backup data.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Device admin app</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Creating log…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">This normally takes around 2 minutes. After the log is created, your phone will restart in Maintenance mode and you can safely hand over your phone for maintenance.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">This normally takes around 2 minutes. After the log is created, your tablet will restart in Maintenance mode and you can safely hand over your tablet for maintenance.</string>
@@ -523,13 +518,8 @@ Your tablet will restart soon."</string>
     <string name="mdf_title_enabled_n_ready">Restart <cst>device</cst></string>
     <string name="mdf_title_enforced">Unable to turn on CC mode</string>
     <string name="mediaplayer_restrict">Security policy prevents use of MTP media player.</string>
+    <string name="message_on_crash">Blocked by Auto Blocker</string>
     <string name="microphone_restrict">Security policy prevents use of microphone.</string>
-    <string name="miniresolver_call">Call</string>
-    <string name="miniresolver_call_in_work">Call from work app?</string>
-    <string name="miniresolver_call_information">Your organization only allows you to make calls from work apps.</string>
-    <string name="miniresolver_sms_information">Your organization only allows you to send messages from work apps.</string>
-    <string name="miniresolver_switch">Switch</string>
-    <string name="miniresolver_switch_to_work">Switch to work app?</string>
     <string name="mmcc_authentication_reject_name_template">%s not allowed</string>
     <string name="mmcc_illegal_me_name_template">%s not allowed</string>
     <string name="mmcc_illegal_ms_name_template">%s not allowed</string>
@@ -542,30 +532,6 @@ Your tablet will restart soon."</string>
     <string name="mock_location_reminder_title">Mock location is on</string>
     <string name="month_day_year" formatted="false">%B %-e, %Y</string>
     <string name="more_apps">More apps</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s service not supported. Contact customer service.</string>
-    <string name="mptcp_message_address_type_not_supported">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_cmd_not_supported">%s network temporarily not available. Reconnecting via available network…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_connection_refused">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_data_usage_limit">Data usage limit reached. To change data usage limit, go to Settings.</string>
-    <string name="mptcp_message_host_unreachable">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Unable to turn on %s. Device not connected to LTE network.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Unable to turn on %s while roaming internationally.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Unable to turn on %s while Mobile Hotspot or USB tethering is on.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Unable to turn on %s while <cst>Wi-Fi</cst> Direct on.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Unable to turn on %s while Airplane mode is on.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Unable to turn on %s while Mobile data turned off.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">No response from service provider.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Unable to turn on %1$s. %2$s not available with your internet package or no response from %3$s server received.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Failed to send %s activation request. Reconnecting via available networks…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Unable to turn on %s. Incorrect SIM card inserted.</string>
-    <string name="mptcp_message_network_unreachable">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_non_mptcp_plan">Unable to turn on Giga Multi-Path. Function not supported by data plan.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s turned off to prevent device overheating. Downloading via mobile network instead…</string>
-    <string name="mptcp_message_server_error">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Unable to turn on %s. Device overheating. Wait until device cools down and try again.</string>
-    <string name="mptcp_message_ttl_expired">%s network temporarily not available. Reconnecting via available network…</string>
     <string name="multi_user_capability_restrict">Security policy prevents multiple user capability on your <cst>device</cst>.</string>
     <string name="multi_user_creation_restrict">Security policy prevents creation of new user accounts on your <cst>device</cst>.</string>
     <string name="multi_user_removal_restrict">Security policy prevents removal of user accounts from your <cst>device</cst>.</string>
@@ -584,24 +550,22 @@ Your tablet will restart soon."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Sound is playing on your Bluetooth audio device. Tap here to turn this off</string>
     <string name="multisound_sound_via_headphone">%s sound is playing through your headphones. Tap here to turn this off.</string>
     <string name="multisound_sound_via_headphone_multiselection">Sound is playing through your headphones. Tap here to turn this off.</string>
-    <string name="multisound_sound_via_phone_speaker">%s sound is playing through your tablet speaker. Tap here to turn this off.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Sound is playing through your tablet speaker. Tap here to turn this off.</string>
+    <string name="multisound_sound_via_phone_speaker">%s sound is playing through your phone speaker. Tap here to turn this off.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Sound is playing through your phone speaker. Tap here to turn this off.</string>
     <string name="multisound_sound_via_usb_audio">%s sound is playing through your USB audio device. Tap here to turn this off.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Sound is playing through your USB audio device. Tap here to turn this off.</string>
     <string name="multisound_title">Separate app sound</string>
     <string name="multisound_turn_off_multisound">Turn off</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">"%s can't run in Samsung DeX. Try running in tablet mode."</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">"%s can't run in Samsung DeX. It's designed for tablet Home screens."</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">"Some games only work on touch screens. If mouse controls don't work in Samsung DeX, try playing in tablet mode instead."</string>
-    <string name="my_device">This tablet</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">"%s can't run in Samsung DeX. Try running in phone mode."</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">"%s can't run in Samsung DeX. It's designed for phone Home screens."</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">"Some games only work on touch screens. If mouse controls don't work in Samsung DeX, try playing in phone mode instead."</string>
+    <string name="my_device">This phone</string>
     <string name="network_locked_sim_dialog_message_ais">"Your SIM card isn't fully operational with this phone because it doesn't comply with your subscription terms and conditions. If you have any questions or need more information about this matter, please contact the Samsung Customer Service location or store that sold these products to you."</string>
     <string name="network_locked_sim_notification_text">Network locked SIM card inserted.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Change your default Home app to One UI Home.</string>
     <string name="nfc_restrict">Security policy prevents use of NFC.</string>
     <string name="nosim_limited_service">Limited service</string>
-    <string name="not_support_ai_key">"The AI key doesn't work with your tablet yet. An update will be available soon."</string>
-    <string name="notification_app_name_settings">Settings</string>
     <string name="notification_channel_dex_policy">Samsung DeX policy</string>
     <string name="ntfs_usb_storage_readonly_mount_message">This storage is read-only because it uses the NTFS format.</string>
     <string name="ntfs_usb_storage_readonly_mount_title">Read-only USB storage added</string>
@@ -772,7 +736,6 @@ RETURN TO"</string>
     <string name="permlab_scheduleExactAlarm">Set alarms and reminders</string>
     <string name="permlab_spdControl">Manage security policy updates</string>
     <string name="permlab_ucsPlugin">Universal Credential Management Plugin</string>
-    <string name="personal_apps_suspended_turn_profile_on">Turn on</string>
     <string name="phoneTypeConference">Conference</string>
     <string name="policydesc_allow_bluetoothmode">Prevent the use of Bluetooth.</string>
     <string name="policydesc_allow_browser">Prevent the use of the internet.</string>
@@ -780,7 +743,7 @@ RETURN TO"</string>
     <string name="policydesc_allow_desktopsync">Prevent the use of desktop sync.</string>
     <string name="policydesc_allow_internetsharing">Prevent the use of Mobile Hotspot.</string>
     <string name="policydesc_allow_irda">Prevent the use of IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Prevent the use of POP and IMAP email on the tablet.</string>
+    <string name="policydesc_allow_popimapemail">Prevent the use of POP and IMAP email on the phone.</string>
     <string name="policydesc_allow_storagecard">Prevent the use of SD cards.</string>
     <string name="policydesc_allow_textmessaging">Prevent the use of text and multimedia messaging.</string>
     <string name="policydesc_allow_thirdParty">This application can prevent third-party applications from running.</string>
@@ -823,7 +786,7 @@ RETURN TO"</string>
     <string name="pwd_change_enforced">The security policy requires you to change your password.</string>
     <string name="recording_fail">"Can't use mic in %1$s while it's being used in %2$s."</string>
     <string name="recording_popup">%s is using the microphone.</string>
-    <string name="recording_popup_device">Tablet</string>
+    <string name="recording_popup_device">Phone</string>
     <string name="recording_popup_with_bluetooth">%s is using the Bluetooth microphone.</string>
     <string name="recording_popup_with_device">"%1$s is using the %2$s's microphone."</string>
     <string name="redo">Redo</string>
@@ -888,12 +851,12 @@ RETURN TO"</string>
     <string name="screencapture_restrict">Security policy prevents use of screen capture.</string>
     <string name="sd_card_unavailable_message">"You can't use the SD card because it was inserted while a different user profile was in use."</string>
     <string name="sd_card_unavailable_title">SD card unavailable</string>
-    <string name="sdcard_bad_removal_message">An SD card was removed unsafely. To prevent your tablet from restarting unexpectedly, save unsaved data and restart now.</string>
+    <string name="sdcard_bad_removal_message">An SD card was removed unsafely. To prevent your phone from restarting unexpectedly, save unsaved data and restart now.</string>
     <string name="sdcard_batch_decrypt_noti_content">Decrypt SD card</string>
     <string name="sdcard_batch_decrypt_noti_title">SD card decryption</string>
     <string name="sdcard_batch_decrypt_popup_content">The encrypted SD card must be decrypted before being used. Decryption could take an hour or more. Start with a charged battery and keep <cst>device</cst> plugged in until decryption is complete. Interrupting decryption process may cause some or all data to be lost.</string>
     <string name="sdcard_decrypt_err_notification">SD card decryption error occurred.</string>
-    <string name="sdcard_decrypt_error_otherdevice">"Some files on your SD card were encrypted on another device and can't be used on this tablet."</string>
+    <string name="sdcard_decrypt_error_otherdevice">"Some files on your SD card were encrypted on another device and can't be used on this phone."</string>
     <string name="sdcard_decrypt_notification">SD card decrypted.</string>
     <string name="sdcard_decrypt_title_notification">SD card decryption</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Decrypting SD card…</string>
@@ -910,14 +873,6 @@ RETURN TO"</string>
     <string name="sdcard_unmount_policy_noti_title">SD card unmounted due to IT policy.</string>
     <string name="sdhms_nr_control_low_battery">Turn off 5G to save battery when your phone has less than 15% battery remaining.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth will stay on in Airplane mode.</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">This app is using the full screen. Swipe gestures for navigation will show the status bar. To navigate, swipe again while the status bar is visible.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"This app is using the full screen. The Home, Back, and Recents buttons are hidden to minimize distractions and to prevent you from leaving the app accidentally.
-
-Even if you rotate your phone, the buttons will always be located next to the charging port. You can make the buttons reappear by swiping inward from the edge of the screen as shown by the arrow."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"This app is using the full screen. The Home, Back, and Recents buttons are hidden to minimize distractions and to prevent you from leaving the app accidentally.
-
-To make the buttons reappear, swipe up from the bottom of the screen as shown by the arrow."</string>
     <string name="sec_monotype_default">Default</string>
     <string name="sec_ringtone_category_brand_sound">Samsung brand sound</string>
     <string name="sec_ringtone_category_calm">Calm</string>
@@ -927,6 +882,10 @@ To make the buttons reappear, swipe up from the bottom of the screen as shown by
     <string name="sec_ringtone_category_open_theme">"Current theme's default"</string>
     <string name="sec_ringtone_category_retro">Retro</string>
     <string name="sec_ringtone_silent">Silent</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Cancel</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">To connect to a satellite, your network operator needs to be set to Select automatically.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Turn on</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Turn on automatic network selection?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Turn on Microphone access to talk.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Turn on Camera access to use %s.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Turn on Microphone access to use %s.</string>
@@ -1022,6 +981,8 @@ To make the buttons reappear, swipe up from the bottom of the screen as shown by
     <string name="sem_face_error_already_in_use_by_VT">"Can't use face recognition during video calls."</string>
     <string name="sem_face_error_camera_access_off">"Can't use face recognition because camera access is off"</string>
     <string name="sem_face_error_camera_fail">"Couldn't open Camera. Try again."</string>
+    <string name="sem_face_error_lockout">"Biometric verification isn't available because of too many incorrect attempts."</string>
+    <string name="sem_face_error_lockout_permanent">"Biometric verification isn't available because of too many incorrect attempts."</string>
     <string name="sem_face_error_ppp_timeout">"It's been a while since you verified your identity. You'll need to start again to register your face."</string>
     <string name="sem_face_error_too_dark">Too dark to detect face</string>
     <string name="sem_face_error_too_dark_to_enroll">Too dark. Try turning on a light or going somewhere brighter.</string>
@@ -1037,13 +998,18 @@ To make the buttons reappear, swipe up from the bottom of the screen as shown by
     <string name="sem_fingerprint_acquired_tsp_block">Move the tip of your S Pen away from the screen to scan your fingerprint.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">To use fingerprints, first set a secure screen lock type (pattern, PIN, or password).</string>
+    <string name="sem_fingerprint_error_lockout">"Biometric verification isn't available because of too many incorrect attempts."</string>
+    <string name="sem_fingerprint_error_lockout_permanent">"Biometric verification isn't available because of too many incorrect attempts."</string>
     <string name="sem_fingerprint_error_onehand_mode">"Can't use fingerprint scanner in One-handed mode."</string>
     <string name="sem_fingerprint_error_smart_view">"Can't scan fingerprint while using %s."</string>
+    <string name="sem_fingerprint_error_system_failure">"Fingerprint sensor isn't responding. Try again later. If this continues, try restarting your phone."</string>
+    <string name="sem_fingerprint_error_template_corrupt">The fingerprint data has been corrupted. Add your fingerprints again.</string>
     <string name="sem_fingerprint_error_wireless_charger">Disconnect from wireless charger to use your fingerprint</string>
     <string name="sem_fingerprint_name_template">Fingerprint %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Later</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Not now</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Remove and register</string>
+    <string name="sem_fingerprint_register_dialog_message">"Fingerprint recognition was improved in the latest software update. You won't be able to use fingerprint recognition until you remove your fingerprints and register them again."</string>
     <string name="sem_fingerprint_register_dialog_title">Register fingerprints again</string>
     <string name="sem_fingerprint_result_failed">No match.</string>
     <string name="sem_fingerprint_result_retry">Try again.</string>
@@ -1063,7 +1029,7 @@ To make the buttons reappear, swipe up from the bottom of the screen as shown by
     <string name="sem_resolver_button_always_accessibility">Always use selected app</string>
     <string name="sem_resolver_button_just_once_accessibility">Use selected app just once</string>
     <string name="sem_resolver_choose_what_to_do">Choose what to do</string>
-    <string name="sem_resolver_go_to_settings_tips_description">To change default app settings, go to Settings > Apps > Choose default apps.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">To change the default app used to open this type of file, go to Settings > Apps, select the current default app, then tap Set as default > Clear defaults.</string>
     <string name="sem_resolver_icon_content_description">Information</string>
     <string name="sem_resolver_personal_tab_accessibility">Personal</string>
     <string name="sem_resolver_share_live_default_text">"Share instantly with people nearby. People who've made their devices visible will be shown here."</string>
@@ -1075,9 +1041,6 @@ To make the buttons reappear, swipe up from the bottom of the screen as shown by
     <string name="sem_resolver_work_tab_accessibility">Work</string>
     <string name="sem_switch_off">Off</string>
     <string name="sem_switch_on">On</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Camera access turned off for all apps</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Turn on</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Microphone access turned off for all apps</string>
     <string name="serviceErased">Erasure was successful.</string>
     <string name="serviceModeAll">All</string>
     <string name="serviceModeAllConditional">conditionally.</string>
@@ -1087,6 +1050,7 @@ To make the buttons reappear, swipe up from the bottom of the screen as shown by
     <string name="serviceModeUnconditional">unconditionally.</string>
     <string name="serviceisDisabled">Service is turned off.</string>
     <string name="serviceisEnabled">Service is turned on.</string>
+    <string name="settings">Settings</string>
     <string name="sf_quick_switch_not_supported">"Quick switch isn't supported in this situation."</string>
     <string name="sf_quick_switch_securefolder_view">Switched to %s.</string>
     <string name="share">Share</string>
@@ -1095,26 +1059,30 @@ To make the buttons reappear, swipe up from the bottom of the screen as shown by
     <string name="sharelist_restrict">Security policy prevents data sharing.</string>
     <string name="show_keyboard_button">Show Keyboard button</string>
     <string name="show_keyboard_button_description">Show %s on the navigation bar.</string>
+    <string name="showing_esc_dialog">You can set the Esc key to work as a Back button.</string>
     <string name="showing_touch_sensitivity_noti_action">Turn on</string>
     <string name="showing_touch_sensitivity_noti_text">Turn on Touch sensitivity while using the Privacy Screen or Notepaper Screen for more accurate touch responsiveness.</string>
     <string name="showing_touch_sensitivity_noti_title">Increase touch sensitivity</string>
+    <string name="side_key_double_press_archived_app">App archived. Choose something else.</string>
     <string name="side_key_double_press_deleted_app">App uninstalled. Choose something else.</string>
     <string name="side_key_double_press_disabled_app">%s disabled. Choose something else.</string>
     <string name="signature_identity_toast">%s signed by</string>
     <string name="simRefresh">Refreshing SIM data</string>
     <string name="simReset">Updating SIM data…</string>
     <string name="sim_check_old_sim_message">Old or damaged SIM cards can cause network connection problems. Contact your service provider or visit one of their stores to check whether it needs to be replaced.</string>
+    <string name="sim_check_old_sim_message_skt">Old or damaged SIM cards can cause network connection problems. Contact your service provider or visit one of their stores to check whether it needs to be replaced.</string>
     <string name="sim_check_old_sim_title">Your SIM may need to be replaced</string>
+    <string name="sim_check_old_sim_title_skt">Your SIM may need to be replaced</string>
     <string name="sim_count_mismatched_ds_to_ss">The SIM card mode has switched from Dual SIM to Single SIM. To apply this setting, the <cst>device</cst> will be reset to its factory default settings and will restart.</string>
     <string name="sim_count_mismatched_ss_to_ds">The SIM card mode has switched from Single SIM to Dual SIM. To apply this setting, the <cst>device</cst> will be reset to its factory default settings and will restart.</string>
     <string name="sim_count_mismatched_title">SIM card mode switched</string>
-    <string name="sim_imsreg_error_message_lgt">"Your phone won't be able to make voice calls because it can't recognize the SIM card. Try removing the SIM card and inserting it again. If this problem continues, you may need to replace your SIM card. For help, visit an LG U+ store or contact LG U+ Customer Service at 1544-0010."</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">"Your tablet won't be able to make voice calls because it can't recognize the SIM card. Try removing the SIM card and inserting it again. If this problem continues, you may need to replace your SIM card. For help, visit an LG U+ store or contact LG U+ Customer Service at 1544-0010."</string>
+    <string name="sim_imsreg_error_message_lgt">"Your phone won't be able to make voice calls because it can't recognize the SIM card. Try removing the SIM card and inserting it again. If this problem continues, you may need to replace your SIM card at an LG U+ store."</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">"Your tablet won't be able to make voice calls because it can't recognize the SIM card. Try removing the SIM card and inserting it again. If this problem continues, you may need to replace your SIM card at an LG U+ store."</string>
     <string name="sim_off_noti_message">"You can't make calls, send messages, or use data when all SIMs are turned off. Tap here to turn on SIMs."</string>
     <string name="sim_off_noti_title">All SIMs are turned off</string>
     <string name="sim_off_toast_message">"The SIM card you've inserted is off. To use it, go to Settings > Connections > SIM manager, then turn it on."</string>
     <string name="sim_recognize_error_message_kt">"Your SIM card wasn't recognized. Try removing the SIM card and inserting it again. If this problem continues, you may need to replace your SIM card. For help, visit a KT store or contact KT Customer Service at 1588-0010."</string>
-    <string name="sim_recognize_error_message_lgt">"Your SIM card wasn't recognized. Try removing the SIM card and inserting it again. If this problem continues, you may need to replace your SIM card. For help, visit an LG U+ store or contact LG U+ Customer Service at 1544-0010."</string>
+    <string name="sim_recognize_error_message_lgt">"Your SIM card wasn't recognized. Try removing the SIM card and inserting it again. If this problem continues, you may need to replace your SIM card at an LG U+ store."</string>
     <string name="sim_recognize_error_message_skt">"Can't read SIM card. Some apps and features may not work. Remove and reinsert your SIM card, then restart your phone. If that doesn't fix the issue, take your phone and SIM card to a Customer Service location."</string>
     <string name="sim_recognize_error_message_skt_tablet">"Can't read SIM card. Some apps and features may not work. Remove and reinsert your SIM card, then restart your tablet. If that doesn't fix the issue, take your tablet and SIM card to a Customer Service location."</string>
     <string name="sim_recognize_error_title_lgt">"Can't recognize USIM card"</string>
@@ -1124,10 +1092,8 @@ To make the buttons reappear, swipe up from the bottom of the screen as shown by
     <string name="sim_removed_message_hotswap_us_tablet">Connect to a <cst>Wi-Fi</cst> network or insert a SIM card to use mobile data.</string>
     <string name="sim_removed_title_hotswap">No SIM card inserted</string>
     <string name="sim_removed_title_hotswap_us_tablet">Insert SIM card</string>
+    <string name="smart_tip_action_click_hint_text">Close</string>
     <string name="smartclip_restrict">Security policy prevents use of Easy clip.</string>
-    <string name="sms_short_code_remember_undo_instruction">You can change this later by going to Settings > Apps</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">You can change this later by going to Settings > Apps > More options button > Special access > Use premium text message services</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">"If you tap NEVER ALLOW, this app won't be able to send messages in the background even if the Send text messages permission is allowed for it."</string>
     <string name="ss_do_not_show_again_us">Do not show again</string>
     <string name="sss_translate">Translate</string>
     <string name="ssu_lock_body_vzw">"Sorry, your device can't be activated on another carrier's network right now. For help, contact Verizon at %1$s or %2$s (prepaid plans)"</string>
@@ -1157,7 +1123,6 @@ To make the buttons reappear, swipe up from the bottom of the screen as shown by
     <string name="tethered_notification_title_verizon">Mobile Hotspot</string>
     <string name="time_of_day" formatted="false">%-l:%M:%S %p</string>
     <string name="title_dialog_check_rotate_or_not">Turn off Auto rotate screen?</string>
-    <string name="title_uds">Ultra data saving mode</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">"Can't use Bixby while setting up your phone."</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">"Can't use Bixby while setting up your tablet."</string>
     <string name="toast_warning_pattern_lock">"Pattern lock can't be used with Universal switch. Change to a different lock type first."</string>
@@ -1197,9 +1162,13 @@ To remove this protection, go to Settings > Security and privacy > Auto Blocker.
     <string name="unknown_install_blocked_esm_title">Unknown app blocked</string>
     <string name="unknown_install_dlg_desc">"This app wasn't downloaded from an approved store. Installing this app may put your security and privacy at risk. The app may collect your personal information or cause your data to be lost."</string>
     <string name="unknown_install_dlg_desc2">"This app doesn't support the latest security features. Installing this app may result in the following security risks:"</string>
+    <string name="unknown_install_dlg_desc_global_phone">This app installation file might not be safe. It might not be the app it claims to be. To protect your phone and personal data, install the app from an app store you trust instead.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">This app installation file might not be safe. It might not be the app it claims to be. To protect your tablet and personal data, install the app from an app store you trust instead.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">"This app is suspected of being malicious and may put your phone and data at risk. Installing this app isn't recommended."</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">"This app is suspected of being malicious and may put your tablet and data at risk. Installing this app isn't recommended."</string>
-    <string name="unknown_install_dlg_general_title">This app is from an unknown source</string>
+    <string name="unknown_install_dlg_desc_phone">"This app isn't from an authorized app store. To protect your phone and personal information, install the app from an authorized store such as the Play Store or Galaxy Store."</string>
+    <string name="unknown_install_dlg_desc_tablet">"This app isn't from an authorized app store. To protect your tablet and personal information, install the app from an authorized store such as the Play Store or Galaxy Store."</string>
+    <string name="unknown_install_dlg_general_title">"Installing this app isn't recommended"</string>
     <string name="unknown_install_dlg_negative_button">"Don't install"</string>
     <string name="unknown_install_dlg_perm_desc1">The app may intercept verification codes from text messages you receive.</string>
     <string name="unknown_install_dlg_perm_desc2">Outgoing calls may be redirected to a different phone number without your knowledge.</string>
@@ -1217,7 +1186,7 @@ To remove this protection, go to Settings > Security and privacy > Auto Blocker.
     <string name="usb_abnormal_reset_message">Unplug the cable and plug it in again, or try a different cable.</string>
     <string name="usb_abnormal_reset_title">"USB connection isn't stable"</string>
     <string name="usb_abnormal_reset_toast">"USB connection isn't stable. Unplug the cable and plug it in again, or try a different cable."</string>
-    <string name="usb_bad_removal_message">A USB storage device was removed unsafely. To prevent your tablet from restarting unexpectedly, save unsaved data and restart now.</string>
+    <string name="usb_bad_removal_message">A USB storage device was removed unsafely. To prevent your phone from restarting unexpectedly, save unsaved data and restart now.</string>
     <string name="usb_blocked_by_emergency_mode">Some USB functions are unavailable in Emergency mode.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Unable to use functions related to connected USB device while Maximum power saving mode turned on.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Some USB functions will be limited while Maximum power saving mode is on.</string>
@@ -1226,13 +1195,15 @@ To remove this protection, go to Settings > Security and privacy > Auto Blocker.
     <string name="usb_camera_connected_notification_title">Media device connected</string>
     <string name="usb_camera_disconnected_notification_title">Media device disconnected</string>
     <string name="usb_cd_installer_notification_title">Software update</string>
-    <string name="usb_charing_only_notification_title">Connected</string>
+    <string name="usb_charing_only_notification_title">USB charging</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Auto Blocker is on with maximum restrictions.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB connection blocked</string>
     <string name="usb_debugging_only_notification_title">Debugging only</string>
-    <string name="usb_host_resource_exceed_message">"Your tablet's USB controller doesn't have enough resources to connect this device. Try disconnecting the device and connecting it again."</string>
+    <string name="usb_host_resource_exceed_message">"Your phone's USB controller doesn't have enough resources to connect this device. Try disconnecting the device and connecting it again."</string>
     <string name="usb_host_resource_exceed_title">Not Enough USB controller resources</string>
-    <string name="usb_hub_depth_exceed_message">Your tablet can only support up to 5 USB hub connections at the same time.</string>
+    <string name="usb_hub_depth_exceed_message">Your phone can only support up to 5 USB hub connections at the same time.</string>
     <string name="usb_hub_depth_exceed_title">Maximum USB hub connections</string>
-    <string name="usb_hub_power_exceed_message">"Your tablet can't provide enough power for this USB device. Connect the device to a self-powered USB hub before connecting it to your tablet."</string>
+    <string name="usb_hub_power_exceed_message">"Your phone can't provide enough power for this USB device. Connect the device to a self-powered USB hub before connecting it to your phone."</string>
     <string name="usb_increase_battery_usage">USB connection may increase battery usage.</string>
     <string name="usb_mass_storage_restrict">Security policy prevents use of USB mass storage.</string>
     <string name="usb_midi_notification_title">USB for MIDI</string>
@@ -1244,8 +1215,9 @@ To remove this protection, go to Settings > Security and privacy > Auto Blocker.
     <string name="usb_open_charging_notification_title">USB charging</string>
     <string name="usb_ptp_notification_title">USB for image transfer</string>
     <string name="usb_type_c_supply_power_notification_title">USB charging connected device</string>
-    <string name="usb_unblock_by_screen_unlock">Unlock your tablet to use the connected USB device.</string>
-    <string name="usb_unsupport_accessory_message">"This USB device isn't supported by your tablet."</string>
+    <string name="usb_unblock_by_screen_unlock">Unlock your phone to use the connected USB device.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">To use USB device, unlock your phone and reconnect the USB device.</string>
+    <string name="usb_unsupport_accessory_message">"This USB device isn't supported by your phone."</string>
     <string name="usb_unsupport_accessory_title">USB device not supported</string>
     <string name="usb_unsupported_device">"The connected USB device isn't supported."</string>
     <string name="usb_unsupported_device_title">Device not supported</string>
@@ -1263,19 +1235,19 @@ To remove this protection, go to Settings > Security and privacy > Auto Blocker.
     <string name="usb_water_dialg_method_2_desc_2">You can speed up drying by pointing a fan or dryer (cool air only) toward the port.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"We've detected moisture or foreign material in your charging/USB port.
 
-Check your charging/USB port for any foreign material such as dust or debris. To prevent damage to your tablet, don't plug anything in until the charging port is clean and the moisture is gone.
+Check your charging/USB port for any foreign material such as dust or debris. To prevent damage to your phone, don't plug anything in until the charging port is clean and the moisture is gone.
 
 To dry the port, shake out any moisture, then wait for it to dry, which could take several hours. You can speed up drying by pointing a fan or dryer (cool air only) at the port."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"We've detected moisture or foreign material in your charging/USB port.
 
-Check your charging/USB port for any foreign material such as dust or debris. To prevent damage to your tablet, don't plug anything in until the charging port is clean and the moisture is gone.
+Check your charging/USB port for any foreign material such as dust or debris. To prevent damage to your phone, don't plug anything in until the charging port is clean and the moisture is gone.
 
 To dry the port, shake out any moisture, then wait for it to dry, which could take several hours. You can speed up drying by pointing a fan or dryer (cool air only) at the port.
 
-In the meantime, you can charge your tablet wirelessly."</string>
+In the meantime, you can charge your phone wirelessly."</string>
     <string name="usb_water_notification_content">"There's moisture or foreign material in your charging/USB port. Check before charging."</string>
-    <string name="usb_water_notification_message">"Moisture has been detected in your charger/USB port. Make sure it's dry before charging your tablet. It may take some time to dry completely."</string>
+    <string name="usb_water_notification_message">"Moisture has been detected in your charger/USB port. Make sure it's dry before charging your phone. It may take some time to dry completely."</string>
     <string name="usb_water_notification_message_button">Details</string>
     <string name="usb_water_notification_title">Check charger/USB port</string>
     <string name="usbhostStorage_restrict">Security policy prevents use of USB host storage.</string>
@@ -1288,6 +1260,8 @@ In the meantime, you can charge your tablet wirelessly."</string>
     <string name="vpn_allowOnlySecureConnection">VPN profile not secure.</string>
     <string name="vpn_error_text">Tap to try reconnecting to VPN.</string>
     <string name="vpn_error_title">VPN connection error</string>
+    <string name="vpn_fail_text_long">"Couldn't connect to %s. Tap to manage this VPN."</string>
+    <string name="vpn_fail_title">VPN not connected</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Closing apps to cool down tablet</string>
     <string name="vzw_cooldown_mode_ok">OK</string>
@@ -1350,6 +1324,7 @@ In the meantime, you can charge your tablet wirelessly."</string>
     <string name="wifi_network_available_detailed">An open <cst>Wi-Fi</cst> network is available.</string>
     <string name="wifi_networks_available"><cst>Wi-Fi</cst> networks available</string>
     <string name="wifi_networks_available_detailed">Open <cst>Wi-Fi</cst> networks are available.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s is using mobile data because your WLAN connection is slow or unstable.</string>
     <string name="wifi_notification_switch_wifi_detail">Your phone switched to mobile data because the <cst>Wi-Fi</cst> network was unstable.</string>
     <string name="wifi_notification_switch_wifi_title">Switched to mobile data</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Emergency notifications</string>
@@ -1381,9 +1356,5 @@ In the meantime, you can charge your tablet wirelessly."</string>
     <string name="work_profile_on_message">This will allow you to access work apps, notifications, data, and other work profile features.</string>
     <string name="work_profile_on_title">Turn on Work profile?</string>
     <string name="work_profile_restricted">"Auto Blocker is on with maximum restrictions. To protect your security, work profiles can't be created."</string>
-    <string name="work_profile_telephony_paused_text">"You've paused your work apps. You won't receive phone calls or text messages from them."</string>
-    <string name="work_profile_telephony_paused_title">Calls and messages are off</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Turn on work profile?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">Until I turn it off</string>
 </resources>

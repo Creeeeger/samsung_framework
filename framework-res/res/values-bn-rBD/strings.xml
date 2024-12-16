@@ -87,6 +87,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Bixby-এর সাথে কথা বলুন</string>
     <string name="accessibility_corner_action_type_zoom_in">জুম-ইন</string>
     <string name="accessibility_corner_action_type_zoom_out">জুম-আউট</string>
+    <string name="accessibility_dialog_button_allow_samsung">অনুমতি দিন</string>
+    <string name="accessibility_dialog_button_deny_samsung">প্রত্যাখ্যান</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">আনইনস্টল</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">‘পাওয়ার’ ও ‘ভলিউম বাড়ান’ কী দ্রুত চাপলে নিচের ফাংশনগুলো চালু বা বন্ধ হবে:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">সাইড ও ভলিউম বাটন দ্রুত চাপলে নিচের ফাংশনগুলো চালু বা বন্ধ হবে:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">‘পাওয়ার’ ও ‘ভলিউম বাড়ান’ কী দ্রুত চাপলে %s চালু বা বন্ধ হবে৷</string>
@@ -118,6 +121,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">সুরক্ষা নীতিটি এই অ্যাকাউন্টে সংযোজন প্রতিহত করে।</string>
     <string name="account_removal_restrict">সুরক্ষা নীতি এই অ্যাকাউন্টে অপসারণটি প্রতিহত করে।</string>
+    <string name="action_bar_up_description">উপরে যান</string>
     <string name="action_menu_overflow_description">আরো অপশন</string>
     <string name="adb_active_notification_message">USB ডিবাগিং অক্ষম করতে স্পর্শ করুন৷</string>
     <string name="adb_active_notification_title">USB ডিবাগিং সংযুক্ত হয়েছে</string>
@@ -126,6 +130,9 @@
     <string name="advance_wifi_sharing_msg">একটি লভ্য ওয়াই-ফাই নেটওয়ার্ক শনাক্ত হয়েছে৷ আপনার মোবাইল হটস্পটের জন্য মোবাইল ডাটার পরিবর্তে ওয়াই-ফাই শেয়ার করতে সংযোগ করুন।</string>
     <string name="airplanemode_restrict">সুরক্ষা নীতিমালা ফ্লাইট মোড সক্রিয় করতে প্রতিহত করে।</string>
     <string name="allow_settings_changes">সুরক্ষা নীতি সেটিংস পরিবর্তনকে প্রতিরোধ করে।</string>
+    <string name="always_allow">সবসময় অনুমতি দিন</string>
+    <string name="app_block_button_open">খুলুন</string>
+    <string name="app_block_content">%1$s %2$s অ্যাপ খুলতে চায়।</string>
     <string name="app_clone_storage">অভ্যন্তরীণ স্টোরেজ (ডুয়েল মেসেঞ্জার)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">অ্যাপসমূহ বেছে নিন</string>
     <string name="app_continuity_guide_cling_button_not_now">এখন নয়</string>
@@ -140,32 +147,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">আপনি আজ %s-এর জন্য আপনার সব সময় ব্যবহার করে ফেলেছেন৷ আপনি সেটিংস-এ এটি পরিবর্তন করতে পারেন।</string>
     <string name="app_restricted_message_concentration_mode">মনোযোগ মোডে %s ব্লক করা থাকে৷ আরো জানতে আপনার আইটি এডমিনের সাথে যোগাযোগ করুন৷</string>
     <string name="app_updating_message">%s আপডেট হচ্ছে৷ পরে আবার চেষ্টা করুন৷</string>
-    <string name="appblock_block_subtitle1_phone">আপনার ফোন ও ব্যক্তিগত ডাটা সুরক্ষিত রাখতে, এই অ্যাপ ইনস্টল করা যাবে না কারণ এটি ক্ষতিকর বলে সন্দেহ করা হচ্ছে৷</string>
-    <string name="appblock_block_subtitle1_tablet">আপনার ট্যাবলেট ও ব্যক্তিগত ডাটা সুরক্ষিত রাখতে, এই অ্যাপ ইনস্টল করা যাবে না কারণ এটি ক্ষতিকর বলে সন্দেহ করা হচ্ছে৷</string>
-    <string name="appblock_block_subtitle2">এই অ্যাপ ইনস্টল করা যাবে না কারণ এটিকে ক্ষতিকর হিসেবে রিপোর্ট করা হয়েছে।</string>
-    <string name="appblock_block_text1">এই অ্যাপ কোনো যাচাইকৃত উৎস থেকে আসেনি এবং এর জন্য সংবেদনশীল অনুমতি প্রয়োজন যা আপনার ব্যক্তিগত ডাটা চুরি বা ফাঁস করতে ব্যবহার করা যেতে পারে।</string>
-    <string name="appblock_block_text2">"ক্ষতিকর অ্যাপগুলো আপনার ব্যক্তিগত ডাটা চুরি করতে, আপনার পরিচয় নকল করতে, অথবা আপনার আর্থিক অ্যাকাউন্টগুলো অ্যাক্সেস করতে সংবেদনশীল অনুমতিগুলো ব্যবহার করতে পারে৷
-
-বৈধ আর্থিক প্রতিষ্ঠানগুলোর ইনস্টলেশনের জন্য ZIP ফাইল, APK ফাইল বা ফাইল ম্যানেজার অ্যাপের প্রয়োজন হয় না৷
-
-সবসময় নিশ্চিত করুন যে আপনার ইনস্টল করা অ্যাপগুলো বিশ্বস্ত উৎস থেকে এসেছে৷"</string>
-    <string name="appblock_warn_subtitle">এই অ্যাপ আপনার ব্যক্তিগত তথ্য চুরি বা ফাঁস করতে পারে।</string>
+    <string name="appblock_block_text_phone">এই অ্যাপ ইনস্টল করা যাবে না কারণ এটি ক্ষতিকর বলে রিপোর্ট করা হয়েছে অথবা ক্ষতিকর বলে রিপোর্ট করা কোনো অ্যাপের অনুরূপ। এই অ্যাপ ফিশিংয়ের মতো অপরাধের জন্য ব্যবহার করার সম্ভাবনা রয়েছে। আপনার ফোন ও ডাটা নিরাপদ রাখতে এই সীমাবদ্ধতা অতিক্রম করা যাবে না।</string>
+    <string name="appblock_block_text_tablet">এই অ্যাপ ইনস্টল করা যাবে না কারণ এটি ক্ষতিকর বলে রিপোর্ট করা হয়েছে অথবা ক্ষতিকর বলে রিপোর্ট করা কোনো অ্যাপের অনুরূপ। এই অ্যাপ ফিশিংয়ের মতো অপরাধের জন্য ব্যবহার করার সম্ভাবনা রয়েছে। আপনার ট্যাবলেট ও ডাটা নিরাপদ রাখতে এই সীমাবদ্ধতা অতিক্রম করা যাবে না।</string>
+    <string name="appblock_link_text">আরো জানুন</string>
     <string name="appblock_warn_text1">"অযাচাইকৃত উৎস থেকে আসা অ্যাপ ইনস্টল করলে সেসব অ্যাপ আপনার ব্যক্তিগত তথ্য সংগ্রহ করার বা আপনার কার্যকলাপ ট্র্যাক করার সুযোগ পেতে পারে৷
 
 এই অ্যাপ ইনস্টল না করার জন্য সুপারিশ করা হয়৷
 
 যদি তারপরেও আপনি এই অ্যাপ ইনস্টল করতে চান, তাহলে অ্যাপটির গোপনীয়তার বিজ্ঞপ্তি সতর্কতার সাথে পর্যালোচনা করুন এবং নিশ্চিত করুন যে আপনি শুধু অপরিহার্য অনুমতিগুলোই দিচ্ছেন৷"</string>
-    <string name="appblock_warn_text2">"ক্ষতিকর অ্যাপগুলো প্রায়শই কন্টাক্ট, SMS ও ছবির অনুমতি ব্যবহার করে আপনার ব্যক্তিগত তথ্য পাওয়ার চেষ্টা করে।
-
-এই অ্যাপ ইনস্টল না করার জন্য সুপারিশ করা হয়৷
-
-যদি তারপরেও আপনি এই অ্যাপ ইনস্টল করতে চান, তাহলে নিশ্চিত করুন যে এটি এমন একটি উৎস থেকে এসেছে যেটির ওপর আপনার আস্থা রয়েছে এবং আপনার ডাটায় অনুমতি বা অন্যান্য অ্যাক্সেস দেওয়ার বিষয়ে সতর্ক থাকুন।"</string>
     <string name="application_default_restrict">ডিভাইস এডমিন অন্য একটি অ্যাপকে ডিফল্ট হিসেবে সেট করেছেন।</string>
     <string name="auto_click_paused">অটো ক্লিক পজ হয়েছে৷</string>
     <string name="auto_click_resumed">অটো ক্লিক পুনরায় চালু হয়েছে৷</string>
     <string name="autofill_never_use_for_this_app">এই অ্যাপের জন্য কখনোই %s ব্যবহার করবেন না</string>
     <string name="autofill_save_cancel">বাতিল</string>
     <string name="autofill_save_never_OK">ঠিক আছে</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">সুরক্ষা নীতি ব্যাকআপের ব্যবহার প্রতিহত করে।</string>
     <string name="badPin2">PIN2 ভুল। পুনরায় চেষ্টা করুন।</string>
     <string name="badPuk2">আপনি যে PUK2 লিখেছেন সেটি ভুল।</string>
@@ -176,8 +172,6 @@
     <string name="bluetooth_a2dp_restrict">সুরক্ষা নীতি ব্লুটুথ মিডিয়া অডিওর ব্যবহার প্রতিহত করে।</string>
     <string name="bluetooth_avrcp_restrict">সুরক্ষা নীতি ব্লুটুথ অডিও/ভিডিও নিয়ন্ত্রণের ব্যবহার প্রতিহত করে।</string>
     <string name="bluetooth_bpp_restrict">সুরক্ষা নীতি ব্লুটুথের মাধ্যমে প্রিন্ট করা প্রতিহত করে।</string>
-    <string name="bluetooth_china_popup_message">%2$s ব্যবহারের জন্য %1$s অনুমতি চাইছে৷ অনুমতি দেবেন?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">সুরক্ষা নীতি ব্লুটুথ হয়ে ডাটা স্থানান্তর প্রতিহত করে।</string>
     <string name="bluetooth_desktop_restrict">সুরক্ষা নীতি ব্লুটুথ হয়ে আপনার ডেস্কটপে সংযোগ করাকে প্রতিহত করে।</string>
     <string name="bluetooth_device_restrict">সুরক্ষা নীতি এই ব্লুটুথ ডিভাইসের মাধ্যমে জোড় বাঁধাকে প্রতিহত করে।</string>
@@ -188,7 +182,6 @@
     <string name="bluetooth_outgoing_call_restrict">সুরক্ষা নীতি ব্লুটুথের মাধ্যমে বহির্গামী কল করাকে প্রতিহত করে।</string>
     <string name="bluetooth_pairing_restrict">সুরক্ষা নীতি ব্লুটুথ জোড় বাঁধা প্রতিহত করে।</string>
     <string name="bluetooth_pbap_restrict">সুরক্ষা নীতি ব্লুটুথ ঠিকানা পুস্তিকার ব্যবহার প্রতিহত করে।</string>
-    <string name="bluetooth_permission_request">Bluetooth অনুমতি অনুরোধ</string>
     <string name="bluetooth_restrict">সুরক্ষা নীতি ব্লুটুথের ব্যবহার প্রতিহত করে।</string>
     <string name="bluetooth_sap_restrict">সুরক্ষা নীতি আপনার SIM কার্ডকে ব্লুটুথ হয়ে অ্যাকসেস করাকে প্রতিরোধ করে।</string>
     <string name="bluetooth_security_mode_disable">নিরাপত্তা নীতি Bluetooth ব্যবহার প্রতিরোধ করে৷</string>
@@ -251,11 +244,8 @@
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">অনুমোদিত ডিভাইসগুলো</string>
     <string name="data_call_restriction">সুরক্ষা নীতি Mobile Data এর ব্যবহার সীমাবদ্ধ করছে</string>
-    <string name="data_usage_disable_mobile">মোবাইল ডাটা সংযোগ অক্ষম করবেন?</string>
-    <string name="data_usage_enable_mobile_warning">প্যাকেট ডাটার মাধ্যমে সংযোগ স্থাপন করা হলে অতিরিক্ত মূল্য ধার্য হতে পারে। সংযোগ স্থাপন করবেন?</string>
     <string name="data_usage_limit_body">আপনার বিলিং সাইকেল শেষ হওয়া পর্যন্ত মোবাইল ডাটা স্থগিত করা হয়েছে৷</string>
     <string name="data_usage_mobile_limit_snoozed_title">আপনার মোবাইল ডাটার সীমা অতিক্রম করেছে</string>
-    <string name="data_usage_mobile_limit_title">মোবাইল ডাটার সীমায় পৌঁছেছে</string>
     <string name="data_usage_rapid_app_body">%s স্বাভাবিকের চেয়ে বেশি ডাটা ব্যবহার করেছে৷</string>
     <string name="data_usage_rapid_body">আপনার অ্যাপগুলো স্বাভাবিকের চেয়ে বেশি ডাটা ব্যবহার করেছে৷</string>
     <string name="data_usage_rapid_title">অধিক মোবাইল ডাটা ব্যবহার</string>
@@ -266,6 +256,7 @@
     <string name="data_usage_warning_title_offpeak_chn">%s অফ-পিক ডাটা ব্যবহার করেছেন</string>
     <string name="data_usage_warning_title_unlimited_chn">মোবাইল ডাটার গতির সীমায় পৌঁছেছে</string>
     <string name="device_disabled">ডিভাইস নিষ্ক্রিয় হয়েছে। আইটি প্রশাসকের সাথে যোগাযোগ করুন।</string>
+    <string name="device_info_not_available">সুলভ নয়।</string>
     <string name="dex_cant_change_user_profile">Samsung DeX মোডে ব্যবহারকারীর প্রোফাইল পরিবর্তন করা যাবে না৷</string>
     <string name="dex_dialog_launch_toast">খোলা অ্যাপগুলো বন্ধ হয়ে যেতে পারে৷ Samsung DeX চালু বা বন্ধ করার আগে আপনার ডাটা সংরক্ষণ করুন৷</string>
     <string name="dex_disconnected_from_device">%s থেকে DeX-এর সংযোগ বিচ্ছিন্ন হয়েছে৷ আপনার টিভিতে নেটওয়ার্ক সংযোগ চেক করুন৷</string>
@@ -274,9 +265,6 @@
     <string name="dex_launcher_mode_change">Samsung DeX-এ সুইচ করতে %s বন্ধ হয়েছে৷</string>
     <string name="dex_mirroring_jit_msg">আপনার ট্যাবলেটে Samsung DeX চালানোর সময়, আরো বড় করে দেখার জন্য যেকোনো HDMI-সংযুক্ত ডিসপ্লেতে স্ক্রিন মিরর করতে পারেন।</string>
     <string name="dex_mirroring_jit_title">আরো বড় স্ক্রিনে DeX মিরর করা</string>
-    <string name="dex_restart_app_dialog_button_positive">পুনঃচালু</string>
-    <string name="dex_restart_app_dialog_message">এই অ্যাপ ইতোমধ্যে আরেকটি ডিসপ্লেতে চলছে৷ এটি এখানে খুলতে, অ্যাপটি পুনরায় চালু করতে হবে৷ আপনি এটি পুনরায় চালু করার আগে গুরুত্বপূর্ণ যেকোনো কিছু সংরক্ষণ করুন।</string>
-    <string name="dex_restart_app_dialog_title">%s পুনরায় চালু করবেন?</string>
     <string name="dex_restriction_blockerMessage">নিরাপত্তা নীতি Samsung DeX-এর ব্যবহার প্রতিরোধ করে।</string>
     <string name="dex_restriction_ethernetOnly">নিরাপত্তা নীতি DeX-এ ওয়াই-ফাই ডাটা, মোবাইল ডাটা, ও টেথারিং-এর ব্যবহার প্রতিরোধ করে। নেটওয়ার্কের ফিচারগুলোর জন্য একটি তারের সংযোগ প্রয়োজন।</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">নিরাপত্তা নীতির কারণে, Samsung DeX থেকে বের হতে বাহ্যিক ডিসপ্লের সংযোগ বিচ্ছিন্ন করুন৷</string>
@@ -301,7 +289,6 @@
     <string name="digital_signature_failure_user_notification">%d ব্যবহারকারীর ডিজিটাল স্বাক্ষর সঠিক নয়</string>
     <string name="disableupdate_application_restrict">সুরক্ষা নীতিমালা এই অ্যাপ্লিকেশনটি আপডেট করতে প্রতিহত করে।</string>
     <string name="display_chooser_button_positive">পুনঃচালু</string>
-    <string name="display_chooser_dont_show_again">আর দেখাবেন না</string>
     <string name="dlg_confirm_kill_storage_users_text">আপনি যদি USB সঞ্চয়স্থান চালু করেন তাহলে আপনার USB সঞ্চয়স্থান বন্ধ না করা পর্যন্ত আপনার ব্যবহৃত অ্যাপ্লিকেশানগুলির মধ্যে কয়েকটি বন্ধ হয়ে যাবে এবং অনুপলব্ধ হতে পারে৷</string>
     <string name="dlg_confirm_kill_storage_users_title">USB সঞ্চয়স্থান চালু করুন</string>
     <string name="dlg_error_title">USB প্রক্রিয়াটি অসফল হয়েছে</string>
@@ -316,7 +303,7 @@
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">‘মাল্টি উইন্ডো ভিউ’-তে এই অ্যাপ ব্যবহার করা যাবে না৷</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">‘মাল্টি উইন্ডো ভিউ’-তে এই ফিচার ব্যবহার করা যাবে না৷</string>
     <string name="edit_contact_at_sim_restriction">সুরক্ষা নীতিমালা SIM কার্ডের পরিচিতিগুলো সম্পাদনা করতে প্রতিহত করে।</string>
-    <string name="edm_policy_not_allow_open_wifiap">অনুমোদিত ডিভাইসগুলো</string>
+    <string name="edm_policy_not_allow_open_wifiap">এই সুরক্ষা নীতিটি হটস্পটের জন্য অসুরক্ষিত টেথারিংয়ের ব্যবহারকে সীমাবদ্ধ করে।</string>
     <string name="emergency_calls_only">শুধু জরুরি কল করা যাবে</string>
     <string name="ethernet_cable_connected_notification_message">সেটআপ করতে ট্যাপ করুন।</string>
     <string name="ethernet_cable_connected_notification_title">ইথারনেট কেবল সংযুক্ত হয়েছে।</string>
@@ -336,7 +323,7 @@
     <string name="ext_media_unsupported_notification_message">ডিভাইসটি এই %s সমর্থন করে না। সমর্থিত ফরম্যাটে সেট করতে ট্যাপ করুন।</string>
     <string name="ext_media_unsupported_notification_title">অসমর্থিত %s</string>
     <string name="ext_storage_bad_removal_button">পুনরায় চালু করুন</string>
-    <string name="ext_storage_bad_removal_title">আপনার ট্যাবলেট পুনরায় চালু করুন</string>
+    <string name="ext_storage_bad_removal_title">আপনার ফোন পুনরায় চালু করুন</string>
     <string name="extmedia_format_message_usbhost">আপনার USB সঞ্চয়স্থানে সংরক্ষিত সমস্ত ফাইল মুছে ফেলা হবে৷ এই ক্রিয়াটিকে পূর্বাবস্থায় ফেরানো যাবে না!</string>
     <string name="extmedia_format_title_usbhost">USB সঞ্চয়স্থান ফরম্যাট করবেন?</string>
     <string name="factoryreset_restrict">সুরক্ষা নীতি ফ্যাক্টরি পুনরায় সেট সীমিত করে।</string>
@@ -406,6 +393,7 @@
     <string name="globalactions_unable_restart_msg_fmm">পুনরায় চালু করা যাবে না কারণ ‘আমার মোবাইল খুঁজুন’ দ্বারা দূর থেকে ফোনটি লক করা আছে৷</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">পুনরায় চালু করা যাবে না কারণ ‘আমার মোবাইল খুঁজুন’ দ্বারা দূর থেকে ট্যাবলেট লক করা আছে৷</string>
     <string name="globalactions_unable_restart_msg_securelock">লক করা অবস্থায় ফোন পুনরায় চালু করা যাবে না৷ ফোন পুনরায় চালু করতে কভার খুলুন ও আনলক করুন৷</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">SIM কার্ড লক করা অবস্থায় ফোন পুনরায় চালু করা যাবে না৷</string>
     <string name="hardware_key_restrict">সুরক্ষা নীতি এই হার্ডওয়্যার কির ব্যবহারকে প্রতিরোধ করে।</string>
     <string name="hardware_sec">স্ক্রিনের উপরের কীবোর্ড</string>
     <string name="hbd_translate">টাইপকৃত লেখার অনুবাদ</string>
@@ -475,16 +463,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">রক্ষণাবেক্ষণ মোড বন্ধ করার জন্য আপনাকে আপনার ট্যাবলেট আনলক করতে হবে।</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">রক্ষণাবেক্ষণ মোড চালু থাকা অবস্থায় সংঘটিতে কোনো কিছু সংরক্ষিত হবে না, যেমন ডাউনলোড করা ডাটা, অ্যাপ ইনস্টলেশন, বা সেটিংসের পরিবর্তন।</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">স্ক্রিন লক সেট করুন</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">লগ তৈরি না করেই পুনরায় চালু করুন</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">লগ তৈরি করুন এবং পুনরায় চালু করুন</string>
     <string name="maintenance_mode_intro_dialog_message_phone">রক্ষণাবেক্ষণ মোড চালু করার জন্য আপনার ফোন পুনরায় চালু করতে হবে।</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">প্রথমে একটি স্ক্রিন লক সেট করুন৷</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">রক্ষণাবেক্ষণ মোড চালু করার জন্য আপনার ট্যাবলেট পুনরায় চালু করতে হবে।</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"আমাদের সহায়তা কর্মীদেরকে আপনার ফোনের যেকোনো সমস্যা বিশ্লেষণে সহায়তা করার জন্য, রক্ষণাবেক্ষণ মোড শুরু করার আগে একটি সিস্টেম লগ তৈরি করার জন্য আমরা পরামর্শ দিই৷
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"আমাদের সহায়তা কর্মীদেরকে আপনার ফোনের যেকোনো সমস্যা নির্ণয় ও বিশ্লেষণ করতে সাহায্য করার জন্য, আমরা রক্ষণাবেক্ষণ মোড শুরু করার আগে একটি সিস্টেম লগ তৈরি করার পরামর্শ দিই।
 
-লগ দেখায় যে কোন অ্যাপগুলো ব্যবহার করা হয়েছিল এবং সম্প্রতি কোনো ত্রুটি ঘটেছে কিনা, কিন্তু অন্য কোনো ব্যক্তিগত তথ্য অন্তর্ভুক্ত থাকে না৷ শুধু সমস্যা বিশ্লেষণের জন্য লগ ব্যবহার করা হবে এবং অন্য কোনো উদ্দেশ্যে নয়। লগ তৈরি করতে সাধারণত প্রায় 2 মিনিট সময় লাগে৷"</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"আমাদের সহায়তা কর্মীদেরকে আপনার ট্যাবলেটের যেকোনো সমস্যা বিশ্লেষণে সহায়তা করার জন্য, রক্ষণাবেক্ষণ মোড শুরু করার আগে একটি সিস্টেম লগ তৈরি করার জন্য আমরা পরামর্শ দিই৷
+এই লগে শুধু আপনার ফোন মেরামত করার জন্য অপরিহার্য তথ্য যেমন কোন অ্যাপগুলো ব্যবহার করা হয়েছে, সম্প্রতি ঘটা ত্রুটিসমূহ, ব্লক করা ফোন নম্বর, এবং ফাইল স্টোরেজের ধারণক্ষমতা ইত্যাদি অন্তর্ভুক্ত থাকে। শুধু সমস্যা নির্ণয় ও বিশ্লেষণের জন্য লগ ব্যবহার করা হবে এবং অন্য কোনো উদ্দেশ্যে নয়। লগ তৈরি করতে সাধারণত প্রায় 2 মিনিট সময় লাগে৷"</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"আমাদের সহায়তা কর্মীদেরকে আপনার ট্যাবলেটের যেকোনো সমস্যা নির্ণয় ও বিশ্লেষণ করতে সাহায্য করার জন্য, আমরা রক্ষণাবেক্ষণ মোড শুরু করার আগে একটি সিস্টেম লগ তৈরি করার পরামর্শ দিই।
 
-লগ দেখায় যে কোন অ্যাপগুলো ব্যবহার করা হয়েছিল এবং সম্প্রতি কোনো ত্রুটি ঘটেছে কিনা, কিন্তু অন্য কোনো ব্যক্তিগত তথ্য অন্তর্ভুক্ত থাকে না৷ শুধু সমস্যা বিশ্লেষণের জন্য লগ ব্যবহার করা হবে এবং অন্য কোনো উদ্দেশ্যে নয়। লগ তৈরি করতে সাধারণত প্রায় 2 মিনিট সময় লাগে৷"</string>
+এই লগে শুধু আপনার ট্যাবলেট মেরামত করার জন্য অপরিহার্য তথ্য যেমন কোন অ্যাপগুলো ব্যবহার করা হয়েছে, সম্প্রতি ঘটা ত্রুটিসমূহ, ব্লক করা ফোন নম্বর, এবং ফাইল স্টোরেজের ধারণক্ষমতা ইত্যাদি অন্তর্ভুক্ত থাকে। শুধু সমস্যা নির্ণয় ও বিশ্লেষণের জন্য লগ ব্যবহার করা হবে এবং অন্য কোনো উদ্দেশ্যে নয়। লগ তৈরি করতে সাধারণত প্রায় 2 মিনিট সময় লাগে৷"</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">স্টোরেজ বিশ্লেষণ করুন</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">আপনার ফোনের অভ্যন্তরীণ স্টোরেজ প্রায় সম্পূর্ণভাবে পূর্ণ। আপনার স্টোরেজের জায়গা ফুরিয়ে গেলে, কিছু অ্যাপ ও ফিচার সঠিকভাবে কাজ করা বন্ধ করে দিতে পারে। আপনার আর প্রয়োজন নেই এমন কিছু ফাইল বা অ্যাপ মুছে ফেলার চেষ্টা করুন। মুছে ফেলার পরে, ট্র্যাশ খালি করতে ভুলবেন না।</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">আপনার ট্যাবলেটের অভ্যন্তরীণ স্টোরেজ প্রায় সম্পূর্ণভাবে পূর্ণ। আপনার স্টোরেজের জায়গা ফুরিয়ে গেলে, কিছু অ্যাপ ও ফিচার সঠিকভাবে কাজ করা বন্ধ করে দিতে পারে। আপনার আর প্রয়োজন নেই এমন কিছু ফাইল বা অ্যাপ মুছে ফেলার চেষ্টা করুন। মুছে ফেলার পরে, ট্র্যাশ খালি করতে ভুলবেন না।</string>
@@ -506,10 +494,17 @@
     <string name="maintenance_mode_outro_label">রক্ষণাবেক্ষণ মোড থেকে বেরিয়ে যান</string>
     <string name="maintenance_mode_outro_textview_message_phone">রক্ষণাবেক্ষণ মোড বন্ধ করার জন্য আপনাকে আপনার ফোন আনলক করতে হবে। আপনি যখন সেটি করবেন, তখন সবকিছু আগের অবস্থায় ফিরে যাবে, যখন রক্ষণাবেক্ষণ মোড প্রথম চালু করা হয়েছিল সেই সময়ের অবস্থায়। রক্ষণাবেক্ষণ মোড চালু থাকাকালীন করা পরিবর্তনগুলো, যেমন ডাউনলোড করা ডাটা, ইনস্টল করা অ্যাপ, বা সেটিংসের পরিবর্তনগুলো সংরক্ষণ করা হয় না৷</string>
     <string name="maintenance_mode_outro_textview_message_tablet">রক্ষণাবেক্ষণ মোড বন্ধ করার জন্য আপনাকে আপনার ট্যাবলেট আনলক করতে হবে। আপনি যখন সেটি করবেন, তখন সবকিছু আগের অবস্থায় ফিরে যাবে, যখন রক্ষণাবেক্ষণ মোড প্রথম চালু করা হয়েছিল সেই সময়ের অবস্থায়। রক্ষণাবেক্ষণ মোড চালু থাকাকালীন করা পরিবর্তনগুলো, যেমন ডাউনলোড করা ডাটা, ইনস্টল করা অ্যাপ, বা সেটিংসের পরিবর্তনগুলো সংরক্ষণ করা হয় না৷</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">%s সক্রিয় থাকাকালীন রক্ষণাবেক্ষণ মোড ব্যবহার করা যাবে না৷</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">সীমিত অ্যাপ ও হোম স্ক্রিনের মাধ্যমে পাওয়ার সাশ্রয় চালু থাকা অবস্থায় রক্ষণাবেক্ষণ মোড ব্যবহার করা যাবে না।</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">রক্ষণাবেক্ষণ মোড এই ফোনে সমর্থিত নয়৷</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">রক্ষণাবেক্ষণ মোড এই ট্যাবলেটে সমর্থিত নয়৷</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s শুধুমাত্র ডিভাইসটির মালিক ব্যবহার করতে পারে।</string>
     <string name="maintenance_mode_stop_backup_dialog_message">আপনার ডাটা ব্যাকআপ করা বন্ধ করে রক্ষণাবেক্ষণ মোড চালু করবেন?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">রক্ষণাবেক্ষণ মোড চালু করতে, আপনার অসম্পূর্ণ ব্যাকআপ সম্পন্ন করতে বা মুছে ফেলতে হবে।</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">রক্ষণাবেক্ষণ মোড চালু করতে, আপনার চলমান ব্যাকআপ বন্ধ করতে হবে।</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">রক্ষণাবেক্ষণ মোড চালু করতে, আপনার ব্যাকআপ ডাটা পুনর্বহাল করা বন্ধ করতে হবে।</string>
+    <string name="maintenance_mode_toast_text_device_admin">ডিভাইস এডমিন অ্যাপ</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">লগ তৈরি করা হচ্ছে…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">এতে সাধারণত প্রায় 2 মিনিট সময় লাগে৷ লগ তৈরি হওয়ার পরে, আপনার ফোন রক্ষণাবেক্ষণ মোডে পুনরায় চালু হবে এবং আপনি রক্ষণাবেক্ষণের জন্য আপনার ফোন নিরাপদে হস্তান্তর করতে পারেন৷</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">এতে সাধারণত প্রায় 2 মিনিট সময় লাগে৷ লগ তৈরি হওয়ার পরে, আপনার ট্যাবলেট রক্ষণাবেক্ষণ মোডে পুনরায় চালু হবে এবং আপনি রক্ষণাবেক্ষণের জন্য আপনার ট্যাবলেট নিরাপদে হস্তান্তর করতে পারেন৷</string>
@@ -530,13 +525,8 @@
     <string name="mdf_title_enforced">CC মোড সক্রিয় করতে অক্ষম</string>
     <string name="media_checking_usbhost">USB সঞ্চয়স্থান বর্তমানে পরীক্ষা করা হচ্ছে৷</string>
     <string name="mediaplayer_restrict">সুরক্ষা নীতি MTP মিডিয়া প্লেয়ারের ব্যবহার প্রতিহত করে।</string>
+    <string name="message_on_crash">অটো ব্লকার দ্বারা ব্লক করা হয়েছে</string>
     <string name="microphone_restrict">সুরক্ষা নীতিমালা মাইক্রোফোনের ব্যবহার প্রতিরোধ করে।</string>
-    <string name="miniresolver_call">কল</string>
-    <string name="miniresolver_call_in_work">কাজের অ্যাপ থেকে কল করবেন?</string>
-    <string name="miniresolver_call_information">আপনার সংস্থা আপনাকে কাজের অ্যাপ থেকে শুধু কল করার অনুমতি দেয়।</string>
-    <string name="miniresolver_sms_information">আপনার সংস্থা আপনাকে কাজের অ্যাপ থেকে শুধু মেসেজ পাঠানোর অনুমতি দেয়।</string>
-    <string name="miniresolver_switch">সুইচ</string>
-    <string name="miniresolver_switch_to_work">অফিসের অ্যাপে সুইচ করবেন?</string>
     <string name="mmcc_authentication_reject_name_template">%s অনুমোদিত নয়</string>
     <string name="mmcc_illegal_me_name_template">%s অনুমোদিত নয়</string>
     <string name="mmcc_illegal_ms_name_template">%s অনুমোদিত নয়</string>
@@ -548,30 +538,6 @@
     <string name="mock_location_reminder_disable">বন্ধ করুন</string>
     <string name="mock_location_reminder_title">কৃত্রিম অবস্থান চালু আছে</string>
     <string name="more_apps">আরো অ্যাপ</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s পরিষেবা সমর্থিত নয়৷ গ্রাহক পরিষেবায় যোগাযোগ করুন।</string>
-    <string name="mptcp_message_address_type_not_supported">%s-এর সংযোগ দুর্বল৷ সুলভ নেটওয়ার্কের মাধ্যমে পুনরায় সংযুক্ত হচ্ছে…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s-এর সংযোগ দুর্বল৷ সুলভ নেটওয়ার্কের মাধ্যমে পুনরায় সংযুক্ত হচ্ছে…</string>
-    <string name="mptcp_message_cmd_not_supported">%s নেটওয়ার্ক সাময়িকভাবে সুলভ নয়৷ সুলভ নেটওয়ার্কের মাধ্যমে পুনরায় সংযোগ করা হচ্ছে…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s-এর সংযোগ দুর্বল৷ সুলভ নেটওয়ার্কের মাধ্যমে পুনরায় সংযুক্ত হচ্ছে…</string>
-    <string name="mptcp_message_connection_refused">%s-এর সংযোগ দুর্বল৷ সুলভ নেটওয়ার্কের মাধ্যমে পুনরায় সংযুক্ত হচ্ছে…</string>
-    <string name="mptcp_message_data_usage_limit">ডাটা ব্যবহারের নির্ধারিত সীমায় পৌঁছেছে৷ ডাটা ব্যবহারের সীমা পরিবর্তন করতে, সেটিংসে যান৷</string>
-    <string name="mptcp_message_host_unreachable">%s-এর সংযোগ দুর্বল৷ সুলভ নেটওয়ার্কের মাধ্যমে পুনরায় সংযুক্ত হচ্ছে…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">%s সক্ষম করতে অক্ষম৷ ডিভাইসটি LTE নেটওয়ার্কের সাথে সংযুক্ত নয়৷</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">বিদেশে রোমিং করা অবস্থায় %s সক্ষম করতে অক্ষম৷</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">মোবাইল হটস্পট বা USB টেথারিং সক্রিয় থাকাকালীন %s সক্ষম করতে অক্ষম৷</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Wi-Fi Direct সক্রিয় থাকাকালীন %s সক্রিয় করতে অক্ষম।</string>
-    <string name="mptcp_message_mptcp_capability_airplane">‘ফ্লাইট মোড’ সক্ষম থাকাকালীন %s সক্ষম করতে অক্ষম।</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">মোবাইল ডাটা বন্ধ থাকাকালীন %s সক্রিয় করতে অক্ষম।</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">সার্ভিস প্রোভাইডারের কাছ থেকে কোনো সাড়া পাওয়া যায়নি।</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">%1$s সক্রিয় করতে অক্ষম৷ আপনার ইন্টারনেট প্যাকেজের সাথে %2$s নেই অথবা %3$s সার্ভারের কাছ থেকে কোনো সাড়া পাওয়া যায়নি৷</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">%s সক্রিয়করণের অনুরোধ পাঠাতে ব্যর্থ৷ লভ্য নেটওয়ার্কের মাধ্যমে পুনরায় সংযুক্ত হচ্ছে…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">%s সক্ষম করতে অক্ষম। ভুল SIM কার্ড প্রবেশ করানো হয়েছে৷</string>
-    <string name="mptcp_message_network_unreachable">%s-এর সংযোগ দুর্বল৷ সুলভ নেটওয়ার্কের মাধ্যমে পুনরায় সংযুক্ত হচ্ছে…</string>
-    <string name="mptcp_message_non_mptcp_plan">Giga Multi-Path সক্ষম করতে অক্ষম৷ ডাটা প্ল্যান এই কার্যকারিতাটি সমর্থন করে না৷</string>
-    <string name="mptcp_message_operation_disabled_overheating">ডিভাইস অতিরিক্ত গরম হওয়া প্রতিরোধ করতে %s-কে নিষ্ক্রিয় করা হয়েছে। এর পরিবর্তে মোবাইল নেটওয়ার্কের মাধ্যমে ডাউনলোড করা হচ্ছে…</string>
-    <string name="mptcp_message_server_error">%s-এর সংযোগ দুর্বল৷ সুলভ নেটওয়ার্কের মাধ্যমে পুনরায় সংযুক্ত হচ্ছে…</string>
-    <string name="mptcp_message_setting_disabled_overheating">%s সক্ষম করতে অক্ষম৷ ডিভাইসটি বেশি গরম হয়ে যাচ্ছে৷ ডিভাইসটি ঠাণ্ডা হওয়া পর্যন্ত অপেক্ষা করুন এবং আবার চেষ্টা করুন৷</string>
-    <string name="mptcp_message_ttl_expired">%s নেটওয়ার্ক সাময়িকভাবে সুলভ নয়৷ সুলভ নেটওয়ার্কের মাধ্যমে পুনরায় সংযোগ করা হচ্ছে…</string>
     <string name="multi_user_capability_restrict">সুরক্ষা নীতি আপনার ডিভাইসের একাধিক ব্যবহারকারীর যোগ্যতাকে প্রতিহত করে।</string>
     <string name="multi_user_creation_restrict">সুরক্ষা নীতি আপনার ডিভাইসে নতুন ব্যবহারকারীকে অ্যাকাউন্ট তৈরি করা থেকে প্রতিহত করে।</string>
     <string name="multi_user_removal_restrict">সুরক্ষা নীতি আপনার ডিভাইস থেকে ব্যবহারকারীর অ্যাকাউন্টগুলোর অপসারণ প্রতিহত করে।</string>
@@ -590,24 +556,22 @@
     <string name="multisound_sound_via_bluetooth_multiselection">আপনার Bluetooth অডিও ডিভাইসে শব্দ বাজানো হচ্ছে৷ এটি বন্ধ করতে এখানে ট্যাপ করুন</string>
     <string name="multisound_sound_via_headphone">আপনার হেডফোনের মাধ্যমে %s-এর সাউন্ড বাজছে৷ এটি বন্ধ করতে এখানে ট্যাপ করুন৷</string>
     <string name="multisound_sound_via_headphone_multiselection">আপনার হেডফোনের মাধ্যমে শব্দ বাজানো হচ্ছে৷ এটি বন্ধ করতে এখানে ট্যাপ করুন৷</string>
-    <string name="multisound_sound_via_phone_speaker">আপনার ট্যাবলেটের স্পিকারের মাধ্যমে %s-এর সাউন্ড বাজছে৷ এটি বন্ধ করতে এখানে ট্যাপ করুন৷</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">আপনার ট্যাবলেটের স্পিকারের মাধ্যমে শব্দ বাজানো হচ্ছে৷ এটি বন্ধ করতে এখানে ট্যাপ করুন৷</string>
+    <string name="multisound_sound_via_phone_speaker">আপনার ফোনের স্পিকারের মাধ্যমে %s-এর সাউন্ড বাজছে৷ এটি বন্ধ করতে এখানে ট্যাপ করুন৷</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">আপনার ফোনের স্পিকারের মাধ্যমে শব্দ বাজানো হচ্ছে৷ এটি বন্ধ করতে এখানে ট্যাপ করুন৷</string>
     <string name="multisound_sound_via_usb_audio">আপনার USB অডিও ডিভাইসের মাধ্যমে %s-এর সাউন্ড বাজছে৷ এটি বন্ধ করতে এখানে ট্যাপ করুন৷</string>
     <string name="multisound_sound_via_usb_audio_multiselection">আপনার USB অডিও ডিভাইসের মাধ্যমে শব্দ বাজানো হচ্ছে৷ এটি বন্ধ করতে এখানে ট্যাপ করুন৷</string>
     <string name="multisound_title">আলাদা অ্যাপের সাউন্ড</string>
     <string name="multisound_turn_off_multisound">বন্ধ করুন</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s-কে Samsung DeX-এ চালানো যাবে না৷ ট্যাবলেট মোডে চালানোর চেষ্টা করুন৷</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s-কে Samsung DeX-এ চালানো যাবে না৷ ট্যাবলেটের হোম স্ক্রিনের জন্য এর পরিকল্পনা করা হয়েছে৷</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">কিছু গেম শুধু টাচ স্ক্রিনে কাজ করে৷ Samsung DeX-এ মাউস দিয়ে নিয়ন্ত্রণ কাজ না করলে, এর বদলে ট্যাবলেট মোডে খেলার চেষ্টা করুন৷</string>
-    <string name="my_device">এই ট্যাবলেট</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s-কে Samsung DeX-এ চালানো যাবে না৷ ফোন মোডে চালানোর চেষ্টা করুন৷</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s-কে Samsung DeX-এ চালানো যাবে না৷ ফোনের হোম স্ক্রিনের জন্য এর পরিকল্পনা করা হয়েছে৷</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">কিছু গেম শুধু টাচ স্ক্রিনে কাজ করে৷ Samsung DeX-এ মাউস দিয়ে নিয়ন্ত্রণ কাজ না করলে, এর বদলে ফোন মোডে খেলার চেষ্টা করুন৷</string>
+    <string name="my_device">এই ফোন</string>
     <string name="network_locked_sim_dialog_message_ais">আপনার SIM কার্ড এই ফোনের সাথে সম্পূর্ণ কার্যকর নয় কারণ এটি আপনার গ্রাহকত্বের শর্ত ও নিয়মাবলির সাথে সঙ্গতিপূর্ণ নয়৷ যদি আপনার কোনো প্রশ্ন থাকে অথবা এই বিষয়ে আরো তথ্যের প্রয়োজন হয়, তাহলে অনুগ্রহ করে Samsung-এর গ্রাহক সেবা কেন্দ্রে অথবা আপনার কাছে এই পণ্যগুলো বিক্রয়কারী দোকানের সাথে যোগাযোগ করুন৷</string>
     <string name="network_locked_sim_notification_text">নেটওয়ার্ক লক করা SIM কার্ড প্রবেশ করানো হয়েছে।</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">আপনার ডিফল্ট হোম অ্যাপকে One UI হোমে পরিবর্তন করুন।</string>
     <string name="nfc_restrict">সুরক্ষা নীতিমালা NFC-ব্যবহার প্রতিরোধ করে।</string>
     <string name="nosim_limited_service">সীমিত পরিষেবা</string>
-    <string name="not_support_ai_key">AI কী এখনো আপনার ট্যাবলেটের সঙ্গে কাজ করছে না। একটি আপডেট শীঘ্রই লভ্য হবে৷</string>
-    <string name="notification_app_name_settings">সেটিংস</string>
     <string name="notification_channel_dex_policy">Samsung DeX-এর নীতিমালা</string>
     <string name="ntfs_usb_storage_readonly_mount_message">এই স্টোরেজ শুধু পাঠযোগ্য কারণ এটি NTFS ফরম্যাট ব্যবহার করে।</string>
     <string name="ntfs_usb_storage_readonly_mount_title">শুধু পাঠযোগ্য USB স্টোরেজ যুক্ত হয়েছে</string>
@@ -780,7 +744,6 @@
     <string name="permlab_scheduleExactAlarm">অ্যালার্ম ও রিমাইন্ডার সেট করুন</string>
     <string name="permlab_spdControl">নিরাপত্তা নীতিমালার আপডেট পরিচালনা করুন</string>
     <string name="permlab_ucsPlugin">‘ইউনিভার্সাল ক্রেডেনশিয়াল ম্যানেজমেন্ট’ প্লাগইন</string>
-    <string name="personal_apps_suspended_turn_profile_on">চালু করুন</string>
     <string name="phoneTypeConference">সম্মেলন</string>
     <string name="policydesc_allow_bluetoothmode">Bluetooth-এর ব্যবহার প্রতিরোধ করুন৷</string>
     <string name="policydesc_allow_browser">ইন্টারনেটের ব্যবহার প্রতিরোধ করুন৷</string>
@@ -788,7 +751,7 @@
     <string name="policydesc_allow_desktopsync">ডেস্কটপ সমলয়ের ব্যবহার প্রতিরোধ করুন৷</string>
     <string name="policydesc_allow_internetsharing">মোবাইল হটস্পটের ব্যবহার প্রতিরোধ করুন।</string>
     <string name="policydesc_allow_irda">IrDA-এর ব্যবহার প্রতিরোধ করুন৷</string>
-    <string name="policydesc_allow_popimapemail">ট্যাবলেটে POP ও IMAP ইমেইলের ব্যবহার প্রতিরোধ করুন৷</string>
+    <string name="policydesc_allow_popimapemail">ফোনে POP ও IMAP ইমেইলের ব্যবহার প্রতিরোধ করুন৷</string>
     <string name="policydesc_allow_storagecard">SD কার্ডের ব্যবহার প্রতিরোধ করুন৷</string>
     <string name="policydesc_allow_textmessaging">টেক্সট ও মাল্টিমিডিয়া মেসেজিং-এর ব্যবহার প্রতিরোধ করুন৷</string>
     <string name="policydesc_allow_thirdParty">এই অ্যাপ্লিকেশনটি তৃতীয় পক্ষের অ্যাপ্লিকেশনগুলোকে চলা থেকে প্রতিহত করতে পারে।</string>
@@ -833,7 +796,7 @@
     <string name="pwd_change_enforced">সুরক্ষা নীতিমালা অনুযায়ী আপনার পাসওয়ার্ড পরিবর্তন করা আবশ্যক।</string>
     <string name="recording_fail">%2$s দ্বারা ব্যবহৃত হওয়ার সময় %1$s দিয়ে মাইক ব্যবহার করা যাবে না৷</string>
     <string name="recording_popup">%s মাইক্রোফোন ব্যবহার করছে৷</string>
-    <string name="recording_popup_device">ট্যাবলেট</string>
+    <string name="recording_popup_device">ফোন</string>
     <string name="recording_popup_with_bluetooth">%s Bluetooth মাইক্রোফোন ব্যবহার করছে৷</string>
     <string name="recording_popup_with_device">%1$s %2$s-এর মাইক্রোফোন ব্যবহার করছে৷</string>
     <string name="redo">রিডু</string>
@@ -898,12 +861,12 @@
     <string name="screencapture_restrict">সুরক্ষা নীতি স্ক্রিন ক্যাপচারের ব্যবহার প্রতিরোধ করে।</string>
     <string name="sd_card_unavailable_message">আপনি এই SD কার্ড ব্যবহার করতে পারবেন না কারণ এটি প্রবেশ করানোর সময় ভিন্ন একটি ব্যবহারকারীর প্রোফাইল ব্যবহৃত হচ্ছিলো৷</string>
     <string name="sd_card_unavailable_title">SD কার্ড লভ্য নেই</string>
-    <string name="sdcard_bad_removal_message">একটি SD কার্ড অনিরাপদভাবে সরিয়ে ফেলা হয়েছে৷ আপনার ট্যাবলেট অপ্রত্যাশিতভাবে পুনরায় চালু হওয়া এড়াতে, সংরক্ষণ না করা ডাটা সংরক্ষণ করুন এবং এখনই পুনরায় চালু করুন।</string>
+    <string name="sdcard_bad_removal_message">একটি SD কার্ড অনিরাপদভাবে সরিয়ে ফেলা হয়েছে৷ আপনার ফোন অপ্রত্যাশিতভাবে পুনরায় চালু হওয়া এড়াতে, সংরক্ষণ না করা ডাটা সংরক্ষণ করুন এবং এখনই পুনরায় চালু করুন।</string>
     <string name="sdcard_batch_decrypt_noti_content">SD কার্ড ডিক্রিপ্ট করুন</string>
     <string name="sdcard_batch_decrypt_noti_title">SD কার্ড ডিক্রিপশন</string>
     <string name="sdcard_batch_decrypt_popup_content">এনক্রিপ্ট করা SD কার্ডটি ব্যবহার করার আগে ডিক্রিপ্ট করতে হবে। ডিক্রিপশন এক ঘণ্টা বা তার বেশি সময় নিতে পারে। একটি চার্জ করা ব্যাটারি দিয়ে আরম্ভ করুন এবং ডিক্রিপশন সম্পন্ন না হওয়া পর্যন্ত ডিভাইসটিকে প্লাগ ইন করে রাখুন। ডিক্রিপশন প্রক্রিয়া ব্যাহত কিছু বা সব তথ্য হারিয়ে যেতে পারে।</string>
     <string name="sdcard_decrypt_err_notification">SD কার্ড ডিক্রিপশন ত্রুটি ঘটেছে।</string>
-    <string name="sdcard_decrypt_error_otherdevice">আপনার SD কার্ডের কিছু ফাইল আরেকটি ডিভাইসে এনক্রিপ্ট করা হয়েছে এবং এই ট্যাবলেটে ব্যবহার করা যাবে না৷</string>
+    <string name="sdcard_decrypt_error_otherdevice">আপনার SD কার্ডের কিছু ফাইল আরেকটি ডিভাইসে এনক্রিপ্ট করা হয়েছে এবং এই ফোনে ব্যবহার করা যাবে না৷</string>
     <string name="sdcard_decrypt_notification">SD কার্ড ডিক্রিপ্ট করা হয়েছে।</string>
     <string name="sdcard_decrypt_title_notification">SD কার্ড ডিক্রিপশন</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD কার্ড ডিক্রিপ্ট হচ্ছে…</string>
@@ -920,14 +883,6 @@
     <string name="sdcard_unmount_policy_noti_title">তথ্যপ্রযুক্তি নীতিমালা-এর কারণে SD কার্ড আনমাউন্ট হয়েছে।</string>
     <string name="sdhms_nr_control_low_battery">আপনার ফোনের ব্যাটারি 15%-এর কম বাকি থাকলে ব্যাটারি সাশ্রয় করতে 5G বন্ধ করুন৷</string>
     <string name="sec_bluetooth_airplane_mode_toast">ফ্লাইট মোডে Bluetooth চালু থাকবে।</string>
-    <string name="sec_immersive_cling_button_ok">ওকে</string>
-    <string name="sec_immersive_cling_guide_text_gesture">এই অ্যাপ ফুল স্ক্রিন ব্যবহার করছে৷ নেভিগেশনের জন্য সোয়াইপের জেশ্চার স্ট্যাটাস বার দেখাবে৷ নেভিগেট করতে, স্ট্যাটাস বার দেখা যাওয়া অবস্থায় আবার সোয়াইপ করুন৷</string>
-    <string name="sec_immersive_cling_guide_text_phone">"এই অ্যাপ ফুল স্ক্রিন ব্যবহার করছে৷ বিঘ্ন ঘটা কমিয়ে আনতে এবং ভুলক্রমে আপনার অ্যাপটি ছেড়ে যাওয়া প্রতিরোধ করতে হোম, পিছনে, ও সাম্প্রতিক বাটনগুলো লুকিয়ে রাখা হয়েছে৷
-
-এমনকি আপনি ফোনটি ঘোরালেও, বাটনগুলো সবসময় চার্জিং পোর্টের পাশে থাকবে৷ তীরচিহ্ন দ্বারা দেখানোভাবে স্ক্রিনের প্রান্ত থেকে ভিতরের দিকে সোয়াইপ করার মাধ্যমে আপনি বাটনগুলো পুনরায় দেখাতে পারেন৷"</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"এই অ্যাপ ফুল স্ক্রিন ব্যবহার করছে৷ বিঘ্ন ঘটা কমিয়ে আনতে এবং ভুলক্রমে আপনার অ্যাপটি ছেড়ে যাওয়া প্রতিরোধ করতে হোম, পিছনে, ও সাম্প্রতিক বাটনগুলো লুকিয়ে রাখা হয়েছে৷
-
-বাটনগুলো পুনরায় দেখাতে, তীরচিহ্ন দ্বারা দেখানোভাবে স্ক্রিনের নিচ থেকে উপরের দিকে সোয়াইপ করুন।"</string>
     <string name="sec_monotype_default">ডিফল্ট</string>
     <string name="sec_ringtone_category_brand_sound">Samsung-এর ব্র্যান্ড সাউন্ড</string>
     <string name="sec_ringtone_category_calm">শান্ত</string>
@@ -937,6 +892,10 @@
     <string name="sec_ringtone_category_open_theme">বর্তমান থিমের ডিফল্ট</string>
     <string name="sec_ringtone_category_retro">রেট্রো</string>
     <string name="sec_ringtone_silent">নীরব</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">বাতিল</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">একটি স্যাটেলাইটের সাথে সংযোগ করতে, আপনার নেটওয়ার্ক অপারেটর স্বয়ংক্রিয়ভাবে নির্বাচন করার জন্য সেট করতে হবে৷</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">চালু করুন</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">স্বয়ংক্রিয় নেটওয়ার্ক নির্বাচন চালু করবেন?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">কথা বলতে মাইক্রোফোন অ্যাক্সেস চালু করুন৷</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">%s ব্যবহার করতে ক্যামেরা অ্যাক্সেস চালু করুন৷</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">%s ব্যবহার করতে মাইক্রোফোন অ্যাক্সেস চালু করুন৷</string>
@@ -1032,6 +991,8 @@
     <string name="sem_face_error_already_in_use_by_VT">ভিডিও কল চলাকালীন মুখ শনাক্তকরণ ব্যবহার করা যাবে না।</string>
     <string name="sem_face_error_camera_access_off">ক্যামেরা অ্যাক্সেস বন্ধ থাকার কারণে মুখ শনাক্তকরণ ব্যবহার করা যাবে না</string>
     <string name="sem_face_error_camera_fail">ক্যামেরা খোলা যায়নি৷ আবার চেষ্টা করুন৷</string>
+    <string name="sem_face_error_lockout">অনেক বেশি ভুল প্রচেষ্টার কারণে বায়োমেট্রিক যাচাইকরণ লভ্য নেই।</string>
+    <string name="sem_face_error_lockout_permanent">অনেক বেশি ভুল প্রচেষ্টার কারণে বায়োমেট্রিক যাচাইকরণ লভ্য নেই।</string>
     <string name="sem_face_error_ppp_timeout">আপনি আপনার পরিচয় যাচাই করার পরে কিছুদিন পার হয়েছে। আপনার মুখ নিবন্ধন করার জন্য আপনাকে আবার শুরু করতে হবে।</string>
     <string name="sem_face_error_too_dark">মুখ শনাক্তকরণের পক্ষে বেশি অন্ধকার</string>
     <string name="sem_face_error_too_dark_to_enroll">বেশি অন্ধকার৷ একটি লাইট চালু করার অথবা আরো উজ্জ্বল কোনো জায়গায় যাওয়ার চেষ্টা করুন।</string>
@@ -1047,13 +1008,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">আপনার আঙুলের ছাপ স্ক্যান করতে আপনার S Pen-এর অগ্রভাগ স্ক্রিন থেকে অন্য দিকে সরান৷</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">আঙুলের ছাপ ব্যবহারের জন্য, প্রথমে নিরাপদ ধরনের একটি স্ক্রিন লক (প্যাটার্ন, পিন, বা পাসওয়ার্ড) সেট করুন৷</string>
+    <string name="sem_fingerprint_error_lockout">অনেক বেশি ভুল প্রচেষ্টার কারণে বায়োমেট্রিক যাচাইকরণ লভ্য নেই।</string>
+    <string name="sem_fingerprint_error_lockout_permanent">অনেক বেশি ভুল প্রচেষ্টার কারণে বায়োমেট্রিক যাচাইকরণ লভ্য নেই।</string>
     <string name="sem_fingerprint_error_onehand_mode">এক-হাতের মোডে আঙুলের ছাপের স্ক্যানার ব্যবহার করা যাবে না৷</string>
     <string name="sem_fingerprint_error_smart_view">%s ব্যবহারের সময় আঙুলের ছাপ স্ক্যান করা যায় না৷</string>
+    <string name="sem_fingerprint_error_system_failure">আঙুলের ছাপের সেন্সর সাড়া দিচ্ছে না৷ পরে আবার চেষ্টা করুন৷ এটি অব্যাহত থাকলে, আপনার ফোন রিসেট করার চেষ্টা করুন৷</string>
+    <string name="sem_fingerprint_error_template_corrupt">আঙুলের ছাপের ডাটা নষ্ট হয়ে গেছে। আপনার আঙুলের ছাপগুলো আবার যোগ করুন।</string>
     <string name="sem_fingerprint_error_wireless_charger">আপনার আঙুলের ছাপ ব্যবহার করতে ওয়্যারলেস চার্জার থেকে সংযোগ বিচ্ছিন্ন করুন</string>
     <string name="sem_fingerprint_name_template">আঙুলের ছাপ %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">পরে</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">এখন নয়</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">অপসারণ ও নিবন্ধন করুন</string>
+    <string name="sem_fingerprint_register_dialog_message">সর্বসাম্প্রতিক সফটওয়্যার আপডেটে আঙুলের ছাপ শনাক্তকরণ উন্নত করা হয়েছে৷ আপনার আঙুলের ছাপগুলো অপসারণ না করলে এবং সেগুলো আবার নিবন্ধন না করলে আপনি আঙুলের ছাপ শনাক্তকরণ ব্যবহার করতে পারবেন না৷</string>
     <string name="sem_fingerprint_register_dialog_title">আঙুলের ছাপ আবার নিবন্ধন করুন</string>
     <string name="sem_fingerprint_result_failed">কোনোটি মিলছে না৷</string>
     <string name="sem_fingerprint_result_retry">আবার চেষ্টা করুন৷</string>
@@ -1073,7 +1039,7 @@
     <string name="sem_resolver_button_always_accessibility">সবসময় নির্বাচিত অ্যাপ ব্যবহার করুন</string>
     <string name="sem_resolver_button_just_once_accessibility">নির্বাচিত অ্যাপ শুধু একবার ব্যবহার করুন</string>
     <string name="sem_resolver_choose_what_to_do">কী করতে হবে তা বেছে নিন</string>
-    <string name="sem_resolver_go_to_settings_tips_description">ডিফল্ট অ্যাপ সেটিংস পরিবর্তন করতে, ‘সেটিংস > অ্যাপ > ডিফল্ট অ্যাপ বেছে নিন’-এ যান৷</string>
+    <string name="sem_resolver_go_to_settings_tips_description">এই ধরনের ফাইল খোলার জন্য ব্যবহৃত ডিফল্ট অ্যাপ পরিবর্তন করতে, ‘সেটিংস > অ্যাপ’-এ যান, বর্তমান ডিফল্ট অ্যাপ নির্বাচন করুন, তারপর ‘ডিফল্ট হিসেবে সেট করুন > ডিফল্টগুলো মুছুন’-এ ট্যাপ করুন৷</string>
     <string name="sem_resolver_icon_content_description">তথ্য</string>
     <string name="sem_resolver_personal_tab_accessibility">ব্যক্তিগত</string>
     <string name="sem_resolver_share_live_default_text">কাছাকাছি ব্যক্তিদের সাথে তাৎক্ষণিকভাবে শেয়ার করুন৷ যেসব ব্যক্তি তাদের ডিভাইসগুলো দৃশ্যমান করেছে তাদেরকে এখানে দেখানো হবে৷</string>
@@ -1085,9 +1051,6 @@
     <string name="sem_resolver_work_tab_accessibility">অফিস</string>
     <string name="sem_switch_off">বন্ধ আছে</string>
     <string name="sem_switch_on">চালু আছে</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">সব অ্যাপের জন্য ক্যামেরা অ্যাক্সেস বন্ধ করা আছে</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">চালু করুন</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">সব অ্যাপের জন্য মাইক্রোফোন অ্যাক্সেস বন্ধ করা আছে</string>
     <string name="serviceErased">মুছে ফেলা সফল হয়েছে।</string>
     <string name="serviceModeAll">সমস্ত</string>
     <string name="serviceModeAllConditional">শর্তাধীনভাবে।</string>
@@ -1097,6 +1060,7 @@
     <string name="serviceModeUnconditional">শর্তহীনভাবে।</string>
     <string name="serviceisDisabled">পরিষেবা নিষ্ক্রিয়।</string>
     <string name="serviceisEnabled">পরিষেবা সক্রিয়।</string>
+    <string name="settings">সেটিংস</string>
     <string name="sf_quick_switch_not_supported">এই পরিস্থিতিতে দ্রুত সুইচ সমর্থিত নয়।</string>
     <string name="sf_quick_switch_securefolder_view">%s-এ সুইচ করা হয়েছে৷</string>
     <string name="share">শেয়ার করুন</string>
@@ -1105,26 +1069,30 @@
     <string name="sharelist_restrict">সুরক্ষা নীতি তথ্য শেয়ারিং প্রতিহত করে।</string>
     <string name="show_keyboard_button">কীবোর্ডের বাটন দেখান</string>
     <string name="show_keyboard_button_description">নেভিগেশন বারে %s দেখান৷</string>
+    <string name="showing_esc_dialog">আপনি Esc কী-কে ব্যাক বাটন হিসেবে কাজ করার জন্য সেট করতে পারেন।</string>
     <string name="showing_touch_sensitivity_noti_action">চালু করুন</string>
     <string name="showing_touch_sensitivity_noti_text">Privacy Screen বা Notepaper Screen ব্যবহারের সময় আরও নির্ভুল স্পর্শ সংবেদনশীলতার জন্য ‘স্পর্শ সংবেদনশীলতা’ অপশনটি চালু করুন।</string>
     <string name="showing_touch_sensitivity_noti_title">স্পর্শ সংবেদনশীলতা বাড়ান</string>
+    <string name="side_key_double_press_archived_app">অ্যাপ আর্কাইভ করা হয়েছে। অন্য কিছু বেছে নিন৷</string>
     <string name="side_key_double_press_deleted_app">অ্যাপ আনইনস্টল হয়েছে৷ অন্য কিছু বেছে নিন৷</string>
     <string name="side_key_double_press_disabled_app">%s নিষ্ক্রিয় হয়েছে। অন্য কিছু বেছে নিন৷</string>
     <string name="signature_identity_toast">%s স্বাক্ষর করেছে</string>
     <string name="simRefresh">SIM ডাটা রিফ্রেশ করা হচ্ছে</string>
     <string name="simReset">SIM এর ডাটা আপডেট হচ্ছে…</string>
     <string name="sim_check_old_sim_message">পুরোনো বা ক্ষতিগ্রস্ত SIM কার্ডের কারণে নেটওয়ার্ক সংযোগে সমস্যা দেখা দিতে পারে। এটি প্রতিস্থাপন করতে হবে কিনা তা চেক করতে আপনার পরিষেবা প্রদানকারীর সাথে যোগাযোগ করুন অথবা তাদের স্টোরগুলোর মধ্যে একটিতে ভিজিট করুন।</string>
+    <string name="sim_check_old_sim_message_skt">পুরোনো বা ক্ষতিগ্রস্ত SIM কার্ডের কারণে নেটওয়ার্ক সংযোগে সমস্যা দেখা দিতে পারে। এটি প্রতিস্থাপন করতে হবে কিনা তা চেক করতে আপনার পরিষেবা প্রদানকারীর সাথে যোগাযোগ করুন অথবা তাদের স্টোরগুলোর মধ্যে একটিতে ভিজিট করুন।</string>
     <string name="sim_check_old_sim_title">আপনার SIM প্রতিস্থাপন করার প্রয়োজন হতে পারে</string>
+    <string name="sim_check_old_sim_title_skt">আপনার SIM প্রতিস্থাপন করার প্রয়োজন হতে পারে</string>
     <string name="sim_count_mismatched_ds_to_ss">SIM কার্ড মোড ‘ডুয়েল SIM’ থেকে ‘সিঙ্গেল SIM’-এ পরিবর্তিত হয়েছে৷ এই সেটিংস প্রয়োগ করতে, ডিভাইসটি এর ফ্যাক্টরি ডিফল্ট সেটিংসে রিসেট হবে এবং পুনরায় চালু হবে৷</string>
     <string name="sim_count_mismatched_ss_to_ds">SIM কার্ড মোড ‘সিঙ্গেল SIM’ থেকে ‘ডুয়েল SIM’-এ পরিবর্তিত হয়েছে৷ এই সেটিংস প্রয়োগ করতে, ডিভাইসটি এর ফ্যাক্টরি ডিফল্ট সেটিংসে রিসেট হবে এবং পুনরায় চালু হবে৷</string>
     <string name="sim_count_mismatched_title">SIM কার্ড মোড স্যুইচ হয়েছে</string>
-    <string name="sim_imsreg_error_message_lgt">আপনার ফোন ভয়েস কল করতে পারবে না কারণ এটি SIM কার্ড শনাক্ত করতে পারে না। SIM কার্ড বের করে আবার প্রবেশ করানোর চেষ্টা করুন। এই সমস্যা অব্যাহত থাকলে, আপনার SIM কার্ড বদলানোর প্রয়োজন হতে পারে৷ সাহায্যের জন্য, একটি LG U+ স্টোরে যান অথবা 1544-0010 নম্বরে LG U+ গ্রাহক সেবায় যোগাযোগ করুন।</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">আপনার ট্যাবলেট ভয়েস কল করতে পারবে না কারণ এটি SIM কার্ড শনাক্ত করতে পারে না। SIM কার্ড বের করে আবার প্রবেশ করানোর চেষ্টা করুন। এই সমস্যা অব্যাহত থাকলে, আপনার SIM কার্ড বদলানোর প্রয়োজন হতে পারে৷ সাহায্যের জন্য, একটি LG U+ স্টোরে যান অথবা 1544-0010 নম্বরে LG U+ গ্রাহক সেবায় যোগাযোগ করুন।</string>
+    <string name="sim_imsreg_error_message_lgt">আপনার ফোন ভয়েস কল করতে পারবে না কারণ এটি SIM কার্ড শনাক্ত করতে পারে না। SIM কার্ড বের করে আবার প্রবেশ করানোর চেষ্টা করুন। এই সমস্যা অব্যাহত থাকলে, একটি LG U+ স্টোরে আপনার SIM কার্ড বদলানোর প্রয়োজন হতে পারে৷</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">আপনার ট্যাবলেট ভয়েস কল করতে পারবে না কারণ এটি SIM কার্ড শনাক্ত করতে পারে না। SIM কার্ড বের করে আবার প্রবেশ করানোর চেষ্টা করুন। এই সমস্যা অব্যাহত থাকলে, একটি LG U+ স্টোরে আপনার SIM কার্ড বদলানোর প্রয়োজন হতে পারে৷</string>
     <string name="sim_off_noti_message">সব SIM বন্ধ থাকলে আপনি কল করতে, মেসেজ পাঠাতে বা ডাটা ব্যবহার করতে পারবেন না। SIM-গুলো চালু করতে এখানে ট্যাপ করুন।</string>
     <string name="sim_off_noti_title">সব SIM বন্ধ করা হয়েছে</string>
     <string name="sim_off_toast_message">আপনি যে SIM কার্ড প্রবেশ করিয়েছেন সেটি বন্ধ আছে৷ সেটি ব্যবহার করতে, ‘সেটিংস > সংযোগ > SIM ম্যানেজার’ অপশনে যান, তারপর সেটি চালু করুন।</string>
     <string name="sim_recognize_error_message_kt">আপনার SIM কার্ড শনাক্ত হয়নি৷ SIM কার্ড বের করে আবার প্রবেশ করানোর চেষ্টা করুন। এই সমস্যা অব্যাহত থাকলে, আপনার SIM কার্ড বদলানোর প্রয়োজন হতে পারে৷ সাহায্যের জন্য, একটি KT স্টোরে যান অথবা 1588-0010 নম্বরে KT গ্রাহক সেবায় যোগাযোগ করুন।</string>
-    <string name="sim_recognize_error_message_lgt">আপনার SIM কার্ড শনাক্ত হয়নি৷ SIM কার্ড বের করে আবার প্রবেশ করানোর চেষ্টা করুন। এই সমস্যা অব্যাহত থাকলে, আপনার SIM কার্ড বদলানোর প্রয়োজন হতে পারে৷ সাহায্যের জন্য, একটি LG U+ স্টোরে যান অথবা 1544-0010 নম্বরে LG U+ গ্রাহক সেবায় যোগাযোগ করুন।</string>
+    <string name="sim_recognize_error_message_lgt">আপনার SIM কার্ড শনাক্ত হয়নি৷ SIM কার্ড বের করে আবার প্রবেশ করানোর চেষ্টা করুন। এই সমস্যা অব্যাহত থাকলে, একটি LG U+ স্টোরে আপনার SIM কার্ড বদলানোর প্রয়োজন হতে পারে৷</string>
     <string name="sim_recognize_error_message_skt">SIM কার্ড পড়া যাবে না৷ কিছু অ্যাপ ও ফিচার কাজ নাও করতে পারে৷ আপনার SIM কার্ড খুলে আবার প্রবেশ করান, তারপর আপনার ফোন আবার চালু করুন৷ যদি এটি সমস্যার সমাধান না করে, আপনার ফোন ও SIM কার্ড একটি গ্রাহক সেবা কেন্দ্রে নিয়ে যান৷</string>
     <string name="sim_recognize_error_message_skt_tablet">SIM কার্ড পড়া যাবে না৷ কিছু অ্যাপ ও ফিচার কাজ নাও করতে পারে৷ আপনার SIM কার্ড খুলে আবার প্রবেশ করান, তারপর আপনার ট্যাবলেট আবার চালু করুন৷ যদি এটি সমস্যার সমাধান না করে, আপনার ট্যাবলেট ও SIM কার্ড একটি গ্রাহক সেবা কেন্দ্রে নিয়ে যান৷</string>
     <string name="sim_recognize_error_title_lgt">USIM কার্ড শনাক্ত করা যাচ্ছে না</string>
@@ -1134,10 +1102,8 @@
     <string name="sim_removed_message_hotswap_us_tablet">একটি ওয়াই-ফাই নেটওয়ার্কের সাথে সংযোগ করুন অথবা মোবাইল ডাটা ব্যবহারের জন্য একটি SIM কার্ড প্রবেশ করান৷</string>
     <string name="sim_removed_title_hotswap">SIM কার্ড প্রবেশ করানো হয়নি</string>
     <string name="sim_removed_title_hotswap_us_tablet">সিম কার্ড প্রবেশ করান</string>
+    <string name="smart_tip_action_click_hint_text">বন্ধ</string>
     <string name="smartclip_restrict">সুরক্ষা নীতিমালা সহজ ক্লিপের ব্যবহার প্রতিহত করে।</string>
-    <string name="sms_short_code_remember_undo_instruction">আপনি পরে সেটিংস > অ্যাপসে গিয়ে এটি পরিবর্তন করতে পারবেন।</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">আপনি পরে ‘সেটিংস > অ্যাপ > আরো অপশন বাটন > বিশেষ অ্যাক্সেস > প্রিমিয়াম টেক্সট মেসেজ সার্ভিস ব্যবহার করুন’ অপশনে গিয়ে এটি পরিবর্তন করতে পারেন</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">যদি আপনি ‘কখনো অনুমতি দেবেন না’ অপশনে ট্যাপ করেন, তাহলে এই অ্যাপ ব্যাকগ্রাউন্ডে মেসেজ পাঠাতে পারবে না, এমনকি এর জন্য টেক্সট মেসেজ পাঠানোর অনুমতি থাকলেও৷</string>
     <string name="ss_do_not_show_again_us">আর দেখাবেন না</string>
     <string name="sss_translate">অনুবাদ করুন</string>
     <string name="ssu_lock_body_vzw">দুঃখিত, আপনার ডিভাইসটি এই মুহূর্তে আরেকটি ক্যারিয়ারের নেটওয়ার্কে সক্রিয় করা যাবে না৷ সাহায্যের জন্য, %1$s বা %2$s নম্বরে (প্রিপেইড প্ল্যান) Verizon-এর সাথে যোগাযোগ করুন।</string>
@@ -1168,7 +1134,6 @@
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">মোবাইল হটস্পট</string>
     <string name="title_dialog_check_rotate_or_not">‘স্ক্রিন স্বয়ংক্রিয়ভাবে ঘোরা’ বন্ধ করবেন?</string>
-    <string name="title_uds">আল্ট্রা ডাটা সাশ্রয় মোড</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">আপনার ফোন সেটআপ করার সময় Bixby ব্যবহার করা যাবে না৷</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">আপনার ট্যাবলেট সেটআপ করার সময় Bixby ব্যবহার করা যাবে না৷</string>
     <string name="toast_warning_pattern_lock">ইউনিভার্সাল সুইচের সাথে প্যাটার্ন লক ব্যবহার করা যাবে না৷ প্রথমে ভিন্ন একটি লকের ধরনে পরিবর্তন করুন৷</string>
@@ -1208,9 +1173,13 @@
     <string name="unknown_install_blocked_esm_title">অজানা অ্যাপ ব্লক করা হয়েছে</string>
     <string name="unknown_install_dlg_desc">এই অ্যাপ কোনো অনুমোদিত স্টোর থেকে ডাউনলোড করা হয়নি। এই অ্যাপ ইনস্টল করলে আপনার নিরাপত্তা ও গোপনীয়তা ঝুঁকির সম্মুখীন হতে পারে। এই অ্যাপ আপনার ব্যক্তিগত তথ্য সংগ্রহ করতে পারে অথবা আপনার ডাটা হারানোর কারণ ঘটাতে পারে।</string>
     <string name="unknown_install_dlg_desc2">এই অ্যাপ সর্বসাম্প্রতিক নিরাপত্তা ফিচারগুলো সমর্থন করে না। এই অ্যাপ ইনস্টল করার ফলে নিম্নলিখিত নিরাপত্তা ঝুঁকিগুলো দেখা দিতে পারে:</string>
+    <string name="unknown_install_dlg_desc_global_phone">এই অ্যাপের ইনস্টলেশন ফাইল নিরাপদ নাও হতে পারে। এটি যে অ্যাপ হওয়ার দাবি করছে সেটি নাও হতে পারে। আপনার ফোন এবং ব্যক্তিগত ডাটা সুরক্ষিত রাখতে, এর পরিবর্তে আপনার বিশ্বস্ত কোনো অ্যাপ স্টোর থেকে এই অ্যাপ ইনস্টল করুন।</string>
+    <string name="unknown_install_dlg_desc_global_tablet">এই অ্যাপের ইনস্টলেশন ফাইল নিরাপদ নাও হতে পারে। এটি যে অ্যাপ হওয়ার দাবি করছে সেটি নাও হতে পারে। আপনার ট্যাবলেট এবং ব্যক্তিগত ডাটা সুরক্ষিত রাখতে, এর পরিবর্তে আপনার বিশ্বস্ত কোনো অ্যাপ স্টোর থেকে এই অ্যাপ ইনস্টল করুন।</string>
     <string name="unknown_install_dlg_desc_phishing_phone">এই অ্যাপ ক্ষতিকর বলে সন্দেহ করা হচ্ছে এবং আপনার ফোন ও ডাটাকে ঝুঁকিতে ফেলতে পারে। এই অ্যাপ ইনস্টল না করার জন্য সুপারিশ করা হয়৷</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">এই অ্যাপ ক্ষতিকর বলে সন্দেহ করা হচ্ছে এবং আপনার ট্যাবলেট ও ডাটাকে ঝুঁকিতে ফেলতে পারে। এই অ্যাপ ইনস্টল না করার জন্য সুপারিশ করা হয়৷</string>
-    <string name="unknown_install_dlg_general_title">এই অ্যাপ একটি অজানা উৎস থেকে এসেছে</string>
+    <string name="unknown_install_dlg_desc_phone">এই অ্যাপ কোনো অনুমোদিত অ্যাপ স্টোর থেকে আসেনি। আপনার ফোন ও ব্যক্তিগত তথ্য সুরক্ষিত রাখতে, Play Store বা Galaxy Store-এর মতো কোনো অনুমোদিত স্টোর থেকে এই অ্যাপ ইনস্টল করুন।</string>
+    <string name="unknown_install_dlg_desc_tablet">এই অ্যাপ কোনো অনুমোদিত অ্যাপ স্টোর থেকে আসেনি। আপনার ট্যাবলেট ও ব্যক্তিগত তথ্য সুরক্ষিত রাখতে, Play Store বা Galaxy Store-এর মতো কোনো অনুমোদিত স্টোর থেকে এই অ্যাপ ইনস্টল করুন।</string>
+    <string name="unknown_install_dlg_general_title">এই অ্যাপ ইনস্টল না করার জন্য সুপারিশ করা হয়</string>
     <string name="unknown_install_dlg_negative_button">ইনস্টল করবেন না</string>
     <string name="unknown_install_dlg_perm_desc1">এই অ্যাপ আপনার পাওয়া টেক্সট মেসেজগুলো থেকে যাচাইকরণ কোডগুলো সংগ্রহ করতে পারে৷</string>
     <string name="unknown_install_dlg_perm_desc2">আউটগোয়িং কলগুলো আপনার অজান্তে ভিন্ন একটি ফোন নম্বরে পাঠিয়ে দেয়া যেতে পারে৷</string>
@@ -1229,7 +1198,7 @@
     <string name="usb_abnormal_reset_title">USB সংযোগ স্থিতিশীল নয়</string>
     <string name="usb_abnormal_reset_toast">USB সংযোগ স্থিতিশীল নয়৷ কেবলটি খুলুন এবং এটি আবার সংযুক্ত করুন, অথবা ভিন্ন একটি কেবল দিয়ে চেষ্টা করুন৷</string>
     <string name="usb_accessory_notification_title">একটি USB যন্ত্রাংশতে সংযুক্ত হয়েছে</string>
-    <string name="usb_bad_removal_message">একটি USB স্টোরেজ ডিভাইস অনিরাপদভাবে সরিয়ে ফেলা হয়েছে৷ আপনার ট্যাবলেট অপ্রত্যাশিতভাবে পুনরায় চালু হওয়া এড়াতে, সংরক্ষণ না করা ডাটা সংরক্ষণ করুন এবং এখনই পুনরায় চালু করুন।</string>
+    <string name="usb_bad_removal_message">একটি USB স্টোরেজ ডিভাইস অনিরাপদভাবে সরিয়ে ফেলা হয়েছে৷ আপনার ফোন অপ্রত্যাশিতভাবে পুনরায় চালু হওয়া এড়াতে, সংরক্ষণ না করা ডাটা সংরক্ষণ করুন এবং এখনই পুনরায় চালু করুন।</string>
     <string name="usb_blocked_by_emergency_mode">জরুরি মোডে কিছু USB ফাংশন লভ্য থাকে না৷</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">‘সর্বোচ্চ পাওয়ার সাশ্রয় মোড’ সক্রিয় থাকাকালীন সংযুক্ত USB ডিভাইসের সাথে সংশ্লিষ্ট ফাংশনগুলো ব্যবহার করতে অক্ষম৷</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">‘সর্বোচ্চ পাওয়ার সাশ্রয় মোড’ চালু থাকাকালীন USB-এর কিছু ফাংশন সীমিত থাকবে৷</string>
@@ -1238,13 +1207,15 @@
     <string name="usb_camera_connected_notification_title">মিডিয়া ডিভাইস সংযুক্ত হয়েছে</string>
     <string name="usb_camera_disconnected_notification_title">মিডিয়া ডিভাইস বিচ্ছিন্ন হয়েছে</string>
     <string name="usb_cd_installer_notification_title">সফটওয়্যার আপডেট</string>
-    <string name="usb_charing_only_notification_title">সংযুক্ত হয়েছে</string>
+    <string name="usb_charing_only_notification_title">USB দিয়ে চার্জ হচ্ছে</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">সর্বোচ্চ বিধিনিষেধ নিয়ে অটো ব্লকার চালু রয়েছে।</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB সংযোগ ব্লক করা হয়েছে</string>
     <string name="usb_debugging_only_notification_title">শুধু ডিবাগিং</string>
-    <string name="usb_host_resource_exceed_message">এই ডিভাইসটি সংযুক্ত করার জন্য আপনার ট্যাবলেটের USB কন্ট্রোলারের পর্যাপ্ত রিসোর্স নেই। ডিভাইসটির সংযোগ বিচ্ছিন্ন করে এটি আবার সংযুক্ত করার চেষ্টা করুন।</string>
+    <string name="usb_host_resource_exceed_message">এই ডিভাইসটি সংযুক্ত করার জন্য আপনার ফোনের USB কন্ট্রোলারের পর্যাপ্ত রিসোর্স নেই। ডিভাইসটির সংযোগ বিচ্ছিন্ন করে এটি আবার সংযুক্ত করার চেষ্টা করুন।</string>
     <string name="usb_host_resource_exceed_title">USB কন্ট্রোলারের পর্যাপ্ত রিসোর্স নেই</string>
-    <string name="usb_hub_depth_exceed_message">আপনার ট্যাবলেট একই সময়ে শুধু 5টি পর্যন্ত USB হাবের সংযোগ সমর্থন করতে পারে।</string>
+    <string name="usb_hub_depth_exceed_message">আপনার ফোন একই সময়ে শুধু 5টি পর্যন্ত USB হাবের সংযোগ সমর্থন করতে পারে।</string>
     <string name="usb_hub_depth_exceed_title">USB হাবের সর্বোচ্চ সংযোগ</string>
-    <string name="usb_hub_power_exceed_message">আপনার ট্যাবলেট এই USB ডিভাইসের জন্য পর্যাপ্ত শক্তি সরবরাহ করতে পারবে না। আপনার ট্যাবলেটের সাথে সংযোগ করার আগে ডিভাইসটিকে নিজস্ব শক্তিতে পরিচালিত একটি USB হাবের সাথে সংযুক্ত করুন।</string>
+    <string name="usb_hub_power_exceed_message">আপনার ফোন এই USB ডিভাইসের জন্য পর্যাপ্ত শক্তি সরবরাহ করতে পারবে না। আপনার ফোনের সাথে সংযোগ করার আগে ডিভাইসটিকে নিজস্ব শক্তিতে পরিচালিত একটি USB হাবের সাথে সংযুক্ত করুন।</string>
     <string name="usb_increase_battery_usage">USB সংযোগ ব্যাটারির ব্যবহার বাড়াতে পারে।</string>
     <string name="usb_mass_storage_restrict">সুরক্ষা নীতি USB মাস স্টোরেজ ব্যবহার প্রতিহত করে।</string>
     <string name="usb_midi_notification_title">MIDI-এর জন্য USB</string>
@@ -1270,8 +1241,9 @@
     <string name="usb_storage_stop_title">USB সঞ্চয়স্থান ব্যবহারে রয়েছে</string>
     <string name="usb_storage_title">USB সংযুক্ত আছে</string>
     <string name="usb_type_c_supply_power_notification_title">USB দিয়ে সংযুক্ত ডিভাইস চার্জ হচ্ছে</string>
-    <string name="usb_unblock_by_screen_unlock">সংযুক্ত USB ডিভাইসটি ব্যবহার করতে আপনার ট্যাবলেট আনলক করুন৷</string>
-    <string name="usb_unsupport_accessory_message">এই USB ডিভাইসটি আপনার ট্যাবলেটে সমর্থিত নয়৷</string>
+    <string name="usb_unblock_by_screen_unlock">সংযুক্ত USB ডিভাইসটি ব্যবহার করতে আপনার ফোন আনলক করুন৷</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USB ডিভাইস ব্যবহার করতে, আপনার ফোন আনলক করুন এবং USB ডিভাইস পুনরায় সংযুক্ত করুন।</string>
+    <string name="usb_unsupport_accessory_message">এই USB ডিভাইসটি আপনার ফোনে সমর্থিত নয়৷</string>
     <string name="usb_unsupport_accessory_title">USB ডিভাইস সমর্থিত নয়</string>
     <string name="usb_unsupported_device">সংযুক্ত USB ডিভাইসটি সমর্থিত নয়৷</string>
     <string name="usb_unsupported_device_title">ডিভাইসটি সমর্থিত নয়</string>
@@ -1289,19 +1261,19 @@
     <string name="usb_water_dialg_method_2_desc_2">পোর্টের দিকে একটি ফ্যান বা ড্রায়ার (শুধু ঠাণ্ডা বাতাস দিয়ে) তাক করে আপনি শুকানোর গতি বাড়াতে পারেন৷</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"আমরা আপনার চার্জিং/USB পোর্টে আর্দ্রতা বা অন্য কোনো বস্তু শনাক্ত করেছি৷
 
-আপনার চার্জিং/USB পোর্টে ধূলা বা ময়লার মত কোনো বস্তু আছে কিনা চেক করুন৷ আপনার ট্যাবলেটের ক্ষতি হওয়া প্রতিরোধ করতে, চার্জিং পোর্ট পরিষ্কার না করা এবং আর্দ্রতা চলে না যাওয়া পর্যন্ত এই পোর্টে কোনো কিছু প্লাগ-ইন করবেন না৷
+আপনার চার্জিং/USB পোর্টে ধূলা বা ময়লার মত কোনো বস্তু আছে কিনা চেক করুন৷ আপনার ফোনের ক্ষতি হওয়া প্রতিরোধ করতে, চার্জিং পোর্ট পরিষ্কার না করা এবং আর্দ্রতা চলে না যাওয়া পর্যন্ত এই পোর্টে কোনো কিছু প্লাগ-ইন করবেন না৷
 
 এই পোর্ট শুষ্ক করতে, ঝাঁকুনি নিয়ে আর্দ্রতা বের করে দিন, তারপর এটি শুকানোর জন্য অপেক্ষা করুন, এতে কয়েক ঘণ্টা সময় লাগতে পারে। পোর্টের দিকে একটি ফ্যান বা ড্রায়ার (শুধু ঠাণ্ডা বাতাস দিয়ে) তাক করে আপনি শুকানোর গতি বাড়াতে পারেন৷"</string>
     <string name="usb_water_dialg_positive_button">ঠিক আছে</string>
     <string name="usb_water_dialg_support_wireless_charging">"আমরা আপনার চার্জিং/USB পোর্টে আর্দ্রতা বা অন্য কোনো বস্তু শনাক্ত করেছি৷
 
-আপনার চার্জিং/USB পোর্টে ধূলা বা ময়লার মত কোনো বস্তু আছে কিনা চেক করুন৷ আপনার ট্যাবলেটের ক্ষতি হওয়া প্রতিরোধ করতে, চার্জিং পোর্ট পরিষ্কার না করা এবং আর্দ্রতা চলে না যাওয়া পর্যন্ত এই পোর্টে কোনো কিছু প্লাগ-ইন করবেন না৷
+আপনার চার্জিং/USB পোর্টে ধূলা বা ময়লার মত কোনো বস্তু আছে কিনা চেক করুন৷ আপনার ফোনের ক্ষতি হওয়া প্রতিরোধ করতে, চার্জিং পোর্ট পরিষ্কার না করা এবং আর্দ্রতা চলে না যাওয়া পর্যন্ত এই পোর্টে কোনো কিছু প্লাগ-ইন করবেন না৷
 
 এই পোর্ট শুষ্ক করতে, ঝাঁকুনি নিয়ে আর্দ্রতা বের করে দিন, তারপর এটি শুকানোর জন্য অপেক্ষা করুন, এতে কয়েক ঘণ্টা সময় লাগতে পারে। পোর্টের দিকে একটি ফ্যান বা ড্রায়ার (শুধু ঠাণ্ডা বাতাস দিয়ে) তাক করে আপনি শুকানোর গতি বাড়াতে পারেন৷
 
-এই সময়ে, আপনি তারবিহীনভাবে আপনার ট্যাবলেট চার্জ করতে পারেন৷"</string>
+এই সময়ে, আপনি তারবিহীনভাবে আপনার ফোন চার্জ করতে পারেন৷"</string>
     <string name="usb_water_notification_content">আপনার চার্জিং/USB পোর্টে আর্দ্রতা বা বাইরের বস্তু রয়েছে। চার্জ করার আগে চেক করুন।</string>
-    <string name="usb_water_notification_message">আপনার চার্জারে/USB পোর্টে আর্দ্রতা শনাক্ত হয়েছে৷ আপনার ট্যাবলেট চার্জ করার আগে নিশ্চিত করুন যে এটি শুষ্ক আছে৷ সম্পূর্ণভাবে শুষ্ক করতে কিছুটা সময় লাগতে পারে৷</string>
+    <string name="usb_water_notification_message">আপনার চার্জারে/USB পোর্টে আর্দ্রতা শনাক্ত হয়েছে৷ আপনার ফোন চার্জ করার আগে নিশ্চিত করুন যে এটি শুষ্ক আছে৷ সম্পূর্ণভাবে শুষ্ক করতে কিছুটা সময় লাগতে পারে৷</string>
     <string name="usb_water_notification_message_button">বিবরণ</string>
     <string name="usb_water_notification_title">চার্জার/USB পোর্ট পরীক্ষা করুন</string>
     <string name="usbhostStorage_restrict">সুরক্ষা নীতি USB হোস্ট স্টোরেজ ব্যবহার প্রতিহত করে।</string>
@@ -1314,6 +1286,8 @@
     <string name="vpn_allowOnlySecureConnection">VPN প্রোফাইল সুরক্ষিত নয়।</string>
     <string name="vpn_error_text">VPN-এ পুনরায় সংযোগের চেষ্টা করতে ট্যাপ করুন।</string>
     <string name="vpn_error_title">VPN সংযোগ ত্রুটি</string>
+    <string name="vpn_fail_text_long">%s-এর সাথে সংযোগ করা যায়নি৷ এই VPN ব্যবস্থাপনা করতে ট্যাপ করুন৷</string>
+    <string name="vpn_fail_title">VPN সংযুক্ত নয়</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">ট্যাবলেট ঠাণ্ডা করতে অ্যাপগুলো বন্ধ করা হচ্ছে</string>
     <string name="vzw_cooldown_mode_ok">ঠিক আছে</string>
@@ -1376,6 +1350,7 @@
     <string name="wifi_network_available_detailed">একটি উন্মুক্ত ওয়াই-ফাই নেটওয়ার্ক লভ্য আছে৷</string>
     <string name="wifi_networks_available">ওয়াই-ফাই নেটওয়ার্ক লভ্য আছে</string>
     <string name="wifi_networks_available_detailed">উন্মুক্ত ওয়াই-ফাই নেটওয়ার্ক লভ্য আছে</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s মোবাইল ডাটা ব্যবহার করছে কারণ আপনার WLAN সংযোগ ধীর অথবা অস্থিতিশীল হয়ে গেছে।</string>
     <string name="wifi_notification_switch_wifi_detail">ওয়াই-ফাই নেটওয়ার্ক অস্থিতিশীল থাকার কারণে আপনার ফোন মোবাইল ডাটায় সুইচ করেছে৷</string>
     <string name="wifi_notification_switch_wifi_title">মোবাইল ডাটায় সুইচ করা হয়েছে</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">জরুরি বিজ্ঞপ্তি</string>
@@ -1407,9 +1382,5 @@
     <string name="work_profile_on_message">এটি আপনাকে অফিসের অ্যাপ, বিজ্ঞপ্তি, ডাটা, এবং অফিসের প্রোফাইলের অন্যান্য ফিচারগুলো অ্যাক্সেস করতে দিবে।</string>
     <string name="work_profile_on_title">অফিসের প্রোফাইল চালু করবেন?</string>
     <string name="work_profile_restricted">সর্বোচ্চ বিধিনিষেধ নিয়ে অটো ব্লকার চালু রয়েছে। আপনার নিরাপত্তা সুরক্ষিত রাখতে অফিসের প্রোফাইল তৈরি করা যাবে না।</string>
-    <string name="work_profile_telephony_paused_text">আপনি আপনার কাজের অ্যাপগুলো পজ করেছেন। আপনি সেগুলো থেকে ফোন কল বা টেক্সট মেসেজ পাবেন না৷</string>
-    <string name="work_profile_telephony_paused_title">কল ও মেসেজ বন্ধ আছে</string>
-    <string name="work_profile_telephony_paused_turn_on_button">অফিসের প্রোফাইল চালু করবেন?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">আমি এটি বন্ধ না করা পর্যন্ত</string>
 </resources>

@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Bixbyga rääkimine</string>
     <string name="accessibility_corner_action_type_zoom_in">Lähemale suumimine</string>
     <string name="accessibility_corner_action_type_zoom_out">Kaugemale suuminime</string>
+    <string name="accessibility_dialog_button_allow_samsung">Luba</string>
+    <string name="accessibility_dialog_button_deny_samsung">Keela</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Desinstal.</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Toitenupu ja helitugevuse suurendamise nupu kiire vajutamine lülitab järgmised funktsioonid sisse või välja:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Küljenupu ja helitugevuse suurendamise nupu kiire vajutamine lülitab järgmised funktsioonid sisse või välja:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Toitenupu ja helitugevuse suurendamise nupu kiire vajutamine, lülitab funktsiooni %s sisse või välja.</string>
@@ -117,6 +120,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">Turvalisuse poliis takistab selle konto lisamist.</string>
     <string name="account_removal_restrict">Turvalisuse poliis takistab selle konto eemaldamist.</string>
+    <string name="action_bar_up_description">Sirvimisklahv üles</string>
     <string name="action_menu_overflow_description">Veel valikuid</string>
     <string name="adb_active_notification_message">Valige, et keelata USB-silumine.</string>
     <string name="adb_active_notification_title">USB-silumine on ühendatud.</string>
@@ -125,6 +129,9 @@
     <string name="advance_wifi_sharing_msg">Tuvastati saadaolev Wi-Fi-võrk. Looge ühendus, et kasutada oma mobiilse kuumkoha jaoks mobiilse andmeside asemel Wi-Fi jagamist.</string>
     <string name="airplanemode_restrict">Turvalisuse poliis takistab lennurežiimi aktiveerimist.</string>
     <string name="allow_settings_changes">Turvalisuse poliis takistab seadete muutmist.</string>
+    <string name="always_allow">Luba alati</string>
+    <string name="app_block_button_open">Ava</string>
+    <string name="app_block_content">%1$s soovib avada rakenduse %2$s.</string>
     <string name="app_clone_storage">Sisemäluruum (Dual Messenger)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Vali rakendused</string>
     <string name="app_continuity_guide_cling_button_not_now">Hiljem</string>
@@ -139,32 +146,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">Olete tänaseks rakenduse %s aja ära kasutanud. Saate seda muuta menüüs Seaded.</string>
     <string name="app_restricted_message_concentration_mode">%s on keskendumisrežiimis blokeeritud. Võtke ühendust oma IT-administraatoriga, et saada lisateavet.</string>
     <string name="app_updating_message">Rakendust %s värskendatakse. Proovige hiljem uuesti.</string>
-    <string name="appblock_block_subtitle1_phone">Telefoni ja isiklike andmete kaitsmiseks ei saa seda rakendust installida, kuna kahtlustatakse, et see on petturliku sisuga.</string>
-    <string name="appblock_block_subtitle1_tablet">Tahvelseadme ja isiklike andmete kaitsmiseks ei saa seda rakendust installida, kuna kahtlustatakse, et see on petturliku sisuga.</string>
-    <string name="appblock_block_subtitle2">Seda rakendust ei saa installida, kuna sellest on teatatud kui ründevara sisaldavast rakendusest.</string>
-    <string name="appblock_block_text1">See rakendus ei ole pärit kinnitatud allikast ja nõuab delikaatseid lube, mida võidakse kasutada teie isikuandmete varastamiseks või välja lekitamiseks.</string>
-    <string name="appblock_block_text2">"Petturliku sisuga rakendused võivad kasutada delikaatseid lube, et varastada teie isikuandmeid, matkida teie identiteeti või pääseda juurde teie finantskontodele.
-
-Seaduslikud finantsasutused ei nõua ZIP-failide, APK-failide ega failihaldurirakenduste installimist.
-
-Veenduge alati, et installitud rakendused pärinevad usaldusväärsest allikast."</string>
-    <string name="appblock_warn_subtitle">See rakendus võib teie isikuandmeid varastada või välja lekitada.</string>
+    <string name="appblock_block_text_phone">Seda rakendust ei saa installida, kuna sellest on teatatud kui petturlikku sisu sisaldavast rakendusest või siis sarnaneb see sellist tüüpi rakendusega. Seda rakendust kasutatakse tõenäoliselt sellisteks kuritegudeks nagu andmepüük. Telefoni ja andmete turvalisuse tagamiseks ei saa sellest piirangust mööda minna.</string>
+    <string name="appblock_block_text_tablet">Seda rakendust ei saa installida, kuna sellest on teatatud kui petturlikku sisu sisaldavast rakendusest või siis sarnaneb see sellist tüüpi rakendusega. Seda rakendust kasutatakse tõenäoliselt sellisteks kuritegudeks nagu andmepüük. Tahvelseadme ja andmete turvalisuse tagamiseks ei saa sellest piirangust mööda minna.</string>
+    <string name="appblock_link_text">Lisateave</string>
     <string name="appblock_warn_text1">"Rakenduste installimine kinnitamata allikatest võib lubada rakendustel koguda teie isikuandmeid või jälgida teie tegevust.
 
 Selle rakenduse installimine pole soovitatav.
 
 Kui otsustate selle siiski installida, vaadake hoolikalt läbi rakenduse privaatsusteatis ja veenduge, et annate ainult vajalikud load."</string>
-    <string name="appblock_warn_text2">"Petturliku sisuga rakendused püüavad sageli hankida teie isikuandmeid kontaktide, SMS-i ja fotode lubade abil.
-
-Selle rakenduse installimine pole soovitatav.
-
-Kui otsustate selle rakenduse siiskiinstallida, veenduge, et see pärineb usaldusväärsest allikast, ja olge oma andmetele lubade või muu juurdepääsu andmisel ettevaatlik."</string>
     <string name="application_default_restrict">Seadme administraator on määranud teise rakenduse vaikerakenduseks.</string>
     <string name="auto_click_paused">Automaatne klõpsamine pausil.</string>
     <string name="auto_click_resumed">Automaatne klõpsamine jätkub.</string>
     <string name="autofill_never_use_for_this_app">Ära kunagi kasuta selle rakenduse jaoks %s</string>
     <string name="autofill_save_cancel">Tühista</string>
     <string name="autofill_save_never_OK">OK</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">Turvalisuse poliis takistab varundamise kasutamist.</string>
     <string name="badPin2">Vale PIN2-kood. Proovige uuesti.</string>
     <string name="badPuk2">Sisestasite vale PUK2-koodi</string>
@@ -175,8 +171,6 @@ Kui otsustate selle rakenduse siiskiinstallida, veenduge, et see pärineb usaldu
     <string name="bluetooth_a2dp_restrict">Turvalisuse poliis takistab Bluetooth-meediumi heli kasutamist.</string>
     <string name="bluetooth_avrcp_restrict">Turvalisuse poliis takistab Bluetoothi heli/video juhtimist.</string>
     <string name="bluetooth_bpp_restrict">Turvalisuse poliis takistab Bluetooth-ühenduse kaudu printimist.</string>
-    <string name="bluetooth_china_popup_message">%1$s taotleb luba seadmelt %2$s. Kas lubate?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Turvalisuse poliis takistab Bluetooth-ühenduse kaudu andmete edastamist.</string>
     <string name="bluetooth_desktop_restrict">Turvalisuse poliis takistab Bluetooth-ühenduse kaudu töölauaga ühenduse loomist.</string>
     <string name="bluetooth_device_restrict">Turvalisuse poliis takistab sidumist selle Bluetooth-seadmega.</string>
@@ -187,7 +181,6 @@ Kui otsustate selle rakenduse siiskiinstallida, veenduge, et see pärineb usaldu
     <string name="bluetooth_outgoing_call_restrict">Turvalisuse poliis takistab Bluetooth-ühenduse kaudu väljuvate kõnede tegemist.</string>
     <string name="bluetooth_pairing_restrict">Turvalisuse poliis takistab Bluetooth-sidumist.</string>
     <string name="bluetooth_pbap_restrict">Turvalisuse poliis takistab Bluetoothi aadressiraamatu kasutamist.</string>
-    <string name="bluetooth_permission_request">Bluetooth-ühenduse loa taotlus</string>
     <string name="bluetooth_restrict">Turvalisuse poliis takistab Bluetooth-ühenduse kasutamist.</string>
     <string name="bluetooth_sap_restrict">Turvalisuse poliis takistab Bluetooth-ühenduse kaudu juurdepääsu teie SIM-kaardile.</string>
     <string name="bluetooth_security_mode_disable">Turvalisuse poliis takistab Bluetooth-ühenduse kasutamist.</string>
@@ -250,11 +243,8 @@ Kui otsustate selle rakenduse siiskiinstallida, veenduge, et see pärineb usaldu
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">Lubatud seadmed</string>
     <string name="data_call_restriction">Turvalisuse poliis piirab mobiilse andmeside kasutamist.</string>
-    <string name="data_usage_disable_mobile">Kas desaktiveerida mobiilne andmesideühendus?</string>
-    <string name="data_usage_enable_mobile_warning">Pakettandmesideühenduse loomisel võivad rakenduda lisatasud. Kas jätkata?</string>
     <string name="data_usage_limit_body">Mobiilne andmeside on peatatud kuni teie arveldustsükli lõpuni.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Ületatud mobiilandmeside piir</string>
-    <string name="data_usage_mobile_limit_title">Mobiilse andmeside piirang täis</string>
     <string name="data_usage_rapid_app_body">%s on kasutanud tavalisest rohkem andmeid.</string>
     <string name="data_usage_rapid_body">Teie rakendused on kasutanud tavapärasest rohkem andmesidet.</string>
     <string name="data_usage_rapid_title">Kõrge mobiilne andmekasutus</string>
@@ -265,6 +255,7 @@ Kui otsustate selle rakenduse siiskiinstallida, veenduge, et see pärineb usaldu
     <string name="data_usage_warning_title_offpeak_chn">Väl. tippaega kasut. %s andm.</string>
     <string name="data_usage_warning_title_unlimited_chn">Mob. andmeside kiiruspiir täis</string>
     <string name="device_disabled">Seade on desaktiveeritud. Võtke ühendust IT-administraatoriga.</string>
+    <string name="device_info_not_available">Pole saadaval.</string>
     <string name="dex_cant_change_user_profile">Kasutajaprofiili ei saa Samsung DeX-i režiimis.</string>
     <string name="dex_dialog_launch_toast">Avatud rakendused võivad sulguda. Salvestage oma andmed enne Samsung DeX-i käivitamist või sellest väljumist.</string>
     <string name="dex_disconnected_from_device">DeX-i ühendus teleriga %s on katkestatud. Kontrollige võrguühendust oma teleriga.</string>
@@ -273,9 +264,6 @@ Kui otsustate selle rakenduse siiskiinstallida, veenduge, et see pärineb usaldu
     <string name="dex_launcher_mode_change">%s suleti, et lülituda Samsung DeX-i peale.</string>
     <string name="dex_mirroring_jit_msg">Kui kasutate Samsung DeX-i oma tahvelarvutis, saate suurema vaate saamiseks peegeldada ekraani mis tahes HDMI-ühendusega ekraanile.</string>
     <string name="dex_mirroring_jit_title">DeX- peegeld. suuremal ekraanil</string>
-    <string name="dex_restart_app_dialog_button_positive">Taaskäiv.</string>
-    <string name="dex_restart_app_dialog_message">See rakendus töötab juba mõnel muul ekraanil. Selle siin avamiseks tuleb rakendus taaskäivitada. Salvestage enne taaskäivitamist kõik oluline.</string>
-    <string name="dex_restart_app_dialog_title">Kas taaskäivitada %s?</string>
     <string name="dex_restriction_blockerMessage">Turvalisuse poliis takistab Samsung DeX-i kasutamist.</string>
     <string name="dex_restriction_ethernetOnly">Turvalisuse poliis ei luba DeX-is kasutada Wi-Fi andmesidet, mobiilset andmesidet ja modemit. Võrgufunktsioonide jaoks läheb vaja juhtmeühendust.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Turvalisuse poliisi tõttu katkestage ühendus välise ekraaniga, et väljuda Samsung DeX-ist.</string>
@@ -300,7 +288,6 @@ Kui otsustate selle rakenduse siiskiinstallida, veenduge, et see pärineb usaldu
     <string name="digital_signature_failure_user_notification">Kasutaja %d digiallkiri on kehtetu</string>
     <string name="disableupdate_application_restrict">Turvalisuse poliis takistab selle rakenduse värskendamist.</string>
     <string name="display_chooser_button_positive">Taaskäiv.</string>
-    <string name="display_chooser_dont_show_again">Ära näita enam</string>
     <string name="dlg_confirm_kill_storage_users_text">USB-mälu ühendamine peatab mõned kasutusel olevad rakendused. Need võivad mitte saadaval olla, kuni USB-mälu eemaldate.</string>
     <string name="dlg_confirm_kill_storage_users_title">Ühendage mälu arvutiga</string>
     <string name="dlg_error_title">USB toiming ebaõnnestus</string>
@@ -315,7 +302,7 @@ Kui otsustate selle rakenduse siiskiinstallida, veenduge, et see pärineb usaldu
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Seda rakendust ei saa kasutada mitmikakna vaates.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Seda funktsiooni ei saa kasutada mitmikakna vaates.</string>
     <string name="edit_contact_at_sim_restriction">Turvalisuse poliis takistab SIM-kaardi kontaktide redigeerimist.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Lubatud seadmed</string>
+    <string name="edm_policy_not_allow_open_wifiap">Turvalisuse poliis piirab mitteturvalise modemi kasutamist kuumkoha jaoks.</string>
     <string name="emergency_calls_only">Ainult hädaabikõned</string>
     <string name="ethernet_cable_connected_notification_message">Toksake seadistamiseks.</string>
     <string name="ethernet_cable_connected_notification_title">Etherneti kaabel on ühendatud</string>
@@ -335,7 +322,7 @@ Kui otsustate selle rakenduse siiskiinstallida, veenduge, et see pärineb usaldu
     <string name="ext_media_unsupported_notification_message">See %s ei ole selle seadme poolt toetatud. Toksake, et seadistada toetatud vormingus.</string>
     <string name="ext_media_unsupported_notification_title">Mittetoetatud %s</string>
     <string name="ext_storage_bad_removal_button">Taaskäivita</string>
-    <string name="ext_storage_bad_removal_title">Taaskäivitage oma tahvelseade</string>
+    <string name="ext_storage_bad_removal_title">Taaskäivitage oma telefon</string>
     <string name="extmedia_format_button_format">Vorming</string>
     <string name="extmedia_format_message_usbhost">Kõik USB-mäluseadmele salvestatud failid kustutatakse. Seda toimingut ei saa tagasi võtta.</string>
     <string name="extmedia_format_title_usbhost">Vormind. USB-seade?</string>
@@ -406,6 +393,7 @@ Kui otsustate selle rakenduse siiskiinstallida, veenduge, et see pärineb usaldu
     <string name="globalactions_unable_restart_msg_fmm">Ei saa taaskäivitada, kuna telefon on eemalt lukustatud teenusega Leia minu telefon.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Ei saa taaskäivitada, kuna tahvelseade on eemalt lukustatud teenusega Leia minu telefon.</string>
     <string name="globalactions_unable_restart_msg_securelock">Lukustatud telefoni ei saa taaskäivitada. Avage kaas ja avage lukk, et telefon taaskäivitada.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Telefoni ei saa taaskäivitada, kui SIM-kaart on lukustatud.</string>
     <string name="hardware_key_restrict">Turvalisuse poliis takistab selle riistvara võtme kasutamist.</string>
     <string name="hardware_sec">Ekraanil kuvatav klaviatuur</string>
     <string name="hbd_translate">Tõlgi sisestatud tekst</string>
@@ -475,16 +463,16 @@ Kui otsustate selle rakenduse siiskiinstallida, veenduge, et see pärineb usaldu
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Hooldusrežiimi väljalülitamiseks peate tahvelseadme avama.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Ei salvestata mitte midagi sellist, mis juhtub, kui hooldusrežiim on sisse lülitatud (nt allalaaditud andmed, rakenduste installimised või seadete muudatused).</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Määra ekraanilukk</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Taaskäivitage logi loomata</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Looge logi ja taaskäivitage</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Telefon peab taaskäivituma, et hooldusrežiim sisse lülitada.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Määrake kõigepealt ekraanilukk.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Tahvelseade peab taaskäivituma, et hooldusrežiim sisse lülitada.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Et aidata meie tugipersonalil teie telefoniga seotud probleeme analüüsida, soovitame enne hooldusrežiimi käivitamist luua süsteemilogi.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Et aidata meie tugipersonalil teie telefoniga seotud võimalikke probleeme diagnoosida ja analüüsida, soovitame enne hooldusrežiimi käivitamist luua süsteemilogi.
 
-Logi näitab, milliseid rakendusi kasutati ja hiljuti ilmnenud vigu, kuid see ei sisalda muid isiklikke andmeid. Logi kasutatakse ainult probleemide analüüsimiseks ja mitte mingil muul eesmärgil. Tavaliselt kulub logi loomiseks umbes 2 minutit."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Et aidata meie tugipersonalil teie tahvelarvutiga seotud probleeme analüüsida, soovitame enne hooldusrežiimi käivitamist luua süsteemilogi.
+Logi sisaldab ainult teie telefoni parandamiseks vajalikku teavet, näiteks kasutatud rakendusi, hiljuti ilmnenud tõrkeid, blokeeritud telefoninumbreid ja failimäluruumimahtu. Logi kasutatakse ainult probleemide diagnoosimiseks ja analüüsimiseks ning mitte mingil muul eesmärgil. Tavaliselt kulub logi loomiseks umbes 2 minutit."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Et aidata meie tugipersonalil teie tahvelarvutiga seotud võimalikke probleeme diagnoosida ja analüüsida, soovitame enne hooldusrežiimi käivitamist luua süsteemilogi.
 
-Logi näitab, milliseid rakendusi kasutati ja hiljuti ilmnenud vigu, kuid see ei sisalda muid isiklikke andmeid. Logi kasutatakse ainult probleemide analüüsimiseks ja mitte mingil muul eesmärgil. Tavaliselt kulub logi loomiseks umbes 2 minutit."</string>
+Logi sisaldab ainult teie tahvelarvuti parandamiseks vajalikku teavet, näiteks kasutatud rakendusi, hiljuti ilmnenud tõrkeid, blokeeritud telefoninumbreid ja failimäluruumimahtu. Logi kasutatakse ainult probleemide diagnoosimiseks ja analüüsimiseks ning mitte mingil muul eesmärgil. Tavaliselt kulub logi loomiseks umbes 2 minutit."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Analüüsi mäluruumi</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Teie telefoni sisemine mäluruum on peaaegu täis. Kui mäluruum täis saab, ei pruugi mõned rakendused ja funktsioonid enam õigesti töötada. Kustutage mõned failid või rakendused, mida te enam ei vaja. Pärast kustutamist tühjendage kindlasti ka prügikast.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Teie tahvelseadme sisemine mäluruum on peaaegu täis. Kui mäluruum täis saab, ei pruugi mõned rakendused ja funktsioonid enam õigesti töötada. Kustutage mõned failid või rakendused, mida te enam ei vaja. Pärast kustutamist tühjendage kindlasti ka prügikast.</string>
@@ -506,10 +494,17 @@ Logi näitab, milliseid rakendusi kasutati ja hiljuti ilmnenud vigu, kuid see ei
     <string name="maintenance_mode_outro_label">Hooldusrežiimist väljumine</string>
     <string name="maintenance_mode_outro_textview_message_phone">Hooldusrežiimi väljalülitamiseks peate telefoni avama. Seda tehes taastub kõik selliseks, nagu oli hooldusrežiimi esmakordsel sisselülitamisel. Hooldusrežiimi ajal tehtud muudatusi (nt allalaaditud andmed, installitud rakendused või seadete muudatused) ei salvestata.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Hooldusrežiimi väljalülitamiseks peate tahvelseadme avama. Seda tehes taastub kõik selliseks, nagu oli hooldusrežiimi esmakordsel sisselülitamisel. Hooldusrežiimi ajal tehtud muudatusi (nt allalaaditud andmed, installitud rakendused või seadete muudatused) ei salvestata.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Hooldusrežiimi saa kasutada, kui %s on aktiivne.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Ei saa kasutada hooldusrežiimi, kui energia säästmine on sisse lülitatud piiratud rakenduste ja avaekraaniga.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">See telefon ei toeta hooldusrežiimi.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">See tahvelarvuti ei toeta hooldusrežiimi.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">Uksust %s saab kasutada ainult seadme omanik.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Kas soovite andmete varundamise peatada ja lülitada sisse hooldusrežiimi?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Hooldusrežiimi sisselülitamiseks peate lõpetama või kustutama mittetäieliku varundamise.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Hooldusrežiimi sisselülitamiseks peate poolelioleva varundamise peatama.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Hooldusrežiimi sisselülitamiseks peate lõpetama varuandmete taastamise.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Seadme administraatori rakendus</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Logi loomine…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Tavaliselt kulub selleks umbes 2 minutit. Pärast logi loomist taaskäivitub teie telefon hooldusrežiimis ja saate telefoni turvaliselt hooldusesse anda.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Tavaliselt kulub selleks umbes 2 minutit. Pärast logi loomist taaskäivitub teie tahvelarvuti hooldusrežiimis ja saate oma tahvelarvuti ohutult hooldusesse anda.</string>
@@ -532,13 +527,8 @@ Teie tahvelarvuti taaskäivitub peagi."</string>
     <string name="media_checking_usbhost">USB-mäluseadet kontrollitakse praegu.</string>
     <string name="media_unknown_state">Välismeediumi olek on tundmatu.</string>
     <string name="mediaplayer_restrict">Turvalisuse poliis takistab MTP-meediumipleieri kasutamist.</string>
+    <string name="message_on_crash">Blokeeritud Auto Blockeriga</string>
     <string name="microphone_restrict">Turvalisuse poliis takistab mikrofoni kasutamist.</string>
-    <string name="miniresolver_call">Helista</string>
-    <string name="miniresolver_call_in_work">Kas helistada töörakendusest?</string>
-    <string name="miniresolver_call_information">Teie organisatsioon lubab teil helistada ainult töörakendustest.</string>
-    <string name="miniresolver_sms_information">Teie organisatsioon lubab teil sõnumeid saata ainult töörakendustest.</string>
-    <string name="miniresolver_switch">Vaheta</string>
-    <string name="miniresolver_switch_to_work">Kas vahetada töörakendusele?</string>
     <string name="mmcc_authentication_reject_name_template">%s Pole lubatud</string>
     <string name="mmcc_illegal_me_name_template">%s Pole lubatud</string>
     <string name="mmcc_illegal_ms_name_template">%s Pole lubatud</string>
@@ -550,30 +540,6 @@ Teie tahvelarvuti taaskäivitub peagi."</string>
     <string name="mock_location_reminder_disable">Lülita välja</string>
     <string name="mock_location_reminder_title">Imit. asukoht sisse lülitatud</string>
     <string name="more_apps">Veel rakend.</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">Mobiilsidestandardi %s teenust ei toetata. Võtke ühendust klienditeenindusega.</string>
-    <string name="mptcp_message_address_type_not_supported">Mobiilsidestandardi %s ühendus kehv. Ühenduse uuesti loomine saadaoleva võrgu kaudu…</string>
-    <string name="mptcp_message_busy_ntime_wait">Mobiilsidestandardi %s ühendus kehv. Ühenduse uuesti loomine saadaoleva võrgu kaudu…</string>
-    <string name="mptcp_message_cmd_not_supported">Mobiilsidestandardi %s võrk pole ajutiselt saadaval. Ühenduse uuesti loomine saadaoleva võrgu kaudu…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">Mobiilsidestandardi %s ühendus kehv. Ühenduse uuesti loomine saadaoleva võrgu kaudu…</string>
-    <string name="mptcp_message_connection_refused">Mobiilsidestandardi %s ühendus kehv. Ühenduse uuesti loomine saadaoleva võrgu kaudu…</string>
-    <string name="mptcp_message_data_usage_limit">Andmekasutuse piirang on saavutatud. Avage andmekasutuse piirangu muutmiseks menüü Seaded.</string>
-    <string name="mptcp_message_host_unreachable">Mobiilsidestandardi %s ühendus kehv. Ühenduse uuesti loomine saadaoleva võrgu kaudu…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Mobiilsidestandardit %s ei saa aktiveerida. Seade pole LTE-võrku ühendatud.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Mobiilsidestandardit %s ei saa rahvusvahelise rändluse ajal aktiveerida.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Mobiilsidestandardit %s ei saa aktiveerida, kui mobiilne kuumkoht või USB-modem on aktiveeritud.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Ei saa aktiveerida funktsiooni %s, kui Wi-Fi Direct on aktiveeritud.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Mobiilsidestandardit %s ei saa aktiveerida, kui lennurežiim on aktiveeritud.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Mobiilsidestandardit %s ei saa aktiveerida, kui mobiilne andmeside on välja lülitatud.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Teenusepakkuja ei vasta.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Funktsiooni %1$s ei saa aktiveerida. %2$s ei ole saadaval teie internetipaketiga või ei saadud vastust teenuse %3$s serverist.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">%s aktiveerimise taotluse saatmine nurjus. Ühenduse taasloomine saadaolevate võrkude kaudu…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Mobiilsidestandardit %s ei saa aktiveerida. Sisestati vale SIM-kaart.</string>
-    <string name="mptcp_message_network_unreachable">Mobiilsidestandardi %s ühendus kehv. Ühenduse uuesti loomine saadaoleva võrgu kaudu…</string>
-    <string name="mptcp_message_non_mptcp_plan">Giga Multi-Pathi ei saa aktiveerida. Andmesidepakett ei toeta funktsiooni.</string>
-    <string name="mptcp_message_operation_disabled_overheating">Mobiilsidestandard %s inaktiveeriti, et seadme ülekuumenemist ära hoida. Laaditakse alla hoopis mobiilsidevõrgu kaudu…</string>
-    <string name="mptcp_message_server_error">Mobiilsidestandardi %s ühendus kehv. Ühenduse uuesti loomine saadaoleva võrgu kaudu…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Mobiilsidestandardit %s ei saa aktiveerida. Seade on üle kuumenemas. Oodake, kuni seade jahtub, seejärel proovige uuesti.</string>
-    <string name="mptcp_message_ttl_expired">Mobiilsidestandardi %s võrk pole ajutiselt saadaval. Ühenduse uuesti loomine saadaoleva võrgu kaudu…</string>
     <string name="multi_user_capability_restrict">Turvalisuse poliis takistab mitme kasutaja suutlikkuse teie seadmes.</string>
     <string name="multi_user_creation_restrict">Turvalisuse poliis takistab uute kasutajakontode loomist teie seadmes.</string>
     <string name="multi_user_removal_restrict">Turvalisuse poliis takistab kasutajakontode eemaldamist teie seadmest.</string>
@@ -592,27 +558,25 @@ Teie tahvelarvuti taaskäivitub peagi."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Heli esitatakse teie Bluetooth-heliseadme kaudu. Toksake siia, et see välja lülitada</string>
     <string name="multisound_sound_via_headphone">Rakenduse %s heli esitatakse läbi teie kõrvaklappide. Toksake siia, et see välja lülitada.</string>
     <string name="multisound_sound_via_headphone_multiselection">Heli esitatakse teie kõrvaklappide kaudu. Toksake siia, et see välja lülitada.</string>
-    <string name="multisound_sound_via_phone_speaker">Rakenduse %s heli esitatakse teie tahvelseadme kõlari kaudu. Toksake siia, et see välja lülitada.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Heli esitatakse teie tahvelseadme kõlari kaudu. Toksake siia, et see välja lülitada.</string>
+    <string name="multisound_sound_via_phone_speaker">Rakenduse %s heli esitatakse teie telefoni kõlari kaudu. Toksake siia, et see välja lülitada.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Heli esitatakse teie telefoni kõlari kaudu. Toksake siia, et see välja lülitada.</string>
     <string name="multisound_sound_via_usb_audio">Rakenduse %s heli esitatakse läbi teie USB-heliseadme. Toksake siia, et see välja lülitada.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Heli esitatakse teie USB-heliseadme kaudu. Toksake siia, et see välja lülitada.</string>
     <string name="multisound_title">Rakenduse heli eraldamine</string>
     <string name="multisound_turn_off_multisound">Lülita välja</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s ei tööta Samsung DeX-is. Proovige käivitada tahvelseadme režiimis.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s ei tööta Samsung DeX-is. See on loodud tahvelseadmete avaekraanide jaoks.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Mõned mängud töötavad ainult puuteekraaniga. Kui hiirega juhtimine ei tööta Samsung DeX-is, proovige selle asemel mängida tahvelseadme režiimis.</string>
-    <string name="my_device">See tahvelseade</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s ei tööta Samsung DeX-is. Proovige käivitada telefonirežiimis.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s ei saa töötada Samsung DeX-is. See on loodud telefoni avaekraanide jaoks.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Mõned mängud töötavad ainult puuteekraaniga. Kui hiirega juhtimine ei tööta Samsung DeX-is, proovige selle asemel mängida telefonirežiimis.</string>
+    <string name="my_device">See telefon</string>
     <string name="network_locked_sim_dialog_message_ais">Teie SIM-kaart ei toimi selle telefoniga korralikult, sest see ei vasta teie tellimuse tingimustele. Kui teil on küsimusi või kui vajate selle teema kohta rohkem teavet, võtke ühendust Samsungi klienditoe esindusega või poega, mis teile need tooted müüs.</string>
     <string name="network_locked_sim_notification_text">Võrk lukustas sisestatud SIM-kaardi.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Määrake oma vaikimisi avaekraani rakenduseks One UI avaekraan.</string>
     <string name="nfc_restrict">Turvalisuse poliis takistab NFC kasutamist.</string>
     <string name="nosim_limited_service">Piiratud teenus</string>
-    <string name="not_support_ai_key">AI võti ei tööta veel teie tahvelseadmega. Värskendus on peagi saadaval.</string>
-    <string name="notification_app_name_settings">Seaded</string>
     <string name="notification_channel_dex_policy">Samsung DeX-i poliitika</string>
-    <string name="ntfs_usb_storage_readonly_mount_message">See mälu on kirjutuskaitsega, kuna kasutab NTFS-vormingut.</string>
-    <string name="ntfs_usb_storage_readonly_mount_title">Lisati kirjutuskaits. USB-mälu</string>
+    <string name="ntfs_usb_storage_readonly_mount_message">See mäluruum on kirjutuskaitsega, kuna kasutab NTFS-vormingut.</string>
+    <string name="ntfs_usb_storage_readonly_mount_title">Lisati kir.-kaits. USB-mäluruum</string>
     <string name="overheat_limit_ok">OK</string>
     <string name="overheat_warning_title_v2_phone">Telefon kuumeneb üle</string>
     <string name="overheat_warning_title_v2_tablet">Tahvelseade kuumeneb üle</string>
@@ -784,7 +748,6 @@ TAGASTADA"</string>
     <string name="permlab_scheduleExactAlarm">Alarmide ja meeldetuletuste määramine</string>
     <string name="permlab_spdControl">Turvalisuse poliisi värskenduste haldamine</string>
     <string name="permlab_ucsPlugin">Universaalse volituste halduse lisandmoodul</string>
-    <string name="personal_apps_suspended_turn_profile_on">Lülita sisse</string>
     <string name="phoneTypeConference">Konverents</string>
     <string name="policydesc_allow_bluetoothmode">Bluetoothi kasutamise takistamine.</string>
     <string name="policydesc_allow_browser">Interneti kasutamise takistamine.</string>
@@ -792,7 +755,7 @@ TAGASTADA"</string>
     <string name="policydesc_allow_desktopsync">Töölaua sünkroonimise kasutamise takistamine.</string>
     <string name="policydesc_allow_internetsharing">Mobiilse kuumkoha kasutamise takistamine.</string>
     <string name="policydesc_allow_irda">IrDA kasutamise takistamine.</string>
-    <string name="policydesc_allow_popimapemail">POP ja IMAP e-posti kasutamise takistamine tahvelarvutis.</string>
+    <string name="policydesc_allow_popimapemail">POP ja IMAP e-posti kasutamise takistamine telefonis.</string>
     <string name="policydesc_allow_storagecard">SD-kaartide kasutamise takistamine.</string>
     <string name="policydesc_allow_textmessaging">Tekst- ja multimeediumsõnumite kasutamise takistamine.</string>
     <string name="policydesc_allow_thirdParty">See rakendus saab takistada kolmandate osapoolte rakenduste käivitumist.</string>
@@ -838,7 +801,7 @@ TAGASTADA"</string>
     <string name="pwd_change_enforced">Turvalisuse poliis nouab, et muudaksite oma parooli.</string>
     <string name="recording_fail">Ei saa kasutada mikrofoni rakenduses %1$s, kui seda kasutatakse rakenduses %2$s.</string>
     <string name="recording_popup">%s kasutab mikrofoni.</string>
-    <string name="recording_popup_device">Tahvelseade</string>
+    <string name="recording_popup_device">Telefon</string>
     <string name="recording_popup_with_bluetooth">Rakendus %s kasutab Bluetooth-mikrofoni.</string>
     <string name="recording_popup_with_device">Rakendus %1$s kasutab seadme %2$s mikrofoni.</string>
     <string name="redo">Uuesti</string>
@@ -903,12 +866,12 @@ TAGASTADA"</string>
     <string name="screencapture_restrict">Turvalisuse poliis takistab ekraani jäädvustamise kasutamist.</string>
     <string name="sd_card_unavailable_message">Te ei saa seda SD-kaarti kasutada, kuna see sisestati ajal, kui kasutati mõnda muud kasutajaprofiili.</string>
     <string name="sd_card_unavailable_title">SD-kaart pole saadaval</string>
-    <string name="sdcard_bad_removal_message">SD-kaart eemaldati ebaturvaliselt. Selleks, et tahvelseade ei taaskäivituks ootamatult, salvestage salvestamata andmed ja taaskäivitage nüüd.</string>
+    <string name="sdcard_bad_removal_message">SD-kaart eemaldati ebaturvaliselt. Selleks, et telefon ei taaskäivituks ootamatult, salvestage salvestamata andmed ja taaskäivitage nüüd.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD-kaardi dekrüptimine</string>
     <string name="sdcard_batch_decrypt_noti_title">SD-kaardi dekrüptimine</string>
     <string name="sdcard_batch_decrypt_popup_content">Krüptitud SD-kaart tuleb enne kasutamist dekrüptida. Dekrüptimine kestab tunni või kauem. Alustage täislaetud akuga ja hoidke seade ühendatuna seni, kuni dekrüptimine on lõpule viidud. Dekrüptimistoimingu katkestamisel võivad mõned või kõik andmed kaotsi minna.</string>
     <string name="sdcard_decrypt_err_notification">SD-kaardi dekruptimisel ilmnes torge.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Mõned failid teie SD-kaardil krüptiti mõnes teises seadmes ja neid ei saa selles tahvelseadmes kasutada.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Mõned failid teie SD-kaardil krüptiti mõnes teises seadmes ja neid ei saa selles telefonis kasutada.</string>
     <string name="sdcard_decrypt_notification">SD-kaart on dekrüptitud.</string>
     <string name="sdcard_decrypt_title_notification">SD-kaardi dekrüptimine</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD-kaardi dekrüptimine…</string>
@@ -925,14 +888,6 @@ TAGASTADA"</string>
     <string name="sdcard_unmount_policy_noti_title">SD-kaardi ühendus on katkestatud IT-poliitika tõttu.</string>
     <string name="sdhms_nr_control_low_battery">Saate aku säästmiseks 5G välja lülitada, kui telefoni akut on jäänud alla 15%.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth jääb lennukirežiimis sisselülitatuks.</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">See rakendus kasutab täisekraani. Navigatsiooni libistamise liigutused võimaldavad kuvada olekuriba. Navigeerimiseks libistage uuesti, kui olekuriba on nähtav.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"See rakendus kasutab täisekraani. Avaekraani, tagasiliikumise ja hiljutise nupud on peidetud, et viia segajad miinimumini ja et te ei saaks rakendusest kogemata lahkuda.
-
-Isegi kui te telefoni pöörate, asuvad nupud alati laadimispesa kõrval. Nuppude taas kuvamiseks libistage ekraani servast sissepoole, nagu on noolega näidatud."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"See rakendus kasutab täisekraani. Avaekraani, tagasiliikumise ja hiljutise nupud on peidetud, et viia segajad miinimumini ja et te ei saaks rakendusest kogemata lahkuda.
-
-Selleks et nupud uuesti kuvataks, libistage ekraani alaosast üles, nagu on näidatud noolega."</string>
     <string name="sec_monotype_default">Vaikimisi</string>
     <string name="sec_ringtone_category_brand_sound">Samsung kaubamärgi heli</string>
     <string name="sec_ringtone_category_calm">Rahulik</string>
@@ -942,6 +897,10 @@ Selleks et nupud uuesti kuvataks, libistage ekraani alaosast üles, nagu on näi
     <string name="sec_ringtone_category_open_theme">Praeguse teema vaikeseade</string>
     <string name="sec_ringtone_category_retro">Retro</string>
     <string name="sec_ringtone_silent">Vaikne</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Tühista</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Satelliidiga ühenduse loomiseks peab teie võrguoperaatori säte olema seadistatud valikule Automaatselt valimine.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Lülita sisse</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Kas lülitada automaatne võrgu valimine sisse?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Rääkimiseks lülitage mikrofoni juurdepääs sisse.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Rakenduse %s kasutamiseks lülitage kaamera juurdepääs sisse.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Rakenduse %s kasutamiseks lülitage mikrofoni juurdepääs sisse.</string>
@@ -1037,6 +996,8 @@ Selleks et nupud uuesti kuvataks, libistage ekraani alaosast üles, nagu on näi
     <string name="sem_face_error_already_in_use_by_VT">Videokõnede ajal ei saa kasutada näotuvastust.</string>
     <string name="sem_face_error_camera_access_off">Ei saa kasutada näotuvastust, kuna kaamera juurdepääs on välja lülitatud</string>
     <string name="sem_face_error_camera_fail">Kaamerat ei saanud avada. Proovige uuesti.</string>
+    <string name="sem_face_error_lockout">Biomeetriline kinnitamine pole saadaval liiga paljude valede katsete tõttu.</string>
+    <string name="sem_face_error_lockout_permanent">Biomeetriline kinnitamine pole saadaval liiga paljude valede katsete tõttu.</string>
     <string name="sem_face_error_ppp_timeout">Te pole ammu oma identiteeti kinnitanud. Peate uuesti alustama, et oma nägu registreerida.</string>
     <string name="sem_face_error_too_dark">Liiga hämar, et nägu tuvastada</string>
     <string name="sem_face_error_too_dark_to_enroll">Liiga hämar. Proovige mõni valgusti sisse lülitada või minge kusagile, kus on valgem.</string>
@@ -1052,13 +1013,18 @@ Selleks et nupud uuesti kuvataks, libistage ekraani alaosast üles, nagu on näi
     <string name="sem_fingerprint_acquired_tsp_block">Eemaldage oma S Peni ots ekraanilt, et skannida oma sõrmejälge.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Sõrmejälgede kasutamiseks määrake esmalt turvaline ekraaniluku tüüp (muster, PIN-kood, parool).</string>
+    <string name="sem_fingerprint_error_lockout">Biomeetriline kinnitamine pole saadaval liiga paljude valede katsete tõttu.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Biomeetriline kinnitamine pole saadaval liiga paljude valede katsete tõttu.</string>
     <string name="sem_fingerprint_error_onehand_mode">Sõrmejäljeskannerit ei saa kasutada ühe käega kasutamise režiimis.</string>
     <string name="sem_fingerprint_error_smart_view">Kui %s on kasutuses, ei saa sõrmejälge skannida.</string>
+    <string name="sem_fingerprint_error_system_failure">Sõrmejäljeandur ei reageeri. Proovige hiljem uuesti. Kui probleem püsib, proovige telefoni taaskäivitada.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Sõrmejälje andmed on rikutud. Lisage oma sõrmejäljed uuesti.</string>
     <string name="sem_fingerprint_error_wireless_charger">Katkestage ühendus juhtmevaba laadijaga, et kasutada oma sõrmejälge</string>
     <string name="sem_fingerprint_name_template">Sõrmejälg %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Hiljem</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Hiljem</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Eemalda ja registreeri</string>
+    <string name="sem_fingerprint_register_dialog_message">Viimane tarkvaravärskendus tõhustas sõrmejäljetuvastust. Te ei saa kasutada sõrmejäljetuvastust enne, kui eemaldate oma sõrmejäljed ja registreerite need uuesti.</string>
     <string name="sem_fingerprint_register_dialog_title">Registr. sõrmejäljed uuesti</string>
     <string name="sem_fingerprint_result_failed">Vasteid pole.</string>
     <string name="sem_fingerprint_result_retry">Proovige uuesti.</string>
@@ -1078,7 +1044,7 @@ Selleks et nupud uuesti kuvataks, libistage ekraani alaosast üles, nagu on näi
     <string name="sem_resolver_button_always_accessibility">Kasuta alati valitud rakendust</string>
     <string name="sem_resolver_button_just_once_accessibility">Kasuta valitud rakendust vaid üks kord</string>
     <string name="sem_resolver_choose_what_to_do">Valige, mida teha</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Vaikerakenduse seadete muutmiseks avage Seaded > Rakendused > Vaikerakenduste valimine.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Seda tüüpi faili avamiseks kasutatava vaikerakenduse muutmiseks avage Seaded > Rakendused, valige praegune vaikerakendus, seejärel toksake valikuid Määra vaikerakenduseks > Kustuta vaikeseaded.</string>
     <string name="sem_resolver_icon_content_description">Teave</string>
     <string name="sem_resolver_personal_tab_accessibility">Isiklik</string>
     <string name="sem_resolver_share_live_default_text">Saate kohe jagada läheduses olevate inimestega. Inimesed, kes on oma seadmed nähtavaks muutnud, kuvatakse siin.</string>
@@ -1090,9 +1056,6 @@ Selleks et nupud uuesti kuvataks, libistage ekraani alaosast üles, nagu on näi
     <string name="sem_resolver_work_tab_accessibility">Töö</string>
     <string name="sem_switch_off">Väljas</string>
     <string name="sem_switch_on">Sees</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Rakendustel puudub juurdepääs kaamerale</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Lülita sisse</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Rakendustel puudub juurdepääs mikrofonile</string>
     <string name="serviceErased">Kustutamine onnestus.</string>
     <string name="serviceModeAll">Kõik</string>
     <string name="serviceModeAllConditional">tingimuslikult.</string>
@@ -1102,6 +1065,7 @@ Selleks et nupud uuesti kuvataks, libistage ekraani alaosast üles, nagu on näi
     <string name="serviceModeUnconditional">tingimusteta.</string>
     <string name="serviceisDisabled">Teenus on deaktiveeritud.</string>
     <string name="serviceisEnabled">Teenus on aktiveeritud.</string>
+    <string name="settings">Seaded</string>
     <string name="sf_quick_switch_not_supported">Kiirvahetust ei toetata antud olukorras.</string>
     <string name="sf_quick_switch_securefolder_view">Lülituti valikule %s.</string>
     <string name="share">Jaga</string>
@@ -1110,26 +1074,30 @@ Selleks et nupud uuesti kuvataks, libistage ekraani alaosast üles, nagu on näi
     <string name="sharelist_restrict">Turvalisuse poliis takistab andmete jagamist.</string>
     <string name="show_keyboard_button">Kuva klaviatuurinupp</string>
     <string name="show_keyboard_button_description">Saate kuvada navigatsiooniribal ikooni %s.</string>
+    <string name="showing_esc_dialog">Saate määrata klahvi Esc töötama tagasiminekunupuna.</string>
     <string name="showing_touch_sensitivity_noti_action">Lülita sisse</string>
     <string name="showing_touch_sensitivity_noti_text">Täpsema puutetundlikkuse saavutamiseks lülitage funktsiooni Privacy Screen või Notepaper Screen kasutamise ajal sisse puutetundlikkus.</string>
     <string name="showing_touch_sensitivity_noti_title">Suurenda puutetundlikkust</string>
+    <string name="side_key_double_press_archived_app">Rakendus on arhiivitud. Valige midagi muud.</string>
     <string name="side_key_double_press_deleted_app">Rakendus on desinstallitud. Valige midagi muud.</string>
     <string name="side_key_double_press_disabled_app">%s on inaktiveeritud. Valige midagi muud.</string>
     <string name="signature_identity_toast">%s, allkirjastanud</string>
     <string name="simRefresh">SIM-kaardi andmete värskendamine</string>
     <string name="simReset">SIM-kaardi andmete värskendamine…</string>
     <string name="sim_check_old_sim_message">Vanad või kahjustatud SIM-kaardid võivad põhjustada võrguühenduse probleeme. Võtke ühendust teenusepakkujaga või külastage mõnda tema kauplust, et kontrollida, kas see kaart vajab väljavahetamist.</string>
+    <string name="sim_check_old_sim_message_skt">Vanad või kahjustatud SIM-kaardid võivad põhjustada võrguühenduse probleeme. Võtke ühendust teenusepakkujaga või külastage mõnda tema kauplust, et kontrollida, kas kaart vajab väljavahetamist.</string>
     <string name="sim_check_old_sim_title">Teie SIM-kaart võib vajada väljavahetamist</string>
+    <string name="sim_check_old_sim_title_skt">Teie SIM-kaart võib vajada väljavahetamist</string>
     <string name="sim_count_mismatched_ds_to_ss">SIM-kaardi režiimiks on muudetud kaksik-SIM-i režiimi asemel üksiku SIM-i režiimi. Selle seade rakendamiseks lähtestatakse seade tehase vaikeseadetele ja taaskäivitatakse.</string>
     <string name="sim_count_mismatched_ss_to_ds">SIM-kaardi režiimiks on muudetud üksiku SIM-i režiimi asemel kaksik-SIM-i režiim. Selle seade rakendamiseks lähtestatakse seade tehase vaikeseadetele ja taaskäivitatakse.</string>
     <string name="sim_count_mismatched_title">SIM-kaardi režiimi vahetamine</string>
-    <string name="sim_imsreg_error_message_lgt">Teie telefon ei saa häälkõnesid teha, kuna see ei tunne ära SIM-kaarti. Proovige SIM-kaart eemaldada ja uuesti sisestada. Kui probleem püsib, võib olla vajalik SIM-kaardi välja vahetamine. Abi saamiseks külastage LG U+ kauplust või võtke ühendust klienditeenindusega numbril 1544-0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Teie tahvelseade ei saa häälkõnesid teha, kuna see ei tunne SIM-kaarti ära. Proovige SIM-kaart eemaldada ja uuesti sisestada. Kui probleem püsib, võib olla vajalik SIM-kaardi välja vahetamine. Abi saamiseks külastage LG U+ kauplust või võtke ühendust LG U+ klienditeenindusega numbril 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">Teie telefon ei saa häälkõnesid teha, kuna see ei tunne SIM-kaarti ära. Proovige SIM-kaart eemaldada ja uuesti sisestada. Kui probleem püsib, võib olla vajalik SIM-kaardi väljavahetamine LG U+ poes.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Teie tahvelseade ei saa häälkõnesid teha, kuna see ei tunne SIM-kaarti ära. Proovige SIM-kaart eemaldada ja uuesti sisestada. Kui probleem püsib, võib olla vajalik SIM-kaardi väljavahetamine LG U+ poes.</string>
     <string name="sim_off_noti_message">Kui kõik SIM-kaardid on välja lülitatud, ei saa te helistada, sõnumeid saata ega andmeid kasutada. Toksake siia, et SIM-kaardid sisse lülitada.</string>
     <string name="sim_off_noti_title">Kõik SIM-kaardid on välja lülitatud</string>
     <string name="sim_off_toast_message">Sisestatud SIM-kaart on välja lülitatud. Selle kasutamiseks avage Seaded > Ühendused > SIM-kaardi haldur ja lülitage see sisse.</string>
     <string name="sim_recognize_error_message_kt">Teie SIM-kaarti ei tuntud ära. Proovige SIM-kaart eemaldada ja uuesti sisestada. Kui probleem püsib, võib olla vajalik SIM-kaardi välja vahetamine. Abi saamiseks külastage KT kauplust või võtke ühendust KT klienditeenindusega numbril 1588-0010.</string>
-    <string name="sim_recognize_error_message_lgt">Teie SIM-kaarti ei tuntud ära. Proovige SIM-kaart eemaldada ja uuesti sisestada. Kui probleem püsib, võib olla vajalik SIM-kaardi välja vahetamine. Abi saamiseks külastage LG U+ kauplust või võtke ühendust klienditeenindusega numbril 1544-0010.</string>
+    <string name="sim_recognize_error_message_lgt">Teie SIM-kaarti ei tuntud ära. Proovige SIM-kaart eemaldada ja uuesti sisestada. Kui probleem püsib, võib olla vajalik SIM-kaardi väljavahetamine LG U+ poes.</string>
     <string name="sim_recognize_error_message_skt">SIM-kaardi lugemine nurjus. Mõned rakendused ja funktsioonid ei pruugi töötada. Eemaldage ja sisestage uuesti SIM-kaart, seejärel taaskäivitage telefon. Kui see probleemi ei lahenda, viige telefon ja SIM-kaart klienditeenindusse.</string>
     <string name="sim_recognize_error_message_skt_tablet">SIM-kaardi lugemine nurjus. Mõned rakendused ja funktsioonid ei pruugi töötada. Eemaldage ja sisestage uuesti SIM-kaart, seejärel taaskäivitage tahvelseade. Kui see probleemi ei lahenda, viige tahvelseade ja SIM-kaart klienditeenindusse.</string>
     <string name="sim_recognize_error_title_lgt">USIM-kaarti ei saa tuvastada</string>
@@ -1139,10 +1107,8 @@ Selleks et nupud uuesti kuvataks, libistage ekraani alaosast üles, nagu on näi
     <string name="sim_removed_message_hotswap_us_tablet">Looge ühendus Wi-Fi-võrguga või paigaldage mobiilse andmeside kasutamiseks SIM-kaart.</string>
     <string name="sim_removed_title_hotswap">SIM-kaart pole sisestatud</string>
     <string name="sim_removed_title_hotswap_us_tablet">Paigaldage SIM-kaart</string>
+    <string name="smart_tip_action_click_hint_text">Sulge</string>
     <string name="smartclip_restrict">Turvalisuse poliis takistab funktsiooni Lihtne lõige kasutamist.</string>
-    <string name="sms_short_code_remember_undo_instruction">Hiljem saate seda muuta menüüs Seaded > Rakendused</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Seda saate hiljem muuta, kui avate menüü Seaded > Rakendused > Nupp Veel valikuid > Spetsiaalne juurdepääs > Kasuta premium-tekstsõnumiteenuseid.</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Kui toksate valikut ÄRA LUBA KUNAGI, ei saa see rakendus saata taustal sõnumeid isegi siis, kui tekstsõnumite saatmise load on selle jaoks kinnitatud.</string>
     <string name="ss_do_not_show_again_us">Ära näita enam</string>
     <string name="sss_translate">Tõlgi</string>
     <string name="ssu_lock_body_vzw">Kahjuks ei saa teie seadet praegu teise operaatori võrgus aktiveerida. Abi saamiseks võtke ühendust Verizoniga numbril %1$s või %2$s (ettemaksuga paketid)</string>
@@ -1173,7 +1139,6 @@ Selleks et nupud uuesti kuvataks, libistage ekraani alaosast üles, nagu on näi
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">Mobiilne kuumkoht</string>
     <string name="title_dialog_check_rotate_or_not">Kas lülitada ekraani aut. pööramine välja?</string>
-    <string name="title_uds">Ülim andmesäästurežiim</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Bixbyt ei saa kasutada teie telefoni seadistamise ajal.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Bixbyt ei saa kasutada teie tahvelseadme seadistamise ajal.</string>
     <string name="toast_warning_pattern_lock">Mustrilukku ei saa kasutada universaallülitiga. Valige esmalt mõni muu lukutüüp.</string>
@@ -1213,9 +1178,13 @@ Selle kaitse eemaldamiseks avage jaotis Seaded > Turvalisus ja privaatsus > Auto
     <string name="unknown_install_blocked_esm_title">Tundmatu rakendus on blokeeritud</string>
     <string name="unknown_install_dlg_desc">Seda rakendust ei laaditud alla heakskiidetud poest. Selle rakenduse installimine võib ohustada teie turvalisust ja privaatsust. Rakendus võib koguda teie isiklikke andmeid või põhjustada andmekadu.</string>
     <string name="unknown_install_dlg_desc2">See rakendus ei toeta uusimaid turvafunktsioone. Rakenduse installimisega võivad kaasneda järgmised turvariskid:</string>
+    <string name="unknown_install_dlg_desc_global_phone">See rakenduse installifail ei pruugi olla turvaline. See ei pruugi olla rakendus, mida see väidab end olevat. Telefoni ja isikuandmete kaitsmiseks installige rakendus selle asemel usaldusväärsest rakenduste poest.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">See rakenduse installifail ei pruugi olla turvaline. See ei pruugi olla rakendus, mida see väidab end olevat. Tahvelseadme ja isikuandmete kaitsmiseks installige rakendus selle asemel usaldusväärsest rakenduste poest.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Selle rakenduse puhul kahtlustatakse ründevara olemasolu ja see võib seada ohtu teie telefoni ning andmed. Selle rakenduse installimine pole soovitatav.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Selle rakenduse puhul kahtlustatakse ründevara olemasolu ja see võib seada ohtu teie tahvelseadme ning andmed. Selle rakenduse installimine pole soovitatav.</string>
-    <string name="unknown_install_dlg_general_title">See rakendus pärineb tundmatust allikast</string>
+    <string name="unknown_install_dlg_desc_phone">"See rakendus ei pärine volitatud rakenduste poest. Telefoni ja isikuandmete kaitsmiseks installige rakendus volitatud poest, nagu Play poest või Galaxy Store'ist."</string>
+    <string name="unknown_install_dlg_desc_tablet">"See rakendus ei pärine volitatud rakenduste poest. Tahvelseadme ja isikuandmete kaitsmiseks installige rakendus volitatud poest, nagu Play poest või Galaxy Store'ist."</string>
+    <string name="unknown_install_dlg_general_title">Selle rakenduse installimine pole soovitatav</string>
     <string name="unknown_install_dlg_negative_button">Ära installi</string>
     <string name="unknown_install_dlg_perm_desc1">Rakendus võib teile sõnumitega saadetud kinnituskoodid kinni püüda.</string>
     <string name="unknown_install_dlg_perm_desc2">Väljuvad kõned võidakse suunata mõnele teisele telefoninumbrile teie teadmata.</string>
@@ -1234,7 +1203,7 @@ Selle kaitse eemaldamiseks avage jaotis Seaded > Turvalisus ja privaatsus > Auto
     <string name="usb_abnormal_reset_title">USB-ühendus ei ole stabiilne</string>
     <string name="usb_abnormal_reset_toast">USB-ühendus ei ole stabiilne. Võtke kaabel lahti ja ühendage uuesti, või proovige mõnda teist kaablit.</string>
     <string name="usb_accessory_notification_title">Ühendatud USB-tarvikuga</string>
-    <string name="usb_bad_removal_message">USB-mäluseade eemaldati ebaturvaliselt. Selleks, et tahvelseade ei taaskäivituks ootamatult, salvestage salvestamata andmed ja taaskäivitage nüüd.</string>
+    <string name="usb_bad_removal_message">USB-mäluruumiseade eemaldati ebaturvaliselt. Selleks, et telefon ei taaskäivituks ootamatult, salvestage salvestamata andmed ja taaskäivitage nüüd.</string>
     <string name="usb_blocked_by_emergency_mode">Mõned USB-funktsioonid pole hädaabirežiimis saadaval.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Ühendatud USB-seadmega seotud funktsioone ei saa kasutada, kui maksimaalne energiasäästurežiim on aktiveeritud.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Mõned USB-funktsioon on piiratud, kui maksimaalne energiasäästurežiim on sisse lülitatud.</string>
@@ -1243,13 +1212,15 @@ Selle kaitse eemaldamiseks avage jaotis Seaded > Turvalisus ja privaatsus > Auto
     <string name="usb_camera_connected_notification_title">Meediumiseade ühendatud</string>
     <string name="usb_camera_disconnected_notification_title">Meediumiseade on lahutatud</string>
     <string name="usb_cd_installer_notification_title">Tarkvaravärskendus</string>
-    <string name="usb_charing_only_notification_title">Ühendatud</string>
+    <string name="usb_charing_only_notification_title">USB-laadimine</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Auto Blocker on sisse lülitatud maksimaalsete piirangutega.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB-ühendus on blokeeritud</string>
     <string name="usb_debugging_only_notification_title">Ainult silumine</string>
-    <string name="usb_host_resource_exceed_message">Teie tahvelseadme USB-juhtseadmel pole piisavalt ressursse, et selle seadmega ühendust luua. Proovige seadme ühendust katkestada ja uuesti luua.</string>
+    <string name="usb_host_resource_exceed_message">Teie telefoni USB-juhtseadmel pole piisavalt ressursse, et selle seadmega ühendust luua. Proovige seadme ühendust katkestada ja uuesti luua.</string>
     <string name="usb_host_resource_exceed_title">Liiga vähe USB-juhtseadmete ressursse</string>
-    <string name="usb_hub_depth_exceed_message">Teie tahvelseade suudab korraga toetada ainult kuni 5 USB-jaoturi ühendust.</string>
+    <string name="usb_hub_depth_exceed_message">Teie telefon suudab korraga toetada ainult kuni 5 USB-jaoturi ühendust.</string>
     <string name="usb_hub_depth_exceed_title">USB-jaoturi ühenduste maksimum</string>
-    <string name="usb_hub_power_exceed_message">Teie tahvelseade ei suuda selle USB-seadme jaoks piisavalt toidet anda. Ühendage seade sõltumatu toitega USB-jaoturiga, enne kui ühendate selle oma tahvelseadmega.</string>
+    <string name="usb_hub_power_exceed_message">Teie telefon ei suuda selle USB-seadme jaoks piisavalt toidet anda. Ühendage seade sõltumatu toitega USB-jaoturiga, enne kui ühendate selle oma telefoniga.</string>
     <string name="usb_increase_battery_usage">USB-ühendus võib tõsta akukasutust.</string>
     <string name="usb_mass_storage_restrict">Turvalisuse poliis takistab USB-massmäluruumi kasutamist.</string>
     <string name="usb_midi_notification_title">USB MIDI jaoks</string>
@@ -1275,8 +1246,9 @@ Selle kaitse eemaldamiseks avage jaotis Seaded > Turvalisus ja privaatsus > Auto
     <string name="usb_storage_stop_title">USB-mälu on kasutusel.</string>
     <string name="usb_storage_title">USB on ühendatud.</string>
     <string name="usb_type_c_supply_power_notification_title">Ühendatud seadme USB-laadimine</string>
-    <string name="usb_unblock_by_screen_unlock">Ühendatud USB-seadme kasutamiseks avage tahvelseade lukust.</string>
-    <string name="usb_unsupport_accessory_message">Teie tahvelseade ei toeta seda USB-seadet.</string>
+    <string name="usb_unblock_by_screen_unlock">Ühendatud USB-seadme kasutamiseks avage telefon lukust.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USB-seadme kasutamiseks avage telefon ja ühendage USB-seade uuesti.</string>
+    <string name="usb_unsupport_accessory_message">Teie telefon ei toeta seda USB-seadet.</string>
     <string name="usb_unsupport_accessory_title">USB-seadet ei toetata</string>
     <string name="usb_unsupported_device">Ühendatud USB-seadet ei toetata.</string>
     <string name="usb_unsupported_device_title">Seadet ei toetata</string>
@@ -1294,24 +1266,24 @@ Selle kaitse eemaldamiseks avage jaotis Seaded > Turvalisus ja privaatsus > Auto
     <string name="usb_water_dialg_method_2_desc_2">Kuivamise kiirendamiseks võite suunata ventilaatori või fööni (ainult jahe õhk) pordi suunas.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Tuvastasime teie laadimis-/USB-pordis niiskust või võõrkehasid.
 
-Kontrollige laadimis-/USB-porti võõrkehade (nt tolmu või prahi) suhtes. Tahvelseadme kahjustamise vältimiseks ärge ühendage midagi enne, kui laadimisport on puhas ja niiskus likvideeritud.
+Kontrollige laadimis-/USB-porti võõrkehade (nt tolmu või prahi) suhtes. Telefoni kahjustamise vältimiseks ärge ühendage midagi enne, kui laadimisport on puhas ja niiskus likvideeritud.
 
 Pordi kuivatamiseks raputage niiskus välja ja oodake, kuni see kuivab. Selleks võib kuluda mitu tundi. Kuivamise kiirendamiseks võite porti suunata ventilaatori või fööni (ainult jaheda õhuga režiim)."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Tuvastasime teie laadimis-/USB-pordis niiskust või võõrkehasid.
 
-Kontrollige laadimis-/USB-porti võõrkehade (nt tolmu või prahi) suhtes. Tahvelseadme kahjustamise vältimiseks ärge ühendage midagi enne, kui laadimisport on puhas ja niiskus likvideeritud.
+Kontrollige laadimis-/USB-porti võõrkehade (nt tolmu või prahi) suhtes. Telefoni kahjustamise vältimiseks ärge ühendage midagi enne, kui laadimisport on puhas ja niiskus likvideeritud.
 
-Pordi kuivatamiseks raputage niiskus välja ja oodake, kuni see kuivab. Selleks võib kuluda mitu tundi. Kuivamist saate kiirendada, suunates ventilaator või föön porti (ainult jahedat õhku kasutades).
+Pordi kuivatamiseks raputage niiskus välja ja oodake, kuni see kuivab. Selleks võib kuluda mitu tundi. Kuivamise kiirendamiseks võite porti suunata ventilaatori või fööni (ainult jaheda õhuga režiim).
 
-Vahepeal saate tahvelseadet juhtmevabalt laadida."</string>
+Niikaua saate oma telefoni juhtmevabalt laadida."</string>
     <string name="usb_water_notification_content">Laadimis-/USB-pesas on niiskust või võõrkehi. Kontrollige enne laadimist.</string>
-    <string name="usb_water_notification_message">Teie laadimis-/USB-pordis tuvastati niiskus. Veenduge enne tahvelseadme laadimist, et see oleks kuiv. Selle täielik kuivamine võib aega võtta.</string>
+    <string name="usb_water_notification_message">Teie laadimis-/USB-pordis tuvastati niiskus. Veenduge enne telefoni laadimist, et see oleks kuiv. Selle täielik kuivamine võib aega võtta.</string>
     <string name="usb_water_notification_message_button">Üksikasjad</string>
     <string name="usb_water_notification_title">Kontrollige laadijat/USB-porti</string>
     <string name="usbhostStorage_restrict">Turvalisuse poliis takistab USB-hosti mäluruumi kasutamist.</string>
-    <string name="usbmemory_added_notification_title">Lisati USB-mälu</string>
-    <string name="usbmemory_readonly_mount_notification_message">Teie USB-mäluseade ei tööta õigesti ja selle kirjutuskaitse lülitati sisse, et vältida andmekadu. Soovitame varundada oma USB-mäluseadme andmed.</string>
+    <string name="usbmemory_added_notification_title">Lisati USB-mäluruumi</string>
+    <string name="usbmemory_readonly_mount_notification_message">Teie USB-mäluruumiseade ei tööta õigesti ja selle kirjutuskaitse lülitati sisse, et vältida andmekadu. Soovitame varundada oma USB-mäluruumiseadme andmed.</string>
     <string name="usbmemory_readonly_mount_notification_title">Ei saa kirj. USB-mäluseadmele</string>
     <string name="user_encrypted_title_phone">Telefon on taaskäivitatud</string>
     <string name="user_encrypted_title_tablet">Tahvelseade on taaskäivitatud</string>
@@ -1319,6 +1291,8 @@ Vahepeal saate tahvelseadet juhtmevabalt laadida."</string>
     <string name="vpn_allowOnlySecureConnection">VPN-i profiil pole turvaline</string>
     <string name="vpn_error_text">Toksake, et proovida uuesti luua uhendust VPN-iga.</string>
     <string name="vpn_error_title">VPN-ühenduse tõrge</string>
+    <string name="vpn_fail_text_long">Ei saanud luua ühendust VPN-iga %s. Toksake selle VPN-i haldamiseks.</string>
+    <string name="vpn_fail_title">VPN pole ühendatud</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Rak.-te sulgem., et tahvelseadet jahutada</string>
     <string name="vzw_cooldown_mode_ok">OK</string>
@@ -1381,6 +1355,7 @@ Vahepeal saate tahvelseadet juhtmevabalt laadida."</string>
     <string name="wifi_network_available_detailed">Saadaval on avatud Wi-Fi-võrk.</string>
     <string name="wifi_networks_available">Wi-Fi võrgud on saadaval</string>
     <string name="wifi_networks_available_detailed">Avatud Wi-Fi-võrgud on saadaval.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s kasutab mobiilset andmesidet, kuna teie WLAN-ühendus on aeglane või ebastabiilne.</string>
     <string name="wifi_notification_switch_wifi_detail">Teie telefon lülitati mobiilse andmeside peale, Wi-Fi-võrk oli ebastabiilne.</string>
     <string name="wifi_notification_switch_wifi_title">Lülitati mobiilsele andmesidele</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Hädaabiteavitused</string>
@@ -1412,9 +1387,5 @@ Vahepeal saate tahvelseadet juhtmevabalt laadida."</string>
     <string name="work_profile_on_message">See annab teile juurdepääsu töörakendustele, teavitustele, andmetele ja muudele tööprofiili funktsioonidele.</string>
     <string name="work_profile_on_title">Kas lülitada tööprofiil sisse?</string>
     <string name="work_profile_restricted">Auto Blocker on sisse lülitatud maksimaalsete piirangutega. Turvalisuse tagamiseks ei saa tööprofiile luua.</string>
-    <string name="work_profile_telephony_paused_text">Peatasite oma töörakendused. Te ei saa nendelt telefonikõnesid ega tekstisõnumeid.</string>
-    <string name="work_profile_telephony_paused_title">Kõned ja sõnumid väljalülitatud</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Kas lülitada tööprofiil sisse?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">Kuni lülitan välja</string>
 </resources>

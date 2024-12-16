@@ -6,7 +6,7 @@
     </FrameLayout>
     <com.android.internal.widget.RemeasuringLinearLayout android:orientation="vertical" android:id="@id/messaging_group_content_container" android:layout_width="wrap_content" android:layout_height="wrap_content" android:baselineAligned="true" android:layout_weight="1.0" android:layout_alignWithParentIfMissing="true">
         <com.android.internal.widget.ImageFloatingTextView android:id="@id/message_name" android:layout_width="wrap_content" android:textAlignment="viewStart" style="@style/Widget.DeviceDefault.Notification.MessagingName" />
-        <com.android.internal.widget.MessagingLinearLayout android:id="@id/group_message_container" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="@dimen/notification_text_margin_top" android:spacing="2.0dip" />
+        <com.android.internal.widget.MessagingLinearLayout android:id="@id/group_message_container" android:layout_width="wrap_content" android:layout_height="wrap_content" android:spacing="2.0dip" />
     </com.android.internal.widget.RemeasuringLinearLayout>
     <FrameLayout android:id="@id/messaging_group_icon_container" android:visibility="gone" android:layout_width="@dimen/messaging_avatar_size" android:layout_height="@dimen/messaging_avatar_size" android:layout_marginStart="12.0dip" />
     <FrameLayout android:layout_gravity="top" android:id="@id/messaging_group_sending_progress_container" android:visibility="gone" android:layout_width="@dimen/messaging_group_sending_progress_size" android:layout_height="@dimen/messaging_avatar_size" android:layout_marginStart="12.0dip">

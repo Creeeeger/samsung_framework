@@ -45,7 +45,7 @@ obič. Tekst"</string>
     <string name="ColrMmi">Ograničenje identifikacije povezane linije</string>
     <string name="CwMmi">Poziv na čekanju</string>
     <string name="DndMmi">Ne ometaj</string>
-    <string name="EmergencyCallWarningSummary">Nije moguće uspostaviti hitne pozive putem Wi‑Fi mreže</string>
+    <string name="EmergencyCallWarningSummary">Za hitne pozive potrebna je mreža</string>
     <string name="EmergencyCallWarningTitle">Hitni pozivi su nedostupni</string>
     <string name="Midnight">Ponoć</string>
     <string name="NetworkPreferenceSwitchSummary">Pokušajte promijeniti preferiranu mrežu. Dodirnite za promjenu.</string>
@@ -256,7 +256,12 @@ obič. Tekst"</string>
     <string name="accessibility_corner_action_type_zoom_in">Uvećanje</string>
     <string name="accessibility_corner_action_type_zoom_out">Umanjenje</string>
     <string name="accessibility_dialog_button_allow">Dozvoli</string>
+    <string name="accessibility_dialog_button_allow_samsung">Dozvoli</string>
     <string name="accessibility_dialog_button_deny">Odbij</string>
+    <string name="accessibility_dialog_button_deny_samsung">Odbij</string>
+    <string name="accessibility_dialog_button_uninstall">Deinstaliraj</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Deinstal.</string>
+    <string name="accessibility_dialog_touch_filtered_warning">Aplikacija skriva zahtjev za odobrenje, pa se vaš odgovor ne može potvrditi.</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Ako brzo pritisnete Tipku za uključivanje i Tipku za jačinu zvuka, sljedeće funkcije će se uključiti ili isključiti:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Ako brzo pritisnete bočno dugme i dugme za jačinu zvuka, sljedeće funkcije će se uključiti ili isključiti:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Ako brzo pritisnete Tipku za uključivanje i Tipku za jačinu zvuka, funkcija %s će se uključiti ili isključiti.</string>
@@ -270,11 +275,14 @@ obič. Tekst"</string>
     <string name="accessibility_edit_shortcut_menu_button_title">Odaberite funkcije koje ćete koristiti s dugmetom Pristupačnost</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">Odaberite funkcije koje ćete koristiti pomoću prečice tipke za jačinu zvuka</string>
     <string name="accessibility_enable_service_title">Dozvoliti da usluga %1$s ima punu kontrolu nad vašim uređajem?</string>
-    <string name="accessibility_freeform_caption">Traka za natpis aplikacije %1$s.</string>
     <string name="accessibility_gesture_3finger_instructional_text">Da prebacujete između funkcija, s tri prsta prevucite prema gore i zadržite.</string>
     <string name="accessibility_gesture_3finger_prompt_text">Odaberite funkciju koju ćete koristiti kada izvedete pokret za pristupačnost (s tri prsta prevucite prema gore s dna ekrana):</string>
     <string name="accessibility_gesture_instructional_text">Da prebacujete između funkcija, s dva prsta prevucite prema gore i zadržite.</string>
     <string name="accessibility_gesture_prompt_text">Odaberite funkciju koju ćete koristiti kada izvedete pokret za pristupačnost (s dva prsta prevucite prema gore s dna ekrana):</string>
+    <string name="accessibility_label_clone_profile">Klon</string>
+    <string name="accessibility_label_communal_profile">Opće</string>
+    <string name="accessibility_label_managed_profile">Radni profil</string>
+    <string name="accessibility_label_private_profile">Privatni prostor</string>
     <string name="accessibility_magnification_chooser_text">Uvećavanje</string>
     <string name="accessibility_select_different_function">Možete izabrati drugu funkciju pod opcijama Postavke > Pristupačnost > Napredne postavke.</string>
     <string name="accessibility_select_shortcut_menu_title">Dodirnite funkciju da je počnete koristiti:</string>
@@ -329,7 +337,7 @@ Ovu prečicu možete zamijeniti drugom funkcijom u odjeljku Postavke > Pristupa�
     <string name="accessibility_system_action_hardware_a11y_shortcut_label">Prečica za pristupačnost</string>
     <string name="accessibility_system_action_headset_hook_label">Kuka za slušalice</string>
     <string name="accessibility_system_action_home_label">Početna stranica</string>
-    <string name="accessibility_system_action_lock_screen_label">Zaključavanje ekrana</string>
+    <string name="accessibility_system_action_lock_screen_label">Zaključani ekran</string>
     <string name="accessibility_system_action_notifications_label">Obavještenja</string>
     <string name="accessibility_system_action_on_screen_a11y_shortcut_chooser_label">Okvir za odabir prečice za pristupačnost na ekranu</string>
     <string name="accessibility_system_action_on_screen_a11y_shortcut_label">Prečica za pristupačnost na ekranu</string>
@@ -343,7 +351,7 @@ Ovu prečicu možete zamijeniti drugom funkcijom u odjeljku Postavke > Pristupa�
     <string name="action_bar_home_description">Vratite se na početnu stranicu</string>
     <string name="action_bar_home_description_format">%1$s, %2$s</string>
     <string name="action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
-    <string name="action_bar_up_description">Navigirajte prema gore</string>
+    <string name="action_bar_up_description">Pomjeraj se prema gore</string>
     <string name="action_menu_overflow_description">Dodatne opcije</string>
     <string name="action_mode_done">Gotovo</string>
     <string name="activity_chooser_view_dialog_title_default">Odaberite aktivnost</string>
@@ -383,19 +391,25 @@ Ovu prečicu možete zamijeniti drugom funkcijom u odjeljku Postavke > Pristupa�
     <string name="alert_windows_notification_turn_off_action">Isključi</string>
     <string name="allow">Dozvoli</string>
     <string name="allow_settings_changes">Pravila sigurnosti sprječavaju promjenu postavki.</string>
+    <string name="alternative_face_setup_notification_content">Koristite otključavanje licem kada se vaš otisak prsta ne prepozna, naprimjer kada su vam prsti mokri</string>
+    <string name="alternative_fp_setup_notification_content">Koristite otključavanje otiskom prsta kada se vaše lice ne prepozna, naprimjer kada nema dovoljno svjetla</string>
+    <string name="alternative_unlock_setup_notification_title">Pokušajte s drugim načinom otključavanja</string>
     <string name="alwaysUse">Koristiti kao zadanu rezoluciju za ovu akciju.</string>
+    <string name="always_allow">Uvijek dozvoli</string>
     <string name="android_preparing_apk">Pripremanje aplikacije %1$s.</string>
-    <string name="android_start_title">Pokretanje tableta…</string>
+    <string name="android_start_title">Pokretanje telefona…</string>
     <string name="android_system_label">Sistem Android</string>
     <string name="android_upgrading_complete">Pokretanje pri kraju.</string>
     <string name="android_upgrading_notification_title">Dovršavanje ažuriranja sistema…</string>
     <string name="android_upgrading_starting_apps">Pokretanje aplikacija.</string>
-    <string name="android_upgrading_title">Ažuriranje tableta…</string>
+    <string name="android_upgrading_title">Ažuriranje telefona…</string>
     <string name="anr_activity_application">%2$s ne reaguje</string>
     <string name="anr_activity_process">%1$s ne reaguje</string>
     <string name="anr_application_process">%1$s ne reaguje</string>
     <string name="anr_process">Proces %1$s ne reaguje</string>
     <string name="anr_title" />
+    <string name="app_block_button_open">Otvori</string>
+    <string name="app_block_content">%1$s želi otvoriti aplikaciju %2$s.</string>
     <string name="app_blocked_message">Aplikacija %1$s trenutno nije dostupna.</string>
     <string name="app_blocked_title">Aplikacija nije dostupna</string>
     <string name="app_category_accessibility">Pristupačnost</string>
@@ -424,42 +438,31 @@ Ovu prečicu možete zamijeniti drugom funkcijom u odjeljku Postavke > Pristupa�
     <string name="app_restricted_message_concentration_mode">Aplikacija %s je blokirana tokom Režima za koncentraciju. Kontaktirajte IT administratora da saznate više.</string>
     <string name="app_running_notification_text">Dodirnite za više informacija ili da biste zaustavili aplikaciju.</string>
     <string name="app_running_notification_title">Aplikacija %1$s je pokrenuta</string>
-    <string name="app_streaming_blocked_message">Trenutno ne možete pristupiti ovoj aplikaciji na uređaju %1$s. Umjesto toga pokušajte na tabletu.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Ova aplikacija zahtijeva dodatnu sigurnost. Umjesto toga pokušajte na tabletu.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Ne možete pristupiti ovoj aplikaciji na uređaju %1$s. Umjesto toga pokušajte na tabletu.</string>
+    <string name="app_streaming_blocked_message">Trenutno ne možete pristupiti ovoj aplikaciji na uređaju %1$s. Umjesto toga pokušajte na telefonu.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Ova aplikacija zahtijeva dodatnu sigurnost. Umjesto toga pokušajte na telefonu.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">Aplikacija traži dodatna odobrenja, ali se ona ne mogu dati u sesiji prijenosa. Prvo dodajte odobrenje na telefonu.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Ne možete pristupiti ovoj aplikaciji na uređaju %1$s. Umjesto toga pokušajte na telefonu.</string>
     <string name="app_streaming_blocked_title">Nedostupno: %1$s</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kamera nije dostupna</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Nastavite na telefonu</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofon nije dostupan</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">Potrebno je odobrenje</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">Zahtjev za odobrenje je potisnut</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play trgovina nije dostupna</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Postavke tableta nisu dostupne</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Postavke telefona nisu dostupne</string>
     <string name="app_suspended_default_message">Aplikacija %1$s trenutno nije dostupna. Ovim upravlja aplikacija %2$s.</string>
     <string name="app_suspended_more_details">Saznajte više</string>
     <string name="app_suspended_title">Aplikacija nije dostupna</string>
     <string name="app_suspended_unsuspend_message">Ponovo aktiviraj aplikaciju</string>
     <string name="app_updating_message">Aplikacija %s se ažurira. Pokušajte ponovno kasnije.</string>
     <string name="app_upgrading_toast">Aplikacija %1$s se nadograđuje…</string>
-    <string name="appblock_block_subtitle1_phone">Da bi se zaštitio vaš telefon i lični podaci, ova aplikacija se ne može instalirati jer se sumnja da je zlonamjerna.</string>
-    <string name="appblock_block_subtitle1_tablet">Da bi se zaštitio vaš tablet i lični podaci, ova aplikacija se ne može instalirati jer se sumnja da je zlonamjerna.</string>
-    <string name="appblock_block_subtitle2">Ova aplikacija se ne može instalirati jer je prijavljena kao zlonamjerna aplikacija.</string>
-    <string name="appblock_block_text1">Ova aplikacija dolazi od neprovjerenog izvora i zahtijeva osjetljive dozvole koje se mogu koristiti za krađu ili objavu vaših ličnih podataka.</string>
-    <string name="appblock_block_text2">"Zlonamjerne aplikacije mogu koristiti osjetljive dozvole za krađu vaših ličnih podataka, oponašanje vašeg identiteta ili pristup vašim finansijskim računima.
-
-Legitimne finansijske institucije ne zahtijevaju instalacijske ZIP datoteke, APK datoteke ili aplikacije za upravljanje datotekama.
-
-Uvijek provjerite da aplikacije koje instalirate dolaze iz pouzdanog izvora."</string>
-    <string name="appblock_warn_subtitle">Ova aplikacija može ukrasti ili objaviti vaše lične informacije.</string>
+    <string name="appblock_block_text_phone">Ova aplikacija se ne može instalirati jer je prijavljena kao zlonamjerna ili je slična aplikaciji koja je prijavljena kao zlonamjerna. Ova aplikacija će se vjerovatno koristiti za kriminalne radnje kao što je krađa identiteta. Ovo ograničenje se ne može zaobići kako bi vaš telefon i podaci bili sigurni.</string>
+    <string name="appblock_block_text_tablet">Ova aplikacija se ne može instalirati jer je prijavljena kao zlonamjerna ili je slična aplikaciji koja je prijavljena kao zlonamjerna. Ova aplikacija će se vjerovatno koristiti za kriminalne radnje kao što je krađa identiteta. Ovo ograničenje se ne može zaobići kako bi vaš tablet i podaci bili sigurni.</string>
+    <string name="appblock_link_text">Saznaj više</string>
     <string name="appblock_warn_text1">"Instaliranjem aplikacija iz neprovjerenih izvora možete dozvoliti aplikacijama da prikupljaju vaše lične podatke ili prate vaše aktivnosti.
 
 Ne preporučuje se da instalirate ovu aplikaciju.
 
 Ako ipak odlučite da je instalirate, pažljivo pregledajte Obavještenje o privatnosti aplikacije i vodite računa da date samo neophodne dozvole."</string>
-    <string name="appblock_warn_text2">"Zlonamjerne aplikacije često pokušavaju da pribave vaše lične podatke koristeći dozvole za Kontakte, SMS poruke i Fotografije.
-
-Ne preporučuje se da instalirate ovu aplikaciju.
-
-Ako ipak odlučite da instalirate ovu aplikaciju, vodite računa da dolazi od izvora kojem vjerujete i budite oprezni kada dajete dozvole ili drugi pristup svojim podacima."</string>
     <string name="application_default_restrict">Administrator uređaja je postavio drugu aplikaciju kao zadanu.</string>
     <string name="as_app_forced_to_restricted_bucket">Paket %1$s je stavljen u odjeljak OGRANIČENO</string>
     <string name="auto_click_paused">Automatski klik je pauziran.</string>
@@ -488,12 +491,13 @@ Ako ipak odlučite da instalirate ovu aplikaciju, vodite računa da dolazi od iz
     <string name="autofill_save_type_email_address">adresa e-pošte</string>
     <string name="autofill_save_type_generic_card">kartica</string>
     <string name="autofill_save_type_password">lozinka</string>
-    <string name="autofill_save_type_payment_card">kartica za plaćanje</string>
+    <string name="autofill_save_type_payment_card">platna kartica</string>
     <string name="autofill_save_type_username">korisničko ime</string>
     <string name="autofill_save_yes">Sačuvaj</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="autofill_update_title">Ažurirati u <b>%1$s</b>?</string>
     <string name="autofill_update_title_with_2types">Ažurirati %1$s i %2$s u <b>%3$s</b>?</string>
-    <string name="autofill_update_title_with_3types">Ažurirati ove stavke u <b>%4$s</b>: %1$s, %2$s i %3$s?</string>
+    <string name="autofill_update_title_with_3types">Ažurirati ove stavke u oznaci <b>%4$s</b>: %1$s, %2$s i %3$s?</string>
     <string name="autofill_update_title_with_type">Ažurirati %1$s u <b>%2$s</b>?</string>
     <string name="autofill_update_yes">Ažuriraj</string>
     <string name="autofill_window_title">Automatsko popunjavanje koje pruža usluga %1$s</string>
@@ -504,7 +508,7 @@ Ako ipak odlučite da instalirate ovu aplikaciju, vodite računa da dolazi od iz
     <string name="badPuk">PUK koji ste unijeli nije ispravan.</string>
     <string name="badPuk2">PUK2 koji ste unijeli je netačan.</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">Tablet se dovoljno napunio. Funkcije nisu više ograničene.</string>
+    <string name="battery_saver_charged_notification_summary">Telefon se dovoljno napunio. Funkcije nisu više ograničene.</string>
     <string name="battery_saver_description">Ušteda baterije uključuje tamnu temu i ograničava ili isključuje aktivnost u pozadini, određene vizuelne efekte i funkcije te neke mrežne veze.</string>
     <string name="battery_saver_description_with_learn_more">Ušteda baterije uključuje tamnu temu i ograničava ili isključuje aktivnost u pozadini, određene vizuelne efekte i funkcije te neke mrežne veze.</string>
     <string name="battery_saver_notification_channel_name">Ušteda baterije</string>
@@ -518,6 +522,7 @@ Ako ipak odlučite da instalirate ovu aplikaciju, vodite računa da dolazi od iz
     <string name="biometric_error_generic">Greška pri autentifikaciji</string>
     <string name="biometric_error_hw_unavailable">Biometrijski hardver nije dostupan</string>
     <string name="biometric_error_user_canceled">Autentifikacija je otkazana</string>
+    <string name="biometric_face_not_recognized">Lice nije prepoznato</string>
     <string name="biometric_not_recognized">Nije prepoznato</string>
     <string name="biometric_or_screen_lock_app_setting_name">Koristi biometriju ili zaključavanje ekrana</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">Koristite biometriju ili zaključavanje ekrana da nastavite</string>
@@ -529,8 +534,6 @@ Ako ipak odlučite da instalirate ovu aplikaciju, vodite računa da dolazi od iz
     <string name="bluetooth_airplane_mode_toast">Bluetooth će ostati uključen tokom načina rada u avionu</string>
     <string name="bluetooth_avrcp_restrict">Pravila sigurnosti sprječavaju korištenje Bluetooth kontrole zvuka/videozapisa.</string>
     <string name="bluetooth_bpp_restrict">Pravila sigurnosti sprječavaju štampanje putem Bluetooth opcije.</string>
-    <string name="bluetooth_china_popup_message">Aplikacija %1$s traži dozvolu za korištenje %2$s. Dozvoliti?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Pravila sigurnosti sprječavaju prenose podataka putem opcije Bluetooth.</string>
     <string name="bluetooth_desktop_restrict">Pravila sigurnosti sprječavaju povezivanje na stoni računar putem opcije Bluetooth.</string>
     <string name="bluetooth_device_restrict">Pravila sigurnosti sprječavaju sparivanje sa ovim Bluetooth uređajem.</string>
@@ -541,7 +544,6 @@ Ako ipak odlučite da instalirate ovu aplikaciju, vodite računa da dolazi od iz
     <string name="bluetooth_outgoing_call_restrict">Pravila sigurnosti sprječavaju obavljanje odlaznih poziva putem Bluetooth veze.</string>
     <string name="bluetooth_pairing_restrict">Pravila sigurnosti sprječavaju Bluetooth sparivanje.</string>
     <string name="bluetooth_pbap_restrict">Pravila sigurnosti sprječavaju korištenje Bluetooth imenika.</string>
-    <string name="bluetooth_permission_request">Zahtjev za dozvolu Bluetooth-a</string>
     <string name="bluetooth_restrict">Pravila sigurnosti sprječavaju korištenje Bluetooth-a.</string>
     <string name="bluetooth_sap_restrict">Pravila sigurnosti sprječavaju pristup SIM kartici putem opcije Bluetooth.</string>
     <string name="bluetooth_security_mode_disable">Pravila sigurnosti sprječavaju korištenje Bluetootha.</string>
@@ -653,11 +655,11 @@ Ako ipak odlučite da instalirate ovu aplikaciju, vodite računa da dolazi od iz
     <string name="common_secure_boot_nwlock_notification_text">Ova SIM kartica nije podržana.</string>
     <string name="common_secure_boot_nwlock_notification_title">Invalid SIM card inserted</string>
     <string name="concurrent_display_notification_active_content">Aplikacija %1$s koristi oba ekrana za prikazivanje sadržaja</string>
-    <string name="concurrent_display_notification_active_title">Dupli ekran je uključen</string>
-    <string name="concurrent_display_notification_name">Dupli ekran</string>
+    <string name="concurrent_display_notification_active_title">Dual Screen je uključen</string>
+    <string name="concurrent_display_notification_name">Dual Screen</string>
     <string name="concurrent_display_notification_power_save_content">Dual Screen nije dostupan jer je Ušteda baterije uključena. To možete isključiti u Postavkama.</string>
     <string name="concurrent_display_notification_power_save_title">Dual Screen nije dostupan</string>
-    <string name="concurrent_display_notification_thermal_content">Dupli ekran nije dostupan je se telefon previše zagrijava</string>
+    <string name="concurrent_display_notification_thermal_content">Dual Screen nije dostupan je se telefon previše zagrijava</string>
     <string name="concurrent_display_notification_thermal_title">Uređaj je previše zagrijan</string>
     <string name="condition_provider_service_binding_label">Pružalac uslova</string>
     <string name="conference_call">Konferencijski poziv</string>
@@ -666,12 +668,17 @@ Ako ipak odlučite da instalirate ovu aplikaciju, vodite računa da dolazi od iz
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">Uredu</string>
+    <string name="connected_display_thermally_unavailable_notification_content">Uređaj je pregrijan i ne može preslikavati na ekran dok se ne ohladi</string>
+    <string name="connected_display_unavailable_notification_content">Upotrijebite drugi kabl i pokušajte ponovo</string>
+    <string name="connected_display_unavailable_notification_title">Nije moguće preslikati na ekran</string>
     <string name="console_running_notification_message">Performanse su smanjene. Da onemogućite, provjerite program za učitavanje operativnog sistema.</string>
     <string name="console_running_notification_title">Serijska konzola omogućena</string>
     <string name="constrained_status_bar_device_locked">Uređaj je zaključan</string>
     <string name="contentServiceSync">Sinhronizacija</string>
     <string name="contentServiceSyncNotificationTitle">Nije moguće sinhronizirati</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">Pokušali ste izbrisati previše sadržaja iz kategorije %s.</string>
+    <string name="content_description_collapsed">Suženo</string>
+    <string name="content_description_expanded">Prošireno</string>
     <string name="content_description_sliding_handle">Klizni regulator. Dodirnite &amp; držite.</string>
     <string name="conversation_single_line_image_placeholder">je poslao/la sliku</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -686,10 +693,10 @@ koristeći broj %s"</string>
     <string name="crossSimFormat_spn_cross_sim_calling">%s – pomoćno pozivanje</string>
     <string name="csd_dose_reached_warning">"Nastaviti slušati pri visokoj jačini zvuka?
 
-Jačina zvuka slušalica je bila visoka duže od preporučenog, što može oštetiti sluh"</string>
+Jačina zvuka slušalica je bila visoka duže nego što se preporučuje, što može oštetiti sluh"</string>
     <string name="csd_momentary_exposure_warning">"Otkriven je glasan zvuk
 
-Jačina zvuka slušalica je bila viša od preporučenog, što može oštetiti sluh"</string>
+Jačina zvuka slušalica je bila viša od preporučene, što može oštetiti sluh"</string>
     <string name="ctc_plmn_check_card">Check Card</string>
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">Dozvoljeni uređaji</string>
@@ -697,12 +704,10 @@ Jačina zvuka slušalica je bila viša od preporučenog, što može oštetiti sl
     <string name="data_saver_description">Radi smanjenja prijenosa podataka, Ušteda podataka sprečava da neke aplikacije šalju ili primaju podatke u pozadini. Aplikacija koju trenutno koristite može pristupati podacima, ali će to činiti rjeđe. Naprimjer, to može značiti da se slike ne prikazuju dok ih ne dodirnete.</string>
     <string name="data_saver_enable_button">Uključi</string>
     <string name="data_saver_enable_title">Uključiti Uštedu podataka?</string>
-    <string name="data_usage_disable_mobile">Onemogućiti mobilnu podatkovnu vezu?</string>
-    <string name="data_usage_enable_mobile_warning">Povezivanje putem paketnih podataka može uzrokovati dodatne troškove. Nastaviti?</string>
     <string name="data_usage_limit_body">Mobilni podaci su pauzirani do kraja perioda fakturisanja.</string>
     <string name="data_usage_limit_snoozed_body">Prekoračili ste postavljeni limit od %s</string>
     <string name="data_usage_mobile_limit_snoozed_title">Iznad ograničenja mob. podataka</string>
-    <string name="data_usage_mobile_limit_title">Dostig. je ogranič. mob. podat.</string>
+    <string name="data_usage_mobile_limit_title">Dostignuto ograničenje za prijenos podataka</string>
     <string name="data_usage_rapid_app_body">Aplikacija %s je koristila više podataka nego inače.</string>
     <string name="data_usage_rapid_body">Vaše aplikacije su koristile više podataka nego obično.</string>
     <string name="data_usage_rapid_title">Veliki obim korištenja mobilnih podataka</string>
@@ -732,7 +737,7 @@ Jačina zvuka slušalica je bila viša od preporučenog, što može oštetiti sl
     <string name="decline">Odbijte</string>
     <string name="decline_remote_bugreport_action">ODBACI</string>
     <string name="default_audio_route_category_name">Sistem</string>
-    <string name="default_audio_route_name">Tablet</string>
+    <string name="default_audio_route_name">Telefon</string>
     <string name="default_audio_route_name_dock_speakers">Zvučnici priključne stanice</string>
     <string name="default_audio_route_name_external_device">Vanjski uređaj</string>
     <string name="default_audio_route_name_headphones">Slušalice</string>
@@ -750,11 +755,13 @@ Jačina zvuka slušalica je bila viša od preporučenog, što može oštetiti sl
     <string name="deprecated_target_sdk_message">Ova aplikacija je izrađena za stariju verziju Androida. Možda neće pravilno funkcionirati i ne sadržava najnovije sigurnosne zaštite i zaštite privatnosti. Provjerite ima li ažuriranja ili se obratite programeru aplikacije.</string>
     <string name="description_target_unlock_tablet">Prevucite za otključavanje ekrana.</string>
     <string name="device_disabled">Uređaj je onemogućen. Kontaktiraj IT administratora.</string>
+    <string name="device_info_not_available">Nedostupno.</string>
     <string name="device_ownership_relinquished">Administrator je ustupio uređaj za ličnu upotrebu</string>
     <string name="device_policy_manager_service">Usluga upravitelja pravila za uređaje</string>
     <string name="device_state_notification_settings_button">Idi u Postavke</string>
     <string name="device_state_notification_turn_off_button">Isključi</string>
     <string name="device_storage_monitor_notification_channel">Memorija uređaja</string>
+    <string name="device_unlock_notification_name">Otključavanje uređaja</string>
     <string name="dex_cant_change_user_profile">Ne može se promijeniti korisnički profil u režimu Samsung DeX.</string>
     <string name="dex_dialog_launch_toast">Otvorene aplikacije se mogu zatvoriti. Sačuvajte podatke prije pokretanja ili izlaska iz Samsung DeX-a.</string>
     <string name="dex_disconnected_from_device">Prekinuta je veza DeX-a sa %s. Provjerite mrežnu vezu na TV-u.</string>
@@ -763,9 +770,6 @@ Jačina zvuka slušalica je bila viša od preporučenog, što može oštetiti sl
     <string name="dex_launcher_mode_change">%s je zatvoren radi prelaska na Samsung DeX.</string>
     <string name="dex_mirroring_jit_msg">Kada pokrenete Samsung DeX na svom tabletu, možete preslikati ekran na bilo ekran spojen putem HDMI kabla da biste dobili veći prikaz.</string>
     <string name="dex_mirroring_jit_title">Preslik. DeX-a na većem ekranu</string>
-    <string name="dex_restart_app_dialog_button_positive">Pon. pokr.</string>
-    <string name="dex_restart_app_dialog_message">Ova aplikacija je već pokrenuta na drugom ekranu. Da biste je otvoriti ovdje, morate je ponovno pokrenuti. Sačuvajte sve što vam je važno prije ponovnog pokretanja.</string>
-    <string name="dex_restart_app_dialog_title">Ponovno pokrenuti %s?</string>
     <string name="dex_restriction_blockerMessage">Pravila sigurnosti sprječavaju korištenje Samsung DeX-a.</string>
     <string name="dex_restriction_ethernetOnly">Pravila sigurnosti sprječavaju korištenje Wi-Fi podataka, mobilnih podataka i dijeljenja u DeX-u. Potrebna je ožičena veza za mrežne funkcije.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Zbog pravila sigurnosti, prekinite vezu s vanjskim ekranom da biste izašli iz Samsung DeX-a.</string>
@@ -794,7 +798,6 @@ broj %s"</string>
     <string name="disableupdate_application_restrict">Pravila sigurnosti sprječavaju ažuriranje aplikacije.</string>
     <string name="dismiss_action">Odbaci</string>
     <string name="display_chooser_button_positive">Pon. pokr.</string>
-    <string name="display_chooser_dont_show_again">Ne prikazuj ponovno</string>
     <string name="display_manager_built_in_display_name">Ugrađeni ekran</string>
     <string name="display_manager_hdmi_display_name">HDMI ekran</string>
     <string name="display_manager_overlay_display_name">Nadsloj #%1$d</string>
@@ -813,6 +816,7 @@ broj %s"</string>
     <string name="dpm_wifi_misc_network_insecure">Pravila sigurnosti sprječavaju korištenje nesigurnih Wi-Fi mreža.</string>
     <string name="dpm_wifi_misc_wifi_disabled">Pravila sigurnosti sprječavaju korištenje Wi-Fi veze.</string>
     <string name="dpm_wifi_user_profiles_denied">Pravila sigurnosti sprječavaju dodavanje Wi-Fi mreža.</string>
+    <string name="dream_accessibility_action_click">odbacivanje</string>
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Ne može se koristiti ova aplikacija u prikazu Više prozora.</string>
     <string name="dream_preview_title">Pregled, %1$s</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Ne može se koristiti ova funkcija u prikazu Više prozora.</string>
@@ -841,11 +845,13 @@ broj %s"</string>
     <string name="duration_years_shortest_future">za %d g</string>
     <string name="dynamic_mode_notification_channel_name">Obavještenje za informacije Rutinskog načina</string>
     <string name="dynamic_mode_notification_summary">Smanjena je potrošnja baterije da se produži vijek trajanja baterije</string>
+    <string name="dynamic_mode_notification_summary_v2">Ušteda baterije je uključena radi produženja vijeka trajanja baterije</string>
     <string name="dynamic_mode_notification_title">Ušteda baterije je uključena</string>
+    <string name="dynamic_mode_notification_title_v2">Ušteda baterije je uključena</string>
     <string name="editTextMenuTitle">Akcije za tekst</string>
     <string name="edit_accessibility_shortcut_menu_button">Uredi prečice</string>
     <string name="edit_contact_at_sim_restriction">Pravila sigurnosti sprječavaju uređivanje kontakata na SIM kartici.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Dozvoljeni uređaji</string>
+    <string name="edm_policy_not_allow_open_wifiap">Pravila sigurnosti ograničavaju korištenje nesigurnog dijeljenje putem pristupne tačke.</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
     <string name="elapsed_time_short_format_mm_ss">%1$02d:%2$02d</string>
     <string name="emailTypeCustom">Prilagođeno</string>
@@ -856,8 +862,10 @@ broj %s"</string>
     <string name="emergency_call_dialog_number_for_display">Broj za hitne slučajeve</string>
     <string name="emergency_calls_only">Samo pozivi u hitnim slučajevima</string>
     <string name="enablePin">Nije uspjelo. Prvo omogućite SIM/RUIM zaključavanje.</string>
-    <string name="enable_explore_by_touch_warning_message">Usluga %1$s želi omogućiti Istraživanje dodirom. Kada je Istraživanje dodirom uključeno, možete čuti ili vidjeti opise onoga što vam je pod prstom ili praviti pokrete za interakciju sa tabletom.</string>
+    <string name="enable_explore_by_touch_warning_message">Usluga %1$s želi omogućiti Istraživanje dodirom. Kada je Istraživanje dodirom uključeno, možete čuti ili vidjeti opise onoga što vam je pod prstom ili praviti pokrete za interakciju sa telefonom.</string>
     <string name="enable_explore_by_touch_warning_title">Želite li omogućiti Istraživanje dodirom?</string>
+    <string name="error_handwriting_unsupported">Rukopis nije podržan u ovom polju</string>
+    <string name="error_handwriting_unsupported_password">Rukopis nije podržan u poljima za lozinku</string>
     <string name="error_message_change_not_allowed">Vaš administrator ne dozvoljava ovu promjenu</string>
     <string name="error_message_title">Greška</string>
     <string name="ethernet_cable_connected_notification_message">Dodirnite za postavljanje.</string>
@@ -914,7 +922,7 @@ broj %s"</string>
     <string name="ext_media_unsupported_notification_message">Ovaj uređaj ne podržava ovaj %s. Dodirnite za postavljanje u podržanom formatu.</string>
     <string name="ext_media_unsupported_notification_title">Nepodržani %s</string>
     <string name="ext_storage_bad_removal_button">Ponovno pokreni</string>
-    <string name="ext_storage_bad_removal_title">Ponovno pokrenite tablet</string>
+    <string name="ext_storage_bad_removal_title">Ponovno pokrenite telefon</string>
     <string name="extract_edit_menu_button">Uredi</string>
     <string name="face_acquired_dark_glasses_detected_alt">Otkrivene su tamne naočale. Lice se mora u potpunosti vidjeti.</string>
     <string name="face_acquired_insufficient">Nije moguće kreirati model lica. Pokušajte ponovo.</string>
@@ -931,7 +939,7 @@ broj %s"</string>
     <string name="face_acquired_too_bright">Previše svijetlo. Probajte s blažim osvjetljenjem.</string>
     <string name="face_acquired_too_close">Odmaknite telefon</string>
     <string name="face_acquired_too_dark">Nema dovoljno svjetlosti</string>
-    <string name="face_acquired_too_different">Nije moguće prepoznati lice. Pokušajte ponovo.</string>
+    <string name="face_acquired_too_different">Lice nije prepoznato. Pokušajte ponovo.</string>
     <string name="face_acquired_too_far">Primaknite telefon</string>
     <string name="face_acquired_too_high">Pomjerite telefon nagore</string>
     <string name="face_acquired_too_left">Pomjerite telefon udesno</string>
@@ -964,8 +972,6 @@ broj %s"</string>
     <string name="face_recalibrate_notification_name">Otključavanje licem</string>
     <string name="face_recalibrate_notification_title">Problem s otključavanjem licem</string>
     <string name="face_sensor_privacy_enabled">Da koristite otključavanje licem, uključite <b>Pristup kameri</b> u meniju Postavke > Privatnost</string>
-    <string name="face_setup_notification_content">Otključajte telefon gledajući u njega</string>
-    <string name="face_setup_notification_title">Postavite otključavanje licem</string>
     <string name="faceunlock_multiple_failures">Premašen maksimalni broj pokušaja otključavanja licem</string>
     <string name="factory_reset_message">"Nije moguće koristiti aplikaciju administratora. Potpuno će se izbrisati podaci na vašem uređaju.
 
@@ -1001,20 +1007,21 @@ Ako imate pitanja, obratite se administratoru svoje organizacije."</string>
     <string name="fingerprint_app_setting_name">Koristi otisak prsta</string>
     <string name="fingerprint_authenticated">Otisak prsta je potvrđen</string>
     <string name="fingerprint_dialog_default_subtitle">Nastavite pomoću otiska prsta</string>
-    <string name="fingerprint_error_bad_calibration">Nije moguće koristiti senzor za otisak prsta. Posjetite pružaoca usluga za popravke</string>
-    <string name="fingerprint_error_canceled">Radnja s otiskom prsta je otkazana.</string>
-    <string name="fingerprint_error_hw_not_available">Hardver za otisak prsta nije dostupan.</string>
-    <string name="fingerprint_error_hw_not_present">Ovaj uređaj nema senzor za otisak prsta.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">Lice nije prepoznato. Upotrijebite otisak prsta.</string>
+    <string name="fingerprint_error_bad_calibration">Nije moguće koristiti senzor za otisak prsta. Posjetite pružaoca usluga za popravke.</string>
+    <string name="fingerprint_error_canceled">Radnja s otiskom prsta je otkazana</string>
+    <string name="fingerprint_error_hw_not_available">Hardver za prepoznavanje otiska prsta nije dostupan</string>
+    <string name="fingerprint_error_hw_not_present">Ovaj uređaj nema senzor za otisak prsta</string>
     <string name="fingerprint_error_lockout">Previše pokušaja. Umjesto toga koristite zaključavanje ekrana.</string>
     <string name="fingerprint_error_lockout_permanent">Previše pokušaja. Umjesto toga koristite zaključavanje ekrana.</string>
-    <string name="fingerprint_error_no_fingerprints">Nije prijavljen nijedan otisak prsta.</string>
+    <string name="fingerprint_error_no_fingerprints">Nije registriran nijedan otisak prsta</string>
     <string name="fingerprint_error_no_space">Nije moguće postaviti otisak prsta</string>
     <string name="fingerprint_error_not_match">Otisak prsta nije prepoznat</string>
     <string name="fingerprint_error_power_pressed">Dugme za uključivanje je pritisnuto</string>
-    <string name="fingerprint_error_security_update_required">Senzor je privremeno onemogućen.</string>
+    <string name="fingerprint_error_security_update_required">Senzor je privremeno onemogućen</string>
     <string name="fingerprint_error_timeout">Postavljanje otiska prsta je isteklo. Pokušajte ponovo.</string>
     <string name="fingerprint_error_unable_to_process">Nije moguće obraditi otisak prsta. Pokušajte ponovo.</string>
-    <string name="fingerprint_error_user_canceled">Korisnik je otkazao radnju s otiskom prsta.</string>
+    <string name="fingerprint_error_user_canceled">Korisnik je otkazao radnju s otiskom prsta</string>
     <string name="fingerprint_error_vendor_unknown">Nešto nije uredu. Pokušajte ponovo.</string>
     <string name="fingerprint_name_template">Prst %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">Koristi otisak prsta ili zaključavanje ekrana</string>
@@ -1022,8 +1029,6 @@ Ako imate pitanja, obratite se administratoru svoje organizacije."</string>
     <string name="fingerprint_recalibrate_notification_content">Posjetite pružaoca usluga za popravke.</string>
     <string name="fingerprint_recalibrate_notification_name">Otključavanje otiskom prsta</string>
     <string name="fingerprint_recalibrate_notification_title">Nije moguće koristiti senzor za otisak prsta</string>
-    <string name="fingerprint_setup_notification_content">Dodirnite da dodate otisak prsta</string>
-    <string name="fingerprint_setup_notification_title">Postavite više načina otključavanja</string>
     <string name="fingerprint_udfps_error_not_match">Otisak prsta nije prepoznat</string>
     <string name="fingerprints">Otisci prstiju:</string>
     <string name="firmwarerecovery_restrict">Pravila sigurnosti ograničavaju automatski oporavak firmvera.</string>
@@ -1110,7 +1115,7 @@ Pokušajte ga lagano dodirnuti dok postavljate otisak prsta."</string>
     <string name="global_action_toggle_sealed_mode">Zapečaćeni režim</string>
     <string name="global_action_toggle_silent_mode">Nečujni način rada</string>
     <string name="global_action_voice_assist">Glasovna pomoć</string>
-    <string name="global_actions">Opcije tableta</string>
+    <string name="global_actions">Opcije telefona</string>
     <string name="global_actions_airplane_mode_off_status">Način rada u avionu ugašen</string>
     <string name="global_actions_airplane_mode_on_status">Uključen je način rada u avionu</string>
     <string name="global_actions_toggle_airplane_mode">Način rada u avionu</string>
@@ -1131,6 +1136,7 @@ Pokušajte ga lagano dodirnuti dok postavljate otisak prsta."</string>
     <string name="globalactions_unable_restart_msg_fmm">Ponovno pokretanje nije moguće jer je telefon daljinski zaključan funkcijom Pronađi moj mobilni.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Ponovno pokretanje nije moguće jer je tablet daljinski zaključan funkcijom Pronađi moj mobilni.</string>
     <string name="globalactions_unable_restart_msg_securelock">Ne može se ponovno pokrenuti telefon dok je zaključan. Otvorite omot i otključajte da ponovno pokrenete telefon.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Ne može se ponovo pokrenuti telefon dok je SIM kartica zaključana.</string>
     <string name="gnss_service">Usluga GNSS</string>
     <string name="gnss_time_update_service">GNSS usluga za ažuriranje vremena</string>
     <string name="gpsNotifMessage">Zahtjev uputio %1$s (%2$s)</string>
@@ -1146,7 +1152,7 @@ Pokušajte ga lagano dodirnuti dok postavljate otisak prsta."</string>
     <string name="granularity_label_link">link</string>
     <string name="granularity_label_word">riječ</string>
     <string name="guest_name">Gost</string>
-    <string name="hardware">Prikaz virtuelne tastature</string>
+    <string name="hardware">Koristi tastaturu na ekranu</string>
     <string name="hardware_key_restrict">Pravila sigurnosti sprječavaju korištenje ovog hardverskog ključa.</string>
     <string name="hardware_sec">Tastatura na ekranu</string>
     <string name="harmful_app_warning_open_anyway">IPAK OTVORI</string>
@@ -1295,11 +1301,11 @@ Pokušajte ga lagano dodirnuti dok postavljate otisak prsta."</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Dodirnite za unos lozinke&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Pogrešan PIN.</string>
     <string name="kg_enter_confirm_pin_hint">Potvrdi željeni PIN</string>
-    <string name="kg_failed_attempts_almost_at_login">"Pogrešno ste nacrtali uzorak za otključavanje %1$d puta. Ako napravite još %2$d pokušaja bez uspjeha, od vas će se tražiti da otključate tablet pomoću e-pošte. 
+    <string name="kg_failed_attempts_almost_at_login">"Pogrešno ste nacrtali uzorak za otključavanje %1$d puta. Ako napravite još %2$d pokušaja bez uspjeha, od vas će se tražiti da otključate telefon pomoću e-pošte. 
 
  Pokušajte ponovo za %3$d s."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Pokušali ste otključati tablet na pogrešan način %1$d puta. Ako napravite još %2$d pokušaja bez uspjeha, tablet će biti vraćen na fabričke postavke i svi korisnički podaci će biti izgubljeni.</string>
-    <string name="kg_failed_attempts_now_wiping">Pokušali ste otključati tablet na pogrešan način %d puta. Tablet će sada biti vraćen na fabričke postavke.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Pokušali ste otključati telefon na pogrešan način %1$d puta. Ako napravite još %2$d pokušaja bez uspjeha, telefon će biti vraćen na fabričke postavke i svi korisnički podaci će biti izgubljeni.</string>
+    <string name="kg_failed_attempts_now_wiping">Pokušali ste otključati telefon na pogrešan način %d puta. Telefon će sada biti vraćen na fabričke postavke.</string>
     <string name="kg_forgot_pattern_button_text">Zaboravili ste uzorak?</string>
     <string name="kg_invalid_confirm_pin_hint">PIN-ovi se ne poklapaju</string>
     <string name="kg_invalid_puk">Ponovo unesite ispravan PUK kôd. Ponovljeni pokušaji će trajno onemogućiti SIM.</string>
@@ -1387,11 +1393,11 @@ Broj sekundi do sljedećeg pokušaja: %2$d."</string>
     <string name="lockscreen_carrier_default">Nema mreže</string>
     <string name="lockscreen_carrier_noservice">(Nema usluge.)</string>
     <string name="lockscreen_emergency_call">Hitni poziv</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Pogrešno ste pokušali otključati tablet %1$d puta. Možete pokušati još %2$d puta. Ukoliko ni tada ne uspijete otključati tablet, tablet će se vratiti na fabričke postavke i svi korisnički podaci bit će izgubljeni.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Pogrešno ste unijeli uzorak za otključavanje %1$d puta. Možete pokušati još %2$d puta. Nakon toga ćete morati otključati tablet prijavom na svoj Google račun.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Pogrešno ste pokušali otključati telefon %1$d puta. Možete pokušati još %2$d puta. Ukoliko ni tada ne uspijete otključati telefon, telefon će se vratiti na fabričke postavke i svi korisnički podaci bit će izgubljeni.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Pogrešno ste unijeli uzorak za otključavanje %1$d puta. Možete pokušati još %2$d puta. Nakon toga ćete morati otključati telefon prijavom na svoj Google račun.
 
  Broj sekundi do sljedećeg pokušaja: %3$d"</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Pogrešno ste pokušali otključati tablet %d puta. Tablet će sada biti vraćen na fabričke postavke.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Pogrešno ste pokušali otključati telefon %d puta. Telefon će sada biti vraćen na fabričke postavke.</string>
     <string name="lockscreen_forgot_pattern_button_text">Zaboravili ste uzorak?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Zaboravili ste korisničko ime ili lozinku?
 Posjetite "<b>google.com/accounts/recovery</b>.</string>
@@ -1407,7 +1413,7 @@ Posjetite "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Pritisnite dugme Meni kako biste otključali uređaj ili obavili hitni poziv.</string>
     <string name="lockscreen_missing_sim_instructions">Dodajte SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM nedostaje ili se ne može čitati. Dodajte SIM.</string>
-    <string name="lockscreen_missing_sim_message">U tabletu nema SIM-a.</string>
+    <string name="lockscreen_missing_sim_message">U telefonu nema SIM-a.</string>
     <string name="lockscreen_missing_sim_message_short">Nema SIM-a</string>
     <string name="lockscreen_network_locked_message">Mreža zaključana</string>
     <string name="lockscreen_password_wrong">Pokušajte ponovo</string>
@@ -1447,7 +1453,7 @@ Broj sekundi do sljedećeg pokušaja: %2$d"</string>
     <string name="low_internal_storage_view_text">Neke funkcije sistema možda neće raditi</string>
     <string name="low_internal_storage_view_text_no_boot">Nema dovoljno prostora za sistem. Obezbijedite 250MB slobodnog prostora i ponovo pokrenite uređaj.</string>
     <string name="low_internal_storage_view_title">Ponestaje prostora za pohranu</string>
-    <string name="low_memory">Pohrana tableta je puna. Izbrišite fajlove kako biste oslobodili prostor.</string>
+    <string name="low_memory">Pohrana telefona je puna. Izbrišite fajlove kako biste oslobodili prostor.</string>
     <string name="ltb_kill_content_v2_phone">Aplikacija %s se zatvorila jer je uzrokovala pregrijavanje telefona. Možete je ponovno otvoriti kada se telefon ohladi.</string>
     <string name="ltb_kill_content_v2_tablet">Aplikacija %s se zatvorila jer je uzrokovala pregrijavanje tableta. Možete je ponovno otvoriti kada se tablet ohladi.</string>
     <string name="ltb_warning_button">Nemoj zatvarati</string>
@@ -1467,16 +1473,16 @@ Broj sekundi do sljedećeg pokušaja: %2$d"</string>
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Morat ćete otključati tablet da isključite Režim održavanja.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Neće biti sačuvano ništa što se dogodi dok je Režim održavanja uključen, kao što su preuzeti podaci, instalacije aplikacija ili promjene postavki.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Postavi zaklj. ekran</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Ponovo pokreni bez kreir. dnevnika rada</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Kreiraj dnevnik rada i ponovo pokreni</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Vaš telefon se mora ponovno pokrenuti da uključite Režim održavanja.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Prvo postavite zaključavanje ekrana.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Vaš tablet se mora ponovno pokrenuti da uključite Režim održavanja.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Kako bi naše osoblje za podršku lakše analiziralo bilo kakve probleme s vašim telefonom, preporučujemo da kreirate dnevnik sistema prije nego što se prebacite na režim održavanja.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Da biste pomogli našem osoblju za podršku u dijagnosticiranju i analizi problema s vašim telefonom, preporučujemo da kreirate dnevnik sistema prije pokretanja režima održavanja.
 
-U dnevniku je prikazano koje aplikacije su se koristile i sve greške do kojih je možda nedavno došlo, no on ne uključuje druge lične podatke. Dnevnik će se koristiti samo za analizu problema i nijednu drugu svrhu. Kreiranje dnevnika uobičajeno traje oko 2 minute."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Kako bi naše osoblje za podršku lakše analiziralo bilo kakve probleme s vašim tabletom, preporučujemo da kreirate dnevnik sistema prije nego što se prebacite na režim održavanja.
+Dnevnik uključuje samo informacije bitne za popravku vašeg telefona, kao što su koje su aplikacije korištene, greške koje su se nedavno dogodile, blokirani telefonski brojevi i kapacitet pohrane datoteka. Dnevnik će se koristiti samo za dijagnozu i analizu problema i niti u bilo koju drugu svrhu. Obično treba 2 minute da se kreira dnevnik."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Da biste pomogli našem osoblju za podršku u dijagnosticiranju i analizi problema s vašim tabletom, preporučujemo da kreirate dnevnik sistema prije pokretanja režima održavanja.
 
-U dnevniku je prikazano koje aplikacije su se koristile i sve greške do kojih je možda nedavno došlo, no on ne uključuje druge lične podatke. Dnevnik će se koristiti samo za analizu problema i nijednu drugu svrhu. Kreiranje dnevnika uobičajeno traje oko 2 minute."</string>
+Dnevnik uključuje samo informacije bitne za popravku vašeg tableta, kao što su koje su aplikacije korištene, greške koje su se nedavno dogodile, blokirani telefonski brojevi i kapacitet pohrane datoteka. Dnevnik će se koristiti samo za dijagnozu i analizu problema i niti u bilo koju drugu svrhu. Obično treba 2 minute da se kreira dnevnik."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Analiziraj pohranu</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Unutrašnja pohrana vašeg telefona je skoro puna. Ako vam ponestane prostora za pohranu, neke aplikacije i funkcije možda neće ispravno funkcionisati. Pokušajte izbrisati neke datoteke ili aplikacije koje vam više ne trebaju. Nakon brisanja, ne zaboravite isprazniti Smeće.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Unutrašnja pohrana vašeg tableta je skoro puna. Ako vam ponestane prostora za pohranu, neke aplikacije i funkcije možda neće ispravno funkcionisati. Pokušajte izbrisati neke datoteke ili aplikacije koje vam više ne trebaju. Nakon brisanja, ne zaboravite isprazniti Smeće.</string>
@@ -1498,10 +1504,17 @@ U dnevniku je prikazano koje aplikacije su se koristile i sve greške do kojih j
     <string name="maintenance_mode_outro_label">Izađi iz Režima održavanja</string>
     <string name="maintenance_mode_outro_textview_message_phone">Morate otključati telefon da isključite Režim održavanja. Kada to uradite, sve će se vratiti kako je bilo kada je prvi put uključen Režim održavanja. Promjene napravljene dok je Režim održavanja bio uključen, kao što su preuzeti podaci, instalirane aplikacije ili promijenjene postavke se neće sačuvati.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Morate otključati tablet da isključite Režim održavanja. Kada to uradite, sve će se vratiti kako je bilo kada je prvi put uključen Režim održavanja. Promjene napravljene dok je Režim održavanja bio uključen, kao što su preuzeti podaci, instalirane aplikacije ili promijenjene postavke se neće sačuvati.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Režim održavanja se ne može koristiti dok je funkcija %s aktivna.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Nije moguće koristiti Režim održavanja dok je uključena Štednja energije s ograničenim aplikacijama i Početnim ekranom.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Režim održavanja nije podržan na ovom telefonu.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Režim održavanja nije podržan na ovom tabletu.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s može koristiti vlasnik uređaja.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Zaustaviti kreiranje sigurnosne kopije podataka i uključiti Režim održavanja?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Da uključite Režim održavanja, morate završiti ili izbrisati nezavršenu sigurnosnu kopiju.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Da uključite Režim održavanja, morate zaustaviti kreiranje sigurnosne kopije u toku.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Da uključite Režim održavanja, morate zaustaviti obnavljanje vaših podataka sigurnosne kopije.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Aplikacija administratora uređaja</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Kreiranje dnevnika rada…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Ovo uobičajeno traje 2 minute. Nakon kreiranja dnevnika, telefon će se ponovo pokrenuti u režimu održavanja i možete ga sigurno predati na održavanje.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Ovo uobičajeno traje 2 minute. Nakon kreiranja dnevnika, tablet će se ponovo pokrenuti u režimu održavanja i možete ga sigurno predati na održavanje.</string>
@@ -1645,6 +1658,7 @@ Vaš tablet će se uskoro ponovno pokrenuti."</string>
     <string name="menu_shift_shortcut_label">Shift+</string>
     <string name="menu_space_shortcut_label">razmak</string>
     <string name="menu_sym_shortcut_label">Sym+</string>
+    <string name="message_on_crash">Blokirao Automatski blokator</string>
     <string name="mic_access_off_toast">Mikrofon je blokiran</string>
     <string name="mic_access_on_toast">Mikrofon je dostupan</string>
     <string name="microphone_restrict">Pravila sigurnosti sprječavaju korištenje mikrofona.</string>
@@ -1667,15 +1681,17 @@ Vaš tablet će se uskoro ponovno pokrenuti."</string>
     <string name="mime_type_spreadsheet_ext">%1$s tabela</string>
     <string name="mime_type_video">Videozapis</string>
     <string name="mime_type_video_ext">%1$s videozapis</string>
-    <string name="miniresolver_call">Poziv</string>
-    <string name="miniresolver_call_in_work">Pozvati iz radne aplikacije?</string>
-    <string name="miniresolver_call_information">Vaša organizacija vam dozvoljava da upućujete pozive samo iz radnih aplikacija.</string>
+    <string name="miniresolver_call">Pozovi</string>
+    <string name="miniresolver_call_in_work">Pozvati iz poslovne aplikacije?</string>
+    <string name="miniresolver_call_information">Vaša organizacija vam dozvoljava da upućujete pozive samo iz poslovnih aplikacija</string>
     <string name="miniresolver_open_in_personal">Otvoriti u ličnoj aplikaciji %s?</string>
     <string name="miniresolver_open_in_work">Otvoriti u poslovnoj aplikaciji %s?</string>
-    <string name="miniresolver_open_work">Otvoriti poslovnu aplikaciju %s?</string>
-    <string name="miniresolver_sms_information">Vaša organizacija vam dozvoljava da šaljete poruke samo iz radnih aplikacija.</string>
-    <string name="miniresolver_switch">Prelazak</string>
-    <string name="miniresolver_switch_to_work">Preći na radnu aplikaciju?</string>
+    <string name="miniresolver_open_work">Otvoriti aplikaciju %s za posao?</string>
+    <string name="miniresolver_private_space_messages_information">SMS poruke možete slati samo iz lične aplikacije Messages.</string>
+    <string name="miniresolver_private_space_phone_information">Telefonske pozive možete upućivati samo iz lične aplikacije Telefon. Pozivi upućeni ličnim telefonom će se dodavati u vašu ličnu historiju poziva.</string>
+    <string name="miniresolver_sms_information">Vaša organizacija vam dozvoljava da šaljete poruke samo iz poslovnih aplikacija</string>
+    <string name="miniresolver_switch">Prebaci</string>
+    <string name="miniresolver_switch_to_work">Prebaciti na poslovnu aplikaciju?</string>
     <string name="miniresolver_use_personal_browser">Koristi lični preglednik</string>
     <string name="miniresolver_use_work_browser">Koristi poslovni preglednik</string>
     <string name="minute">minuta</string>
@@ -1708,30 +1724,6 @@ Vaš tablet će se uskoro ponovno pokrenuti."</string>
     <string name="mock_location_reminder_title">Lažna lokacija je uključena</string>
     <string name="more_apps">Više aplikac.</string>
     <string name="more_item_label">Više</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s service not supported. Contact customer services.</string>
-    <string name="mptcp_message_address_type_not_supported">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_cmd_not_supported">%s network temporarily not available. Reconnecting via available network…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_connection_refused">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_data_usage_limit">Data usage limit reached. To change data usage limit, go to Settings.</string>
-    <string name="mptcp_message_host_unreachable">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Unable to enable %s. Device not connected to LTE network.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Unable to enable %s while roaming internationally.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Unable to enable %s while Mobile Hotspot or USB tethering enabled.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Unable to enable %s while Wi-Fi Direct enabled.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Unable to enable %s while Flight mode enabled.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Unable to enable %s while Mobile data turned off.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">No response from service provider.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Nije moguće omogućiti funkciju %1$s. Funkcija %2$s nije dostupna s vašim internet paketom ili nije primljen odgovor servera %3$s.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Failed to send %s activation request. Reconnecting via available networks…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Unable to enable %s. Incorrect SIM card inserted.</string>
-    <string name="mptcp_message_network_unreachable">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_non_mptcp_plan">Unable to enable Giga Multi-Path. Function not supported by data plan.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s disabled to prevent device overheating. Downloading via mobile network instead…</string>
-    <string name="mptcp_message_server_error">%s connection poor. Reconnecting via available network…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Unable to enable %s. Device overheating. Wait until device cools down and try again.</string>
-    <string name="mptcp_message_ttl_expired">%s network temporarily not available. Reconnecting via available network…</string>
     <string name="mte_override_notification_message">To može uticati na performanse i stabilnost. Ponovo pokrenite da onemogućite. Ako je omogućeno pomoću arm64.memtag.bootctl, prvo postavite na \"Ništa\".</string>
     <string name="mte_override_notification_title">Eksperimentalni MTE je omogućen</string>
     <string name="multi_user_capability_restrict">Pravila sigurnosti sprječavaju mogućnost korištenja vašeg uređaja od strane više korisnika.</string>
@@ -1752,18 +1744,18 @@ Vaš tablet će se uskoro ponovno pokrenuti."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">Zvuk se reprodukuje na Bluetooth audio uređaju. Dodirnite ovdje da ga isključite</string>
     <string name="multisound_sound_via_headphone">%s zvuk se reprodukuje putem slušalica. Dodirnite ovdje da ga isključite.</string>
     <string name="multisound_sound_via_headphone_multiselection">Zvuk se reprodukuje putem slušalica. Dodirnite ovdje da ga isključite.</string>
-    <string name="multisound_sound_via_phone_speaker">%s zvuk se reprodukuje putem zvučnika tableta. Dodirnite ovdje da ga isključite.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Zvuk se reprodukuje putem zvučnika tableta. Dodirnite ovdje da ga isključite.</string>
+    <string name="multisound_sound_via_phone_speaker">%s zvuk se reprodukuje putem zvučnika telefona. Dodirnite ovdje da ga isključite.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Zvuk se reprodukuje putem zvučnika telefona. Dodirnite ovdje da ga isključite.</string>
     <string name="multisound_sound_via_usb_audio">%s zvuk se reprodukuje putem USB audio uređaja. Dodirnite ovdje da ga isključite.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Zvuk se reprodukuje putem USB audio uređaja. Dodirnite ovdje da ga isključite.</string>
     <string name="multisound_title">Odvoji zvuk aplikacije</string>
     <string name="multisound_turn_off_multisound">Isključi</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s se ne može pokrenuti u Samsung DeX-u. Pokrenute je u tabletskom režimu.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s se ne može pokrenuti u Samsung DeX-u. Ona je namijenjena za Početne ekrane tableta.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Neke igre funkcionišu samo na dodirnim ekranima. Ako kontrole miša ne funkcionišu na Samsung DeX-u, umjesto toga pokušajte igrati u tabletskom režimu.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Aplikacija %s se ne može pokrenuti u aplikaciji Samsung DeX. Pokrenute je u telefonskom režimu.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s se ne može pokrenuti u aplikaciji Samsung DeX. Ona je namijenjena za Početne ekrane telefona.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Neke igre funkcionišu samo na dodirnim ekranima. Ako kontrole miša ne funkcionišu na Samsung DeX-u, umjesto toga pokušajte igrati u telefonskom režimu.</string>
     <string name="music_recognition_manager_service">Usluga upravitelja prepoznavanja muzike</string>
     <string name="muted_by">%1$s isključuje neke zvukove</string>
-    <string name="my_device">Ovaj tablet</string>
+    <string name="my_device">Ovaj telefon</string>
     <string name="nas_upgrade_notification_content">Poboljšana obavještenja sada pružaju predložene radnje i odgovore. Prilagodljiva obavještenja Androida više nisu podržana.</string>
     <string name="nas_upgrade_notification_disable_action">Isključi</string>
     <string name="nas_upgrade_notification_enable_action">Uredu</string>
@@ -1803,7 +1795,6 @@ Poboljšana obavještenja mogu pristupiti sadržaju obavještenja, uključujući
     <string name="nosim_limited_service">Limited service</string>
     <string name="not_checked">nije označeno</string>
     <string name="not_selected">nije odabrano</string>
-    <string name="not_support_ai_key">AI taster još uvijek ne radi na vašem tabletu. Ažuriranje će uskoro biti dostupno.</string>
     <string name="notification_action_check_bg_apps">Provjerite aktivne aplikacije</string>
     <string name="notification_alerted_content_description">Upozoreni</string>
     <string name="notification_app_name_settings">Postavke</string>
@@ -1822,6 +1813,7 @@ Poboljšana obavještenja mogu pristupiti sadržaju obavještenja, uključujući
     <string name="notification_channel_developer_important">Važne poruke za programere</string>
     <string name="notification_channel_device_admin">Upozorenja od IT administratora</string>
     <string name="notification_channel_dex_policy">Pravila za Samsung DeX</string>
+    <string name="notification_channel_display">Ekran</string>
     <string name="notification_channel_do_not_disturb">Ne ometaj</string>
     <string name="notification_channel_emergency_callback">Način rada za hitni povratni poziv</string>
     <string name="notification_channel_foreground_service">Aplikacije koje troše bateriju</string>
@@ -1884,7 +1876,8 @@ Poboljšana obavještenja mogu pristupiti sadržaju obavještenja, uključujući
     <string name="overheat_warning_title_v2_tablet">Tablet se pregrijava</string>
     <string name="owner_name">Vlasnik</string>
     <string name="package_deleted_device_owner">Izbrisao je vaš administrator</string>
-    <string name="package_installed_device_owner">Instalirao je vaš administrator</string>
+    <string name="package_installed_device_owner">"Instalirao je vaš administrator.
+Idite u postavke da pregledate data odobrenja"</string>
     <string name="package_night_mode_dialog_got_it">Razumijem</string>
     <string name="package_night_mode_dialog_message">%s je pokrenuta u Režimu rada po noći radi uštede baterije. Možete prebaciti na Režim rada po danu u opciji Laboratorija u postavkama.</string>
     <string name="package_night_mode_dialog_settings_labs">Laboratorija u postavkama</string>
@@ -1906,7 +1899,9 @@ Poboljšana obavještenja mogu pristupiti sadržaju obavještenja, uključujući
     <string name="permdesc_accessCoarseLocation">Ova aplikacija može odrediti vašu približnu lokaciju iz usluga lokacije dok se aplikacija koristi. Da aplikacija odredi lokaciju, usluge lokacije moraju biti uključene na uređaju.</string>
     <string name="permdesc_accessDrmCertificates">Dozvoljava aplikaciji da obezbijedi i koristi DRM certifikate. Nije potrebno za obične aplikacije.</string>
     <string name="permdesc_accessFineLocation">Ova aplikacija može odrediti vašu tačnu lokaciju iz usluga lokacije dok se aplikacija koristi. Da aplikacija odredi lokaciju, usluge lokacije moraju biti uključene na uređaju. Ovim se može povećati potrošnja baterija.</string>
+    <string name="permdesc_accessHiddenProfile">Dozvoljava aplikaciji da pristupa sakrivenim profilima.</string>
     <string name="permdesc_accessImsCallService">Omogućava aplikaciji da koristi IMS uslugu za pozivanje bez vaše intervencije.</string>
+    <string name="permdesc_accessLastKnownCellId">Dozvoljava aplikaciji da pristupa posljednjem poznatom ID-u mobilne stanice koji pruža telefonija.</string>
     <string name="permdesc_accessLocationExtraCommands">Dozvoljava aplikaciji pristup dodatnim naredbama pružatelja lokacija. Ovim se aplikaciji može dozvoliti da ometa rad GPS-a ili drugih izvora lokacija.</string>
     <string name="permdesc_accessNetworkConditions">Omogućava aplikaciji slušanje informacije o stanju mreže. Nije potrebno za obične aplikacije.</string>
     <string name="permdesc_accessNetworkState">Omogućava aplikaciji pregled informacija o mrežnim vezama, npr. koje mreže postoje i koje su povezane.</string>
@@ -1927,23 +1922,24 @@ Poboljšana obavještenja mogu pristupiti sadržaju obavještenja, uključujući
     <string name="permdesc_bindNotificationListenerService">Omogućava vlasniku povezivanje s interfejsom najvišeg nivoa u servisu za slušanje obavještenja. Nije potrebno za obične aplikacije.</string>
     <string name="permdesc_bind_connection_service">Dozvoljava aplikaciji interakciju s telefonskim uslugama za upućivanje/prijem poziva.</string>
     <string name="permdesc_bind_incall_service">Dozvoljava aplikaciji da kontrolira kada i kako korisnik vidi ekran tokom poziva.</string>
-    <string name="permdesc_bluetooth">Omogućava aplikaciji prikaz konfiguracije za Bluetooth na tabletu, kao i uspostavljanje i prihvatanje veza sa uparenim uređajima.</string>
-    <string name="permdesc_bluetoothAdmin">Dozvoljava aplikaciji konfiguriranje lokalnog Bluetooth tableta te otkrivanje udaljenih uređaja i sparivanje s njima.</string>
+    <string name="permdesc_bluetooth">Omogućava aplikaciji prikaz konfiguracije za Bluetooth na telefonu, kao i uspostavljanje i prihvatanje veza sa uparenim uređajima.</string>
+    <string name="permdesc_bluetoothAdmin">Dozvoljava aplikaciji konfiguriranje lokalnog Bluetooth telefona te otkrivanje udaljenih uređaja i sparivanje s njima.</string>
     <string name="permdesc_bluetooth_advertise">Dozvoljava aplikaciji da vrši oglašavanje na Bluetooth uređajima u blizini</string>
     <string name="permdesc_bluetooth_connect">Dozvoljava aplikaciji da se poveže s uparenim Bluetooth uređajima</string>
     <string name="permdesc_bluetooth_scan">Dozvoljava aplikaciji da otkrije Bluetooth uređaje u blizini i upari se s njima</string>
     <string name="permdesc_bodySensors">Dozvoljava aplikaciji dok se koristi da pristupa podacima tjelesnih senzora kao što su puls, temperatura i postotak kisika u krvi.</string>
     <string name="permdesc_bodySensors_background">Dozvoljava aplikaciji dok je u pozadini da pristupa podacima tjelesnih senzora kao što su puls, temperatura i postotak kisika u krvi.</string>
-    <string name="permdesc_broadcastSticky">Omogućava aplikaciji slanje ljepljivih informacija koje ostaju nakon prestanka emitiranja. Njihova pretjerana upotreba može usporiti ili destabilizirati rad tableta jer troši previše memorije.</string>
+    <string name="permdesc_broadcastSticky">Omogućava aplikaciji slanje ljepljivih informacija koje ostaju nakon prestanka emitiranja. Njihova pretjerana upotreba može usporiti ili destabilizirati rad telefona jer troši previše memorije.</string>
     <string name="permdesc_callCompanionApp">Dozvoljava aplikaciji da vidi i kontrolira odlazne pozive na uređaju. To uključuje informacije kao što su brojevi telefona i stanja poziva.</string>
     <string name="permdesc_callPhone">Dozvoljava aplikaciji da pozove brojeve telefona bez vaše intervencije. Ovo može dovesti do neočekivanih troškova ili poziva. Napominjemo da ovo ne dozvoljava aplikaciji da pozove brojeve za hitne slučajeve. Zlonamjerne aplikacije vam mogu uzrokovati troškove upućivanjem poziva bez vaše potvrde ili pozvati kodove operatera što uzrokuje automatsko prosljeđivanje dolaznih poziva na drugi broj.</string>
     <string name="permdesc_camera">Za vrijeme korištenja, ova aplikacija može snimati slike i videozapise koristeći kameru.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">Aplikacija može pristupati kameri kao korisnik sistema bez grafičkog korisničkog interfejsa.</string>
     <string name="permdesc_cameraOpenCloseListener">Ova aplikacija može primati povratne pozive kada se otvara ili zatvara bilo koji uređaj s kamerom (putem neke aplikacije).</string>
     <string name="permdesc_changeNetworkState">Dozvoljava aplikaciji izmjenu stanja mrežne povezanosti.</string>
     <string name="permdesc_changeTetherState">Dozvoljava aplikaciji izmjenu stanja povezanosti na podijeljenu mrežu.</string>
-    <string name="permdesc_changeWifiMulticastState">Omogućava aplikaciji prijem paketa poslanih svim uređajima na WiFi mreži pomoću višesmjernih adresa, a ne samo na vaš tablet. Troši više energije nego rad van multicast načina rada.</string>
+    <string name="permdesc_changeWifiMulticastState">Omogućava aplikaciji prijem paketa poslanih svim uređajima na WiFi mreži pomoću višesmjernih adresa, a ne samo na vaš telefon. Troši više energije nego rad van multicast načina rada.</string>
     <string name="permdesc_changeWifiState">Omogućava aplikaciji uspostavljanje i prekidanje veze sa WiFi pristupnim tačkama, kao i promjenu konfiguracije uređaja za WiFi mreže.</string>
-    <string name="permdesc_changeWimaxState">Omogućava aplikaciji uspostavljanje i prekidanje veze tableta sa WiMAX mrežama.</string>
+    <string name="permdesc_changeWimaxState">Omogućava aplikaciji uspostavljanje i prekidanje veze telefona sa WiMAX mrežama.</string>
     <string name="permdesc_companionProfileWatch">Dozvoljava pratećoj aplikaciji da upravlja satovima.</string>
     <string name="permdesc_connection_manager">Dozvoljava aplikacijama upravljanje telekom vezama.</string>
     <string name="permdesc_control_incall_experience">Dozvoljava aplikaciji da omogući opcije tokom poziva.</string>
@@ -1964,6 +1960,7 @@ Poboljšana obavještenja mogu pristupiti sadržaju obavještenja, uključujući
     <string name="permdesc_foregroundServiceHealth">Dozvoljava aplikaciji da koristi usluge u prvom planu s vrstom \"health\"</string>
     <string name="permdesc_foregroundServiceLocation">Dozvoljava aplikaciji da koristi usluge u prvom planu s vrstom \"location\"</string>
     <string name="permdesc_foregroundServiceMediaPlayback">Dozvoljava aplikaciji da koristi usluge u prvom planu s vrstom \"mediaPlayback\"</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">Dozvoljava aplikaciji da koristi usluge u prvom planu s vrstom \"mediaProcessing\"</string>
     <string name="permdesc_foregroundServiceMediaProjection">Dozvoljava aplikaciji da koristi usluge u prvom planu s vrstom \"mediaProjection\"</string>
     <string name="permdesc_foregroundServiceMicrophone">Dozvoljava aplikaciji da koristi usluge u prvom planu s vrstom \"microphone\"</string>
     <string name="permdesc_foregroundServicePhoneCall">Dozvoljava aplikaciji da koristi usluge u prvom planu s vrstom \"phoneCall\"</string>
@@ -1971,7 +1968,7 @@ Poboljšana obavještenja mogu pristupiti sadržaju obavještenja, uključujući
     <string name="permdesc_foregroundServiceSpecialUse">Dozvoljava aplikaciji da koristi usluge u prvom planu s vrstom \"specialUse\"</string>
     <string name="permdesc_foregroundServiceSystemExempted">Dozvoljava aplikaciji da koristi usluge u prvom planu s vrstom \"systemExempted\"</string>
     <string name="permdesc_fullScreenIntent">Dozvoljava aplikaciji da prikazuje obavještenja kao aktivnosti preko cijelog ekrana na zaključanom uređaju</string>
-    <string name="permdesc_getAccounts">Omogućava aplikaciji dobijanje spiska računa koje tablet prepoznaje. Spisak može uključivati sve račune koje su kreirale instalirane aplikacije.</string>
+    <string name="permdesc_getAccounts">Omogućava aplikaciji dobijanje spiska računa koje telefon prepoznaje. Spisak može uključivati sve račune koje su kreirale instalirane aplikacije.</string>
     <string name="permdesc_getAppList">Dozvoljava aplikaciji čitanje spiska instaliranih aplikacija.</string>
     <string name="permdesc_getPackageSize">Dozvoljava aplikaciji preuzimanje svog koda, podataka i veličine keš memorije</string>
     <string name="permdesc_getTasks">Omogućava aplikaciji preuzimanje informacija o trenutnim i nedavno pokrenutim zadacima. Ovo može omogućiti aplikaciji da otkrije informacije o aplikacijama korištenim na uređaju.</string>
@@ -2067,17 +2064,18 @@ VRATI NA"</string>
     <string name="permdesc_mountUnmountEncryptfsStorage">Connect and disconnect encrypted storage APIs.</string>
     <string name="permdesc_nearby_wifi_devices">Dozvoljava aplikaciji da se oglašava, povezuje i određuje relativni položaj WiFi uređaja u blizini</string>
     <string name="permdesc_nfc">Dozvoljava aplikaciji komuniciranje sa NFC (komunikacija bliskog polja) oznakama, karticama i čitačima.</string>
+    <string name="permdesc_nfcTransactionEvent">Dozvoljava aplikaciji da prima informacije o transakcijama koje se događaju na sigurnom elementu</string>
     <string name="permdesc_observeCompanionDevicePresence">Dozvoljava pratećoj aplikaciji da prati prisutnost pratećih uređaja kada su uređaji u blizini ili daleko.</string>
-    <string name="permdesc_persistentActivity">Omogućava aplikaciji da neke svoje dijelove pohrani trajno u memoriji. Ovo može ograničiti veličinu raspoložive memorije za druge aplikacije i tako usporiti tablet.</string>
+    <string name="permdesc_persistentActivity">Omogućava aplikaciji da neke svoje dijelove pohrani trajno u memoriji. Ovo može ograničiti veličinu raspoložive memorije za druge aplikacije i tako usporiti telefon.</string>
     <string name="permdesc_postNotification">Dozvoljava aplikaciji da prikazuje obavještenja</string>
     <string name="permdesc_preferredPaymentInfo">Dozvoljava aplikaciji da dobije informacije o preferiranoj usluzi plaćanja putem NFC-a kao što su registrirana pomagala i odredište rute.</string>
     <string name="permdesc_processOutgoingCalls">Dozvoljava aplikaciji da vidi birani broj prilikom odlaznog poziva uz opciju da poziv preusmjeri na drugi broj ili da ga skroz prekine.</string>
     <string name="permdesc_queryAllPackages">Omogućava aplikaciji da pregleda sve instalirane pakete.</string>
     <string name="permdesc_readBasicPhoneState">Dozvoljava aplikaciji pristup osnovnim telefonskim funkcijama uređaja.</string>
-    <string name="permdesc_readCalendar">Ova aplikacija može čitati sve događaje u kalendaru pohranjene na vašem tabletu i sačuvati podatke kalendara.</string>
+    <string name="permdesc_readCalendar">Ova aplikacija može čitati sve događaje u kalendaru pohranjene na vašem telefonu i sačuvati podatke kalendara.</string>
     <string name="permdesc_readCallLog">Ova aplikacija može čitati historiju vaših poziva.</string>
     <string name="permdesc_readCellBroadcasts">Omogućava aplikaciji čitanje poruka info servisa koje je primio vaš uređaj. Upozorenja koja emitira info servis se isporučuju na nekim lokacijama kako bi vas upozorila na vanredne situacije. Zlonamjerne aplikacije mogu ometati performanse ili rad vašeg uređaja kada primite informaciju o vanrednoj situaciji od info servisa.</string>
-    <string name="permdesc_readContacts">Dozvoljava aplikaciji da čita podatke o kontaktima pohranjenim na tabletu. Aplikacije će također imati pristup računima na tabletu koji su kreirali kontakte. Ovo može uključivati račune koje su kreirale aplikacije koje ste instalirali. Ovo odobrenje dozvoljava aplikacijama da sačuvaju podatke o kontaktima, a zlonamjerne aplikacije mogu dijeliti te podatke bez vašeg znanja.</string>
+    <string name="permdesc_readContacts">Dozvoljava aplikaciji da čita podatke o kontaktima pohranjenim na telefonu. Aplikacije će također imati pristup računima na telefonu koji su kreirali kontakte. Ovo može uključivati račune koje su kreirale aplikacije koje ste instalirali. Ovo odobrenje dozvoljava aplikacijama da sačuvaju podatke o kontaktima, a zlonamjerne aplikacije mogu dijeliti te podatke bez vašeg znanja.</string>
     <string name="permdesc_readInstallSessions">Dozvoljava aplikaciji da čita sesije instalacija. Ovim se aplikaciji omogućava da vidi detalje o aktivnim instalacijama paketa.</string>
     <string name="permdesc_readMediaAudio">Omogućava aplikaciji da čita audio fajlove iz vaše dijeljene pohrane.</string>
     <string name="permdesc_readMediaImages">Omogućava aplikaciji da čita fajlove slika iz vaše dijeljene pohrane.</string>
@@ -2085,11 +2083,11 @@ VRATI NA"</string>
     <string name="permdesc_readNetworkUsageHistory">Dozvoljava aplikaciji da pročita istoriju korištenja mreže za određene mreže i aplikacije.</string>
     <string name="permdesc_readPhoneNumbers">Dozvoljava aplikaciji pristup telefonskim brojevima uređaja.</string>
     <string name="permdesc_readPhoneState">Omogućava aplikaciji pristup telefonskim funkcijama uređaja. Ovo odobrenje omogućava aplikaciji određivanje telefonskog i identifikacionog broja uređaja, bez obzira da li je poziv aktivan i da li je uspostavljena veza sa pozivanim brojem.</string>
-    <string name="permdesc_readSms">Ova aplikacija može čitati sve SMS (tekstualne) poruke pohranjene na vašem tabletu.</string>
+    <string name="permdesc_readSms">Ova aplikacija može čitati sve SMS (tekstualne) poruke pohranjene na vašem telefonu.</string>
     <string name="permdesc_readSyncSettings">Omogućava aplikaciji čitanje postavki sinhroniziranja za račun. Naprimjer, ovim se može utvrditi da li je aplikacija People sinhronizirana sa računom.</string>
     <string name="permdesc_readSyncStats">Omogućava aplikaciji čitanje statistike sinhroniziranja za račun, uključujući historiju događaja sinhroniziranja i količinu sinhroniziranih podataka.</string>
     <string name="permdesc_readVisualUserSelect">Omogućava aplikaciji da čita fajlove slika i videozapisa koje odaberete iz vaše dijeljene pohrane.</string>
-    <string name="permdesc_receiveBootCompleted">Dozvoljava aplikaciji da se sama pokrene čim sistem završi pokretanje. Zbog toga pokretanje tableta može trajati duže i to može omogućiti aplikaciji da uspori rad čitavog tableta svojim neprekidnim radom.</string>
+    <string name="permdesc_receiveBootCompleted">Dozvoljava aplikaciji da se sama pokrene čim sistem završi pokretanje. Zbog toga pokretanje telefona može trajati duže i to može omogućiti aplikaciji da uspori rad čitavog telefona svojim neprekidnim radom.</string>
     <string name="permdesc_receiveMms">Omogućava aplikaciji prijem i obradu MMS poruka. Ovo znači da aplikacija može pratiti ili brisati poruke poslane na vaš uređaj, a da vam ih pritom ne prikazuje.</string>
     <string name="permdesc_receiveSms">Omogućava aplikaciji primanje i obradu SMS poruka. Ovo znači da aplikacija može pratiti ili brisati poruke poslane na vaš uređaj, a da vam ih pritom ne prikazuje.</string>
     <string name="permdesc_receiveWapPush">Omogućava aplikaciji primanje i obradu WAP poruka. Ovo znači da aplikacija može pratiti ili brisati poruke poslane na vaš uređaj, a da vam ih pritom ne prikazuje.</string>
@@ -2111,7 +2109,7 @@ VRATI NA"</string>
     <string name="permdesc_sendSms">Omogućava aplikaciji slanje SMS poruka. Ovo može dovesti do neočekivanih troškova. Zlonamjerne aplikacije mogu trošiti vaš novac tako što će slati poruke bez vašeg znanja.</string>
     <string name="permdesc_setAlarm">Dozvoljava aplikaciji postavljanje alarma u instaliranom budilniku. Moguće je da neki budilnici neće primijeniti ovu funkciju.</string>
     <string name="permdesc_setInputCalibration">Dozvoljava aplikaciji kalibriranje parametara dodirnog ekrana. Nije potrebno za obične aplikacije.</string>
-    <string name="permdesc_setTimeZone">Dozvoljava aplikaciji promjenu vremenske zone tableta.</string>
+    <string name="permdesc_setTimeZone">Dozvoljava aplikaciji promjenu vremenske zone telefona.</string>
     <string name="permdesc_setWallpaper">Dozvoljava aplikaciji postavljanje sistemske pozadinske slike.</string>
     <string name="permdesc_setWallpaperHints">Dozvoljava aplikaciji određivanje veličine sistemske pozadinske slike.</string>
     <string name="permdesc_sim_communication">Omogućava aplikaciji slanje naredbi na SIM. Ovo je vrlo opasno.</string>
@@ -2125,7 +2123,7 @@ VRATI NA"</string>
     <string name="permdesc_subscribedFeedsRead">Dozvoljava aplikaciji prikupljanje detalja o trenutno sinhroniziranim sadržajima.</string>
     <string name="permdesc_systemAlertWindow">Aplikacija se može pojaviti iznad ostalih aplikacija ili drugih dijelova ekrana. To može uticati na normalno korištenje aplikacije i promijeniti izgled drugih aplikacija.</string>
     <string name="permdesc_systemCamera">Ova povlaštena ili sistemska aplikacija u svakom trenutku može snimati fotografije i videozapise pomoću kamere sistema. Aplikacija također mora imati odobrenje android.permission.CAMERA</string>
-    <string name="permdesc_transmitIr">Omogućava aplikaciji korištenje infracrvenog odašiljača tableta.</string>
+    <string name="permdesc_transmitIr">Omogućava aplikaciji korištenje infracrvenog odašiljača telefona.</string>
     <string name="permdesc_turnScreenOn">Omogućava aplikaciji da uključi ekran.</string>
     <string name="permdesc_ucsPlugin">Work with third-party credential storage plug-ins.</string>
     <string name="permdesc_uninstall_shortcut">Omogućava aplikaciji uklanjanje prečice početnog ekrana bez intervencije korisnika.</string>
@@ -2139,12 +2137,13 @@ VRATI NA"</string>
     <string name="permdesc_vibrate">Dozvoljava aplikaciji upravljanje vibracijom.</string>
     <string name="permdesc_vibrator_state">Dozvoljava aplikaciji pristup stanju vibracije.</string>
     <string name="permdesc_videoWrite">Omogućava aplikaciji da mijenja vašu kolekciju videozapisa.</string>
-    <string name="permdesc_wakeLock">Dozvoljava aplikaciji da spriječi tablet da ode u stanje mirovanja.</string>
-    <string name="permdesc_writeCalendar">Ova aplikacija može dodavati, uklanjati ili mijenjati događaje u kalendaru na vašem tabletu. Aplikacija može slati poruke koje mogu izgledati kao da dolazi od vlasnika kalendara ili promijeniti događaje bez obavještenja vlasnika.</string>
-    <string name="permdesc_writeCallLog">Omogućava aplikaciji da izmijeni zapisnik poziva sa vašeg tableta, uključujući podatke o dolaznim i odlaznim pozivima. Zlonamjerne aplikacije mogu to iskoristiti za brisanje ili izmjenu vašeg zapisnika poziva.</string>
-    <string name="permdesc_writeContacts">Dozvoljava aplikaciji da vrši izmjene podataka o kontaktima pohranjenim na tabletu. Ovo odobrenje dozvoljava aplikacijama da izbrišu podatke o kontaktima.</string>
+    <string name="permdesc_wakeLock">Dozvoljava aplikaciji da spriječi telefon da ode u stanje mirovanja.</string>
+    <string name="permdesc_writeCalendar">Ova aplikacija može dodavati, uklanjati ili mijenjati događaje u kalendaru na vašem telefonu. Aplikacija može slati poruke koje mogu izgledati kao da dolazi od vlasnika kalendara ili promijeniti događaje bez obavještenja vlasnika.</string>
+    <string name="permdesc_writeCallLog">Omogućava aplikaciji da izmijeni zapisnik poziva sa vašeg telefona, uključujući podatke o dolaznim i odlaznim pozivima. Zlonamjerne aplikacije mogu to iskoristiti za brisanje ili izmjenu vašeg zapisnika poziva.</string>
+    <string name="permdesc_writeContacts">Dozvoljava aplikaciji da vrši izmjene podataka o kontaktima pohranjenim na telefonu. Ovo odobrenje dozvoljava aplikacijama da izbrišu podatke o kontaktima.</string>
     <string name="permdesc_writeSettings">Dozvoljava aplikaciji izmijenu postavki sistema. Zlonamjerne aplikacije mogu oštetiti konfiguraciju sistema.</string>
     <string name="permdesc_writeSyncSettings">Omogućava aplikaciji izmjenu postavki sinhroniziranja za račun. Naprimjer, ovim se može omogućiti sinhroniziranje aplikacije People sa računom.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">Dozvoljava aplikaciji da ažurira stanja potvrđivanja E2EE kontaktnih ključeva u vlasništvu drugih aplikacija</string>
     <string name="permgroupdesc_activityRecognition">pristup vašoj fizičkoj aktivnosti</string>
     <string name="permgroupdesc_calendar">pristupa vašem kalendaru</string>
     <string name="permgroupdesc_calllog">čitanje i pisanje zapisnika telefonskih poziva</string>
@@ -2186,7 +2185,9 @@ za račun %s."</string>
     <string name="permlab_accessCoarseLocation">pristup približnoj lokaciji samo u prvom planu</string>
     <string name="permlab_accessDrmCertificates">pristupi DRM certifikatima</string>
     <string name="permlab_accessFineLocation">pristup tačnoj lokaciji samo u prvom planu</string>
+    <string name="permlab_accessHiddenProfile">Pristup sakrivenim profilima</string>
     <string name="permlab_accessImsCallService">pristup usluzi IMS pozivanja</string>
+    <string name="permlab_accessLastKnownCellId">Pristup posljednjem poznatom ID-u mobilne stanice.</string>
     <string name="permlab_accessLocationExtraCommands">pristup dodatnim informacijama o lokaciji</string>
     <string name="permlab_accessNetworkConditions">slušanje informacija o stanju mreže</string>
     <string name="permlab_accessNetworkState">prikaz mrežnih veza</string>
@@ -2218,6 +2219,7 @@ za račun %s."</string>
     <string name="permlab_callCompanionApp">vidjeti i kontrolirati pozive preko sistema.</string>
     <string name="permlab_callPhone">izravno zvanje telefonskih brojeva</string>
     <string name="permlab_camera">snimanje slika i videozapisa</string>
+    <string name="permlab_cameraHeadlessSystemUser">Dozvolite aplikaciji ili usluzi da pristupa kameri kao korisnik sistema bez grafičkog korisničkog interfejsa.</string>
     <string name="permlab_cameraOpenCloseListener">Dozvoliti aplikaciji ili usluzi da prima povratne pozive o otvaranju ili zatvaranju kamera.</string>
     <string name="permlab_changeNetworkState">izmjene povezivanja na mrežu</string>
     <string name="permlab_changeTetherState">izmjene podijeljenog povezivanja</string>
@@ -2244,6 +2246,7 @@ za račun %s."</string>
     <string name="permlab_foregroundServiceHealth">pokreni uslugu u prvom planu s vrstom \"health\"</string>
     <string name="permlab_foregroundServiceLocation">pokreni uslugu u prvom planu s vrstom \"location\"</string>
     <string name="permlab_foregroundServiceMediaPlayback">pokreni uslugu u prvom planu s vrstom \"mediaPlayback\"</string>
+    <string name="permlab_foregroundServiceMediaProcessing">pokreni uslugu u prvom planu s vrstom \"mediaProcessing\"</string>
     <string name="permlab_foregroundServiceMediaProjection">pokreni uslugu u prvom planu s vrstom \"mediaProjection\"</string>
     <string name="permlab_foregroundServiceMicrophone">pokreni uslugu u prvom planu s vrstom \"microphone\"</string>
     <string name="permlab_foregroundServicePhoneCall">pokreni uslugu u prvom planu s vrstom \"phoneCall\"</string>
@@ -2342,6 +2345,7 @@ za račun %s."</string>
     <string name="permlab_modifyNetworkAccounting">izmjena obračunavanja korištenja mreže</string>
     <string name="permlab_nearby_wifi_devices">stupanje u interakciju s WiFi uređajima u blizini</string>
     <string name="permlab_nfc">upravljanje NFC-om</string>
+    <string name="permlab_nfcTransactionEvent">Događaj transakcije na sigurnom elementu</string>
     <string name="permlab_observeCompanionDevicePresence">Prati prisutnost pratećeg uređaja</string>
     <string name="permlab_persistentActivity">podešavanje aplikacije tako da je uvijek pokrenuta</string>
     <string name="permlab_postNotification">prikaz obavještenja</string>
@@ -2414,12 +2418,13 @@ za račun %s."</string>
     <string name="permlab_uwb_ranging">određivanje rel. položaja uređaja ultra širokog opsega u blizini</string>
     <string name="permlab_vibrate">kontrola vibracije</string>
     <string name="permlab_videoWrite">izmjena kolekcije videozapisa</string>
-    <string name="permlab_wakeLock">sprečavanje tableta da uđe u režim mirovanja</string>
+    <string name="permlab_wakeLock">sprečavanje telefona da uđe u režim mirovanja</string>
     <string name="permlab_writeCalendar">dodavanje ili izmjena kalendarskih događaja i slanje e-pošte gostima bez znanja vlasnika</string>
     <string name="permlab_writeCallLog">pisanje zapisnika poziva</string>
     <string name="permlab_writeContacts">izmjena podataka o kontaktima</string>
     <string name="permlab_writeSettings">izmjena postavki sistema</string>
     <string name="permlab_writeSyncSettings">aktiviranje/deaktiviranje sinhroniziranja</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">ažuriranje stanja potvrđivanja E2EE kontaktnih ključeva u vlasništvu drugih aplikacija</string>
     <string name="perms_description_app">Aplikacija %1$s omogućava.</string>
     <string name="perms_new_perm_prefix">&lt;font fgcolor=#ff33b5e5 size=12>NOVO: &lt;/font></string>
     <string name="personal_apps_suspended_turn_profile_on">Uključi</string>
@@ -2456,7 +2461,7 @@ za račun %s."</string>
     <string name="policydesc_allow_desktopsync">Spriječite korištenje sinhronizacije s računarom.</string>
     <string name="policydesc_allow_internetsharing">Spriječite korištenje mobilne pristupne tačke.</string>
     <string name="policydesc_allow_irda">Spriječite korištenje IrDA veze.</string>
-    <string name="policydesc_allow_popimapemail">Spriječite korištenje svih POP i IMAP e-poruka tableta.</string>
+    <string name="policydesc_allow_popimapemail">Spriječite korištenje svih POP i IMAP e-poruka telefona.</string>
     <string name="policydesc_allow_storagecard">Spriječite korištenje SD kartica.</string>
     <string name="policydesc_allow_textmessaging">Spriječite korištenje tekstualnih i multimedijalnih poruka.</string>
     <string name="policydesc_allow_thirdParty">Ova aplikacija može spriječiti pokretanje aplikacija treće strane.</string>
@@ -2474,10 +2479,10 @@ za račun %s."</string>
     <string name="policydesc_setGlobalProxy">Postavlja globalni proksi uređaja koji će se koristiti dok su smjernice omogućene. Samo vlasnik uređaja može postaviti globalni proksi.</string>
     <string name="policydesc_unsigned_app">Ova aplikacija može spriječiti pokretanje aplikacija sa nepoznatih izvora.</string>
     <string name="policydesc_unsigned_pkg">Ova aplikacija može spriječiti instalaciju aplikacija sa nepoznatih izvora.</string>
-    <string name="policydesc_watchLogin">Prati broj pogrešno unijetih lozinki prilikom otključavanja ekrana i zaključava tablet ili briše sve podatke s njega ukoliko se previše puta unese pogrešna lozinka.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Prati broj neispravnih lozinki koje su unijete za otključavanje ekrana te zaključava tablet ili briše sve podatke ovog korisnika ukoliko je unijeto previše neispravnih lozinki.</string>
-    <string name="policydesc_wipeData">Briše podatke s tableta bez upozorenja tako što ga vraća na fabričke postavke.</string>
-    <string name="policydesc_wipeData_secondaryUser">Bez upozorenja briše podatke ovog korisnika sa ovog tableta.</string>
+    <string name="policydesc_watchLogin">Prati broj pogrešno unesenih lozinki prilikom otključavanja ekrana i zaključava telefon ili briše sve podatke s telefona ukoliko se previše puta unese pogrešna lozinka.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Prati broj neispravnih lozinki koje su unijete za otključavanje ekrana te zaključava telefon ili briše sve podatke ovog korisnika ukoliko je unijeto previše neispravnih lozinki.</string>
+    <string name="policydesc_wipeData">Briše podatke s telefona bez upozorenja vraćanjem telefona na fabričke postavke.</string>
+    <string name="policydesc_wipeData_secondaryUser">Bez upozorenja briše podatke ovog korisnika sa ovog telefona.</string>
     <string name="policylab_allow_bluetoothmode">Onemogući Bluetooth</string>
     <string name="policylab_allow_browser">Onemogući Internet</string>
     <string name="policylab_allow_camera">Onemogući kamere</string>
@@ -2502,7 +2507,7 @@ za račun %s."</string>
     <string name="policylab_setGlobalProxy">Postavlja globalni proksi uređaja</string>
     <string name="policylab_unsigned_app">Onemogući nepoznate aplikacije</string>
     <string name="policylab_unsigned_pkg">Spriječi instalaciju nepoznatih aplikacija</string>
-    <string name="policylab_watchLogin">Prati pokušaje otključavanja ekrana</string>
+    <string name="policylab_watchLogin">Praćenje pokušaja otključavanja ekrana</string>
     <string name="policylab_wipeData">Brisanje svih podataka</string>
     <string name="policylab_wipeData_secondaryUser">Izbriši podatke korisnika</string>
     <string name="popup_set_manually_button_vzw">Set manually</string>
@@ -2511,7 +2516,7 @@ za račun %s."</string>
     <string name="postalTypeHome">Kućna adresa</string>
     <string name="postalTypeOther">Ostalo</string>
     <string name="postalTypeWork">Posao</string>
-    <string name="power_dialog">Opcije tableta</string>
+    <string name="power_dialog">Opcije telefona</string>
     <string name="power_off">Isključi</string>
     <string name="prepend_shortcut_label">Meni+</string>
     <string name="preposition_for_date">%s</string>
@@ -2523,6 +2528,8 @@ za račun %s."</string>
     <string name="print_service_installed_title">Usluga %s je instalirana</string>
     <string name="printing_disabled_by">Štampanje je onemogućila aplikacija %s.</string>
     <string name="private_dns_broken_detailed">Nije moguće pristupiti privatnom DNS serveru</string>
+    <string name="private_profile_label_badge">%1$s – privatno</string>
+    <string name="private_space_set_up_screen_lock_message">Za upotrebu privatnog prostora postavite zaključavanje ekrana na uređaju</string>
     <string name="profile_encrypted_detail">Radni profil je zaključan</string>
     <string name="profile_encrypted_detail_workspace_premium">%s je zaključan</string>
     <string name="profile_encrypted_detail_workspace_prime">Radni profil je zaključan</string>
@@ -2532,6 +2539,13 @@ za račun %s."</string>
     <string name="profile_encrypted_message_workspace_prime">Otključajte svoj radni profil za prijem obavještenja radnim aplikacijama.</string>
     <string name="profile_encrypted_title">Neke funkcije mogu biti ograničene</string>
     <string name="profile_encrypted_title_secure_folder">Sigurni folder je zaključan.</string>
+    <string name="profile_label_clone">Klon</string>
+    <string name="profile_label_communal">Opće</string>
+    <string name="profile_label_private">Privatno</string>
+    <string name="profile_label_test">Testno</string>
+    <string name="profile_label_work">Poslovno</string>
+    <string name="profile_label_work_2">2. poslovno</string>
+    <string name="profile_label_work_3">3. poslovno</string>
     <string name="profile_restarting_message_premium">Nećete primati sva obavještenja poslovnih aplikacija kada je poslovni prostor %1$s zaključan. Dodirnite ovdje za otključavanje poslovnog prostora %2$s.</string>
     <string name="profile_restarting_message_prime">Nećete primati sva obavještenja poslovnih aplikacija kada je poslovni profil zaključan. Dodirnite ovdje za otključavanje poslovnog profila.</string>
     <string name="profile_restarting_title_premium">Aplikacija %s je zaključana</string>
@@ -2554,9 +2568,11 @@ za račun %s."</string>
     <string name="recent_tasks_title">Nedavni zadaci</string>
     <string name="recording_fail">Ne može se koristiti mikrofon u aplikaciji %1$s dok se koristi u aplikaciji %2$s.</string>
     <string name="recording_popup">%s koristi mikrofon.</string>
-    <string name="recording_popup_device">Tablet</string>
+    <string name="recording_popup_device">Telefon</string>
     <string name="recording_popup_with_bluetooth">Aplikacija %s koristi Bluetooth mikrofon.</string>
     <string name="recording_popup_with_device">Aplikacija %1$s koristi mikrofon uređaja %2$s.</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">Sakriven je osjetljiv sadržaj obavještenja</string>
     <string name="redo">Ponovi</string>
     <string name="reduce_bright_colors_feature_name">Dodatno zatamnjenje</string>
     <string name="region_picker_section_all">Sve regije</string>
@@ -2685,6 +2701,29 @@ Dužim slušanjem glasnog zvuka možete oštetiti sluh."</string>
     <string name="samsung_global_action_restart">Ponovno pokretanje</string>
     <string name="samsung_keyboard_settings">Postavke Samsung tastature</string>
     <string name="sanitized_content_text_sf">Sadržaj je sakriven</string>
+    <string name="satellite_notification_how_it_works">Kako ovo funkcionira</string>
+    <string name="satellite_notification_manual_summary">Šaljite i primajte poruke bez mobilne ili WiFi mreže</string>
+    <string name="satellite_notification_manual_title">Koristiti satelitsku razmjenu poruka?</string>
+    <string name="satellite_notification_open_message">Otvorite Messages</string>
+    <string name="satellite_notification_summary">Možete slati i primati poruke bez mobilne ili WiFi mreže</string>
+    <string name="satellite_notification_title">Automatski je povezano sa satelitom</string>
+    <string name="scCellularNetworkSecuritySummary">Šifriranje, obavještenja za nešifrirane mreže</string>
+    <string name="scCellularNetworkSecurityTitle">Sigurnost mobilne mreže</string>
+    <string name="scIdentifierDisclosureIssueSummary">"U %1$s mreža u blizini je zabilježila jedinstveni ID uređaja (IMSI ili IMEI) koristeći SIM mreže %2$s.
+
+Ovo znači da su vaša lokacija, aktivnost ili identitet zabilježeni. Ovo je uobičajena praksa, ali može predstavljati problem za osobe zabrinute za privatnost."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">U %1$s mreža u blizini je zabilježila jedinstveni ID uređaja (IMSI ili IMEI) koristeći SIM mreže %2$s</string>
+    <string name="scIdentifierDisclosureIssueTitle">Pristupljeno je ID-u uređaja</string>
+    <string name="scNullCipherIssueActionGotIt">Razumijem</string>
+    <string name="scNullCipherIssueActionLearnMore">Saznajte više</string>
+    <string name="scNullCipherIssueActionSettings">Postavke sigurnosti mobilne mreže</string>
+    <string name="scNullCipherIssueEncryptedSummary">Povezivanje SIM-a s mrežom %1$s je sada sigurnije</string>
+    <string name="scNullCipherIssueEncryptedTitle">Povezani ste sa šifriranom mrežom %1$s</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"Pozivi, poruke i podaci su trenutno osjetljiviji dok koristite SIM mreže %1$s.
+
+Kada veza ponovo bude šifrirana, primit ćete još jedno obavještenje."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">Pozivi, poruke i podaci su trenutno osjetljiviji dok koristite SIM mreže %1$s</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">Povezani ste s nešifriranom mrežom</string>
     <string name="scan_text">Izdvoji tekst</string>
     <string name="screen_compat_mode_hint">Ponovo omogućite ovu opciju u meniju Postavke sistema > Aplikacije > Preuzete aplikacije.</string>
     <string name="screen_compat_mode_scale">Razmjer</string>
@@ -2695,16 +2734,17 @@ Dužim slušanjem glasnog zvuka možete oštetiti sluh."</string>
     <string name="screen_lock">Zaključavanje ekrana</string>
     <string name="screen_lock_app_setting_name">Koristi zaključavanje ekrana</string>
     <string name="screen_lock_dialog_default_subtitle">Unesite zaključavanje ekrana da nastavite</string>
+    <string name="screen_not_shared_sensitive_content">Sadržaj aplikacije je sakriven od dijeljenja ekrana radi sigurnosti</string>
     <string name="screencapture_restrict">Pravila sigurnosti sprječavaju korištenje snimanja ekrana.</string>
     <string name="screenshot_edit">Uredi</string>
     <string name="sd_card_unavailable_message">Ne možete koristiti SD karticu jer je umetnuta dok se koristio drugi korisnički profil.</string>
     <string name="sd_card_unavailable_title">SD kartica je nedostupna</string>
-    <string name="sdcard_bad_removal_message">Neoprezno ste uklonili SD karticu. Da biste spriječili neočekivano ponovno pokretanje tableta, sačuvajte sve nesačuvane podatke i odmah ga ponovno pokrenite.</string>
+    <string name="sdcard_bad_removal_message">Neoprezno ste uklonili SD karticu. Da biste spriječili neočekivano ponovno pokretanje telefona, sačuvajte sve nesačuvane podatke i odmah ga ponovno pokrenite.</string>
     <string name="sdcard_batch_decrypt_noti_content">Dešifruj SD karticu</string>
     <string name="sdcard_batch_decrypt_noti_title">Dešifrovanje SD kartice</string>
     <string name="sdcard_batch_decrypt_popup_content">Šifrovana SD kartica se mora dešifrovati prije korištenja. Dešifrovanje može trajati sat vremena ili više. Počnite sa napunjenom baterijom i neka uređaj bude uključen sve dok se dešifrovanje ne završi. Ako se proces dešifrovanja prekine, izgubit će se neki ili svi podaci.</string>
     <string name="sdcard_decrypt_err_notification">Došlo je do greške prilikom dešifrovanja SD kartice.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Neke datoteke na SD kartici su šifrovani na drugom uređaju i ne mogu se koristiti na ovom tabletu.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Neke datoteke na SD kartici su šifrovani na drugom uređaju i ne mogu se koristiti na ovom telefonu.</string>
     <string name="sdcard_decrypt_notification">SD kartica je dešifrovana.</string>
     <string name="sdcard_decrypt_title_notification">Dešifrovanje SD kartice</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Decrypting SD card…</string>
@@ -2728,14 +2768,6 @@ Dužim slušanjem glasnog zvuka možete oštetiti sluh."</string>
     <string name="searchview_description_submit">Potvrditi upit</string>
     <string name="searchview_description_voice">Glasovno pretraživanje</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth će ostati uključen u Avionskom režimu.</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Ova aplikacija koristi cijeli ekran. Pokreti prevlačenja prstom za navigaciju prikazat će statusnu traku. Ponovno prevucite prstom da biste se kretali dok je statusna traka vidljiva.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Ova aplikacija koristi prikaz preko cijelog ekrana. Dugmad Početak, Nazad i Nedavno korišteno su skrivena da bi se smanjila ometanja i spriječilo nenamjerno napuštanje aplikacije.
-
-Čak i kada rotirate telefon, dugmad će uvijek biti locirana do priključka za punjenje. Za ponovni prikaz dugmadi prevucite prstom prema unutra s ruba ekrana kao što je prikazano strelicom."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Ova aplikacija koristi prikaz preko cijelog ekrana. Dugmad Početak, Nazad i Nedavno korišteno su skrivena da bi se smanjila ometanja i spriječilo nenamjerno napuštanje aplikacije.
-
-Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prikazano strelicom."</string>
     <string name="sec_monotype_default">Zadano</string>
     <string name="sec_ringtone_category_brand_sound">Zvuk Samsung brenda</string>
     <string name="sec_ringtone_category_calm">Mirno</string>
@@ -2745,6 +2777,10 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="sec_ringtone_category_open_theme">Zadane postavke trenutne teme</string>
     <string name="sec_ringtone_category_retro">Retro</string>
     <string name="sec_ringtone_silent">Nečujno</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Otkaži</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Mrežni operater treba biti postavljen na Odaberi automatski da se povežete na satelit.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Uključi</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Uključiti automatski odabir mreže?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Uključite pristup Mikrofonu za razgovor.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Uključite pristup Kameri za korištenje aplikacije %s.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Uključite pristup Mikrofonu za korištenje aplikacije %s.</string>
@@ -2852,6 +2888,8 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="sem_face_error_already_in_use_by_VT">Ne može se koristiti prepoznavanje lica tokom videopoziva.</string>
     <string name="sem_face_error_camera_access_off">Ne može se koristiti prepoznavanje jer je isključen pristup kameri</string>
     <string name="sem_face_error_camera_fail">Nije moguće otvoriti Kameru. Pokušajte ponovno.</string>
+    <string name="sem_face_error_lockout">Biometrijska verifikacija nije dostupna zbog previše netačnih pokušaja.</string>
+    <string name="sem_face_error_lockout_permanent">Biometrijska verifikacija nije dostupna zbog previše netačnih pokušaja.</string>
     <string name="sem_face_error_ppp_timeout">Prošlo je dosta vremena od kada ste potvrdili svoj identitet. Morate započeti ponovno da biste registrovali svoje lice.</string>
     <string name="sem_face_error_too_dark">Previše je mračno za detektovanje lica</string>
     <string name="sem_face_error_too_dark_to_enroll">Premračno. Pokušajte upaliti svjetlo ili otići negdje gdje ima više svjetla.</string>
@@ -2867,13 +2905,18 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="sem_fingerprint_acquired_tsp_block">Udaljite vrh S olovke s ekrana za skeniranje otiska prsta.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Za korištenje otisaka prstiju, najprije postavite sigurnu vrstu zaključavanja ekrana (obrazac, PIN ili lozinku).</string>
+    <string name="sem_fingerprint_error_lockout">Biometrijska verifikacija nije dostupna zbog previše netačnih pokušaja.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Biometrijska verifikacija nije dostupna zbog previše netačnih pokušaja.</string>
     <string name="sem_fingerprint_error_onehand_mode">Nije moguće koristiti skener otiska prsta u Režimu za rad jednom rukom.</string>
     <string name="sem_fingerprint_error_smart_view">Ne može se skenirati otisak prsta dok se koristi usluga %s.</string>
+    <string name="sem_fingerprint_error_system_failure">Senzor otiska prsta ne reaguje. Pokušajte ponovno kasnije. Ako se ovo nastavi, pokušajte ponovno pokrenuti telefon.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Podaci o otiscima prstiju su oštećeni. Ponovno dodajte svoje otiske prstiju.</string>
     <string name="sem_fingerprint_error_wireless_charger">Prekinite vezu s bežičnim punjačem da biste koristili otisak prsta</string>
     <string name="sem_fingerprint_name_template">Otisak prsta %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Kasnije</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Ne sada</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Ukloni i registruj</string>
+    <string name="sem_fingerprint_register_dialog_message">Prepoznavanje otiska prsta je poboljšano u najnovijem ažuriranju softvera. Nećete moći koristiti prepoznavanje otisaka prstiju dok ne uklonite otiske prstiju i ponovno ih registrujete.</string>
     <string name="sem_fingerprint_register_dialog_title">Ponovno registr. otiske prstiju</string>
     <string name="sem_fingerprint_result_failed">Nema podudaranja.</string>
     <string name="sem_fingerprint_result_retry">Pokušaj ponovno.</string>
@@ -2893,7 +2936,7 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="sem_resolver_button_always_accessibility">Uvijek koristi izabranu aplikaciju</string>
     <string name="sem_resolver_button_just_once_accessibility">Koristi izabranu aplikaciju samo jednom</string>
     <string name="sem_resolver_choose_what_to_do">Izaberite šta će se raditi</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Da biste promijenili zadane postavke aplikacije, idite na Postavke > Aplikacije > Izaberi zadane aplikacije.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Da promijenite zadanu aplikaciju koja se koristi za otvaranje ove vrste datoteke, idite u Postavke > Aplikacije, odaberite trenutno zadanu aplikaciju, a zatim dodirnite Postavi kao zadano > Obriši zadano.</string>
     <string name="sem_resolver_icon_content_description">Informacije</string>
     <string name="sem_resolver_personal_tab_accessibility">Lično</string>
     <string name="sem_resolver_share_live_default_text">Trenutno podijelite s osobama u blizini. Osobe čiji su uređaji vidljivi će se prikazati ovdje.</string>
@@ -2909,9 +2952,9 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="sending">Slanje...</string>
     <string name="sensor_notification_service">Usluga obavještavanja putem senzora</string>
     <string name="sensor_privacy_notification_channel_label">Privatnost senzora</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Pristup kameri je isključen za sve aplik.</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Uključi</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Pristup mikrof. je isključen za sve aplik.</string>
+    <string name="sensor_privacy_start_use_camera_notification_content_title">Deblokirajte kameru uređaja</string>
+    <string name="sensor_privacy_start_use_dialog_turn_on_button">Deblokiraj</string>
+    <string name="sensor_privacy_start_use_mic_notification_content_title">Deblokirajte mikrofon uređaja</string>
     <string name="sensor_privacy_start_use_notification_content_text">Za aplikaciju <b>%s</b> te sve aplikacije i usluge</string>
     <string name="serial_number">Serijski broj:</string>
     <string name="serviceClassData">Podatke</string>
@@ -2936,6 +2979,9 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="serviceRegistered">Registracija je uspješno izvršena.</string>
     <string name="serviceisDisabled">Usluga je onemogućena.</string>
     <string name="serviceisEnabled">Usluga je omogućena.</string>
+    <string name="set_up_screen_lock_action_label">Postavite zaključavanje ekrana</string>
+    <string name="set_up_screen_lock_title">Postavite zaključavanje ekrana</string>
+    <string name="settings">Postavke</string>
     <string name="sf_quick_switch_not_supported">Brzo prebacivanje nije podržano u ovoj situaciji.</string>
     <string name="sf_quick_switch_securefolder_view">Prebačeno na %s.</string>
     <string name="sha1_fingerprint">Digitalni otisak SHA-1:</string>
@@ -2959,12 +3005,14 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="show_ime">Prikaži na ekranu dok je fizička tastatura aktivna</string>
     <string name="show_keyboard_button">Prikaži dugme Tastatura</string>
     <string name="show_keyboard_button_description">Prikaz ikone %s na navigacionoj traci.</string>
+    <string name="showing_esc_dialog">Tipku Esc možete postaviti da radi kao dugme Nazad.</string>
     <string name="showing_touch_sensitivity_noti_action">Uključi</string>
     <string name="showing_touch_sensitivity_noti_text">Uključite Osjetljivost na dodir prilikom korištenja Ekrana privatnosti ili Ekrana za bilješke za bolji dodirni odziv.</string>
     <string name="showing_touch_sensitivity_noti_title">Povećaj osjetljivost na dodir</string>
-    <string name="shutdown_confirm">Vaš tablet će se isključiti.</string>
+    <string name="shutdown_confirm">Telefon će se isključiti.</string>
     <string name="shutdown_confirm_question">Želite li ugasiti telefon?</string>
-    <string name="shutdown_progress">Isključivanje...…</string>
+    <string name="shutdown_progress">Isključivanje...</string>
+    <string name="side_key_double_press_archived_app">Aplikacija je arhivirana. Odaberite nešto drugo.</string>
     <string name="side_key_double_press_deleted_app">Aplikacija je deinstalirana. Odaberite nešto drugo.</string>
     <string name="side_key_double_press_disabled_app">Aplikacija %s je onemogućena. Odaberite nešto drugo.</string>
     <string name="signature_identity_toast">%s je potpisao</string>
@@ -2977,18 +3025,20 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="sim_added_message">Ponovo pokrenite uređaj da pristupite mobilnoj mreži.</string>
     <string name="sim_added_title">SIM je dodan</string>
     <string name="sim_check_old_sim_message">Stare ili oštećene SIM kartice mogu uzrokovati probleme s mrežnom vezom. Kontaktirajte pružaoca usluga ili posjetite jednu od njihovih prodavnica da provjerite treba li vam zamjena.</string>
+    <string name="sim_check_old_sim_message_skt">Stare ili oštećene SIM kartice mogu uzrokovati probleme s mrežnom vezom. Kontaktirajte pružaoca usluga ili posjetite jednu od njihovih prodavnica da provjerite treba li vam zamjena.</string>
     <string name="sim_check_old_sim_title">Vašu SIM karticu je možda potrebno zamijeniti</string>
+    <string name="sim_check_old_sim_title_skt">Vaš SIM je možda potrebno zamijeniti</string>
     <string name="sim_count_mismatched_ds_to_ss">Režim SIM kartice je promijenjen sa opcije Dva SIM-a na opciju Jedan SIM. Da bi se primijenile ove postavke, uređaj će se ponovno postaviti na zadane fabričke postavke i ponovno pokrenuti.</string>
     <string name="sim_count_mismatched_ss_to_ds">Režim SIM kartice je promijenjen sa opcije Jedan SIM na opciju Dva SIM-a. Da bi se primijenile ove postavke, uređaj će se ponovno postaviti na zadane fabričke postavke i ponovno pokrenuti.</string>
     <string name="sim_count_mismatched_title">Režim SIM kartice je promijenjen</string>
     <string name="sim_done_button">Gotovo</string>
-    <string name="sim_imsreg_error_message_lgt">Vaš telefon neće moći upućivati glasovne pozive jer ne može prepoznati SIM karticu. Pokušajte ukloniti SIM karticu i ponovno je umetnuti. Ako se ovaj problem nastavi, možda ćete morati zamijeniti SIM karticu. Za pomoć posjetite LG U+ prodavnicu ili kontaktirajte LG U+ korisničku službu na 1544-0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Vaš tablet neće moći upućivati glasovne pozive jer ne može prepoznati SIM karticu. Pokušajte ukloniti SIM karticu i ponovno je umetnuti. Ako se ovaj problem nastavi, možda ćete morati zamijeniti SIM karticu. Za pomoć posjetite LG U+ prodavnicu ili kontaktirajte LG U+ korisničku službu na 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">Vaš telefon neće moći upućivati glasovne pozive jer ne može prepoznati SIM karticu. Probajte izvaditi SIM karticu i ponovo je umetnuti. Ako se problem nastavi, možda ćete trebati zamijeniti SIM karticu u trgovini LG U+.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Vaš tablet neće moći upućivati glasovne pozive jer ne može prepoznati SIM karticu. Probajte izvaditi SIM karticu i ponovo je umetnuti. Ako se problem nastavi, možda ćete trebati zamijeniti SIM karticu u trgovini LG U+.</string>
     <string name="sim_off_noti_message">Ne možete upućivati ​​pozive, slati poruke ili koristiti podatke kada su sve SIM kartice isključene. Dodirnite ovdje da uključite SIM kartice.</string>
     <string name="sim_off_noti_title">Sve SIM kartice su isključene</string>
     <string name="sim_off_toast_message">SIM kartica koju ste umetnuli je isključena. Da biste je koristili, idite na Postavke > Veze > SIM upravitelj, zatim je uključite.</string>
     <string name="sim_recognize_error_message_kt">Vaša SIM kartica nije prepoznata. Pokušajte ukloniti SIM karticu i ponovno je umetnuti. Ako se ovaj problem nastavi, možda ćete morati zamijeniti SIM karticu. Za pomoć posjetite KT prodavnicu ili kontaktirajte KT korisničku službu na 1588-0010.</string>
-    <string name="sim_recognize_error_message_lgt">Vaša SIM kartica nije prepoznata. Pokušajte ukloniti SIM karticu i ponovno je umetnuti. Ako se ovaj problem nastavi, možda ćete morati zamijeniti SIM karticu. Za pomoć posjetite LG U+ prodavnicu ili kontaktirajte LG U+ korisničku službu na 1544-0010.</string>
+    <string name="sim_recognize_error_message_lgt">Vaša SIM kartica nije prepoznata. Probajte izvaditi SIM karticu i ponovo je umetnuti. Ako se problem nastavi, možda ćete trebati zamijeniti SIM karticu u trgovini LG U+.</string>
     <string name="sim_recognize_error_message_skt">Nije moguće učitati SIM karticu. Neke aplikacije i funkcije možda neće raditi. Uklonite i ponovo umetnite vašu SIM karticu te ponovo pokrenite telefon. Ako to ne riješi problem, odnesite telefon i SIM karticu na lokaciju korisničke službe.</string>
     <string name="sim_recognize_error_message_skt_tablet">Nije moguće učitati SIM karticu. Neke aplikacije i funkcije možda neće funkcionisati. Uklonite i ponovo umetnite vašu SIM karticu te ponovo pokrenite tablet. Ako to ne riješi problem, odnesite tablet i SIM karticu na lokaciju korisničke službe.</string>
     <string name="sim_recognize_error_title_lgt">Ne može se prepoznati USIM kartica</string>
@@ -3008,6 +3058,7 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="skip_button_label">Preskoči</string>
     <string name="slice_more_content">+ %1$d</string>
     <string name="slices_permission_request">Aplikacija %1$s želi prikazati isječke aplikacije %2$s</string>
+    <string name="smart_tip_action_click_hint_text">Zatv.</string>
     <string name="smartclip_restrict">Pravila sigurnosti sprječavaju korištenje funkcije Jednostavni isječak.</string>
     <string name="sms_control_message"><b>%1$s</b> šalje veliki broj SMS poruka. Da li želite dozvoliti ovoj aplikaciji da nastavi slanje poruka?</string>
     <string name="sms_control_no">Odbij</string>
@@ -3021,9 +3072,7 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="sms_short_code_confirm_never_allow">Nikada ne dozvoli</string>
     <string name="sms_short_code_details">Ovo <b>može uzrokovati troškove</b> na vašem računu za mobilne usluge.</string>
     <string name="sms_short_code_remember_choice">Zapamti moj izbor</string>
-    <string name="sms_short_code_remember_undo_instruction">You can change this later by going to Settings > Apps.</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Možete promijeniti ovu opciju kasnije odlaskom na Postavke > Aplikacije > dugme Još opcija > Specijalni pristup > Koristi premium usluge tekstualnih poruka</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Ako dodirnite opciju NE DOZVOLI NIKADA, ova aplikacija neće moći slati poruke u pozadini čak i ako joj je omogućena dozvola za slanje tekstualnih poruka.</string>
+    <string name="sms_short_code_remember_undo_instruction">Ovo možete kasnije promijeniti u meniju Postavke > Aplikacije</string>
     <string name="smv_application">Aplikacija %1$s (proces %2$s) prekršila je vlastita StrictMode pravila.</string>
     <string name="smv_process">Proces %1$s prekršio je vlastita StrictMode pravila.</string>
     <string name="splash_screen_view_branding_description">Slika robne marke za aplikaciju</string>
@@ -3104,7 +3153,6 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="time_picker_radial_mode_description">Prebacite u način rada kao sat za unos vremena.</string>
     <string name="time_picker_text_input_mode_description">Prebacite u način unosa teksta za unos vremena.</string>
     <string name="title_dialog_check_rotate_or_not">Isključiti Automatsko rotiranje ekrana?</string>
-    <string name="title_uds">Izuzetno čuvanje podataka</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Ne može se koristiti Bixby tokom postavljanja telefona.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Ne može se koristiti Bixby tokom postavljanja tableta.</string>
     <string name="toast_warning_pattern_lock">Obrazac za otključavanje se ne može koristiti s Univerzalnim prekidačem. Prvo promijenite vrstu zaključavanja.</string>
@@ -3134,6 +3182,7 @@ Za ponovni prikaz dugmadi, prevucite prstom nagore s dna ekrana kao što je prik
     <string name="ucm_smartcard_is_encrypting_phone">Pametna kartica šifruje telefon…</string>
     <string name="ui_translation_accessibility_translated_text">%1$s – prevedeno.</string>
     <string name="ui_translation_accessibility_translation_finished">Poruka je prevedena s jezika %1$s na %2$s.</string>
+    <string name="unarchival_session_app_label">Na čekanju…</string>
     <string name="undo">Vrati</string>
     <string name="unknown_install_activity_warning_title">Sumnja na zlonamjernu aplikaciju</string>
     <string name="unknown_install_blocked_dlg_desc">Ova aplikacija se ne može instalirati jer je moguće zlonamjerna.</string>
@@ -3153,9 +3202,13 @@ Kako biste uklonili ovu zaštitu, idite na Postavke > Sigurnost i privatnost > A
     <string name="unknown_install_blocked_esm_title">Blokirana je nepoznata aplikacija</string>
     <string name="unknown_install_dlg_desc">Ova aplikacija nije preuzeta iz odobrene prodavnice. Instaliranje ove aplikacije može ugroziti vašu sigurnost i privatnost. Aplikacija može prikupiti vaše lične podatke ili uzrokovati gubitak vaših podataka.</string>
     <string name="unknown_install_dlg_desc2">Ova aplikacija ne podržava najnovije sigurnosne funkcije. Instaliranje ove aplikacije može dovesti do sljedećih sigurnosnih rizika:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Ova datoteka za instalaciju aplikacije možda nije sigurna. To možda nije aplikacija za koju se predstavlja. Da zaštitite telefon i lične podatke, instalirajte aplikaciju iz prodavnice aplikacija kojoj vjerujete.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Ova datoteka za instalaciju aplikacije možda nije sigurna. To možda nije aplikacija za koju se predstavlja. Da zaštitite tablet i lične podatke, instalirajte aplikaciju iz prodavnice aplikacija kojoj vjerujete.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Postoji sumnja da je ova aplikacija zlonamjerna te može predstavljati prijetnju za vaš telefon i podatke. Ne preporučuje se instalacija ove aplikacije.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Postoji sumnja da je ova aplikacija zlonamjerna te može predstavljati prijetnju za vaš tablet i podatke. Ne preporučuje se instalacija ove aplikacije.</string>
-    <string name="unknown_install_dlg_general_title">Ovo je aplikacija iz nepoznatog izvora</string>
+    <string name="unknown_install_dlg_desc_phone">Ova aplikacija nije iz ovlaštene prodavnice aplikacija. Kako biste zaštitili svoj telefon i lične podatke, instalirajte aplikaciju iz ovlaštene prodavnice kao što je prodavnica Play ili Galaxy Store.</string>
+    <string name="unknown_install_dlg_desc_tablet">Ova aplikacija nije iz ovlaštene prodavnice aplikacija. Kako biste zaštitili svoj tablet i lične podatke, instalirajte aplikaciju iz ovlaštene prodavnice kao što je prodavnica Play ili Galaxy Store.</string>
+    <string name="unknown_install_dlg_general_title">Ne preporučuje se da instalirate ovu aplikaciju</string>
     <string name="unknown_install_dlg_negative_button">Nemoj instalirati</string>
     <string name="unknown_install_dlg_perm_desc1">Aplikacija može presresti kodove za potvrdu iz tekstualnih poruka koje primite.</string>
     <string name="unknown_install_dlg_perm_desc2">Odlazni pozivi mogu biti preusmjereni na drugi telefonski broj bez vašeg znanja.</string>
@@ -3183,7 +3236,7 @@ Kako biste uklonili ovu zaštitu, idite na Postavke > Sigurnost i privatnost > A
     <string name="usb_abnormal_reset_title">USB veza je stabilna</string>
     <string name="usb_abnormal_reset_toast">USB veza nije stabilna. Uklonite kabl i ponovno ga priključite ili probajte s drugim kablom.</string>
     <string name="usb_accessory_notification_title">Povezan je USB periferni uređaj</string>
-    <string name="usb_bad_removal_message">USB uređaj za pohranu je neoprezno uklonjen. Da biste spriječili neočekivano ponovno pokretanje tableta, sačuvajte sve nesačuvane podatke i odmah ga ponovno pokrenite.</string>
+    <string name="usb_bad_removal_message">USB uređaj za pohranu je neoprezno uklonjen. Da biste spriječili neočekivano ponovno pokretanje telefona, sačuvajte sve nesačuvane podatke i odmah ga ponovno pokrenite.</string>
     <string name="usb_blocked_by_emergency_mode">Neke USB funkcije nisu dostupne u Režimu za hitne slučajeve.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Nije moguće koristiti funkcije koje su povezane sa priključenim USB uređajem dok je omogućen režim Izuzetna ušteda energije.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Neke USB funkcije će biti ograničene dok je uključen režim Maksimalna štednja energije.</string>
@@ -3192,18 +3245,20 @@ Kako biste uklonili ovu zaštitu, idite na Postavke > Sigurnost i privatnost > A
     <string name="usb_camera_disconnected_notification_title">Medijski uređaj je otkačen</string>
     <string name="usb_cd_installer_notification_title">Ažuriranje softvera</string>
     <string name="usb_charging_notification_title">Punjenje uređaja putem USB-a</string>
-    <string name="usb_charing_only_notification_title">Povezano</string>
+    <string name="usb_charing_only_notification_title">USB punjenje</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Automatsko blokiranje je uključeno s maksimalnim ograničenjima.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">Blokirana je USB veza</string>
     <string name="usb_contaminant_detected_message">USB priključak je automatski onemogućen. Dodirnite da saznate više.</string>
     <string name="usb_contaminant_detected_title">Tečnost ili nečistoće u USB priključku</string>
     <string name="usb_contaminant_not_detected_message">Telefon više ne detektira tečnost ili nečistoće.</string>
     <string name="usb_contaminant_not_detected_title">USB priključak je sada sigurno koristiti</string>
     <string name="usb_debugging_only_notification_title">Samo otkrivanje greške</string>
     <string name="usb_device_resolve_prompt_warn">Ovoj aplikaciji nije dato odobrenje za snimanje, ali može snimati zvuk putem ovog USB uređaja.</string>
-    <string name="usb_host_resource_exceed_message">USB kontrolor vašeg tableta nema dovoljno izvora za povezivanje ovog uređaja. Pokušajte prekinuti vezu s uređajem i ponovno ga povezati.</string>
+    <string name="usb_host_resource_exceed_message">USB kontrolor vašeg telefona nema dovoljno izvora za povezivanje ovog uređaja. Pokušajte prekinuti vezu s uređajem i ponovno ga povezati.</string>
     <string name="usb_host_resource_exceed_title">Nema dovoljno izvora USB kontrolora</string>
-    <string name="usb_hub_depth_exceed_message">Vaš tablet istovremeno podržava najviše pet veza USB čvorišta.</string>
+    <string name="usb_hub_depth_exceed_message">Vaš telefon istovremeno podržava najviše pet veza USB čvorišta.</string>
     <string name="usb_hub_depth_exceed_title">Maks. broj veza USB čvorište</string>
-    <string name="usb_hub_power_exceed_message">Tablet nema dovoljno baterije za ovaj USB uređaj. Povežite uređaj na USB čvorište s vlastitim napajanjem prije nego što ga povežete s tabletom.</string>
+    <string name="usb_hub_power_exceed_message">Telefon nema dovoljno baterije za ovaj USB uređaj. Povežite uređaj na USB čvorište s vlastitim napajanjem prije nego što ga povežete s telefonom.</string>
     <string name="usb_increase_battery_usage">USB veza može povećati korištenje baterije.</string>
     <string name="usb_mass_storage_restrict">Pravila sigurnosti sprječavaju korištenje USB masovne pohrane.</string>
     <string name="usb_midi_notification_title">USB za MIDI</string>
@@ -3223,8 +3278,9 @@ Kako biste uklonili ovu zaštitu, idite na Postavke > Sigurnost i privatnost > A
     <string name="usb_supplying_notification_title">Punjenje povezanog uređaja putem USB-a</string>
     <string name="usb_tether_notification_title">Dijeljenje internetske veze putem USB-a je uključeno</string>
     <string name="usb_type_c_supply_power_notification_title">Punjenje povez. uređaja USB-om</string>
-    <string name="usb_unblock_by_screen_unlock">Otključajte tablet da biste koristili povezani USB uređaj.</string>
-    <string name="usb_unsupport_accessory_message">Vaš tablet ne podržava ovaj USB uređaj.</string>
+    <string name="usb_unblock_by_screen_unlock">Otključajte telefon da biste koristili povezani USB uređaj.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">Da koristite USB uređaj, otključajte telefon i ponovo povežite USB uređaj.</string>
+    <string name="usb_unsupport_accessory_message">Vaš telefon ne podržava ovaj USB uređaj.</string>
     <string name="usb_unsupport_accessory_title">USB uređaj nije podržan</string>
     <string name="usb_unsupported_audio_accessory_message">Priključeni uređaj nije kompatibilan s ovim telefonom. Dodirnite da saznate više.</string>
     <string name="usb_unsupported_audio_accessory_title">Otkriven je analogni periferni uređaj</string>
@@ -3245,19 +3301,19 @@ Kako biste uklonili ovu zaštitu, idite na Postavke > Sigurnost i privatnost > A
     <string name="usb_water_dialg_method_2_desc_2">Ubrzajte sušenje usmjeravanjem ventilatora ili fena (samo hladan zrak) prema priključku.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Pronašli smo vlagu ili strane čestice u priključku za punjenje/USB.
 
-Uvjerite se da u priključku za punjenje/USB nema stranih čestica, poput prašine ili nečistoće. Da ne biste oštetili tablet, nemojte ništa priključivati ​​u priključak za punjenje sve dok se ne očisti te dok ne bude bez vlage.
+Uvjerite se da u priključku za punjenje/USB nema stranih čestica, poput prašine ili nečistoće. Da ne biste oštetili telefon, nemojte ništa priključivati ​​u priključak za punjenje sve dok se ne očisti te dok ne bude bez vlage.
 
 Osušite priključak, odstranite vlagu, zatim pričekajte da se osuši. To može potrajati nekoliko sati. Sušenje možete ubrzati tako što ćete usmjeriti ventilator ili fen prema priključku (samo hladan zrak)."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"Pronašli smo vlagu ili strane čestice u priključku za punjenje/USB.
 
-Uvjerite se da u priključku za punjenje/USB nema stranih čestica, poput prašine ili nečistoće. Da ne biste oštetili tablet, nemojte ništa priključivati ​​u priključak za punjenje sve dok se ne očisti i dok ne bude bez vlage.
+Uvjerite se da u priključku za punjenje/USB nema stranih čestica, poput prašine ili nečistoće. Da ne biste oštetili telefon, nemojte ništa priključivati ​​u priključak za punjenje sve dok se ne očisti te dok ne bude bez vlage
 
-Osušite priključak, odstranite vlagu, zatim pričekajte da se osuši. To može potrajati nekoliko sati. Sušenje možete ubrzati tako što ćete usmjeriti ventilator ili fen prema priključku(samo hladan zrak).
+Osušite priključak, odstranite vlagu, zatim pričekajte da se osuši. To može potrajati nekoliko sati. Sušenje možete ubrzati tako što ćete usmjeriti ventilator ili fen prema priključku (samo hladan zrak).
 
-U međuvremenu možete puniti svoj tablet bežično."</string>
+U međuvremenu možete puniti svoj telefon bežično."</string>
     <string name="usb_water_notification_content">U vašem priključku za punjenje/USB ima vlage ili stranih čestica. Provjerite prije punjenja.</string>
-    <string name="usb_water_notification_message">Detektovana je vlaga u punjaču/USB priključku. Osigurajte da je potpuno suh prije punjenja tableta. Sušenje priključka može potrajati.</string>
+    <string name="usb_water_notification_message">Detektovana je vlaga u punjaču/USB priključku. Osigurajte da je potpuno suh prije punjenja telefona. Sušenje priključka može potrajati.</string>
     <string name="usb_water_notification_message_button">Detalji</string>
     <string name="usb_water_notification_title">Provj. USB prik./prik. za punj.</string>
     <string name="usbhostStorage_restrict">Pravila sigurnosti sprječavaju korištenje USB pohrane domaćina.</string>
@@ -3275,7 +3331,7 @@ U međuvremenu možete puniti svoj tablet bežično."</string>
     <string name="user_switched">Trenutni korisnik %1$s.</string>
     <string name="user_switching_message">Prebacivanje na korisnika %1$s...</string>
     <string name="validity_period">Valjanost:</string>
-    <string name="vdm_camera_access_denied">Nije moguće pristupiti kameri tableta s uređaja %1$s</string>
+    <string name="vdm_camera_access_denied">Nije moguće pristupiti kameri telefona s uređaja %1$s</string>
     <string name="vdm_pip_blocked">Tokom prijenosa nije moguće gledati sliku u slici</string>
     <string name="vdm_secure_window">Ovom ne možete pristupiti tokom prijenosa. Umjesto toga pokušajte na telefonu.</string>
     <string name="view_and_control_notification_content">%s može pregledati i kontrolirati vaš ekran. Dodirnite da pregledate.</string>
@@ -3300,6 +3356,8 @@ U međuvremenu možete puniti svoj tablet bežično."</string>
     <string name="vpn_allowOnlySecureConnection">VPN profil nije siguran.</string>
     <string name="vpn_error_text">Dodirnite za ponovno povezivanje na VPN.</string>
     <string name="vpn_error_title">Greška VPN veze</string>
+    <string name="vpn_fail_text_long">Nije moguće povezivanje na %s. Dodirnite za upravljanje ovim VPN.</string>
+    <string name="vpn_fail_title">VPN nije povezan</string>
     <string name="vpn_lockdown_config">Promijenite postavke mreže ili VPN-a</string>
     <string name="vpn_lockdown_connected">Povezan na uvijek aktivni VPN</string>
     <string name="vpn_lockdown_connecting">Povezivanje na uvijek aktivni VPN…</string>
@@ -3426,6 +3484,7 @@ U međuvremenu možete puniti svoj tablet bežično."</string>
     <string name="wifi_networks_available_detailed">Otvorene Wi-Fi mreže su dostupne.</string>
     <string name="wifi_no_internet">Mreža %1$s nema pristup internetu</string>
     <string name="wifi_no_internet_detailed">Dodirnite za opcije</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s koristiti mobilne podatke kada je WLAN veza spora ili nestabilna.</string>
     <string name="wifi_notification_switch_wifi_detail">Telefon je prešao na mobilne podatke jer je Wi-Fi mreža nestabilna.</string>
     <string name="wifi_notification_switch_wifi_title">Prebačeno na mobilne podatke</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Emergency notifications</string>
@@ -3467,9 +3526,9 @@ U međuvremenu možete puniti svoj tablet bežično."</string>
     <string name="work_profile_on_message">Ovo će vam omogućiti pristup radnim aplikacijama, obavještenjima, podacima i drugim funkcijama radnog profila.</string>
     <string name="work_profile_on_title">Uključiti Radni profil?</string>
     <string name="work_profile_restricted">Automatski blokator je uključen s maksimalnim ograničenjima. Radi zaštite vaše sigurnosti, radni profili se ne mogu kreirati.</string>
-    <string name="work_profile_telephony_paused_text">Pauzirali ste radne aplikacije. Nećete primati telefonske pozive ili tekstualne poruke od njih.</string>
+    <string name="work_profile_telephony_paused_text">Pauzirali ste poslovne aplikacije. Nećete primati telefonske pozive ni poruke.</string>
     <string name="work_profile_telephony_paused_title">Pozivi i poruke su isključeni</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Uključiti radni profil?</string>
+    <string name="work_profile_telephony_paused_turn_on_button">Pr. pauz. pos. apl.</string>
     <string name="workspace_title">Workspace</string>
     <string name="write_fail_reason_cancelled">Otkazano</string>
     <string name="write_fail_reason_cannot_write">Greška pri pisanju sadržaja</string>
@@ -3480,7 +3539,7 @@ U međuvremenu možete puniti svoj tablet bežično."</string>
     <string name="zen_mode_default_every_night_name">Spavanje</string>
     <string name="zen_mode_default_weekends_name">Vikend</string>
     <string name="zen_mode_default_weeknights_name">Radni dan uvečer</string>
-    <string name="zen_mode_downtime_feature_name">Neaktivnost</string>
+    <string name="zen_mode_downtime_feature_name">Vrijeme mirovanja</string>
     <string name="zen_mode_duration_hours">{count,plural, =1{Traje 1 h}one{Traje # h}few{Traje # h}other{Traje # h}}</string>
     <string name="zen_mode_duration_hours_short">{count,plural, =1{Traje 1 h}one{Traje # h}few{Traje # h}other{Traje # h}}</string>
     <string name="zen_mode_duration_hours_summary">{count,plural, =1{Traje 1 h (do {formattedTime})}one{Traje # h (do {formattedTime})}few{Traje # h (do {formattedTime})}other{Traje # h (do {formattedTime})}}</string>
@@ -3490,9 +3549,15 @@ U međuvremenu možete puniti svoj tablet bežično."</string>
     <string name="zen_mode_duration_minutes_summary">{count,plural, =1{Traje jednu minutu (do {formattedTime})}one{Traje # min (do {formattedTime})}few{Traje # min (do {formattedTime})}other{Traje # min (do {formattedTime})}}</string>
     <string name="zen_mode_duration_minutes_summary_short">{count,plural, =1{Traje 1 min (do {formattedTime})}one{Traje # min (do {formattedTime})}few{Traje # min (do {formattedTime})}other{Traje # min (do {formattedTime})}}</string>
     <string name="zen_mode_feature_name">Ne ometaj</string>
-    <string name="zen_mode_forever">Dok ne isključim</string>
+    <string name="zen_mode_forever">Dok ne isključite</string>
     <string name="zen_mode_forever_dnd">Dok ne isključite način rada Ne ometaj</string>
+    <string name="zen_mode_implicit_activated">Uključeno</string>
+    <string name="zen_mode_implicit_deactivated">Isključeno</string>
+    <string name="zen_mode_implicit_trigger_description">Upravlja %1$s</string>
     <string name="zen_mode_rule_name_combination">%1$s/%2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">Bilo koji kalendar</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s – %2$s</string>
     <string name="zen_mode_until">Do %1$s</string>
     <string name="zen_mode_until_next_day">Do: %1$s</string>
     <string name="zen_upgrade_notification_content">Dodirnite da provjerite šta je blokirano.</string>

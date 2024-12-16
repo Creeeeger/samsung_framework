@@ -43,7 +43,7 @@
     <string name="ColrMmi">လိုင်း ID ချိတ်ဆက်မှု ကန့်သတ်ချက်များ</string>
     <string name="CwMmi">ခေါ်ဆိုမှု စောင့်ဆိုင်းခြင်း</string>
     <string name="DndMmi">မနှောင့်ယှက်ရ</string>
-    <string name="EmergencyCallWarningSummary">Wi‑Fi ဖြင့် အရေးပေါ်ခေါ်ဆိုမှုများ ပြုလုပ်၍မရပါ</string>
+    <string name="EmergencyCallWarningSummary">အရေးပေါ်ဖုန်းခေါ်ရန် မိုဘိုင်းကွန်ရက် လိုအပ်သည်</string>
     <string name="EmergencyCallWarningTitle">အရေးပေါ်ခေါ်ဆိုမှု မရနိုင်ပါ</string>
     <string name="Midnight">ညသန်းခေါင်</string>
     <string name="NetworkPreferenceSwitchSummary">ဦးစားပေးကွန်ရက်သို့ ပြောင်းကြည့်ပါ။ ပြောင်းရန် တို့ပါ။</string>
@@ -174,14 +174,19 @@
     <string name="accessibility_button_prompt_text">သုံးနိုင်မှုခလုတ်ကို တို့ပြီးလျှင် ဝန်ဆောင်မှုတစ်ခု ရွေးပါ−</string>
     <string name="accessibility_dialog_button_allow">ခွင့်ပြုရန်</string>
     <string name="accessibility_dialog_button_deny">ပယ်ရန်</string>
+    <string name="accessibility_dialog_button_uninstall">ပရိုဂရမ်ကို ဖယ်ရှားရန်</string>
+    <string name="accessibility_dialog_touch_filtered_warning">အက်ပ်တစ်ခုသည် ခွင့်ပြုချက်တောင်းဆိုမှုကို ပိတ်နေသဖြင့် သင့်တုံ့ပြန်မှုကို စိစစ်၍မရပါ။</string>
     <string name="accessibility_edit_shortcut_menu_button_title">အများသုံးနိုင်မှု ခလုတ်ဖြင့် အသုံးပြုရန် ဝန်ဆောင်မှုများကို ရွေးပါ</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">အသံခလုတ် ဖြတ်လမ်းလင့်ခ်ဖြင့် အသုံးပြုရန် ဝန်ဆောင်မှုများကို ရွေးပါ</string>
     <string name="accessibility_enable_service_title">%1$s ကို သင့်စက်အား အပြည့်အဝထိန်းချုပ်ခွင့် ပေးလိုပါသလား။</string>
-    <string name="accessibility_freeform_caption">%1$s၏ ခေါင်းစီး ဘား။</string>
     <string name="accessibility_gesture_3finger_instructional_text">ဝန်ဆောင်မှုများအကြား ပြောင်းရန် လက်သုံးချောင်းဖြင့် အပေါ်သို့ ပွတ်ဆွဲပြီး ဖိထားပါ။</string>
     <string name="accessibility_gesture_3finger_prompt_text">သုံးနိုင်မှုလက်ဟန်ဖြင့် အသုံးပြုရန် ဝန်ဆောင်မှုတစ်ခုကို ရွေးပါ (ဖန်သားပြင်အောက်ခြေမှနေ၍ လက်သုံးချောင်းဖြင့် အပေါ်သို့ ပွတ်ဆွဲပါ)-</string>
     <string name="accessibility_gesture_instructional_text">ဝန်ဆောင်မှုများအကြား ပြောင်းရန် လက်နှစ်ချောင်းဖြင့် အပေါ်သို့ ပွတ်ဆွဲပြီး ဖိထားပါ။</string>
     <string name="accessibility_gesture_prompt_text">သုံးနိုင်မှုလက်ဟန်ဖြင့် အသုံးပြုရန် ဝန်ဆောင်မှုတစ်ခုကို ရွေးပါ (ဖန်သားပြင်အောက်ခြေမှနေ၍ လက်နှစ်ချောင်းဖြင့် အပေါ်သို့ ပွတ်ဆွဲပါ)-</string>
+    <string name="accessibility_label_clone_profile">ပုံတူပွားရန်</string>
+    <string name="accessibility_label_communal_profile">အများသုံး</string>
+    <string name="accessibility_label_managed_profile">အလုပ်ပရိုဖိုင်</string>
+    <string name="accessibility_label_private_profile">သီးသန့်နေရာ</string>
     <string name="accessibility_magnification_chooser_text">ချဲ့ခြင်း</string>
     <string name="accessibility_select_shortcut_menu_title">ဝန်ဆောင်မှုကို စတင်အသုံးပြုရန် တို့ပါ−</string>
     <string name="accessibility_service_action_perform_description">၎င်းသည် သင်နှင့် အက်ပ်တစ်ခု (သို့) အာရုံခံကိရိယာအကြား ပြန်လှန်တုံ့ပြန်မှုများကို မှတ်သားနိုင်ပြီး သင့်ကိုယ်စား အက်ပ်များနှင့် ပြန်လှန်တုံ့ပြန်နိုင်သည်။</string>
@@ -226,7 +231,7 @@
     <string name="accessibility_system_action_on_screen_a11y_shortcut_label">ဖန်သားပြင်အတွက် အများသုံးစွဲနိုင်မှုဖြတ်လမ်းလင့်ခ်</string>
     <string name="accessibility_system_action_power_dialog_label">ပါဝါ ဒိုင်ယာလော့</string>
     <string name="accessibility_system_action_quick_settings_label">အမြန် ဆက်တင်များ</string>
-    <string name="accessibility_system_action_recents_label">လတ်တလောသုံး အက်ပ်များ</string>
+    <string name="accessibility_system_action_recents_label">မကြာသေးမီက အက်ပ်များ</string>
     <string name="accessibility_system_action_screenshot_label">ဖန်သားပြင်ဓာတ်ပုံ</string>
     <string name="accessibility_uncheck_legacy_item_warning">%s ကို ပိတ်ထားသည်</string>
     <string name="action_bar_home_description">ပင်မစာမျက်နှာကို ပြန်သွားရန်</string>
@@ -267,14 +272,17 @@
     <string name="alert_windows_notification_title">%s ကို အခြားအက်ပ်များပေါ်တွင် မြင်နေရပါသည်။</string>
     <string name="alert_windows_notification_turn_off_action">ပိတ်ရန်</string>
     <string name="allow">ခွင့်ပြုရန်</string>
+    <string name="alternative_face_setup_notification_content">သင့်လက်ချောင်းများ ရေစိုနေချိန်ကဲ့သို့ သင်၏လက်ဗွေကို မမှတ်မိသောအခါ ‘မျက်နှာပြ လော့ခ်ဖွင့်ခြင်း’ သုံးပါ</string>
+    <string name="alternative_fp_setup_notification_content">အလင်းရောင် အလုံအလောက်မရချိန်ကဲ့သို့ သင့်မျက်နှာကို မမှတ်မိသောအခါ ‘လက်ဗွေသုံး လော့ခ်ဖွင့်ခြင်း’ သုံးပါ</string>
+    <string name="alternative_unlock_setup_notification_title">ဖွင့်ရန် နည်းလမ်းနောက်တစ်ခု စမ်းကြည့်ပါ</string>
     <string name="alwaysUse">ဤလှုပ်ရှားမှုအတွက် မူရင်းအတိုင်း အသုံးပြုပါ။</string>
     <string name="android_preparing_apk">%1$s အားပြင်ဆင်နေသည်။</string>
-    <string name="android_start_title">တက်ဘလက် စတင်နေသည်…</string>
+    <string name="android_start_title">ဖုန်း စတင်နေသည်…</string>
     <string name="android_system_label">Android စနစ်</string>
     <string name="android_upgrading_complete">လုပ်ငန်းစနစ်ထည့်သွင်း၍ ပြန်လည်စတင်ရန် ပြီးပါပြီ</string>
     <string name="android_upgrading_notification_title">စနစ်အပ်ဒိတ်ကို အပြီးသတ်နေသည်…</string>
     <string name="android_upgrading_starting_apps">အက်ပ်များကို စတင်နေ</string>
-    <string name="android_upgrading_title">တက်ဘလက်ကို အပ်ဒိတ်လုပ်နေသည်…</string>
+    <string name="android_upgrading_title">ဖုန်းကို အပ်ဒိတ်လုပ်နေသည်…</string>
     <string name="anr_activity_application">%2$s သည်တုံ့ပြန်မှုမရှိပါ</string>
     <string name="anr_activity_process">%1$s သည်တုံ့ပြန်မှုမရှိပါ</string>
     <string name="anr_application_process">%1$s သည်တုံ့ပြန်မှုမရှိပါ</string>
@@ -295,16 +303,17 @@
     <string name="app_not_found">ဤလုပ်ဆောင်ချက်ကို ပြုလုပ်ပေးမည့် အပလီကေးရှင်းမရှိပါ။</string>
     <string name="app_running_notification_text">နောက်ထပ်အချက်အလက်များကို ကြည့်ရန် သို့မဟုတ် အက်ပ်ကိုရပ်တန့်ရန် တို့ပါ။</string>
     <string name="app_running_notification_title">%1$s က အလုပ်လုပ်နေသည်။</string>
-    <string name="app_streaming_blocked_message">၎င်းအား ယခု သင့် %1$s တွင် ဝင်၍မရပါ။ ယင်းအစား တက်ဘလက်တွင် စမ်းကြည့်ပါ။</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">ဤအက်ပ်က ထပ်ဆောင်းလုံခြုံရေးကို တောင်းဆိုနေသည်။ တက်ဘလက်တွင် စမ်းကြည့်ပါ။</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">၎င်းကို သင်၏ %1$s တွင် သုံး၍မရပါ။ တက်ဘလက်တွင် စမ်းကြည့်ပါ။</string>
+    <string name="app_streaming_blocked_message">၎င်းအား ယခု သင့် %1$s တွင် ဝင်၍မရပါ။ ယင်းအစား ဖုန်းတွင် စမ်းကြည့်ပါ။</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">ဤအက်ပ်က ထပ်ဆောင်းလုံခြုံရေးကို တောင်းဆိုနေသည်။ ဖုန်းတွင် စမ်းကြည့်ပါ။</string>
+    <string name="app_streaming_blocked_message_for_permission_request">ဤအက်ပ်သည် နောက်ထပ်ခွင့်ပြုချက်များကို တောင်းဆိုနေသော်လည်း တိုက်ရိုက်လွှင့်စက်ရှင်တွင် ခွင့်ပြုချက်များ ပေး၍မရပါ။ သင့်ဖုန်းတွင် ဦးစွာ ခွင့်ပြုချက်ပေးပါ။</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">၎င်းကို သင်၏ %1$s တွင် သုံး၍မရပါ။ ဖုန်းတွင် စမ်းကြည့်ပါ။</string>
     <string name="app_streaming_blocked_title">%1$s မရနိုင်ပါ</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">ကင်မရာ မရနိုင်ပါ</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">ဖုန်းပေါ်တွင် ရှေ့ဆက်ပါ</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">မိုက်ခရိုဖုန်း မရနိုင်ပါ</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">ခွင့်ပြုချက်လိုအပ်သည်</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">ခွင့်ပြုချက်တောင်းဆိုမှု ပိတ်ထားသည်</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store မရနိုင်ပါ</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Tablet ဆက်တင်များ မရနိုင်ပါ</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Phone ဆက်တင်များ မရနိုင်ပါ</string>
     <string name="app_suspended_default_message">%1$s ကို လောလောဆယ် မရနိုင်ပါ။ ၎င်းကို %2$s က စီမံထားပါသည်။</string>
     <string name="app_suspended_more_details">ပိုမိုလေ့လာရန်</string>
     <string name="app_suspended_title">အက်ပ်ကို မရရှိနိုင်ပါ</string>
@@ -337,20 +346,22 @@
     <string name="autofill_save_yes">သိမ်းရန်</string>
     <string name="autofill_update_title"><b>%1$s</b>တွင် အပ်ဒိတ်လုပ်လိုပါသလား။</string>
     <string name="autofill_update_title_with_2types">%1$s နှင့် %2$s ကို <b>%3$s</b>တွင် အပ်ဒိတ်လုပ်လိုပါသလား။</string>
-    <string name="autofill_update_title_with_3types">ဤအချက်အလက်များကို <b>%4$s</b>တွင် အပ်ဒိတ်လုပ်လိုပါသလား- %1$s၊ %2$s နှင့် %3$s။</string>
+    <string name="autofill_update_title_with_3types">ဤအရာများကို <b>%4$s</b> တွင် အပ်ဒိတ်လုပ်မလား- %1$s၊ %2$s နှင့် %3$s။</string>
     <string name="autofill_update_title_with_type">%1$s ကို <b>%2$s</b> တွင် အပ်ဒိတ်လုပ်လိုပါသလား။</string>
     <string name="autofill_update_yes">အပ်ဒိတ်လုပ်ရန်</string>
     <string name="autofill_window_title">%1$s သုံးပြီး အလိုအလျောက်ဖြည့်ပါ</string>
     <string name="back_button_label">နောက်သို့</string>
     <string name="badPin">သင် ရိုက်ထည့်သော PIN ဟောင်းမှာ မမှန်ပါ။</string>
     <string name="badPuk">သင်ရိုက် ထည့်သော PUK မှာ မမှန်ကန်ပါ။</string>
-    <string name="battery_saver_charged_notification_summary">တက်ဘလက်တွင် ဘက်ထရီအား အလုံအလောက် ရှိသည်။ လုပ်ဆောင်ချက်များကို ကန့်သတ်မထားတော့ပါ။</string>
-    <string name="battery_saver_description">‘ဘက်ထရီ အားထိန်း’ က ‘အမှောင်နောက်ခံ’ ကို ဖွင့်ပြီး နောက်ခံလုပ်ဆောင်ချက်၊ ပြသမှုဆိုင်ရာ အထူးပြုလုပ်ချက်အချို့၊ ဝန်ဆောင်မှုအချို့နှင့် ကွန်ရက်ချိတ်ဆက်မှုအချို့တို့ကို ကန့်သတ်သည် သို့မဟုတ် ပိတ်သည်။</string>
-    <string name="battery_saver_description_with_learn_more">‘ဘက်ထရီ အားထိန်း’ က ‘အမှောင်နောက်ခံ’ ကို ဖွင့်ပြီး နောက်ခံလုပ်ဆောင်ချက်၊ ပြသမှုဆိုင်ရာ အထူးပြုလုပ်ချက်အချို့၊ ဝန်ဆောင်မှုအချို့နှင့် ကွန်ရက်ချိတ်ဆက်မှုအချို့တို့ကို ကန့်သတ်သည် သို့မဟုတ် ပိတ်သည်။</string>
+    <string name="battery_saver_charged_notification_summary">ဖုန်းတွင် ဘက်ထရီအား အလုံအလောက် ရှိသည်။ လုပ်ဆောင်ချက်များကို ကန့်သတ်မထားတော့ပါ။</string>
+    <string name="battery_saver_description">‘ဘက်ထရီ အားထိန်း’ က ‘အမှောင်နောက်ခံ’ ကို ဖွင့်ပြီး နောက်ခံလုပ်ဆောင်ချက်၊ ဖန်တီးပြသချက်အချို့၊ ဝန်ဆောင်မှုအချို့နှင့် ကွန်ရက်ချိတ်ဆက်မှုအချို့တို့ကို ကန့်သတ်သည် သို့မဟုတ် ပိတ်သည်။</string>
+    <string name="battery_saver_description_with_learn_more">‘ဘက်ထရီ အားထိန်း’ က ‘အမှောင်နောက်ခံ’ ကို ဖွင့်ပြီး နောက်ခံလုပ်ဆောင်ချက်၊ ဖန်တီးပြသချက်အချို့၊ ဝန်ဆောင်မှုအချို့နှင့် ကွန်ရက်ချိတ်ဆက်မှုအချို့တို့ကို ကန့်သတ်သည် သို့မဟုတ် ပိတ်သည်။</string>
     <string name="battery_saver_notification_channel_name">ဘက်ထရီ အားထိန်း</string>
     <string name="battery_saver_off_notification_title">ဘက်ထရီ အားထိန်းကို ပိတ်ထားသည်</string>
     <string name="beforeOneMonthDurationPast">လွန်ခဲ့သော၁လမတိုင်မီက</string>
     <string name="biometric_app_setting_name">ဇီဝမက်ထရစ်အချက်အလက်များ သုံးခြင်း</string>
+    <string name="biometric_dangling_notification_action_not_now">ယခုမလုပ်ပါ</string>
+    <string name="biometric_dangling_notification_action_set_up">စနစ်ထည့်သွင်းရန်</string>
     <string name="biometric_dialog_default_subtitle">ရှေ့ဆက်ရန် သင်၏ ဇီဝမက်ထရစ်အချက်အလက်ကို သုံးပါ</string>
     <string name="biometric_dialog_default_title">သင်ဖြစ်ကြောင်း အတည်ပြုပါ</string>
     <string name="biometric_error_canceled">အထောက်အထားစိစစ်ခြင်းကို ပယ်ဖျက်လိုက်သည်</string>
@@ -358,7 +369,8 @@
     <string name="biometric_error_generic">အထောက်အထားစိစစ်ရာတွင် အမှားအယွင်းရှိနေသည်</string>
     <string name="biometric_error_hw_unavailable">ဇီဝအချက်အလက်သုံး ကွန်ပျူတာစက်ပစ္စည်း မရရှိနိုင်ပါ</string>
     <string name="biometric_error_user_canceled">အထောက်အထားစိစစ်ခြင်းကို ပယ်ဖျက်လိုက်သည်</string>
-    <string name="biometric_not_recognized">မသိ</string>
+    <string name="biometric_face_not_recognized">မျက်နှာကို မသိရှိပါ</string>
+    <string name="biometric_not_recognized">မသိပါ</string>
     <string name="biometric_or_screen_lock_app_setting_name">ဇီဝမက်ထရစ်အချက်အလက်များ (သို့) ဖန်သားပြင်လော့ခ်ချခြင်းကို သုံးခြင်း</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">ရှေ့ဆက်ရန် သင်၏ ဇီဝမက်ထရစ်အချက်အလက် (သို့) ဖန်သားပြင်လော့ခ်ကို သုံးပါ</string>
     <string name="bluetooth_a2dp_audio_route_name">ဘလူးတုသ် အသံ</string>
@@ -433,11 +445,16 @@
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">OK</string>
+    <string name="connected_display_thermally_unavailable_notification_content">သင့်စက်ပစ္စည်း ပူလွန်းနေသဖြင့် ၎င်းမအေးသေးမီ ဖန်သားပြင်သို့ စကရင်ပွား၍မရပါ</string>
+    <string name="connected_display_unavailable_notification_content">အခြားကေဘယ်ကြိုးသုံးပြီး ထပ်စမ်းကြည့်ပါ</string>
+    <string name="connected_display_unavailable_notification_title">ဖန်သားပြင်တွင် စကရင်ပွား၍ မရပါ</string>
     <string name="console_running_notification_message">စွမ်းဆောင်ရည်အပေါ် သက်ရောက်မှုရှိနိုင်ပါသည်။ ပိတ်ရန် bootloader ကို စစ်ဆေးပါ။</string>
     <string name="console_running_notification_title">အမှတ်စဉ် ကွန်ဆိုးလ်ကို ဖွင့်ထားသည်</string>
     <string name="contentServiceSync">အလိုအလျောက် ထပ်တူလုပ်ခြင်း</string>
     <string name="contentServiceSyncNotificationTitle">စင့်ခ်လုပ်၍ မရပါ</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">%s များစွာကို ဖျက်ရန် ကြိုးစားထားသည်။</string>
+    <string name="content_description_collapsed">ချုံ့ထားသည်</string>
+    <string name="content_description_expanded">ချဲ့ထားသည်</string>
     <string name="content_description_sliding_handle">ဆွဲယူနိုင်သည့် လက်ကိုင်။ ထိပါ &amp; ကိုင်ထားပါ။</string>
     <string name="conversation_single_line_image_placeholder">ပုံပို့ထားသည်</string>
     <string name="conversation_single_line_name_display">%1$s-</string>
@@ -450,10 +467,10 @@
     <string name="crossSimFormat_spn_cross_sim_calling">%s အရန် ခေါ်ဆိုမှု</string>
     <string name="csd_dose_reached_warning">"အသံကျယ်ကျယ်ဖြင့် ဆက်နားဆင်မလား။
 
-နားကြပ်အသံအား အကြံပြုထားသည်ထက် ပိုကြာရှည်စွာ ချဲ့ထားပြီး ၎င်းက သင့်အကြားအာရုံကို ထိခိုက်စေနိုင်သည်"</string>
+နားကြပ်အသံသည် အကြံပြုထားသည်ထက် အချိန်ကြာရှည်စွာ ကျယ်လောင်နေပြီး ၎င်းက သင့်အကြားအာရုံကို ထိခိုက်စေနိုင်သည်"</string>
     <string name="csd_momentary_exposure_warning">"ကျယ်လောင်သောအသံကို သိရှိသည်
 
-နားကြပ်အသံအား အကြံပြုထားသည်ထက် ပိုချဲ့ထားပြီး ၎င်းက သင့်အကြားအာရုံကို ထိခိုက်စေနိုင်သည်"</string>
+နားကြပ်အသံသည် အကြံပြုထားသည်ထက် ပိုကျယ်နေပြီး ၎င်းက သင့်အကြားအာရုံကို ထိခိုက်စေနိုင်သည်"</string>
     <string name="data_saver_description">"ဒေတာအသုံးလျှော့ချနိုင်ရန်အတွက် အက်ပ်များကို နောက်ခံတွင် ဒေတာပို့ခြင်းနှင့် လက်ခံခြင်းမပြုရန် 'ဒေတာချွေတာမှု' စနစ်က တားဆီးထားပါသည်။ ယခုအက်ပ်ဖြင့် ဒေတာအသုံးပြုနိုင်သော်လည်း အကြိမ်လျှော့၍သုံးရပါမည်။ ဥပမာ၊ သင်က မတို့မချင်း ပုံများပေါ်လာမည် မဟုတ်ပါ။"</string>
     <string name="data_saver_enable_button">ဖွင့်ရန်</string>
     <string name="data_saver_enable_title">ဒေတာချွေတာမှုစနစ် ဖွင့်မလား။</string>
@@ -486,7 +503,7 @@
     <string name="decline">လက်မခံပါ</string>
     <string name="decline_remote_bugreport_action">ငြင်းပယ်ပါ</string>
     <string name="default_audio_route_category_name">စနစ်</string>
-    <string name="default_audio_route_name">တက်ဘလက်</string>
+    <string name="default_audio_route_name">ဖုန်း</string>
     <string name="default_audio_route_name_dock_speakers">အထိုင်ရှိသော စပီကာများ</string>
     <string name="default_audio_route_name_external_device">ပြင်ပစက်</string>
     <string name="default_audio_route_name_headphones">နားကြပ်</string>
@@ -508,6 +525,7 @@
     <string name="device_state_notification_settings_button">ဆက်တင်များသို့ သွားရန်</string>
     <string name="device_state_notification_turn_off_button">ပိတ်ရန်</string>
     <string name="device_storage_monitor_notification_channel">စက်ပစ္စည်း သိုလှောင်ခန်း</string>
+    <string name="device_unlock_notification_name">စက်ပစ္စည်းဖွင့်ခြင်း</string>
     <string name="dial_number_using">"
 အား အသုံးပြု၍ %sနံပါတ်ခေါ်ဆိုပါ"</string>
     <string name="disable_accessibility_shortcut">ဖြတ်လမ်းလင့်ခ်ကို ပိတ်ရန်</string>
@@ -524,6 +542,7 @@
     <string name="dlg_ok">OK</string>
     <string name="done_accessibility_shortcut_menu_button">ပြီးပြီ</string>
     <string name="done_label">ပြီးပါပြီ</string>
+    <string name="dream_accessibility_action_click">ပယ်ရန်</string>
     <string name="dream_preview_title">%1$s အစမ်းကြည့်ခြင်း</string>
     <string name="dump_heap_notification">%1$s သိမ်းထားနိုင်မှု အကန့်အသတ် ကျော်လွန်နေ</string>
     <string name="dump_heap_notification_detail">သိမ်းဆည်းနိုင်မှု ပမာဏကျော်လွန်သွားပါပြီ။ မျှဝေရန် တို့ပါ။</string>
@@ -550,7 +569,9 @@
     <string name="duration_years_shortest_future">%d နှစ်အတွင်း</string>
     <string name="dynamic_mode_notification_channel_name">ပုံမှန်မုဒ်အတွက် အချက်အလက်ပြသည့် အကြောင်းကြားချက်</string>
     <string name="dynamic_mode_notification_summary">ဘက်ထရီသက်တမ်း ပိုရှည်စေရန် ဘက်ထရီ အသုံးပြုမှု လျှော့ချခြင်း</string>
+    <string name="dynamic_mode_notification_summary_v2">ဘက်ထရီ သက်တမ်းရှည်စေရန် ‘ဘက်ထရီ အားထိန်း’ ဖွင့်ထားသည်</string>
     <string name="dynamic_mode_notification_title">ဘက်ထရီ အားထိန်း ဖွင့်ထားသည်</string>
+    <string name="dynamic_mode_notification_title_v2">‘ဘက်ထရီ အားထိန်း’ ဖွင့်ထားသည်</string>
     <string name="editTextMenuTitle">စာတို လုပ်ဆောင်ချက်</string>
     <string name="edit_accessibility_shortcut_menu_button">ဖြတ်လမ်းများကို တည်းဖြတ်ရန်</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
@@ -563,8 +584,10 @@
     <string name="emergency_call_dialog_number_for_display">အရေးပေါ်နံပါတ်</string>
     <string name="emergency_calls_only">အရေးပေါ်ခေါ်ဆိုမှုသာ</string>
     <string name="enablePin">မအောင်မြင်ပါ, SIM/RUIM သော့ကို အရင် သုံးခွင့်ပြုရန်</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s က ထိတွေ့ပြီး ရှာဖွေခြင်းကို လုပ်ချင်ပါသည်။ ထိတွေ့ရှာဖွေခြင်း ဖွင့်ထားလျှင် သင့်လက်ဖျားအောက်မှ အရာကို ကြားနိုင် သို့ ရှင်းလင်းချက်ကို မြင်နိုင်တဲ့ အပြင် လက် အနေအထားဖြင့် တက်ဘလက်ကို ဆက်သွယ်ပြုလုပ်စေခိုင်းနိုင်ပါသည်</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s က ထိတွေ့ပြီး ရှာဖွေခြင်းကို လုပ်ချင်ပါသည်။ ထိတွေ့ရှာဖွေခြင်း ဖွင့်ထားလျှင် သင့်လက်ဖျားအောက်မှ အရာကို ကြားနိုင် သို့ ရှင်းလင်းချက်ကို မြင်နိုင်တဲ့ အပြင် လက် အနေအထားဖြင့် ဖုန်းကို ဆက်သွယ်ပြုလုပ်စေခိုင်းနိုင်ပါသည်</string>
     <string name="enable_explore_by_touch_warning_title">ထိတွေ့ပြီး ရှာဖွေခြင်း ဖွင့်မည်မလား?</string>
+    <string name="error_handwriting_unsupported">ဤအကွက်တွင် လက်ရေးကို မပံ့ပိုးပါ</string>
+    <string name="error_handwriting_unsupported_password">စကားဝှက်အကွက်များတွင် လက်ရေးကို မပံ့ပိုးပါ</string>
     <string name="error_message_change_not_allowed">ဤပြောင်းလဲမှုကို သင်၏ စီမံခန့်ခွဲသူက ခွင့်မပြုပါ</string>
     <string name="error_message_title">အမှား</string>
     <string name="etws_primary_default_message_earthquake">စိတ်ငြိမ်ငြိမ်ထားပြီး အနီးအနားတဝိုက်တွင် ခိုနားစရာ နေရာရှာပါ။</string>
@@ -644,7 +667,7 @@
     <string name="face_acquired_too_bright">အလွန် လင်းသည်။ အလင်းလျှော့ကြည့်ပါ။</string>
     <string name="face_acquired_too_close">ဖုန်းကို အဝေးသို့ခွာပါ</string>
     <string name="face_acquired_too_dark">အလင်းရောင် အားနည်းသည်</string>
-    <string name="face_acquired_too_different">မျက်နှာကို မသိပါ။ ထပ်စမ်းကြည့်ပါ။</string>
+    <string name="face_acquired_too_different">မျက်နှာကို မသိရှိပါ။ ထပ်စမ်းကြည့်ပါ။</string>
     <string name="face_acquired_too_far">ဖုန်းကို အနားသို့ပိုတိုးပါ</string>
     <string name="face_acquired_too_high">ဖုန်းကို မြှင့်လိုက်ပါ</string>
     <string name="face_acquired_too_left">ဖုန်းကို သင့်ညာဘက်သို့ ရွှေ့ပါ</string>
@@ -655,6 +678,8 @@
     <string name="face_app_setting_name">မျက်နှာပြ လော့ခ်ဖွင့်ရန်</string>
     <string name="face_authenticated_confirmation_required">မျက်နှာ အထောက်အထားစိစစ်ပြီးပြီ၊ အတည်ပြုရန်ကို နှိပ်ပါ</string>
     <string name="face_authenticated_no_confirmation_required">မျက်နှာ အထောက်အထားစိစစ်ပြီးပြီ</string>
+    <string name="face_dangling_notification_msg">သင်၏မျက်နှာနမူနာကို မသိရှိနိုင်တော့ပါ။ ‘မျက်နှာပြ လော့ခ်ဖွင့်ခြင်း’ ထပ်မံစနစ်ထည့်သွင်းပါ။</string>
+    <string name="face_dangling_notification_title">‘မျက်နှာပြ လော့ခ်ဖွင့်ခြင်း’ ကို စနစ်ထပ်မံထည့်သွင်းပါ</string>
     <string name="face_dialog_default_subtitle">ရှေ့ဆက်ရန် သင့်မျက်နှာကို သုံးပါ</string>
     <string name="face_error_canceled">မျက်နှာ ဆောင်ရွက်ခြင်းကို ပယ်ဖျက်လိုက်ပါပြီ။</string>
     <string name="face_error_hw_not_available">မျက်နှာကို အတည်ပြု၍ မရပါ။ ဟာ့ဒ်ဝဲ မရနိုင်ပါ။</string>
@@ -677,8 +702,6 @@
     <string name="face_recalibrate_notification_name">မျက်နှာပြ လော့ခ်ဖွင့်ခြင်း</string>
     <string name="face_recalibrate_notification_title">‘မျက်နှာပြ လော့ခ်ဖွင့်ခြင်း’ ဆိုင်ရာ ပြဿနာ</string>
     <string name="face_sensor_privacy_enabled">မျက်နှာပြ လော့ခ်ဖွင့်ခြင်းကို သုံးရန် <b>ကင်မရာ သုံးခွင့်</b> ကို ‘ဆက်တင်များ > ကန့်သတ်ဆက်တင်’ တွင်ဖွင့်ပါ</string>
-    <string name="face_setup_notification_content">သင့်ဖုန်းကိုကြည့်၍ သော့ဖွင့်ပါ</string>
-    <string name="face_setup_notification_title">မျက်နှာပြ လော့ခ်ဖွင့်ခြင်းကို ထည့်သွင်းပါ</string>
     <string name="faceunlock_multiple_failures">မျက်မှာပြ လော့ခ်ဖွင့်ခြင်း ခွင့်ပြုသော အကြိမ်ရေထက် ကျော်လွန်သွားပါပြီ</string>
     <string name="factory_reset_message">"စက်စီမံအက်ပ်ကို သုံး၍မရပါ။ သင်၏ စက်ပစ္စည်းအတွင်းရှိ အရာများကို ဖျက်လိုက်ပါမည်
 
@@ -703,7 +726,7 @@
     <string name="fingerprint_acquired_imager_dirty">လက်ဗွေ အာရုံခံကိရိယာကို သန့်ရှင်းပြီး ထပ်စမ်းကြည့်ပါ</string>
     <string name="fingerprint_acquired_imager_dirty_alt">အာရုံခံကိရိယာကို သန့်ရှင်းပြီး ထပ်စမ်းကြည့်ပါ</string>
     <string name="fingerprint_acquired_immobile">လက်ချောင်းအနေအထား နည်းနည်းစီ ပြောင်းပါ</string>
-    <string name="fingerprint_acquired_insufficient">လက်ဗွေကို မမှတ်မိပါ။ ထပ်စမ်းကြည့်ပါ။</string>
+    <string name="fingerprint_acquired_insufficient">လက်ဗွေကို မသိရှိပါ။ ထပ်စမ်းကြည့်ပါ။</string>
     <string name="fingerprint_acquired_partial">အာရုံခံကိရိယာပေါ်တွင် သေချာဖိပါ</string>
     <string name="fingerprint_acquired_power_press">ဖွင့်ပိတ်ခလုတ် နှိပ်လိုက်သည်</string>
     <string name="fingerprint_acquired_too_bright">အလွန် လင်းသည်</string>
@@ -712,21 +735,27 @@
     <string name="fingerprint_acquired_try_adjusting">ပြင်ဆင်ကြည့်ပါ</string>
     <string name="fingerprint_app_setting_name">လက်ဗွေ သုံးခြင်း</string>
     <string name="fingerprint_authenticated">လက်ဗွေကို အထောက်အထား စိစစ်ပြီးပါပြီ</string>
+    <string name="fingerprint_dangling_notification_msg_1">%s ကို မသိရှိနိုင်တော့ပါ။</string>
+    <string name="fingerprint_dangling_notification_msg_2">%1$s နှင့် %2$s ကို မသိရှိနိုင်တော့ပါ။</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_1">%s ကို မသိရှိနိုင်တော့ပါ။ ‘လက်ဗွေသုံး လော့ခ်ဖွင့်ခြင်း’ ထပ်မံစနစ်ထည့်သွင်းပါ။</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_2">%1$s နှင့် %2$s ကို မသိရှိနိုင်တော့ပါ။ ‘လက်ဗွေသုံး လော့ခ်ဖွင့်ခြင်း’ ထပ်မံစနစ်ထည့်သွင်းပါ။</string>
+    <string name="fingerprint_dangling_notification_title">‘လက်ဗွေသုံး လော့ခ်ဖွင့်ခြင်း’ ကို စနစ်ထပ်မံထည့်သွင်းပါ</string>
     <string name="fingerprint_dialog_default_subtitle">ရှေ့ဆက်ရန် သင့်လက်ဗွေကို သုံးပါ</string>
-    <string name="fingerprint_error_bad_calibration">လက်ဗွေ အာရုံခံကိရိယာကို အသုံးပြု၍ မရပါ။ ပြုပြင်ရေး ဝန်ဆောင်မှုပေးသူထံသို့ သွားပါ</string>
-    <string name="fingerprint_error_canceled">လက်ဗွေယူခြင်း ပယ်ဖျက်လိုက်သည်။</string>
-    <string name="fingerprint_error_hw_not_available">လက်ဗွေ စက်ပစ္စည်းမရနိုင်ပါ။</string>
-    <string name="fingerprint_error_hw_not_present">ဤစက်တွင် လက်ဗွေအာရုံခံကိရိယာ မရှိပါ။</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">မျက်နှာကို မမှတ်မိပါ။ ၎င်းအစား လက်ဗွေသုံးပါ။</string>
+    <string name="fingerprint_error_bad_calibration">လက်ဗွေ အာရုံခံကိရိယာကို သုံး၍မရပါ။ ပြုပြင်ရေး ဝန်ဆောင်မှုပေးသူထံသို့ သွားပါ။</string>
+    <string name="fingerprint_error_canceled">လက်ဗွေဖြင့် လုပ်ဆောင်ခြင်းကို ပယ်ဖျက်လိုက်သည်</string>
+    <string name="fingerprint_error_hw_not_available">လက်ဗွေစက် မရနိုင်ပါ</string>
+    <string name="fingerprint_error_hw_not_present">ဤစက်ပစ္စည်းတွင် လက်ဗွေအာရုံခံကိရိယာ မရှိပါ</string>
     <string name="fingerprint_error_lockout">ကြိုးပမ်းမှုအကြိမ်ရေ များလွန်းသည်။ ဖန်သားပြင်လော့ခ်ချခြင်းကို အစားထိုးသုံးပါ။</string>
     <string name="fingerprint_error_lockout_permanent">ကြိုးပမ်းမှုအကြိမ်ရေ များလွန်းသည်။ ဖန်သားပြင်လော့ခ်ချခြင်းကို အစားထိုးသုံးပါ။</string>
-    <string name="fingerprint_error_no_fingerprints">မည်သည့် လက်ဗွေကိုမျှ ထည့်သွင်းမထားပါ။</string>
+    <string name="fingerprint_error_no_fingerprints">မည်သည့်လက်ဗွေကိုမျှ ထည့်သွင်းမထားပါ</string>
     <string name="fingerprint_error_no_space">လက်ဗွေကို စနစ်ထည့်သွင်း၍ မရပါ</string>
     <string name="fingerprint_error_not_match">လက်ဗွေကို မသိရှိပါ</string>
     <string name="fingerprint_error_power_pressed">ဖွင့်ပိတ်ခလုတ် နှိပ်ထားသည်</string>
-    <string name="fingerprint_error_security_update_required">အာရုံခံကိရိယာကို ယာယီပိတ်ထားသည်။</string>
+    <string name="fingerprint_error_security_update_required">အာရုံခံကိရိယာကို ယာယီပိတ်ထားသည်</string>
     <string name="fingerprint_error_timeout">လက်ဗွေစနစ်ထည့်သွင်းချိန် ကုန်သွားပါပြီ။ ထပ်စမ်းကြည့်ပါ။</string>
     <string name="fingerprint_error_unable_to_process">လက်ဗွေကို လုပ်ဆောင်နိုင်ခြင်းမရှိပါ။ ထပ်စမ်းကြည့်ပါ။</string>
-    <string name="fingerprint_error_user_canceled">လက်ဗွေဖြင့် အထောက်အထားစိစစ်ခြင်းကို အသုံးပြုသူက ပယ်ဖျက်ထားသည်။</string>
+    <string name="fingerprint_error_user_canceled">လက်ဗွေဖြင့် လုပ်ဆောင်ခြင်းကို အသုံးပြုသူက ပယ်ဖျက်လိုက်သည်</string>
     <string name="fingerprint_error_vendor_unknown">တစ်ခုခုမှားသွားသည်။ ထပ်စမ်းကြည့်ပါ။</string>
     <string name="fingerprint_name_template">လက်ချောင်း %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">လက်ဗွေ (သို့) ဖန်သားပြင်လော့ခ်ချခြင်းကို သုံးခြင်း</string>
@@ -734,8 +763,6 @@
     <string name="fingerprint_recalibrate_notification_content">ပြုပြင်ရေး ဝန်ဆောင်မှုပေးသူထံသို့ သွားပါ။</string>
     <string name="fingerprint_recalibrate_notification_name">လက်ဗွေသုံး လော့ခ်ဖွင့်ခြင်း</string>
     <string name="fingerprint_recalibrate_notification_title">လက်ဗွေ အာရုံခံကိရိယာကို အသုံးပြု၍ မရပါ</string>
-    <string name="fingerprint_setup_notification_content">လက်ဗွေထည့်ရန် တို့ပါ</string>
-    <string name="fingerprint_setup_notification_title">သော့ဖွင့်ရန် နောက်ထပ်နည်းလမ်းများကို စနစ်ထည့်သွင်းပါ</string>
     <string name="fingerprint_udfps_error_not_match">လက်ဗွေကို မသိရှိပါ</string>
     <string name="fingerprints">လက်ပွေများ</string>
     <string name="floating_toolbar_close_overflow_description">ကိရိယာဘားအပိုအား ပိတ်ရန်</string>
@@ -776,7 +803,7 @@
     <string name="global_action_silent_mode_on_status">အသံပိတ်ထားသည်</string>
     <string name="global_action_toggle_silent_mode">အသံတိတ်စနစ်</string>
     <string name="global_action_voice_assist">အသံ အကူအညီ</string>
-    <string name="global_actions">Tabletဆိုင်ရာရွေးချယ်မှုများ</string>
+    <string name="global_actions">ဖုန်းဆိုင်ရာရွေးချယ်မှုများ</string>
     <string name="global_actions_airplane_mode_off_status">လေယဥ်ပျံပေါ်၌အသုံးပြုသောစနစ်ပိတ်ထားသည်</string>
     <string name="global_actions_airplane_mode_on_status">လေယဥ်ပျံပေါ်၌အသုံးပြုသောစနစ်ဖွင့်ထားသည်</string>
     <string name="global_actions_toggle_airplane_mode">လေယာဉ်ပျံမုဒ်</string>
@@ -795,7 +822,7 @@
     <string name="granularity_label_link">အ​ခြား​စာ​မျက်​နှာ​သို့​ကွင်း​ဆက်</string>
     <string name="granularity_label_word">စာလုံး</string>
     <string name="guest_name">ဧည့်သည်</string>
-    <string name="hardware">ပကတိအသွင်ကီးဘုတ်ပြရန်</string>
+    <string name="hardware">မျက်နှာပြင် လက်ကွက် သုံးခြင်း</string>
     <string name="harmful_app_warning_open_anyway">ဘာဖြစ်ဖြစ် ဖွင့်ရန်</string>
     <string name="harmful_app_warning_title">အန္တရာယ်ရှိသော အက်ပ်ကို တွေ့ရှိထားသည်</string>
     <string name="harmful_app_warning_uninstall">ဖြုတ်ရန်</string>
@@ -843,7 +870,7 @@
     <string name="ime_action_search">ရှာဖွေခြင်း</string>
     <string name="ime_action_send">ပို့ရန်</string>
     <string name="imei">IMEI</string>
-    <string name="immersive_cling_description">ထွက်ရန် အပေါ်မှ အောက်သို့ ဆွဲချပါ။</string>
+    <string name="immersive_cling_description">ထွက်ရန် သင့်ဖန်သားပြင်ထိပ်မှ အောက်သို့ ပွတ်ဆွဲပါ</string>
     <string name="immersive_cling_positive">ရပါပြီ</string>
     <string name="immersive_cling_title">မျက်နှာပြင်အပြည့် ကြည့်နေသည်</string>
     <string name="importance_from_person">ပါဝင်သည့်လူများကြောင့် အရေးပါပါသည်။</string>
@@ -917,11 +944,11 @@
     <string name="keyguard_password_entry_touch_hint"><font size="17">စကားဝှက်ကိုရိုက်ရန် တို့ပါ</font></string>
     <string name="keyguard_password_wrong_pin_code">ပင်နံပါတ်မှားနေပါသည်</string>
     <string name="kg_enter_confirm_pin_hint">လိုချင်သော ပင်နံပါတ်ကို အတည်ပြုရန်</string>
-    <string name="kg_failed_attempts_almost_at_login">"သင် ပုံဖော်၍သော့ဖွင့်ခြင်းကို  %1$d အကြိမ် မှန်ကန်စွာ မပြုလုပ်နိုင်ပါ။  နောက်ထပ် %2$d အကြိမ် မမှန်ကန်ပါက သင့်တက်ဘလက်အား အီးမေးလ်အသုံးပြု၍ သော့ဖွင့်ရန် တောင်းဆိုပါလိမ့်မည်။ 
+    <string name="kg_failed_attempts_almost_at_login">"သင် ပုံဖော်၍သော့ဖွင့်ခြင်းကို %1$d အကြိမ် မှန်ကန်စွာ မပြုလုပ်နိုင်ပါ။ နောက်ထပ် %2$d အကြိမ် မမှန်ကန်ပါက သင့်ဖုန်းအား အီးမေးလ်အသုံးပြု၍ သော့ဖွင့်ရန် တောင်းဆိုပါလိမ့်မည်။ 
 
  %3$d စက္ကန့်အကြာတွင် ပြန်လည် ကြိုးစားပါ"</string>
-    <string name="kg_failed_attempts_almost_at_wipe">"သင့်တက်ဘလက်အား သော့ဖွင့်ရန် မအောင်မြင်သော အကြိမ်ရေ %1$d  ကြိုးစားပြီးပါပြီ။ နောက်ထပ်  %2$d အကြိမ် မအောင်မြင်ပါက၊ တက်ဘလက်က စက်ရုံထွက် အခြေအနေကို ပြန်လည် ရောက်ရှိသွားမည်ဖြစ်ပြီး ဒေတာအားလုံး ဆုံးရှုံးသွားပါမည်။"</string>
-    <string name="kg_failed_attempts_now_wiping">သင့်တက်ဘလက် အား သော့ဖွင့်ရန် မအောင်မြင်သော အကြိမ်ရေ %d ကြိုးစားပြီးပါပြီ။ တက်ဘလက်က စက်ရုံထွက် အခြေအနေကို ပြန်လည် ရောက်ရှိသွားပါတော့မည်။</string>
+    <string name="kg_failed_attempts_almost_at_wipe">သင့်ဖုန်းအား သော့ဖွင့်ရန် မအောင်မြင်သော အကြိမ်ရေ %1$d ကြိုးစားပြီးပါပြီ။ နောက်ထပ် %2$d အကြိမ် မအောင်မြင်ပါက၊ ဖုန်းက စက်ရုံထွက် အခြေအနေကို ပြန်လည် ရောက်ရှိသွားမည်ဖြစ်ပြီး ဒေတာအားလုံး ဆုံးရှုံးသွားပါမည်။</string>
+    <string name="kg_failed_attempts_now_wiping">"သင့်ဖုန်းအား သော့ဖွင့်ရန် မအောင်မြင်သော အကြိမ်ရေ %d  ကြိုးစားပြီးပါပြီ။ ဖုန်းက စက်ရုံထွက် အခြေအနေကို ပြန်လည် ရောက်ရှိသွားပါတော့မည်။"</string>
     <string name="kg_forgot_pattern_button_text">ပုံဖော်မှုအား မေ့လျော့ခြင်း</string>
     <string name="kg_invalid_confirm_pin_hint">ပင် နံပါတ် မတူညီပါ</string>
     <string name="kg_invalid_puk">ပင်နံပါတ် ပြန်ဖွင့်သည့် ကုဒ်ကို ပြန်လည် ရိုက်ထည့်ပါ.။ ထပ်ခါ ထပ်ခါ ကြိုးစားခြင်းသည် ဆင်းမ်ကဒ်ကို အသုံးပြုမရအောင် ဖြစ်နေနိုင်ပါသည်။</string>
@@ -976,7 +1003,7 @@
     <string name="location_changed_notification_title">အက်ပ်များက သင်၏တည်နေရာကို ကြည့်နိုင်သည်</string>
     <string name="location_service">တည်နေရာဝန်ဆောင်မှု</string>
     <string name="lock_to_app_unlock_password">ပင်မဖြုတ်မီမှာ စကားဝှက်ကို မေးကြည့်ရန်</string>
-    <string name="lock_to_app_unlock_pattern">ပင်မဖြုတ်မီမှာ သော့ဖွင့် ရေးဆွဲမှုပုံစံကို မေးကြည့်ရန်</string>
+    <string name="lock_to_app_unlock_pattern">ပင်မဖြုတ်မီ လော့ခ်ဖွင့်ပုံစံကို မေးရန်</string>
     <string name="lock_to_app_unlock_pin">ပင်မဖြုတ်မီမှာ PIN ကို မေးကြည့်ရန်</string>
     <string name="lockscreen_access_pattern_area">ပုံစံနေရာ</string>
     <string name="lockscreen_access_pattern_cell_added">အကွက်တိုးခြင်း</string>
@@ -986,11 +1013,11 @@
     <string name="lockscreen_access_pattern_start">ပုံစံစတင်ခြင်း</string>
     <string name="lockscreen_carrier_default">ဝန်ဆောင်မှု မရှိပါ</string>
     <string name="lockscreen_emergency_call">အရေးပေါ်</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">သင့်Tabletအား မှားယွင်းစွာ %1$dကြိမ်ဖွင့်ရန် ကြိုးစားနေပါသည်။ နောက်ထပ်%2$dကြိမ်မအောင်မြင်ပါက မူလစက်ရုံ အနေအထားသို့ပြန်လည်ရောက်ရှိကာ အသုံးပြုသူ၏ဒေတာအားလုံးဆုံးရှုံးပါမည်။</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"သင်သည် သော့ဖွင့် ပုံစံကို%1$d ကြိမ် မမှန်မကန် ရေးဆွဲခဲ့သည်။ နောက်ထပ် %2$d မအောင်မြင်သည့် ကြိုးပမ်းမှု နောက်မှာ၊ သင်၏ တက်ဘလက်ကို Google လက်မှတ်ထိုး ဝင်မှုဖြင့် ဖွင့်ရန် တောင်းဆိုခံရမည်။ 
+    <string name="lockscreen_failed_attempts_almost_at_wipe">သင့်ဖုန်းအား မှားယွင်းစွာ %1$dကြိမ်ဖွင့်ရန် ကြိုးစားနေပါသည်။ နောက်ထပ်%2$dကြိမ်မအောင်မြင်ပါက မူလစက်ရုံ အနေအထားသို့ပြန်လည်ရောက်ရှိကာ အသုံးပြုသူ၏ဒေတာအားလုံးဆုံးရှုံးပါမည်။</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"သင်သည် သော့ဖွင့် ပုံစံကို %1$d ကြိမ် မမှန်မကန် ရေးဆွဲခဲ့သည်။ နောက်ထပ် %2$d မအောင်မြင်သည့် ကြိုးပမ်းမှု နောက်မှာ၊ သင်၏ ဖုန်းကို Google လက်မှတ်ထိုး ဝင်မှုဖြင့် ဖွင့်ရန် တောင်းဆိုခံရမည်။ 
 
  ထပ်ပြီး %3$d စက္ကန့် အကြာမှာ စမ်းကြည့်ပါ။"</string>
-    <string name="lockscreen_failed_attempts_now_wiping">သင့်Tabletအား မှားယွင်းစွာ %dကြိမ်ဖွင့်ရန် ကြိုးစားခဲ့ပါသည်။ယခုဖုန်းကိုမူလစက်ရုံအနေအထားသို့ပြန်လည်ရောက်ရှိပါမည်။</string>
+    <string name="lockscreen_failed_attempts_now_wiping">သင့်ဖုန်းအား မှားယွင်းစွာ %dကြိမ်ဖွင့်ရန် ကြိုးစားခဲ့ပါသည်။ ယခုဖုန်းကို မူလစက်ရုံအနေအထားသို့ပြန်လည်ရောက်ရှိပါမည်။</string>
     <string name="lockscreen_forgot_pattern_button_text">ပုံစံအားမေ့နေပါသလား</string>
     <string name="lockscreen_glogin_account_recovery_hint">"သုံးစွဲသူ အမည် သို့ စကားဝှင်ကို မေ့နေပါသလား။ 
 "<b>google.com/accounts/recovery</b> ကို သွားရောက်ပါ။</string>
@@ -1006,7 +1033,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">ဖွင့်ရန်သို့မဟုတ်အရေးပေါ်ခေါ်ဆိုခြင်းပြုလုပ်ရန် မီနူးကိုနှိပ်ပါ</string>
     <string name="lockscreen_missing_sim_instructions">ဆင်းမ်ကတ်ထည့်ပါ။</string>
     <string name="lockscreen_missing_sim_instructions_long">ဆင်းမ်ကတ်မရှိပါ (သို့) သုံး၍မရပါ။ ဆင်းမ်ကတ်ထည့်ပါ။</string>
-    <string name="lockscreen_missing_sim_message">တက်ဘလက်တွင် ဆင်းမ်ကတ်မရှိပါ။</string>
+    <string name="lockscreen_missing_sim_message">ဖုန်းတွင် ဆင်းမ်ကတ်မရှိပါ။</string>
     <string name="lockscreen_missing_sim_message_short">ဆင်းမ်ကတ် မရှိပါ</string>
     <string name="lockscreen_network_locked_message">ကွန်ရက် သော့ကျနေခြင်း</string>
     <string name="lockscreen_password_wrong">ထပ် စမ်းပါ</string>
@@ -1024,7 +1051,7 @@
     <string name="lockscreen_sim_unlock_progress_dialog_message">ဆင်းမ်ကတ် ဖွင့်နေသည်…</string>
     <string name="lockscreen_sound_off_label">အသံပိတ်ထားသည်</string>
     <string name="lockscreen_sound_on_label">အသံဖွင့်ထားသည်</string>
-    <string name="lockscreen_storage_locked">ဝန်ဆောင်မှုနှင့် ဒေတာအားလုံးအတွက် လော့ခ်ဖွင့်ပါ</string>
+    <string name="lockscreen_storage_locked">ဝန်ဆောင်မှုနှင့် ဒေတာအားလုံးသုံးရန် လော့ခ်ဖွင့်ပါ</string>
     <string name="lockscreen_too_many_failed_attempts_countdown">%d စက္ကန့်အကြာတွင် ပြန်ကြိုးစားပါ</string>
     <string name="lockscreen_too_many_failed_attempts_dialog_message">"သင်သည် သော့ဖွင့် ပုံစံကို%1$d ကြိမ် မမှန်မကန် ရေးဆွဲခဲ့သည်။ 
 
@@ -1046,7 +1073,7 @@
     <string name="low_internal_storage_view_text">တချို့ စနစ်လုပ်ငန်းများ အလုပ် မလုပ်ခြင်း ဖြစ်နိုင်ပါသည်</string>
     <string name="low_internal_storage_view_text_no_boot">စနစ်အတွက် သိုလှောင်ခန်း မလုံလောက်ပါ။ သင့်ဆီမှာ နေရာလွတ် ၂၅၀ MB ရှိတာ စစ်ကြည့်ပြီး စတင်ပါ။</string>
     <string name="low_internal_storage_view_title">သိမ်းဆည်သော နေရာ နည်းနေပါသည်</string>
-    <string name="low_memory">တက်ဘလက်တွင် သိမ်းဆည်းသော နေရာ ကုန်သွားပါပြီ။ တချို့ ဖိုင်များ ဖျက်စီးခြင်းဖြင့် နေရာလွတ် ပြုလုပ်ပါ</string>
+    <string name="low_memory">ဖုန်းတွင် သိမ်းဆည်းသော နေရာ ကုန်သွားပါပြီ။ တချို့ ဖိုင်များ ဖျက်စီးခြင်းဖြင့် နေရာလွတ် ပြုလုပ်ပါ</string>
     <string name="managed_profile_app_label">အလုပ်သုံး %1$s သို့ပြောင်းရန်</string>
     <string name="managed_profile_label">အလုပ်ပရိုဖိုင်သို့ ပြောင်းရန်</string>
     <string name="managed_profile_label_badge">အလုပ် %1$s</string>
@@ -1203,6 +1230,8 @@
     <string name="miniresolver_open_in_personal">ကိုယ်ပိုင် %s တွင် ဖွင့်မလား။</string>
     <string name="miniresolver_open_in_work">အလုပ် %s တွင် ဖွင့်မလား။</string>
     <string name="miniresolver_open_work">အလုပ်သုံး %s ဖွင့်မလား။</string>
+    <string name="miniresolver_private_space_messages_information">သင့်ကိုယ်ပိုင် Messages အက်ပ်မှသာ SMS မက်ဆေ့ဂျ်များကို ပို့နိုင်သည်။</string>
+    <string name="miniresolver_private_space_phone_information">သင့်ကိုယ်ပိုင် ‘ဖုန်းအက်ပ်’ မှသာ ဖုန်းခေါ်ဆိုနိုင်သည်။ ကိုယ်ပိုင် ‘ဖုန်း’ ဖြင့် ခေါ်ဆိုမှုများကို သင်၏ ကိုယ်ပိုင် ခေါ်ဆိုမှုမှတ်တမ်းသို့ ထည့်ပါမည်။</string>
     <string name="miniresolver_sms_information">သင့်အဖွဲ့အစည်းသည် သင့်အား အလုပ်သုံးအက်ပ်များမှသာ မက်ဆေ့ဂျ်ပို့ခွင့်ပြုသည်</string>
     <string name="miniresolver_switch">ပြောင်းရန်</string>
     <string name="miniresolver_switch_to_work">အလုပ်သုံးအက်ပ်သို့ ပြောင်းမလား။</string>
@@ -1260,7 +1289,7 @@
     <string name="no_file_chosen">မည်သည့်ဖိုင်ကိုမှမရွေးပါ</string>
     <string name="no_matches">ထပ်တူမတွေ့ရှိပါ</string>
     <string name="no_permissions">ခွင့်ပြုချက်မလိုအပ်ပါ</string>
-    <string name="no_recent_tasks">မကြာမီတုန်းက အက်ပ်များ မရှိပါ</string>
+    <string name="no_recent_tasks">မကြာသေးမီက အက်ပ်များ မရှိပါ</string>
     <string name="noon">မွန်းတည့်</string>
     <string name="not_checked">ခြစ် မထား</string>
     <string name="not_selected">ရွေးချယ်မထားပါ</string>
@@ -1281,6 +1310,7 @@
     <string name="notification_channel_developer">ဆော့ဖ်ဝဲအင်ဂျင်နီယာ မက်ဆေ့ဂျ်များ</string>
     <string name="notification_channel_developer_important">အရေးကြီး ဆော့ဖ်ဝဲအင်ဂျင်နီယာ မက်ဆေ့ဂျ်များ</string>
     <string name="notification_channel_device_admin">သင်၏ IT စီမံခန့်ခွဲသူထံမှ သတိပေးချက်များ</string>
+    <string name="notification_channel_display">ဖန်သားပြင်</string>
     <string name="notification_channel_do_not_disturb">မနှောင့်ယှက်ရ</string>
     <string name="notification_channel_emergency_callback">အရေးပေါ် ပြန်လည်ခေါ်ဆိုနိုင်သောမုဒ်</string>
     <string name="notification_channel_foreground_service">အက်ပ်များက ဘက်ထရီကုန်စေသည်</string>
@@ -1302,6 +1332,7 @@
     <string name="notification_channel_voice_mail">အသံမေးလ် မက်ဆေ့ဂျ်များ</string>
     <string name="notification_channel_vpn">VPN အခြေအနေ</string>
     <string name="notification_channel_wfc">Wi-Fi ခေါ်ဆိုမှု</string>
+    <string name="notification_compact_heads_up_reply">စာပြန်ရန်</string>
     <string name="notification_content_abusive_bg_apps">%1$s ကို နောက်ခံတွင် ဖွင့်ထားသည်။ ဘက်ထရီ အသုံးပြုမှုကို စီမံရန် တို့ပါ။</string>
     <string name="notification_content_long_running_fgs">%1$s က ဘက်ထရီ သက်တမ်းကို ထိခိုက်နိုင်သည်။ ပွင့်နေသောအက်ပ်များ ပြန်ကြည့်ရန် တို့ပါ။</string>
     <string name="notification_feedback_indicator">အကြံပြုချက် ပေးရန်</string>
@@ -1338,7 +1369,8 @@
     <string name="other_networks_no_internet">ကွန်ရက်တွင် အင်တာနက်အသုံးပြုခွင့် မရှိပါ</string>
     <string name="owner_name">ပိုင်ရှင်</string>
     <string name="package_deleted_device_owner">သင်၏ စီမံခန့်ခွဲသူက ဖျက်လိုက်ပါပြီ</string>
-    <string name="package_installed_device_owner">သင်၏ စီမံခန့်ခွဲသူက ထည့်သွင်းထားသည်</string>
+    <string name="package_installed_device_owner">"သင့်စီမံခန့်ခွဲသူက ထည့်သွင်းထားသည်။
+ပေးထားသည့် ခွင့်ပြုချက်များကို ကြည့်ရန် ဆက်တင်များသို့ သွားပါ"</string>
     <string name="package_updated_device_owner">သင်၏ စီမံခန့်ခွဲသူက အပ်ဒိတ်လုပ်ထားသည်</string>
     <string name="passwordIncorrect">လျို့ဝှက် နံပါတ်မှားယွင်းနေသည်</string>
     <string name="password_keyboard_label_alpha_key">ABC</string>
@@ -1355,7 +1387,9 @@
     <string name="permdesc_accessCoarseLocation">အက်ပ်ကို အသုံးပြုနေစဉ် ဤအက်ပ်သည် တည်နေရာဝန်ဆောင်မှုများမှနေ၍ သင့်တည်နေရာခန့်မှန်းခြေကို ရယူနိုင်သည်။ အက်ပ်က တည်နေရာရရှိနိုင်ရန် သင့်စက်အတွက် တည်နေရာဝန်ဆောင်မှုများကို ဖွင့်ထားရပါမည်။</string>
     <string name="permdesc_accessDrmCertificates">အပလီကေးရှင်းတစ်ခုအား စီမံလုပ်ကိုင်ခွင့် DRM လက်မှတ်များ သုံးခွင့် ပြုသည်။ သာမန် အက်ပ်များ အတွက် ဘယ်တော့မှ မလိုအပ်နိုင်ပါ။</string>
     <string name="permdesc_accessFineLocation">အက်ပ်ကို အသုံးပြုနေစဉ် ဤအက်ပ်သည် တည်နေရာဝန်ဆောင်မှုများမှနေ၍ သင့်တည်နေရာအတိအကျကို ရယူနိုင်သည်။ အက်ပ်က တည်နေရာရရှိနိုင်ရန် သင့်စက်အတွက် တည်နေရာဝန်ဆောင်မှုများကို ဖွင့်ထားရပါမည်။ ၎င်းသည် ဘက်ထရီအသုံးပြုမှု ပိုများနိုင်သည်။</string>
+    <string name="permdesc_accessHiddenProfile">ဖျောက်ထားသော ပရိုဖိုင်များကို အက်ပ်အား ဝင်ကြည့်ခွင့်ပြုသည်။</string>
     <string name="permdesc_accessImsCallService">သင့်ရဲ့ဝင်ရောက်စွက်ဖက်မှုမပါဘဲ IMS ဝန်ဆောင်မှုကိုအသုံးပြုပြီး ဖုန်းခေါ်ဆိုနိုင်ရန် အပ်ဖ်ကို ခွင့်ပြုထားပါ။</string>
+    <string name="permdesc_accessLastKnownCellId">ဖုန်းကုမ္ပဏီက ပေးသည့် နောက်ဆုံးသိထားသော ဆဲလ်အထောက်အထားကို အက်ပ်အား သုံးခွင့်ပြုသည်။</string>
     <string name="permdesc_accessLocationExtraCommands">အက်ပ်အား တည်နေရာ စီမံပေးရေး ညွှန်ကြားချက် အပိုများကို ရယူခွင့်ပြုသည်။ သို့ဖြစ်၍ အက်ပ်သည် GPS သို့မဟုတ် အခြား တည်နေရာ ရင်းမြစ်ကို သုံးကြသူတို့၏ လုပ်ငန်းများကို ဝင်စွက်ခွင့် ပြုနိုင်သည်။</string>
     <string name="permdesc_accessNetworkConditions">အပလီကေးရှင်းကို ကွန်ရက်ပေါ်က အခြေအနေစောင့်ကြည့်ခွင့်ပေးခြင်း၊ ပုံမှန် အက်ပ်များတွင် ဘယ်တော့မှ မလိုအပ်ပါ</string>
     <string name="permdesc_accessNetworkState">အပလီကေးရှင်းအား မည်သည့်ကွန်ရက်နက်ဝဘ်ရှိသလဲ၊ မည်သည့်ကွန်ရက်နှင့် ချိတ်ဆက်ထားလဲ စသည်ဖြင့် ကွန်ရက်ချိတ်ဆက်မှုများ၏ သတင်းအချက်အလက်များကို ကြည့်ခွင့်ပေးရန်</string>
@@ -1376,23 +1410,24 @@
     <string name="permdesc_bindNotificationListenerService">ဖုန်းကိုင်ထားသူနှင့် အကြောင်းကြားချက် နားစွင့်သော ဆားဗစ်မှ ထိပ်ပိုင်းအင်တာဖေ့စ် ကို ပူးပေါင်းခွင့်ပေးခြင်း။ ပုံမှန် အက်ပ်များအတွက် ဘယ်တော့မှ မလိုအပ်ပါ</string>
     <string name="permdesc_bind_connection_service">အက်ပ်အား ခေါ်ဆိုမှုများ လုပ်ခြင်း/လက်ခံခြင်း ပြုလုပ်နိုင်ရန် တယ်လီဖုန်း ဝန်ဆောင်မှုများနှင့် အပြန်အလှန် တုံ့ပြန်မှုကို ခွင့်ပြုသည်။</string>
     <string name="permdesc_bind_incall_service">အက်ပ်အား အသုံးပြုသူက ခေါ်ဆိုမှုအဝင် မျက်နှာပြင် ဘယ်အချိန်မှာ ဘယ်လို မြင်ရမှာကို ထိန်းချုပ်ခွင့်ပေးရန်</string>
-    <string name="permdesc_bluetooth">အပလီကေးရှင်းအား တက်ဘလက်ပေါ်မှ ဘလူးတုသ် အပြင်အဆင်အား ကြည့်ခွင့်၊ တခြားစက်များနဲ့ ဆက်သွယ်ခြင်း၊ ဆက်သွယ်ခြင်းကို လက်ခံခွင့်ပြုပါ။</string>
-    <string name="permdesc_bluetoothAdmin">အက်ပ်အား ဒေသန္တရ ဘလူးတုသ် တက်ဘလက်ကို စီစဉ်ဖွဲ့စည်းခွင့်ကို၎င်း၊ အဝေးထိန်း ကိရိယာများကို ရှာကြံလျက် ချိတ်တွဲခွင့်ကို၎င်း ပေးထားသည်။</string>
+    <string name="permdesc_bluetooth">အပလီကေးရှင်းအား ဖုန်းမှဘလူးတု အပြင်အဆင်အား ကြည့်ခွင့်၊ တခြားစက်များနဲ့ ဆက်သွယ်ခြင်း၊ ဆက်သွယ်ခြင်းကို လက်ခံခွင့်ပြုပါ။</string>
+    <string name="permdesc_bluetoothAdmin">အက်ပ်အား ဒေသန္တရ ဘလူးတုသ် ဖုန်းကို စီစဉ်ဖွဲ့စည်းခွင့်ကို၎င်း၊ အဝေးထိန်း ကိရိယာများကို ရှာကြံလျက် ချိတ်တွဲခွင့်ကို၎င်း ပေးထားသည်။</string>
     <string name="permdesc_bluetooth_advertise">အနီးတစ်ဝိုက်ရှိ ဘလူးတုသ်သုံးစက်များတွင် ကြော်ငြာရန် အက်ပ်အား ခွင့်ပြုမည်</string>
     <string name="permdesc_bluetooth_connect">တွဲချိတ်ထားသော ဘလူးတုသ်သုံးစက်များနှင့် ချိတ်ဆက်ရန် အက်ပ်ကိုခွင့်ပြုမည်</string>
     <string name="permdesc_bluetooth_scan">အနီးတစ်ဝိုက်ရှိ ဘလူးတုသ်သုံးစက်များကို ရှာဖွေပြီးတွဲချိတ်ရန် အက်ပ်ကိုခွင့်ပြုမည်</string>
     <string name="permdesc_bodySensors">အက်ပ်သုံးစဉ် နှလုံးခုန်နှုန်း၊ အပူချိန်၊ သွေးတွင်း အောက်ဆီဂျင်ရာခိုင်နှုန်းကဲ့သို့ ခန္ဓာကိုယ်အာရုံခံစနစ် ဒေတာများသုံးရန် အက်ပ်ကိုခွင့်ပြုသည်။</string>
     <string name="permdesc_bodySensors_background">နောက်ခံတွင်အက်ပ်ဖွင့်စဉ် နှလုံးခုန်နှုန်း၊ အပူချိန်၊ သွေးတွင်း အောက်ဆီဂျင်ရာခိုင်နှုန်းကဲ့သို့ ခန္ဓာကိုယ်အာရုံခံစနစ် ဒေတာများသုံးရန် အက်ပ်ကိုခွင့်ပြုသည်။</string>
-    <string name="permdesc_broadcastSticky">အက်ပ်အား ကြာရှည်ခံ ထုတ်လွှင့်မှု ပြုပါ။ ဒီထုတ်လွှင့်မှုများဟာ ထုတ်လွှင့်မှု ပြီးဆုံးပြီးသွားတည့်တိုင် ကျန်နေမည် ဖြစ်ပါသည်။ အလွန်အကျွံသုံးခြင်းကြောင့် မက်မိုရီ အသုံးများပြီး တက်ဘလက်နှေးခြင်း၊ မတည်ငြိမ်ခြင်း ဖြစ်နိုင်ပါသည်</string>
+    <string name="permdesc_broadcastSticky">အက်ပ်အား ကြာရှည်ခံ ထုတ်လွှင့်မှု ပြုပါ။ ဤထုတ်လွှင့်မှုများဟာ ထုတ်လွှင့်မှု ပြီးဆုံးပြီးသွားတည့်တိုင် ကျန်နေမည် ဖြစ်ပါသည်။ အလွန်အကျွံသုံးခြင်းကြောင့် မှတ်ဉာဏ်အသုံးများပြီး ဖုန်းနှေးခြင်း၊ မတည်ငြိမ်ခြင်း ဖြစ်နိုင်ပါသည်</string>
     <string name="permdesc_callCompanionApp">စက်ပစ္စည်းပေါ်ရှိ လက်ရှိခေါ်ဆိုမှုများကို အက်ပ်အား ကြည့်ရှုထိန်းချုပ်ခွင့်ပြုသည်။ ၎င်းတွင် ခေါ်ဆိုမှုနံပါတ်များနှင့် ခေါ်ဆိုမှုအခြေအနေများကဲ့သို့သော အခြေအနေများ ပါဝင်သည်။</string>
     <string name="permdesc_callPhone">သင့်ဆောင်ရွက်မှုမပါဘဲ အက်ပ်ကို ဖုန်းနံပါတ်များ ခေါ်ခွင့်ပြုသည်။ ထို့ကြောင့် မမျှော်လင့်သော ကျသင့်ငွေ သို့မဟုတ် ခေါ်ဆိုမှုများ ရှိနိုင်သည်။ ၎င်းသည် အက်ပ်ကို အရေးပေါ် နံပါတ်များ ခေါ်ဆိုခွင့်ပြုခြင်း မဟုတ်ပါ။ မသမာသော အက်ပ်များက သင့်အတည်ပြုချက်မပါဘဲ ဖုန်းခေါ်ခြင်းဖြင့် သင့်အား ငွေကြေးကုန်ကျစေနိုင်သည် (သို့) ၎င်းတို့က အဝင်ခေါ်ဆိုမှုများအား အခြားဖုန်းနံပါတ်သို့ အလိုအလျောက်ထပ်ဆင့်ပို့သည့် မိုဘိုင်းဖုန်းကုမ္ပဏီကုဒ်များကို ခေါ်ဆိုနိုင်သည်။</string>
     <string name="permdesc_camera">ဤအက်ပ်ကို အသုံးပြုနေစဉ် ၎င်းက ကင်မရာကို အသုံးပြု၍ ဓာတ်ပုံနှင့် ဗီဒီယိုများကို ရိုက်ကူးနိုင်သည်။</string>
+    <string name="permdesc_cameraHeadlessSystemUser">ဤအက်ပ်သည် ‘မမြင်နိုင်သော စနစ်အသုံးပြုသူ’ အဖြစ် ကင်မရာသုံးနိုင်သည်။</string>
     <string name="permdesc_cameraOpenCloseListener">(မည်သည့် အပလီကေးရှင်းကြောင့်) ကင်မရာစက်တစ်ခုခု ပွင့်နေသည့်အခါ သို့မဟုတ် ပိတ်နေသည့်အခါ ဤအက်ပ်က ပြန်လည်ခေါ်ဆိုမှုများ ရယူနိုင်သည်။</string>
     <string name="permdesc_changeNetworkState">အက်ပ်အား ကွန်ရက် ချိတ်ဆက်နိုင်စွမ်း အခြေအနေကို ပြောင်းလဲခွင့် ပြုသည်။</string>
     <string name="permdesc_changeTetherState">အက်ပ်အား ချိတ်တွဲထားသည့် ကွန်ရက် ချိတ်ဆက်နိုင်စွမ်း အခြေအနေကို ပြောင်းလဲခွင့် ပြုသည်။</string>
-    <string name="permdesc_changeWifiMulticastState">"အပလီကေးရှင်းအား ဝိုင်ဖိုင်ကွန်ရက်ပေါ်တွင် သင့်တက်ဘလက်တစ်ခုထဲအားမဟုတ်ပဲ multicast လိပ်စာအား သုံးပြီး လွှင့်ထုတ်သော အချက်အလက်များ လက်ခံခွင့် ပြုပါ။ ဒီလိုသုံးခြင်းမှာ  non-multicast ထက် ဘက်ထရီ ပိုကုန်ပါသည်။"</string>
+    <string name="permdesc_changeWifiMulticastState">အပလီကေးရှင်းအား ဝိုင်ဖိုင်နက်ဘ်ပေါ်တွင် သင့်ဖုန်းတစ်ခုထဲအားမဟုတ်ပဲ multicast လိပ်စာအား သုံးပြီး လွှင့်ထုတ်သော အချက်အလက်များ လက်ခံခွင့် ပြုပါ။ ဒီလိုသုံးခြင်းမှာ non-multicast ထက် ဘက်ထရီ ပိုကုန်ပါသည်။</string>
     <string name="permdesc_changeWifiState">အပလီကေးရှင်းအား ဝိုင်ဖိုင်တည်နေရာများအား ဆက်သွယ်ခြင်း၊ ဆက်သွယ်မှု ရပ်ဆိုင်းခြင်း၊ ဝိုင်ဖိုင်ကွန်ရက်အတွက် စက်အပြင်အဆင်များ ပြုလုပ်ခြင်း ခွင့်ပြုပါ</string>
-    <string name="permdesc_changeWimaxState">အပလီကေးရှင်းအား တက်ဘလက်ကို ဝိုင်မက်စ် ကွန်ရက်များနဲ့ ဆက်သွယ်ခြင်း၊ ဆက်သွယ်မှု ရပ်ဆိုင်းခြင်းများ လုပ်ခွင့်ပြုပါ</string>
+    <string name="permdesc_changeWimaxState">အပလီကေးရှင်းအား ဖုန်းကို ဝိုင်မက်စ် ကွန်ရက်များနဲ့ ဆက်သွယ်ခြင်း၊ ဆက်သွယ်မှု ရပ်ဆိုင်းခြင်းများ လုပ်ခွင့်ပြုပါ</string>
     <string name="permdesc_companionProfileWatch">လက်ပတ်နာရီများစီမံရန် တွဲဖက် အက်ပ်ကို ခွင့်ပြုသည်။</string>
     <string name="permdesc_connection_manager">အက်ပ်အား တယ်လီကွမ် ဆက်သွယ်မှုများကို စီမံခွင့် ပြုပါ။</string>
     <string name="permdesc_control_incall_experience">အဝင်ခေါ်ဆိုမှုအတွက် အသုံးပြုသူ၏ နှစ်သက်မှုကို ပံ့ပိုးပေးရန် အက်ပ်အား ခွင့်ပြုသည်။</string>
@@ -1411,6 +1446,7 @@
     <string name="permdesc_foregroundServiceHealth">\"health\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှုများအား အကျိုးရှိရှိ အသုံးပြုနိုင်ရန် အက်ပ်ကို ခွင့်ပြုသည်</string>
     <string name="permdesc_foregroundServiceLocation">\"location\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှုများအား အကျိုးရှိရှိ အသုံးပြုနိုင်ရန် အက်ပ်ကို ခွင့်ပြုသည်</string>
     <string name="permdesc_foregroundServiceMediaPlayback">\"mediaPlayback\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှုများအား အကျိုးရှိရှိ အသုံးပြုနိုင်ရန် အက်ပ်ကို ခွင့်ပြုသည်</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">“mediaProcessing” အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှုများအား အကျိုးရှိရှိ အသုံးပြုနိုင်ရန် အက်ပ်ကို ခွင့်ပြုသည်</string>
     <string name="permdesc_foregroundServiceMediaProjection">\"mediaProjection\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှုများအား အကျိုးရှိရှိ အသုံးပြုနိုင်ရန် အက်ပ်ကို ခွင့်ပြုသည်</string>
     <string name="permdesc_foregroundServiceMicrophone">\"microphone\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှုများအား အကျိုးရှိရှိ အသုံးပြုနိုင်ရန် အက်ပ်ကို ခွင့်ပြုသည်</string>
     <string name="permdesc_foregroundServicePhoneCall">\"phoneCall\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှုများအား အကျိုးရှိရှိ အသုံးပြုနိုင်ရန် အက်ပ်ကို ခွင့်ပြုသည်</string>
@@ -1418,7 +1454,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">\"specialUse\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှုများအား အကျိုးရှိရှိ အသုံးပြုနိုင်ရန် အက်ပ်ကို ခွင့်ပြုသည်</string>
     <string name="permdesc_foregroundServiceSystemExempted">\"systemExempted\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှုများအား အကျိုးရှိရှိ အသုံးပြုနိုင်ရန် အက်ပ်ကို ခွင့်ပြုသည်</string>
     <string name="permdesc_fullScreenIntent">လော့ခ်ချထားသော စက်ပစ္စည်းပေါ်တွင် အကြောင်းကြားချက်များကို ဖန်သားပြင်အပြည့် လုပ်ဆောင်ချက်များအဖြစ် ပြရန် အက်ပ်ကို ခွင့်ပြုသည်</string>
-    <string name="permdesc_getAccounts">အပလီကေးရှင်းအား တက်ဘလက်မှ သိရှိထားသော အကောင့်များအား ရယူခွင့်ပေးပါ။ ဒီထဲတွင် သင် ထည့်သွင်းထားသော အပလီကေးရှင်းများမှတဆင့် ပြုလုပ်ထားသော အကောင့်များပါ ပါဝင်နိုင်ပါသည်။</string>
+    <string name="permdesc_getAccounts">အပလီကေးရှင်းအား ဖုန်းမှ သိရှိထားသော အကောင့်စာရင်းများအား ရယူခွင့်ပေးပါ။ ဒီထဲတွင် သင် ထည့်သွင်းထားသော အပလီကေးရှင်းများမှတဆင့် ပြုလုပ်ထားသော အကောင့်များပါ ပါဝင်နိုင်ပါသည်။</string>
     <string name="permdesc_getPackageSize">အက်ပ်အား ၎င်း၏ ကုဒ်၊ ဒေတာ၊ နှင့် ကက်ရှ ဆိုက်များကို ရယူခွင့် ပြုသည်။</string>
     <string name="permdesc_getTasks">အပလီကေးရှင်းအား လက်ရှိနဲ့ လတ်တလော လုပ်ဆောင်ခဲ့သော သတင်းအချက်အလက် အသေးစိတ်အား ထုတ်ယူခွင့်ပြုရန်။ အပလီကေးရှင်းမှ သင် ဘယ် အပလီကေးရှင်းများသုံးရှိကြောင့် တွေ့ရှိနိုင်ပါသည်</string>
     <string name="permdesc_handoverStatus">ဒီအပလီကေးရှင်းအား Android၏ လက်ရှိ အလင်းတန်းထိုး လွှဲပြောင်းမှု အကြောင်း အချက်အလက်ကို ရယူခွင့် ပြုသည်</string>
@@ -1440,17 +1476,18 @@
     <string name="permdesc_mount_unmount_filesystems">လုပ္ငန္းသံုး ပရိုဂရမ္အား ဖယ္ပစ္ႏိုင္သည့္သိုေလွာင္ခန္းအတြက္ ဖိုင္နစ္မ်ားကို တင္ခြင့္ခ်ခြင့္ျပဳပါ။</string>
     <string name="permdesc_nearby_wifi_devices">ကြော်ငြာရန်၊ ချိတ်ဆက်ရန်နှင့် အနီးတစ်ဝိုက်ရှိ Wi-Fi စက်များ၏ နေရာကို သတ်မှတ်ရန် အက်ပ်ကို ခွင့်ပြုသည်</string>
     <string name="permdesc_nfc">အက်ပ်အား တာတို စက်ကွင်း ဆက်သွယ်ရေး (NFC) တဲဂ်များ၊ ကဒ်များ နှင့် ဖတ်ကြသူတို့နှင့် ဆက်သွယ်ပြောဆိုခွင့် ပြုသည်။</string>
+    <string name="permdesc_nfcTransactionEvent">‘လုံခြုံရေး အစိတ်အပိုင်း’ တွင် ဖြစ်ပေါ်နေသည့် ငွေလွှဲပြောင်းမှုများအကြောင်း အချက်အလက်ကိုရယူရန် အက်ပ်အား ခွင့်ပြုနိုင်သည်။</string>
     <string name="permdesc_observeCompanionDevicePresence">စက်များအနီးတွင် (သို့) အဝေးတွင်ရှိသည့်အခါ တွဲဖက်သုံးနိုင်သော စက်ရှိ၊ မရှိ စောင့်ကြည့်ရန် တွဲဖက် အက်ပ်ကို ခွင့်ပြုသည်။</string>
-    <string name="permdesc_persistentActivity">အပလီကေးရှင်းအား မှတ်ဉာဏ်ထဲတွင် ရေရှည်သိမ်းဆည်ထားရန် ခွင့်ပြုပါ။ ဒီခွင့်ပြုချက်ကြောင့် တခြားအပလီကေးရှင်းအများအတွက် မှတ်ဉာဏ်ရရှိမှု နည်းသွားနိုင်ပြီး တက်ဘလက်လည်း နှေးသွားနိုင်ပါသည်။</string>
+    <string name="permdesc_persistentActivity">အပလီကေးရှင်းအား မှတ်ဉာဏ်ထဲတွင် ရေရှည်သိမ်းဆည်ထားရန် ခွင့်ပြုပါ။ ဒီခွင့်ပြုချက်ကြောင့် တခြားအပလီကေးရှင်းအများအတွက် မှတ်ဉာဏ်ရရှိမှု နည်းသွားနိုင်ပြီး ဖုန်းလည်း နှေးသွားနိုင်ပါသည်။</string>
     <string name="permdesc_postNotification">အကြောင်းကြားချက်များ ပြရန် အက်ပ်ကို ခွင့်ပြုနိုင်သည်</string>
     <string name="permdesc_preferredPaymentInfo">အက်ပ်အား ဦစားပေး NFC ငွေပေးချေမှုဆိုင်ရာ ဝန်ဆောင်မှု အချက်အလက်များဖြစ်သည့် မှတ်ပုံတင်ထားသော အကူအညီများနှင့် သွားလာရာ လမ်းကြောင်းတို့ကို ရယူရန် ခွင့်ပြုသည်။</string>
     <string name="permdesc_processOutgoingCalls">အက်ပ်အား အပြင်သို့ ဖုန်းခေါ်ဆိုမှု အတွင်းမှာ ဆက်ခဲ့သည့် နံပါတ်ကို ကြည့်နိုင်ကာ ခေါ်ဆိုမှုကို အခြား နံပါတ် တစ်ခုသို့ ပြောင်းလဲပစ်ခြင်း သို့မဟုတ် ခေါ်ဆိုမှုကို လုံးဝ ဖျက်သိမ်းခွင့် ပြုသည်။</string>
     <string name="permdesc_queryAllPackages">ထည့်သွင်းထားသော ပက်ကေ့ဂျ်အားလုံး ကြည့်ရန် အက်ပ်ကို ခွင့်ပြုပါ။</string>
     <string name="permdesc_readBasicPhoneState">စက်၏ အခြေခံတယ်လီဖုန်းဝန်ဆောင်မှုများသုံးရန် အက်ပ်ကို ခွင့်ပြုသည်။</string>
-    <string name="permdesc_readCalendar">ဤအက်ပ်သည် သင့်တက်ဘလက်တွင် သိမ်းဆည်းထားသည့် ပြက္ခဒိန်ဖြစ်ရပ်များကို ကြည့်ရှုနိုင်ပြီး သင့်ပြက္ခဒိန်ဒေတာများကို မျှဝေခြင်းနှင့် သိမ်းဆည်းခြင်းတို့ ပြုလုပ်နိုင်ပါသည်။</string>
+    <string name="permdesc_readCalendar">ဤအက်ပ်သည် သင့်ဖုန်းတွင် သိမ်းဆည်းထားသည့် ပြက္ခဒိန်ဖြစ်ရပ်များကို ကြည့်ရှုနိုင်ပြီး သင့်ပြက္ခဒိန်ဒေတာများကို မျှဝေခြင်းနှင့် သိမ်းဆည်းခြင်းတို့ ပြုလုပ်နိုင်ပါသည်။</string>
     <string name="permdesc_readCallLog">ဤအက်ပ်သည် သင့်ခေါ်ဆိုမှုမှတ်တမ်းကို ကြည့်ရှုနိုင်ပါသည်။</string>
     <string name="permdesc_readCellBroadcasts">"အပလီကေးရှင်းကို သင်၏ စက်ပစ္စည်းမှ လက်ခံရရှိသော အများလွှင့်ထုတ်ချက်များကို ဖတ်ရန် ခွင့်ပြုသည်။  အများလွှင့်ထုတ်ချက်များသည် အရေးပေါ်အခြေအနေများကို သင့်အား သတိပေးရန် အချို့ နေရာများတွင် ပို့ပေးသည်။ အရေးပေါ်သတိပေးချက် ထုတ်လွှင့်ချက်ကို လက်ခံရရှိချိန်တွင်အန္တရာယ် ဖြစ်စေနိုင်သော အပလီကေးရှင်းများသည် သင့်စက်ပစ္စည်း၏ လုပ်ငန်းလည်ပတ်မှုနှင့် စွမ်းဆောင်မှုကို ဝင်စွက်ဖက်နိုင်သည်။"</string>
-    <string name="permdesc_readContacts">သင့်တက်ဘလက်ထဲတွင် သိမ်းဆည်းထားသော အဆက်အသွယ်များ၏ အချက်အလက်ကို အက်ပ်အား ဖတ်ခွင့်ပြုသည်။ အက်ပ်သည် သင့်တက်ဘလက် မှတစ်ဆင့် အဆက်အသွယ်များကို ပြုလုပ်ထားသော အကောင့်များကို အသုံးပြုခွင့် ရလိမ့်မည်။ သင်ထည့်သွင်းထားသော အက်ပ်များမှတစ်ဆင့် ပြုလုပ်ထားသော အကောင့်များ ပါဝင်နိုင်ပါသည်။ ဤခွင့်ပြုချက်က သင့်အဆက်အသွယ်၏ အချက်အလက်များကို အက်ပ်များအား သိမ်းခွင့်ပြုပြီး အန္တရာယ်ရှိသော အက်ပ်များက ထိုအချက်အလက်များကို သင်မသိဘဲ ဖြန့်ဝေနိုင်သည်။</string>
+    <string name="permdesc_readContacts">သင်၏ ဖုန်းထဲတွင် သိမ်းဆည်းထားသော အဆက်အသွယ်များ၏ အချက်အလက်ကို အက်ပ်အား ဖတ်ခွင့်ပြုသည်။ အက်ပ်သည် သင့်ဖုန်းမှတစ်ဆင့် အဆက်အသွယ်များကို ပြုလုပ်ထားသော အကောင့်များကို အသုံးပြုခွင့် ရလိမ့်မည်။ သင်ထည့်သွင်းထားသော အက်ပ်များမှတစ်ဆင့် ပြုလုပ်ထားသော အကောင့်များ ပါဝင်နိုင်ပါသည်။ ဤခွင့်ပြုချက်က သင့်အဆက်အသွယ်၏ အချက်အလက်များကို အက်ပ်များအား သိမ်းခွင့်ပြုပြီး အန္တရာယ်ရှိသော အက်ပ်များက ထိုအချက်အလက်များကို သင်မသိဘဲ ဖြန့်ဝေနိုင်သည်။</string>
     <string name="permdesc_readInstallSessions">အပလီကေးရှင်းအား တပ်ဆင်ရေး ချိတ်ဆက်မှုများကို ဖတ်ခွင့်ပြုသည်။ ၎င်းသည် ဖွင့်သုံးနေသည့် အထုပ်အား တပ်ဆင်မှုဆိုင်ရာ အသေးိစတ်များကို ကြည့်ရှုခွင့် ပြုသည်။</string>
     <string name="permdesc_readMediaAudio">သင်၏မျှဝေထားသော သိုလှောင်ခန်းမှ အသံဖိုင်များဖတ်ရန် အက်ပ်ကိုခွင့်ပြုသည်။</string>
     <string name="permdesc_readMediaImages">သင်၏မျှဝေထားသည့် သိုလှောင်ခန်းမှ ပုံပါဝင်သောဖိုင်များဖတ်ရန် အက်ပ်ကို ခွင့်ပြုသည်။</string>
@@ -1458,11 +1495,11 @@
     <string name="permdesc_readNetworkUsageHistory">အက်ပ်အား အထူး ကွန်ရက်များ နှင့် အက်ပ်များ အတွက် ကွန်ရက် အသုံးပြုမှု မှတ်တမ်းကို ဖတ်ကြားခွင့် ပြုသည်။</string>
     <string name="permdesc_readPhoneNumbers">အက်ပ်ကို စက်ပစ္စည်း၏ ဖုန်းနံပါတ်များအား အသုံးပြုခွင့်ပေးပါ။</string>
     <string name="permdesc_readPhoneState">အပလီကေးရှင်းအား ဖုန်းရဲ့ စွမ်းဆောင်ချက်များအား သုံးခွင့်ပြုပါ။ အပလီကေးရှင်းအနေဖြင့် ဖုန်းနံပါတ်၊ စက်နံပါတ်၊ ဖုန်းခေါ်နေမှု ရှိမရှိနှင့် တဖက်မှ ဖုန်းနံပါတ် များအား သိရှိနိုင်ပါသည်</string>
-    <string name="permdesc_readSms">ဤအက်ပ်သည် သင့်တက်ဘလက်တွင် သိမ်းဆည်းထားသည့် SMS (စာတို) မက်ဆေ့ဂျ်များအားလုံးကို ဖတ်နိုင်ပါသည်။</string>
+    <string name="permdesc_readSms">ဤအက်ပ်သည် သင့်ဖုန်းတွင် သိမ်းဆည်းထားသည့် SMS (စာတို) မက်ဆေ့ဂျ်များအားလုံးကို ဖတ်နိုင်ပါသည်။</string>
     <string name="permdesc_readSyncSettings">အပလီကေးရှင်းအား အကောင့်တစ်ခုအတွက် ထပ်တူညီအောင် လုပ်ဆောင်မှု ဆက်တင်အား ကြည့်ခွင့် ပြုပါ။ ဥပမာ People အက်ပ်က အကောင့်တစ်ခုနဲ့ ထပ်တူညီအောင် လုပ်ရန် ဆက်သွယ်ထားမှု ရှိမရှိ သိရှိနိုင်ခြင်း</string>
     <string name="permdesc_readSyncStats">အပလီကေးရှင်းအား အကောင့်တစ်ခု၏ ထပ်တူညီအောင် လုပ်ဆောင်မှု အခြေအနေ (ပြီးခဲ့သော အဖြစ်အပျက်၊ ဒေတာ ပမာဏ ပါဝင်မှု များအပါအဝင်)ကို ဖတ်ရှုခွင့် ပြုပါ။</string>
     <string name="permdesc_readVisualUserSelect">မျှသုံးသိုလှောင်ခန်းမှ သင်ရွေးချယ်သည့် ပုံနှင့် ဗီဒီယိုဖိုင်များအား အက်ပ်ကို ဖတ်ခွင့်ပြုသည်။</string>
-    <string name="permdesc_receiveBootCompleted">အက်ပ်အား စနစ်၏ စတင်မှု ပြီးဆုံးသည့်နှင့် မိမိကိုမိမိ စတင်ခွင့် ပြုသည်။ သို့ဖြစ်၍ ဖုန်း စတင်မှုမှာ အချိန် ပိုကြာနိုင်ပြီး အက်ပ်က တချိန်လုံး အလုပ်လုပ်နေခြင်းကြောင့် တက်ဘလက်၏ အလုပ် တစ်ခုလုံးကို နှေးကွေးလာစေနိုင်သည်။</string>
+    <string name="permdesc_receiveBootCompleted">အက်ပ်အား စနစ်၏ စတင်မှု ပြီးဆုံးသည့်နှင့် မိမိကိုမိမိ စတင်ခွင့် ပြုသည်။ သို့ဖြစ်၍ ဖုန်း စတင်မှုမှာ အချိန် ပိုကြာနိုင်ပြီး အက်ပ်က တချိန်လုံး အလုပ်လုပ်နေခြင်းကြောင့် ဖုန်း၏ အလုပ် တစ်ခုလုံးကို နှေးကွေးလာစေနိုင်သည်။</string>
     <string name="permdesc_receiveMms">အပလီကေးရှင်းအား ရုပ်သံစာများ လက်ခံခြင်း၊ ဆောင်ရွက်ခြင်း ခွင့်ပြုပါ။ ဤခွင့်ပြုချက်တွင် အပလီကေးရှင်းအနေဖြင့် သင် လက်ခံရရှိသော စာများအား သင့်အား မပြပဲစောင့်ကြည့်ခွင့်နှင့် ဖျက်ပစ်ခွင့်များ ပါဝင်ပါသည်။</string>
     <string name="permdesc_receiveSms">အပလီကေးရှင်းအား စာတိုများ လက်ခံခြင်း၊ ဆောင်ရွက်ခြင်း ခွင့်ပြုပါ။ ဤခွင့်ပြုချက်တွင် အပလီကေးရှင်းအနေဖြင့် သင် လက်ခံရရှိသော စာများအား သင့်အား မပြပဲစောင့်ကြည့်ခွင့်နှင့် ဖျက်ပစ်ခွင့်များ ပါဝင်ပါသည်။</string>
     <string name="permdesc_receiveWapPush">အပလီကေးရှင်းအား WAP စာများ လက်ခံခြင်း၊ ဆောင်ရွက်ခြင်း ခွင့်ပြုပါ။ ဤခွင့်ပြုချက်တွင် အပလီကေးရှင်းအနေဖြင့် သင် လက်ခံရရှိသော စာများအား သင့်အား မပြပဲစောင့်ကြည့်ခွင့်နှင့် ဖျက်ပစ်ခွင့်များ ပါဝင်ပါသည်။</string>
@@ -1484,12 +1521,12 @@
     <string name="permdesc_sendSms">အက်ပ်အား စာတိုပို့ခွင့် ပြုပါ။ မမျှော်လင့်သော ကုန်ကျမှု ဖြစ်နိုင်ပါသည်။ အန္တရာယ်ရှိ အက်ပ်များမှ သင် မသိပဲ စာပို့ခြင်းများ ပြုလုပ်ခြင်းကြောင့် ပိုက်ဆံ အပို ကုန်စေနိုင်သည်</string>
     <string name="permdesc_setAlarm">အက်ပ်အား တပ်ဆင်ထားသည့် နှိုးစက်နာရီ အက်ပ်ထဲတွင် နှိုးစက်ကို သတ်မှတ်ခွင့် ပြုသည်။ အချို့ နှိုးစက် အက်ပ်များက ထိုအင်္ဂါရပ်ကို ပြီးမြောက်အောင် မလုပ်နိုင်ကြပါ။</string>
     <string name="permdesc_setInputCalibration">"အက်ပ်အား တို့ထိရေး မျက်နှာပြင် တိုင်းထွာစံညှိမှုကို မွမ်းမံခွင့် ပြုသည်။ သာမန် အက်ပ်များအတွက်  ဘယ်တော့မှ မလိုအပ်နိုင်ပါ။"</string>
-    <string name="permdesc_setTimeZone">အက်ပ်အား တက်ဘလက်၏ နာရီ ဇုန်ကို ပြောင်းလဲခွင့် ပြုသည်။</string>
+    <string name="permdesc_setTimeZone">အက်ပ်အား ဖုန်း၏ နာရီ ဇုန်ကို ပြောင်းလဲခွင့် ပြုသည်။</string>
     <string name="permdesc_setWallpaper">အက်ပ်အား စနစ် နောက်ခံပုံကို သတ်မှတ်ခွင့် ပြုသည်။</string>
     <string name="permdesc_setWallpaperHints">အက်ပ်အား စနစ် နောက်ခံပုံ ဆိုက်ဆိုင်ရာ ညွှန်းချက်များကို သတ်မှတ်ခွင့် ပြုသည်။</string>
     <string name="permdesc_sim_communication">အက်ပ်အား ဆင်းမ်ကဒ်ဆီသို့ အမိန့်များ ပေးပို့ခွင့် ပြုခြင်း။ ဤခွင့်ပြုမှုမှာ အန္တရာယ်အလွန် ရှိပါသည်။</string>
     <string name="permdesc_startForegroundServicesFromBackground">နောက်ခံမှနေ၍ မျက်နှာစာဝန်ဆောင်မှုများ စတင်ရန် တွဲဖက် အက်ပ်ကို ခွင့်ပြုသည်။</string>
-    <string name="permdesc_startReviewPermissionDecisions">ခွင့်ပြုထားသည့်အက်ပ်အား ခွင့်ပြုသည့်ဆုံးဖြတ်ချက်များကို ကြည့်နိုင်ရန်အတွက် စခရင်စတင်ရန် ခွင့်ပြုနိုင်သည်။ သာမန်အက်ပ်များအတွက် မည်သည့်အခါမျှ မလိုအပ်နိုင်ပါ။</string>
+    <string name="permdesc_startReviewPermissionDecisions">ခွင့်ပြုထားသည့်အက်ပ်အား ခွင့်ပြုသည့်ဆုံးဖြတ်ချက်များကို ကြည့်နိုင်ရန်အတွက် စခရင်စတင်ရန် ခွင့်ပြုနိုင်သည်။ သာမန်အက်ပ်များအတွက် မည်သည့်အခါမှ မလိုအပ်နိုင်ပါ။</string>
     <string name="permdesc_startViewAppFeatures">ဝန်ဆောင်မှုအချက်အလက်ကိုများကို ခွင့်ပြုချက်ရထားသည့် အက်ပ်အား စတင်ကြည့်နိုင်ရန် ခွင့်ပြုသည်။</string>
     <string name="permdesc_startViewPermissionUsage">အက်ပ်တစ်ခုအတွက် ခွင့်ပြုချက်စတင်အသုံးပြုမှုကို ကိုင်ဆောင်သူအား ခွင့်ပြုသည်။ ပုံမှန်အက်ပ်များအတွက် ဘယ်သောအခါမျှ မလိုအပ်ပါ။</string>
     <string name="permdesc_statusBar">အက်ပ်အား အခြေအနေပြ ဘားကို ပိတ်ခွင့် သို့မဟတ် စနစ် အိုင်ကွန်များကို ထည့်ခြင်း ဖယ်ရှားခြင်း ပြုလုပ်ခွင့် ပြုသည်။</string>
@@ -1497,7 +1534,7 @@
     <string name="permdesc_subscribedFeedsRead">အက်ပ်အား လောလောဆယ် စင့်က် လုပ်ပြီးသား ထည့်သွင်းမှုများ ဆိုင်ရာ အသေးစိတ်များကို ရယူခွင့်ပြုသည်။</string>
     <string name="permdesc_systemAlertWindow">ဤအက်ပ်သည် အခြားအက်ပ်များ၏အပေါ် သို့မဟုတ် မျက်နှာပြင်၏ အခြားအစိတ်အပိုင်းများ၏ အပေါ်တွင် ဖွင့်နိုင်ပါသည်။ ၎င်းသည် သာမန်အက်ပ်အသုံးပြုခြင်းကို အနှောင့်အယှက်ဖြစ်စေနိုင်ပြီး အခြားအက်ပ်များအား ဖွင့်ပုံကို ပြောင်းလဲစေနိုင်ပါသည်။</string>
     <string name="permdesc_systemCamera">ဤခွင့်ပြုထားသည့် သို့မဟုတ် စနစ်အက်ပ်က စနစ်ကင်မရာအသုံးပြုပြီး ဓာတ်ပုံနှင့် ဗီဒီယိုများကို အချိန်မရွေး ရိုက်ကူးနိုင်သည်။ အက်ပ်ကလည်း android.permission.CAMERA ခွင့်ပြုချက် ရှိရပါမည်</string>
-    <string name="permdesc_transmitIr">အပလီကေးရှင်းအား တက်ဘလက်ရဲ့ အနီအောက်ရောင်ခြည် ထုတ်လွှတ်ခြင်းအား သုံးခွင့်ပေးခြင်း</string>
+    <string name="permdesc_transmitIr">အပလီကေးရှင်းအား ဖုန်းရဲ့ အနီအောက်ရောင်ခြည် ထုတ်လွှတ်ခြင်းအား သုံးခွင့်ပေးခြင်း</string>
     <string name="permdesc_turnScreenOn">ဖန်သားပြင်ဖွင့်ရန် အက်ပ်ကို ခွင့်ပြုနိုင်သည်။</string>
     <string name="permdesc_uninstall_shortcut">အပလီကေးရှင်းအား အသုံးပြုသူ လုပ်ဆောင်ခြင်း မပါပဲ ပင်မ မြင်ကွင်းအား ဖယ်ရှားခွင့် ပေးခြင်း</string>
     <string name="permdesc_updatePackagesWithoutUserAction">အသုံးပြုသူလုပ်ဆောင်ချက်မပါဘဲ ယခင်က ထည့်သွင်းထားသော အက်ပ်ကို စနစ်အား အပ်ဒိတ်လုပ်ခွင့်ပြုသည်</string>
@@ -1510,12 +1547,13 @@
     <string name="permdesc_vibrate">အက်ပ်အား တုန်ခါစက်ကို ထိန်းချုပ်ခွင့် ပြုသည်။</string>
     <string name="permdesc_vibrator_state">အက်ပ်ကို တုန်ခါမှုအခြေအနေအား သုံးခွင့်ပေးပါ။</string>
     <string name="permdesc_videoWrite">အက်ပ်အား သင့်ဗီဒီယိုစုစည်းမှုကို ပြုပြင်ခွင့်ပေးသည်။</string>
-    <string name="permdesc_wakeLock">အက်ပ်အား တက်ဘလက်ကို အနားမယူနိုင်အောင် ဟန့်တားခွင့် ပြုသည်။</string>
-    <string name="permdesc_writeCalendar">ဤအက်ပ်သည် သင့်တက်ဘလက်ပေါ်ရှိ ပြက္ခဒိန်ဖြစ်ရပ်များကို ထည့်ခြင်း၊ ဖယ်ရှားခြင်း သို့မဟုတ် ပြောင်းလဲခြင်းတို့ ပြုလုပ်နိုင်ပါသည်။ ဤအက်ပ်သည် ပြက္ခဒိန်ပိုင်ရှင်များမှ လာခြင်းဖြစ်နိုင်သည့် မက်ဆေ့ဂျ်များကို ပို့နိုင်ပြီး ပိုင်ရှင်များကို အသိမပေးဘဲ ဖြစ်ရပ်များကို ပြောင်းလဲနိုင်ပါသည်။</string>
-    <string name="permdesc_writeCallLog">အပလီကေးရှင်းအား သင့်တက်ဘလက်၏ ဖုန်းခေါ်ဆိုမှု မှတ်တမ်း (အဝင်အထွက်ခေါ်ဆိုမှု အချက်အလက်များ) ကို ပြင်ဆင်ခွင့် ပေးခြင်း။ အန္တရာယ်ရှိ အပလီကေးရှင်းများမှ ဤအချက်ကို အသုံးပြု၍ သင့် ဖုန်းခေါ်ဆိုမှု မှတ်တမ်းကို ဖျက်ပစ်ခြင်း၊ ပြင်ဆင်ခြင်းများ ပြုလုပ်နိုင်ပါသည်</string>
-    <string name="permdesc_writeContacts">သင့်တက်ဘလက်တွင် သိမ်းဆည်းထားသော အဆက်အသွယ်များ၏ အချက်အလက်ကို ပြင်ဆင်ရန် အက်ပ်အား ခွင့်ပြုပါ။ ဤခွင့်ပြုချက်က အက်ပ်အား သင့်အဆက်အသွယ်များ၏ အချက်အလက်ကို ဖျက်ခွင့်ပြုသည်။</string>
+    <string name="permdesc_wakeLock">အက်ပ်အား ဖုန်းကို အနားမယူနိုင်အောင် ဟန့်တားခွင့် ပြုသည်။</string>
+    <string name="permdesc_writeCalendar">ဤအက်ပ်သည် သင့်ဖုန်းပေါ်ရှိ ပြက္ခဒိန်ဖြစ်ရပ်များကို ထည့်ခြင်း၊ ဖယ်ရှားခြင်း သို့မဟုတ် ပြောင်းလဲခြင်းတို့ ပြုလုပ်နိုင်ပါသည်။ ဤအက်ပ်သည် ပြက္ခဒိန်ပိုင်ရှင်များမှ လာခြင်းဖြစ်နိုင်သည့် မက်ဆေ့ဂျ်များကို ပို့နိုင်ပြီး ပိုင်ရှင်များကို အသိမပေးဘဲ ဖြစ်ရပ်များကို ပြောင်းလဲနိုင်ပါသည်။</string>
+    <string name="permdesc_writeCallLog">အပလီကေးရှင်းအား သင့်ဖုန်း၏ ဖုန်းခေါ်ဆိုမှု မှတ်တမ်း (အဝင်အထွက်ခေါ်ဆိုမှု အချက်အလက်များ) ကို ပြင်ဆင်ခွင့် ပေးခြင်း။ အန္တရာယ်ရှိ အပလီကေးရှင်းများမှ ဤအချက်ကို အသုံးပြု၍ သင့် ဖုန်းခေါ်ဆိုမှု မှတ်တမ်းကို ဖျက်ပစ်ခြင်း၊ ပြင်ဆင်ခြင်းများ ပြုလုပ်နိုင်ပါသည်</string>
+    <string name="permdesc_writeContacts">သင့်ဖုန်းတွင် သိမ်းဆည်းထားသော အဆက်အသွယ်များ၏ အချက်အလက်ကို ပြင်ဆင်ရန် အက်ပ်အား ခွင့်ပြုပါ။ ဤခွင့်ပြုချက်က အက်ပ်အား သင့်အဆက်အသွယ်များ၏ အချက်အလက်ကို ဖျက်ခွင့်ပြုသည်။</string>
     <string name="permdesc_writeSettings">အက်ပ်အား စနစ်၏ ဆက်တင် ဒေတာကို မွမ်းမံခွင့် ပြုသည်။ သာမန် အက်ပ်များက သင့် စနစ်၏ စီစဉ်ဖွဲ့စည်းမှုကို ဖျက်ဆီးပစ်နိုင်သည်။</string>
     <string name="permdesc_writeSyncSettings">အကောင့်တစ်ခုအတွက် ထပ်တူညီအောင်လုပ်သော ဆက်တင်များကို ပြင်ရန် အက်ပ်ကို ခွင့်ပြုရန်။ ဥပမာ People အက်ပ်က အကောင့်တစ်ခုနှင့် ထပ်တူညီအောင် လုပ်ဆောင်ခြင်းအား ဖွင့်ရန် သုံးနိုင်သည်။</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">အခြားအက်ပ်များ ပိုင်ဆိုင်သော E2EE အဆက်အသွယ်ကီးများ၏ အတည်ပြုခြင်းအခြေအနေများကို အက်ပ်အား အပ်ဒိတ်လုပ်ခွင့်ပြုသည်</string>
     <string name="permgroupdesc_activityRecognition">သင့်ကိုယ်ခန္ဓာလှုပ်ရှားမှုကို ဝင်ကြည့်ရန်</string>
     <string name="permgroupdesc_calendar">သင့်ပြက္ခဒိန်အား ဝင်ရောက်သုံးရန်</string>
     <string name="permgroupdesc_calllog">ဖုန်းခေါ်ဆိုထားသော မှတ်တမ်း ဖတ်ပြီး ရေးရန်</string>
@@ -1556,7 +1594,9 @@
     <string name="permlab_accessCoarseLocation">မျက်နှာစာတွင်သာ ခန့်မှန်းခြေ တည်နေရာ အသုံးပြုခြင်း</string>
     <string name="permlab_accessDrmCertificates">DRM လက်မှတ်များကို ရယူသုံးခြင်း</string>
     <string name="permlab_accessFineLocation">မျက်နှာစာတွင်သာ တည်နေရာအတိအကျ အသုံးပြုခြင်း</string>
+    <string name="permlab_accessHiddenProfile">ဖျောက်ထားသော ပရိုဖိုင်များကို ဝင်ကြည့်ခြင်း</string>
     <string name="permlab_accessImsCallService">IMS ဖုန်းခေါ်ဆိုမှု ဝန်ဆောင်ဌာန ဝင်ကြည့်ပါ</string>
+    <string name="permlab_accessLastKnownCellId">နောက်ဆုံးသိထားသော ဆဲလ်အထောက်အထားကို သုံးခြင်း။</string>
     <string name="permlab_accessLocationExtraCommands">တည်နေရာပံ့ပိုးမှုညွှန်ကြားချက်အပိုအား ဝင်ရောက်ကြည့်ခြင်း</string>
     <string name="permlab_accessNetworkConditions">ကွန်ယက်အခြေအနေအား လေ့လာနေမှုအား နားထောင်ခွင့်</string>
     <string name="permlab_accessNetworkState">ကွန်ရက် ချိတ်ဆက်မှုများအား ကြည့်ရန်</string>
@@ -1588,6 +1628,7 @@
     <string name="permlab_callCompanionApp">စနစ်မှတစ်ဆင့် ခေါ်ဆိုမှုများကို ကြည့်ရှုထိန်းချုပ်ပါ။</string>
     <string name="permlab_callPhone">ဖုန်းနံပါတ်များကိုတိုက်ရိုက်ခေါ်ဆိုခြင်း</string>
     <string name="permlab_camera">ဓါတ်ပုံနှင့်ဗွီဒီယိုရိုက်ခြင်း</string>
+    <string name="permlab_cameraHeadlessSystemUser">‘မမြင်နိုင်သော စနစ်အသုံးပြုသူ’ အဖြစ် ကင်မရာသုံးရန် အပလီကေးရှင်း (သို့) ဝန်ဆောင်မှုကို ခွင့်ပြုပါ။</string>
     <string name="permlab_cameraOpenCloseListener">ကင်မရာစက်များ ပွင့်နေခြင်း သို့မဟုတ် ပိတ်နေခြင်းနှင့် ပတ်သက်ပြီး ပြန်လည်ခေါ်ဆိုမှုများ ရယူရန် အပလီကေးရှင်း သို့မဟုတ် ဝန်ဆောင်မှုကို ခွင့်ပြုခြင်း။</string>
     <string name="permlab_changeNetworkState">ကွန်ယက်ဆက်သွယ်မှုအားပြောင်းခြင်း</string>
     <string name="permlab_changeTetherState">တစ်ဆင့်ပွါးဆက်သွယ်မှုအားပြောင်းခြင်း</string>
@@ -1612,6 +1653,7 @@
     <string name="permlab_foregroundServiceHealth">\"health\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှု လုပ်ဆောင်ခြင်း</string>
     <string name="permlab_foregroundServiceLocation">\"location\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှု လုပ်ဆောင်ခြင်း</string>
     <string name="permlab_foregroundServiceMediaPlayback">\"mediaPlayback\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှု လုပ်ဆောင်ခြင်း</string>
+    <string name="permlab_foregroundServiceMediaProcessing">“mediaProcessing” အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှု လုပ်ဆောင်ခြင်း</string>
     <string name="permlab_foregroundServiceMediaProjection">\"mediaProjection\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှု လုပ်ဆောင်ခြင်း</string>
     <string name="permlab_foregroundServiceMicrophone">\"microphone\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှု လုပ်ဆောင်ခြင်း</string>
     <string name="permlab_foregroundServicePhoneCall">\"phoneCall\" အမျိုးအစား မျက်နှာစာဝန်ဆောင်မှု လုပ်ဆောင်ခြင်း</string>
@@ -1641,6 +1683,7 @@
     <string name="permlab_mount_unmount_filesystems">SD ကတ္ ဖိုင္စနစ္သို႔ ဝင္ေရာက္ပါ။</string>
     <string name="permlab_nearby_wifi_devices">အနီးရှိ Wi-Fi စက်များနှင့် ပြန်လှန်တုံ့ပြန်ခြင်း</string>
     <string name="permlab_nfc">Near Field Communicationအား ထိန်းချုပ်ရန်</string>
+    <string name="permlab_nfcTransactionEvent">‘လုံခြုံရေး အစိတ်အပိုင်း’ ငွေလွှဲပြောင်းမှု အစီအစဉ်</string>
     <string name="permlab_observeCompanionDevicePresence">တွဲဖက်သုံးနိုင်သော စက်ရှိ၊ မရှိ စောင့်ကြည့်ခြင်း</string>
     <string name="permlab_persistentActivity">အက်ပ်ကို အမြဲတမ်း အလုပ်လုပ်စေခြင်း</string>
     <string name="permlab_postNotification">အကြောင်းကြားချက်များ ပြခြင်း</string>
@@ -1710,12 +1753,13 @@
     <string name="permlab_uwb_ranging">အနီးရှိ ‘အလွန်ကျယ်ပြန့်သော လှိုင်းအလျားသုံးစက်များ’ ကြား မှန်းခြေနေရာကို သတ်မှတ်ခြင်း</string>
     <string name="permlab_vibrate">တုန်ခုန်မှုအား ထိန်းချုပ်ခြင်း</string>
     <string name="permlab_videoWrite">သင့်ဗီဒီယို စုစည်းမှုကို ပြုပြင်ခြင်း</string>
-    <string name="permlab_wakeLock">တက်ပလက်အား ပိတ်ခြင်းမှ ကာကွယ်ခြင်း</string>
+    <string name="permlab_wakeLock">ဖုန်းအနားယူခြင်းမပြုလုပ်စေရန်</string>
     <string name="permlab_writeCalendar">ပြက္ခဒိန်အဖြစ်အပျက်များကို ထပ်ထည့်ရန် သို့မဟုတ် မွမ်းမံရန်နှင့် ပိုင်ရှင်၏အသိမပေးပဲ ဧည့်သည်များထံ အီးမေးလ်ပို့ရန်</string>
     <string name="permlab_writeCallLog">ခေါ်ဆိုမှုမှတ်တမ်း ရေးသားခြင်း</string>
     <string name="permlab_writeContacts">အဆက်အသွယ်များအား ပြင်ဆင်ခြင်း</string>
     <string name="permlab_writeSettings">စနစ်အပြင်အဆင်အား မွမ်းမံခြင်း</string>
     <string name="permlab_writeSyncSettings">ထပ်တူညီအောင် လုပ်ခြင်းအား ပြုနိုင်၊ မပြုနိုင် အပြောင်းအလဲလုပ်ခြင်း</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">အခြားအက်ပ်များ ပိုင်ဆိုင်သော E2EE အဆက်အသွယ်ကီးများ၏ အတည်ပြုခြင်းအခြေအနေများကို အပ်ဒိတ်လုပ်ခြင်း</string>
     <string name="perms_description_app">%1$s မှ ထောက်ပံ့သည်</string>
     <string name="perms_new_perm_prefix"><font fgcolor="#ff33b5e5" size="12">အသစ်: </font></string>
     <string name="personal_apps_suspended_turn_profile_on">ဖွင့်ရန်</string>
@@ -1753,10 +1797,10 @@
     <string name="policydesc_limitPassword">မျက်နှာပြင်သော့ခတ်သည့် စကားဝှက်များနှင့် PINများရှိ ခွင့်ပြုထားသည့် စာလုံးအရေအတွက်နှင့် အက္ခရာများအား ထိန်းချုပ်ရန်။</string>
     <string name="policydesc_resetPassword">ဖန်သားပြင်လော့ခ်ပြောင်းသည်။</string>
     <string name="policydesc_setGlobalProxy">"ပေါ်လစီအား ဖွင့်ထားချိန်တွင်  တစ်ကမ္ဘာလုံးဆိုင်ရာ ပရောက်စီအား အသုံးပြုရန် ကိရိယာကို သတ်မှတ်မည်။ ကိရိယာ၏ ပိုင်ရှင်သာ ကမ္ဘာလုံးဆိုင်ရာ ပရောက်စီကို သတ်မှတ်နိုင်သည်။"</string>
-    <string name="policydesc_watchLogin">မျက်နှာပြင်ကို သော့ဖွင့်ရန် အတွက် စကားဝှက် မမှန်မကန် ထည့်သွင်းမှု အရေအတွက်ကို စောင့်ကြည့်လျက်၊ စကားဝှက် ရိုက်ထည့်မှု သိပ်များနေလျှင် တက်ဘလက်ကို သော့ခတ်ရန် သို့မဟုတ် တက်ဘလက် ဒေတာ အားလုံးကို ဖျက်ရန်။</string>
-    <string name="policydesc_watchLogin_secondaryUser">ဖန်မျက်နှာပြင်အား သော့ဖွင့်စဉ် လျှို့ဝှက်ကုဒ်အမှားများ ရိုက်သွင်းမှုအား စောင့်ကြည့်ရန်နှင့်၊ လျှို့ဝှက်ကုဒ်အမှားများ များစွာ ရိုက်သွင်းပါက တက်ဘလက်အား သော့ချခြင်း သို့မဟုတ် တက်ဘလက်၏ အချက်အလက်များအား ဖျက်ပစ်ခြင်းများ ပြုလုပ်မည်။</string>
-    <string name="policydesc_wipeData">စက်ရုံထုတ် အခြေအနေအား ပြန်ပြောင်းခြင်းဖြင့် တက်ဘလက်ရှိ အချက်အလက်များအား ကြိုတင်သတိပေးမှုမရှိပဲ ဖျက်စီးရန်</string>
-    <string name="policydesc_wipeData_secondaryUser">သတိပေးခြင်းမရှိဘဲ ဤတက်ဘလက်ပေါ်ရှိ ထိုအသုံးပြုသူ၏ဒေတာအား ဖျက်မည်။</string>
+    <string name="policydesc_watchLogin">မျက်နှာပြင်ကို လောခ်ဖွင့်ရန်အတွက် ရိုက်ထည့်သည့် မှားယွင်းသောစကားဝှက် အကြိမ်ရေကို စောင့်ကြည့်ပြီး မမှန်သောစကားဝှက် ရိုက်ထည့်မှု အလွန်များနေလျှင် ဖုန်းကိုလော့ခ်ချသည် (သို့) ဖုန်း ဒေတာအားလုံးကို ဖျက်သည်။</string>
+    <string name="policydesc_watchLogin_secondaryUser">ဖန်မျက်နှာပြင်အား သော့ဖွင့်စဉ် လျှို့ဝှက်ကုဒ်အမှားများ ရိုက်သွင်းမှုအား စောင့်ကြည့်ရန်နှင့်၊ လျှို့ဝှက်ကုဒ်အမှားများ များစွာ ရိုက်သွင်းပါက ဖုန်းအား သော့ချခြင်း သို့မဟုတ် ဖုန်း၏ အချက်အလက်များအား ဖျက်ပစ်ခြင်းများ ပြုလုပ်မည်။</string>
+    <string name="policydesc_wipeData">စက်ရုံထုတ်အခြေအနေသို့ ပြန်ပြောင်းခြင်းဖြင့် ဖုန်းရှိဒေတာများကို သတိပေးခြင်း မရှိဘဲ ဖျက်သည်။</string>
+    <string name="policydesc_wipeData_secondaryUser">သတိပေးခြင်းမရှိဘဲ ဤဖုန်းပေါ်ရှိ ထိုအသုံးပြုသူ၏ဒေတာအား ဖျက်မည်။</string>
     <string name="policylab_disableCamera">ကင်မရာအား ပိတ်ခြင်း</string>
     <string name="policylab_disableKeyguardFeatures">ဖန်သားပြင် လော့ခ်ချသည့် ဝန်ဆောင်မှုအချို့ ပိတ်ခြင်း</string>
     <string name="policylab_encryptedStorage">သိုလှောင်လျို့ဝှက်ခြင်းသတ်မှတ်</string>
@@ -1765,7 +1809,7 @@
     <string name="policylab_limitPassword">စကားဝှက်စည်းမျဥ်းကိုသတ်မှတ်ရန်</string>
     <string name="policylab_resetPassword">ဖန်သားပြင်လော့ခ်ပြောင်းခြင်း</string>
     <string name="policylab_setGlobalProxy">တကမာ္ဘလုံးဆိုင်ရာပရော်စီကို သတ်မှတ်ခြင်း</string>
-    <string name="policylab_watchLogin">မျက်နှာပြင်လော့ခ်ဖွင့်ရန် ကြိုးပမ်းမှုများကို စောင့်ကြည့်ပါ</string>
+    <string name="policylab_watchLogin">မျက်နှာပြင်လော့ခ်ဖွင့်ရန် ကြိုးပမ်းမှုများကို စောင့်ကြည့်ခြင်း</string>
     <string name="policylab_wipeData">ဒေတာအားလုံးအားဖျက်ခြင်း</string>
     <string name="policylab_wipeData_secondaryUser">အသုံးပြုသူဒေတာကို ဖျက်မည်</string>
     <string name="popup_window_default_title">ပေါ့ပ်အပ် ဝင်းဒိုး</string>
@@ -1773,7 +1817,7 @@
     <string name="postalTypeHome">အိမ်</string>
     <string name="postalTypeOther">တခြား</string>
     <string name="postalTypeWork">အလုပ်</string>
-    <string name="power_dialog">Tabletဆိုင်ရာရွေးချယ်မှုများ</string>
+    <string name="power_dialog">ဖုန်းဆိုင်ရာရွေးချယ်မှုများ</string>
     <string name="power_off">စက်ပိတ်ပါ</string>
     <string name="prepend_shortcut_label">Menu+</string>
     <string name="preposition_for_date">%s တွင်</string>
@@ -1783,9 +1827,21 @@
     <string name="print_service_installed_title">%s ဆားဗစ် ထည့်သွင်းပြီး</string>
     <string name="printing_disabled_by">%s က ပုံနှိပ်ထုတ်ယူခြင်းကို ပိတ်ထားသည်။</string>
     <string name="private_dns_broken_detailed">သီးသန့် ဒီအန်အက်စ် (DNS) ဆာဗာကို သုံး၍မရပါ။</string>
+    <string name="private_profile_label_badge">သီးသန့် %1$s</string>
+    <string name="private_space_biometric_prompt_title">သီးသန့်နေရာ</string>
+    <string name="private_space_deleted_by_admin">သီးသန့်နေရာကို ဖယ်ရှားလိုက်သည်</string>
+    <string name="private_space_deleted_by_admin_details">သင့်အဖွဲ့အစည်းသည် ကြီးကြပ်ထားသော ဤစက်ပေါ်တွင် သီးသန့်နေရာများကို ခွင့်မပြုပါ။</string>
+    <string name="private_space_set_up_screen_lock_message">သင့်သီးသန့်နေရာသုံးရန် ဤစက်၌ ဖန်သားပြင်လော့ခ် သတ်မှတ်ပါ</string>
     <string name="profile_encrypted_detail">အလုပ်ပရိုဖိုင် သော့ခတ်ထားသည်</string>
     <string name="profile_encrypted_message">သင့်အလုပ်ပရိုဖိုင်ကို သော့ဖွင့်ရန် တို့ပါ</string>
     <string name="profile_encrypted_title">လုပ်ဆောင်ချက် ကန့်သတ်မှုရှိနိုင်သည်</string>
+    <string name="profile_label_clone">ဆင်တူပြုလုပ်ရန်</string>
+    <string name="profile_label_communal">အများသုံး</string>
+    <string name="profile_label_private">သီးသန့်</string>
+    <string name="profile_label_test">စမ်းသပ်မှု</string>
+    <string name="profile_label_work">အလုပ်</string>
+    <string name="profile_label_work_2">အလုပ် ၂</string>
+    <string name="profile_label_work_3">အလုပ် ၃</string>
     <string name="progress_erasing">မျှဝေထားသည့် သိုလှောင်ခန်းကို ဖျက်နေသည်…</string>
     <string name="progress_erasing_usbhost">USB သိုေလွာင္ခန္းကို ေဖၚမက္ လုပ္ေနသည္…</string>
     <string name="progress_unmounting">SD ကဒ္ခ်ေနပါသည္</string>
@@ -1803,6 +1859,8 @@
     <string name="reboot_to_update_reboot">ပြန်လည်စတင်နေ…</string>
     <string name="reboot_to_update_title">Android စနစ်အပ်ဒိတ်လုပ်ခြင်း</string>
     <string name="recent_tasks_title">လတ်တလော</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">သတိထားရမည့် အကြောင်းကြားချက်ပါ အချက်အလက်ကို ဖျောက်ထားသည်</string>
     <string name="redo">ပြန်လုပ်ရန်</string>
     <string name="reduce_bright_colors_feature_name">ပိုမှိန်ခြင်း</string>
     <string name="region_picker_section_all">ဒေသအားလုံး</string>
@@ -1880,12 +1938,36 @@
     <string name="safe_media_volume_warning">"အသံကို အကြံပြုထားသည့် ပမာဏထက် မြှင့်ပေးရမလား?
 
 အသံကို မြင့်သည့် အဆင့်မှာ ကြာရှည်စွာ နားထောင်ခြင်းက သင်၏ နားကို ထိခိုက်စေနိုင်သည်။"</string>
+    <string name="satellite_notification_how_it_works">အလုပ်လုပ်ပုံ</string>
+    <string name="satellite_notification_manual_summary">မိုဘိုင်း (သို့) Wi-Fi ကွန်ရက်မရှိဘဲ မက်ဆေ့ဂျ်များ ပို့နိုင်၊ လက်ခံနိုင်သည်</string>
+    <string name="satellite_notification_manual_title">ဂြိုဟ်တုမှတစ်ဆင့် မက်ဆေ့ဂျ်ပို့ခြင်း သုံးမလား။</string>
+    <string name="satellite_notification_open_message">Messages ဖွင့်ရန်</string>
+    <string name="satellite_notification_summary">မိုဘိုင်း (သို့) Wi-Fi ကွန်ရက်မရှိဘဲ မက်ဆေ့ဂျ်များကို ပို့နိုင်၊ လက်ခံနိုင်သည်</string>
+    <string name="satellite_notification_title">ဂြိုဟ်တုနှင့် အလိုအလျောက် ချိတ်ဆက်ထားသည်</string>
+    <string name="scCellularNetworkSecuritySummary">အသွင်ဝှက်ခြင်း၊ အသွင်ဝှက်မထားသော ကွန်ရက်များအတွက် အကြောင်းကြားချက်များ</string>
+    <string name="scCellularNetworkSecurityTitle">မိုဘိုင်းကွန်ရက် လုံခြုံရေး</string>
+    <string name="scIdentifierDisclosureIssueSummary">"%1$s တွင် သင့် %2$s ဆင်းမ်ကတ်ကို သုံးနေစဉ် အနီးရှိ ကွန်ရက်သည် စက်ပစ္စည်း၏ သီးသန့် ID (IMSI (သို့) IMEI) ကို မှတ်တမ်းတင်ထားသည်။
+
+ဆိုလိုသည်မှာ သင့်တည်နေရာ၊ လုပ်ဆောင်ချက် (သို့) အထောက်အထားကို မှတ်တမ်းတင်ထားသည်။ ၎င်းသည် သာမန်လုပ်ဆောင်မှုဖြစ်သော်လည်း ကိုယ်ရေးအချက်အလက်လုံခြုံမှုနှင့် ပတ်သက်၍ အချို့သူများအတွက် စိုးရိမ်စရာ ဖြစ်နိုင်သည်။"</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">%1$s တွင် သင့် %2$s ဆင်းမ်ကတ်ကို သုံးနေစဉ် အနီးရှိ ကွန်ရက်သည် စက်ပစ္စည်း၏ သီးသန့် ID (IMSI (သို့) IMEI) ကို မှတ်တမ်းတင်ထားသည်</string>
+    <string name="scIdentifierDisclosureIssueTitle">စက် ID သုံးထားသည်</string>
+    <string name="scNullCipherIssueActionGotIt">နားလည်ပြီ</string>
+    <string name="scNullCipherIssueActionLearnMore">ပိုမိုလေ့လာရန်</string>
+    <string name="scNullCipherIssueActionSettings">မိုဘိုင်းကွန်ရက် လုံခြုံရေး ဆက်တင်များ</string>
+    <string name="scNullCipherIssueEncryptedSummary">%1$s ဆင်းမ်ကတ် ချိတ်ဆက်မှုသည် ယခု ပိုမိုလုံခြုံပါပြီ</string>
+    <string name="scNullCipherIssueEncryptedTitle">အသွင်ဝှက်ထားသော ကွန်ရက် %1$s သို့ ချိတ်ဆက်ထားသည်</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"သင့် %1$s ဆင်းမ် သုံးချိန်တွင် ဖုန်း၊ မက်ဆေ့ဂျ်၊ ဒေတာ လုံခြုံမှုအားနည်းသည်။
+
+သင့်ချိတ်ဆက်မှုကို ထပ်မံအသွင်ဝှက်ပါက အကြောင်းကြားချက်နောက်တစ်ခု ရရှိပါမည်။"</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">သင့် %1$s ဆင်းမ် သုံးချိန်တွင် ဖုန်း၊ မက်ဆေ့ဂျ်၊ ဒေတာ လုံခြုံမှုအားနည်းသည်</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">အသွင်ဝှက်မထားသော ကွန်ရက်သို့ ချိတ်ဆက်ထားသည်</string>
     <string name="screen_compat_mode_hint">ဒါကို စနစ် ဆက်တင်များထဲ ပြန်ဖွင့်ပေးရန် > Apps > ဒေါင်းလုဒ် လုပ်ပြီး။</string>
     <string name="screen_compat_mode_scale">စကေး</string>
     <string name="screen_compat_mode_show">အမြဲပြသရန်</string>
     <string name="screen_lock">ဖန်သားပြင် လော့ခ်ချရန်</string>
     <string name="screen_lock_app_setting_name">ဖန်သားပြင်လော့ခ်ချခြင်းကို သုံးခြင်း</string>
     <string name="screen_lock_dialog_default_subtitle">ရှေ့ဆက်ရန် သင်၏ဖန်သားပြင် လော့ခ်ချခြင်းကို ထည့်ပါ</string>
+    <string name="screen_not_shared_sensitive_content">လုံခြုံရေးအတွက် အက်ပ်အကြောင်းအရာကို ဖန်သားပြင် မျှဝေခြင်းတွင် ဖျောက်ထားသည်</string>
     <string name="screenshot_edit">တည်းဖြတ်ရန်</string>
     <string name="search_hint">ရှာဖွေပါ...</string>
     <string name="search_language_hint">ဘာသာစကားအမည် ထည့်ပါ</string>
@@ -1929,6 +2011,8 @@
     <string name="serviceErased">ပယ်ဖျက်မှု အောင်မြင်ပါသည်</string>
     <string name="serviceNotProvisioned">ဝန်ဆောင်မှုအား ကန့်သတ်မထားပါ</string>
     <string name="serviceRegistered">စာရင်းသွင်းခြင်းအောင်မြင်ပါသည်</string>
+    <string name="set_up_screen_lock_action_label">ဖန်သားပြင်လော့ခ် သတ်မှတ်ရန်</string>
+    <string name="set_up_screen_lock_title">ဖန်သားပြင်လော့ခ် သတ်မှတ်ပါ</string>
     <string name="sha1_fingerprint">SHA-1 လက်ဗွေ-</string>
     <string name="sha256_fingerprint">SHA-256 လက်ဗွေ-</string>
     <string name="share">မျှဝေရန်</string>
@@ -1945,9 +2029,9 @@
     <string name="shortcut_restore_unknown_issue">ဖြတ်လမ်းလင့်ခ်ကို ပြန်ယူ၍မရပါ</string>
     <string name="shortcut_restored_on_lower_version">အက်ပ်ဗားရှင်းကို အဆင့်နှိမ့်ထားသည် သို့မဟုတ် ဤဖြတ်လမ်းလင့်ခ်နှင့် သဟဇာတမဖြစ်ပါ</string>
     <string name="show_ime">စက်၏ကီးဘုတ် ဖွင့်ထားစဉ်တွင် ၎င်းကို ဖန်သားပြင်ပေါ်တွင် ဆက်ထားပါ</string>
-    <string name="shutdown_confirm">သင့်တက်ဘလက်အား စက်ပိတ်ပါမည်</string>
+    <string name="shutdown_confirm">သင့်ဖုန်းအား စက်ပိတ်ပါမည်</string>
     <string name="shutdown_confirm_question">သင်က ပိတ်ပစ်မှာကို လိုပါသလား?</string>
-    <string name="shutdown_progress">စက်ပိတ်ပါမည်</string>
+    <string name="shutdown_progress">စက်ပိတ်နေသည်…</string>
     <string name="silent_mode">အသံတိတ်စနစ်</string>
     <string name="silent_mode_ring">ဖုန်းမြည်သံဖွင့်ထားသည်</string>
     <string name="silent_mode_silent">ဖုန်းမြည်သံပိတ်ထားသည်</string>
@@ -2043,6 +2127,7 @@
     <string name="twilight_service">နေဝင်ဆည်းဆာ ဝန်ဆောင်မှု</string>
     <string name="ui_translation_accessibility_translated_text">%1$s ကို ဘာသာပြန်ထားသည်။</string>
     <string name="ui_translation_accessibility_translation_finished">မက်ဆေ့ဂျ်ကို %1$s မှ %2$s သို့ ဘာသာပြန်ထားသည်။</string>
+    <string name="unarchival_session_app_label">ဆိုင်းငံ့ထားသည်…</string>
     <string name="undo">နောက်ပြန်ရန်</string>
     <string name="unpin_specific_target">%1$s ကို ပင်ဖြုတ်ရန်</string>
     <string name="unpin_target">ဖြုတ်ပါ</string>
@@ -2115,7 +2200,7 @@
     <string name="user_switched">လက်ရှိအသုံးပြုနေသူ %1$s.</string>
     <string name="user_switching_message">%1$sသို့ ပြောင်းနေသည်…</string>
     <string name="validity_period">သက်တမ်း</string>
-    <string name="vdm_camera_access_denied">သင်၏ %1$s မှ တက်ဘလက်ကင်မရာကို သုံး၍မရပါ</string>
+    <string name="vdm_camera_access_denied">သင်၏ %1$s မှ ဖုန်းကင်မရာကို သုံး၍မရပါ</string>
     <string name="vdm_pip_blocked">တိုက်ရိုက်လွှင့်စဉ် နှစ်ခုထပ်၍ မကြည့်နိုင်ပါ</string>
     <string name="vdm_secure_window">တိုက်ရိုက်လွှင့်နေစဉ် ၎င်းကို မသုံးနိုင်ပါ။ ၎င်းအစား ဖုန်းတွင် စမ်းကြည့်ပါ။</string>
     <string name="view_and_control_notification_content">%s က သင့်ဖန်သားပြင်ကို ကြည့်ရှုပြီး ထိန်းချုပ်နိုင်သည်။ ပြန်ကြည့်ရန် တို့ပါ။</string>
@@ -2205,7 +2290,7 @@
     <string name="wireless_display_route_description">ကြိုးမဲ့ပြသခြင်း</string>
     <string name="work_mode_emergency_call_button">အရေးပေါ်</string>
     <string name="work_mode_off_title">အလုပ်သုံးအက်ပ် ပြန်ဖွင့်မလား။</string>
-    <string name="work_mode_turn_on">ပြန်စရန်</string>
+    <string name="work_mode_turn_on">ပြန်ဖွင့်ရန်</string>
     <string name="work_profile_deleted">အလုပ်ပရိုဖိုင် ဖျက်ပြီးဖြစ်၏</string>
     <string name="work_profile_deleted_description_dpm_wipe">ဤစက်ပစ္စည်းတွင် သင်၏ အလုပ်ပရိုဖိုင်မရှိတော့ပါ</string>
     <string name="work_profile_deleted_details">အလုပ်ပရိုဖိုင် စီမံခန့်ခွဲရန်အက်ပ် မရှိပါ သို့မဟုတ် ပျက်စီးနေပါသည်။ ထို့ကြောင့် သင်၏ အလုပ်ပရိုဖိုင်နှင့် ဆက်စပ်နေသော ဒေတာများကို ဖျက်လိုက်ပါပြီ။ အကူအညီရယူရန် သင်၏စီမံခန့်ခွဲသူကို ဆက်သွယ်ပါ။</string>
@@ -2234,7 +2319,13 @@
     <string name="zen_mode_feature_name">မနှောင့်ယှက်ရ</string>
     <string name="zen_mode_forever">သင်ပိတ်လိုက်သည် အထိ</string>
     <string name="zen_mode_forever_dnd">မနှောင့်ယှက်ရန် ကိုသင်ပိတ်သည်အထိ</string>
+    <string name="zen_mode_implicit_activated">ဖွင့်</string>
+    <string name="zen_mode_implicit_deactivated">ပိတ်</string>
+    <string name="zen_mode_implicit_trigger_description">%1$s က စီမံသည်</string>
     <string name="zen_mode_rule_name_combination">%1$s / %2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">မည်သည့်ပြက္ခဒိန်မဆို</string>
+    <string name="zen_mode_trigger_summary_divider_text">"၊ "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s - %2$s</string>
     <string name="zen_mode_until">%1$sအထိ</string>
     <string name="zen_mode_until_next_day">%1$s အထိ</string>
     <string name="zen_upgrade_notification_content">ပိတ်ထားသည့်အရာများကို ကြည့်ရန် တို့ပါ။</string>

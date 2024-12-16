@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">由於安裝應用程式的 SD 卡遭移除，因此平板效能不穩定。您的平板將於 %d 秒後重新啟動以恢復正常狀態。請在平板重新啟動之前先儲存所有未儲存的資料。</item>
+        <item quantity="other">由於安裝應用程式的 SD 卡遭移除，因此手機效能不穩定。您的手機將於 %d 秒後重新啟動以恢復正常狀態。請在手機重新啟動之前先儲存所有未儲存的資料。</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">您的平板將於 %d 秒後重新啟動</item>
+        <item quantity="other">您的手機將於 %d 秒後重新啟動</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -102,14 +102,6 @@
     </plurals>
     <plurals name="sem_chooser_preview_items">
         <item quantity="other">%d 個項目</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">N/A</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">N/A</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">欲連接的 Wi-Fi 網路一次僅限連接 %d 部裝置。請中斷連接至該網路的任一其他裝置連線，然後再重試。</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

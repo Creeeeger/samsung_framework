@@ -43,7 +43,7 @@
     <string name="ColrMmi">Kufizimi i ID-së së linjës së lidhur</string>
     <string name="CwMmi">Pritja e telefonatave</string>
     <string name="DndMmi">Mos shqetëso</string>
-    <string name="EmergencyCallWarningSummary">Nuk mund të kryhen telefonata urgjence me Wi‑Fi</string>
+    <string name="EmergencyCallWarningSummary">Telefonatat e urgjencës kërkojnë një rrjet celular</string>
     <string name="EmergencyCallWarningTitle">Telefonatat e urgjencës nuk ofrohen</string>
     <string name="Midnight">Mesnatë</string>
     <string name="NetworkPreferenceSwitchSummary">Provo të ndryshosh rrjetin e preferuar. Trokit për ta ndryshuar.</string>
@@ -174,14 +174,19 @@
     <string name="accessibility_button_prompt_text">Zgjidh një funksion për ta përdorur kur troket butonin e qasshmërisë:</string>
     <string name="accessibility_dialog_button_allow">Lejo</string>
     <string name="accessibility_dialog_button_deny">Refuzo</string>
+    <string name="accessibility_dialog_button_uninstall">Çinstalo</string>
+    <string name="accessibility_dialog_touch_filtered_warning">Një aplikacion po fsheh kërkesën për leje, prandaj përgjigja jote nuk mund të verifikohet.</string>
     <string name="accessibility_edit_shortcut_menu_button_title">Zgjidh veçoritë që do të përdorësh me butonin e qasshmërisë</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">Zgjidh veçoritë që do të përdorësh me shkurtoren e tastit të volumit</string>
     <string name="accessibility_enable_service_title">Do të lejosh që %1$s të ketë kontroll të plotë të pajisjes sate?</string>
-    <string name="accessibility_freeform_caption">Shiriti i nëntitullit të %1$s.</string>
     <string name="accessibility_gesture_3finger_instructional_text">Për të kaluar mes veçorive, rrëshqit shpejt lart me tre gishta dhe mbaje prekur.</string>
     <string name="accessibility_gesture_3finger_prompt_text">Zgjidh një veçori për ta përdorur me gjestin e qasshmërisë (rrëshqit shpejt lart nga fundi i ekranit me tre gishta):</string>
     <string name="accessibility_gesture_instructional_text">Për të kaluar mes veçorive, rrëshqit shpejt lart me dy gishta dhe mbaje prekur.</string>
     <string name="accessibility_gesture_prompt_text">Zgjidh një veçori për ta përdorur me gjestin e qasshmërisë (rrëshqit shpejt lart nga fundi i ekranit me dy gishta):</string>
+    <string name="accessibility_label_clone_profile">Klon</string>
+    <string name="accessibility_label_communal_profile">I përbashkët</string>
+    <string name="accessibility_label_managed_profile">Profili i punës</string>
+    <string name="accessibility_label_private_profile">Hapësira private</string>
     <string name="accessibility_magnification_chooser_text">Zmadhimi</string>
     <string name="accessibility_select_shortcut_menu_title">Trokit te një veçori për të filluar ta përdorësh atë:</string>
     <string name="accessibility_service_action_perform_description">Mund të monitorojë ndërveprimet me një aplikacion ose një sensor hardueri dhe të ndërveprojë me aplikacionet në emrin tënd.</string>
@@ -272,14 +277,17 @@ Mund të ndryshosh këtë shkurtore te një veçori tjetër te Cilësimet > Qass
     <string name="alert_windows_notification_turn_off_action">Çaktivizo</string>
     <string name="allow">Lejo</string>
     <string name="allow_settings_changes">Politika e sigurisë nuk lejon ndryshime në cilësimet.</string>
+    <string name="alternative_face_setup_notification_content">Përdor \"Shkyçjen me fytyrë\" kur nuk të njihet gjurma e gishtit, si p.sh. kur i ke gishtat të lagur</string>
+    <string name="alternative_fp_setup_notification_content">Përdor \"Shkyçjen me gjurmën e gishtit\" kur nuk të njihet fytyra, si p.sh. kur nuk ka dritë të mjaftueshme</string>
+    <string name="alternative_unlock_setup_notification_title">Provo një mënyrë tjetër për ta shkyçur</string>
     <string name="alwaysUse">Përdore si parametër të paracaktuar për këtë veprim.</string>
     <string name="android_preparing_apk">Po përgatit %1$s.</string>
-    <string name="android_start_title">Tableti po niset…</string>
+    <string name="android_start_title">Telefoni po niset…</string>
     <string name="android_system_label">Sistemi Android</string>
     <string name="android_upgrading_complete">Po përfundon nisjen.</string>
     <string name="android_upgrading_notification_title">Po përfundon përditësimi i sistemit…</string>
     <string name="android_upgrading_starting_apps">Aplikacionet e fillimit.</string>
-    <string name="android_upgrading_title">Tableti po përditësohet…</string>
+    <string name="android_upgrading_title">Telefoni po përditësohet…</string>
     <string name="anr_activity_application">%2$s nuk përgjigjet</string>
     <string name="anr_activity_process">%1$s nuk përgjigjet</string>
     <string name="anr_application_process">%1$s nuk përgjigjet</string>
@@ -301,16 +309,17 @@ Mund të ndryshosh këtë shkurtore te një veçori tjetër te Cilësimet > Qass
     <string name="app_not_found">Nuk u gjet asnjë aplikacion për të menaxhuar këtë veprim</string>
     <string name="app_running_notification_text">Trokit për më shumë informacione ose për të ndaluar aplikacionin.</string>
     <string name="app_running_notification_title">%1$s është në punë.</string>
-    <string name="app_streaming_blocked_message">Qasja është e pamundur në %1$s për momentin. Provoje në tablet më mirë.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Ky aplikacion po kërkon siguri shtesë. Provoje në tablet më mirë.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Qasja është e pamundur në %1$s. Provoje në tablet më mirë.</string>
+    <string name="app_streaming_blocked_message">Qasja është e pamundur në %1$s për momentin. Provoje në telefon më mirë.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Ky aplikacion po kërkon siguri shtesë. Provoje në telefon më mirë.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">Ky aplikacion po kërkon leje shtesë, por lejet nuk mund të jepen në një seancë transmetimi. Fillimisht jep lejen në telefonin tënd.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Qasja është e pamundur në %1$s. Provoje në telefon më mirë.</string>
     <string name="app_streaming_blocked_title">%1$s nuk ofrohet</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Kamera nuk ofrohet</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Vazhdo në telefon</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Mikrofoni nuk ofrohet</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">Kërkohet leje</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">Kërkesa për leje është ndaluar</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">\"Dyqani i Play\" nuk ofrohet</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Cilësimet e tabletit nuk ofrohen</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Cilësimet e telefonit nuk ofrohen</string>
     <string name="app_suspended_default_message">%1$s nuk ofrohet në këtë moment. Kjo menaxhohet nga %2$s.</string>
     <string name="app_suspended_more_details">Mëso më shumë</string>
     <string name="app_suspended_title">Aplikacioni nuk ofrohet</string>
@@ -344,7 +353,7 @@ Mund të ndryshosh këtë shkurtore te një veçori tjetër te Cilësimet > Qass
     <string name="autofill_save_yes">Ruaj</string>
     <string name="autofill_update_title">Të përditësohet në <b>%1$s</b>?</string>
     <string name="autofill_update_title_with_2types">Të përditësohet %1$s dhe %2$s në <b>%3$s</b>?</string>
-    <string name="autofill_update_title_with_3types">Të përditësohen këta artikuj në <b>%4$s</b>: %1$s, %2$s dhe %3$s ?</string>
+    <string name="autofill_update_title_with_3types">Të përditësohen këta artikuj në <b>%4$s</b>: %1$s, %2$s dhe %3$s?</string>
     <string name="autofill_update_title_with_type">Të përditësohet %1$s në <b>%2$s</b>?</string>
     <string name="autofill_update_yes">Përditëso</string>
     <string name="autofill_window_title">Plotëso automatikisht me %1$s</string>
@@ -352,13 +361,15 @@ Mund të ndryshosh këtë shkurtore te një veçori tjetër te Cilësimet > Qass
     <string name="backup_restrict">Politika e sigurisë nuk lejon përdorimin e Rezervimit.</string>
     <string name="badPin">PIN-i i vjetër që shkrove nuk është i saktë.</string>
     <string name="badPuk">PUK-u që shkrove nuk është i saktë.</string>
-    <string name="battery_saver_charged_notification_summary">Tableti ka nivel të mjaftueshëm baterie. Funksionet nuk janë më të kufizuara.</string>
+    <string name="battery_saver_charged_notification_summary">Telefoni ka nivel të mjaftueshëm baterie. Funksionet nuk janë më të kufizuara.</string>
     <string name="battery_saver_description">\"Kursyesi i baterisë\" aktivizon \"Temën e errët\" dhe kufizon ose çaktivizon aktivitetin në sfond, disa efekte vizuale, veçori të caktuara dhe disa lidhje të rrjetit.</string>
     <string name="battery_saver_description_with_learn_more">\"Kursyesi i baterisë\" aktivizon \"Temën e errët\" dhe kufizon ose çaktivizon aktivitetin në sfond, disa efekte vizuale, veçori të caktuara dhe disa lidhje të rrjetit.</string>
     <string name="battery_saver_notification_channel_name">Kursyesi i baterisë</string>
     <string name="battery_saver_off_notification_title">\"Kursyesi i baterisë\" është çaktivizuar</string>
     <string name="beforeOneMonthDurationPast">Para 1 muaji</string>
     <string name="biometric_app_setting_name">Përdor sistemet biometrike</string>
+    <string name="biometric_dangling_notification_action_not_now">Jo tani</string>
+    <string name="biometric_dangling_notification_action_set_up">Konfiguro</string>
     <string name="biometric_dialog_default_subtitle">Përdor sistemet e tua biometrike për të vazhduar</string>
     <string name="biometric_dialog_default_title">Verifiko që je ti</string>
     <string name="biometric_error_canceled">Vërtetimi u anulua</string>
@@ -366,6 +377,7 @@ Mund të ndryshosh këtë shkurtore te një veçori tjetër te Cilësimet > Qass
     <string name="biometric_error_generic">Gabim gjatë vërtetimit</string>
     <string name="biometric_error_hw_unavailable">Nuk ofrohet harduer biometrik</string>
     <string name="biometric_error_user_canceled">Vërtetimi u anulua</string>
+    <string name="biometric_face_not_recognized">Fytyra nuk njihet</string>
     <string name="biometric_not_recognized">Nuk njihet</string>
     <string name="biometric_or_screen_lock_app_setting_name">Përdor sistemet biometrike ose kyçjen e ekranit</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">Përdor sistemet e tua biometrike ose kyçjen e ekranit për të vazhduar</string>
@@ -462,11 +474,11 @@ Mund të ndryshosh këtë shkurtore te një veçori tjetër te Cilësimet > Qass
     <string name="color_inversion_feature_name">Anasjellja e ngjyrës</string>
     <string name="common_name">Emri i zakonshëm:</string>
     <string name="concurrent_display_notification_active_content">%1$s po i përdor të dyja ekranet për të shfaqur përmbajtje</string>
-    <string name="concurrent_display_notification_active_title">Ekrani i dyfishtë është aktiv</string>
-    <string name="concurrent_display_notification_name">Ekran i dyfishtë</string>
-    <string name="concurrent_display_notification_power_save_content">\"Ekrani i dyfishtë\" nuk ofrohet sepse \"Kursyesi i baterisë\" është aktiv. Mund ta çaktivizosh këtë te \"Cilësimet\".</string>
-    <string name="concurrent_display_notification_power_save_title">\"Ekrani i dyfishtë\" nuk ofrohet</string>
-    <string name="concurrent_display_notification_thermal_content">\"Ekrani i dyfishtë\" nuk ofrohet sepse telefoni yt po nxehet shumë</string>
+    <string name="concurrent_display_notification_active_title">Dual Screen është aktiv</string>
+    <string name="concurrent_display_notification_name">Dual Screen</string>
+    <string name="concurrent_display_notification_power_save_content">Dual Screen nuk ofrohet sepse \"Kursyesi i baterisë\" është aktiv. Mund ta çaktivizosh këtë te \"Cilësimet\".</string>
+    <string name="concurrent_display_notification_power_save_title">Dual Screen nuk ofrohet</string>
+    <string name="concurrent_display_notification_thermal_content">Dual Screen nuk ofrohet sepse telefoni yt po nxehet shumë</string>
     <string name="concurrent_display_notification_thermal_title">Pajisja është shumë e nxehtë</string>
     <string name="condition_provider_service_binding_label">Ofrues kushtesh</string>
     <string name="conference_call">Telefonatë konferencë</string>
@@ -475,12 +487,17 @@ Mund të ndryshosh këtë shkurtore te një veçori tjetër te Cilësimet > Qass
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">Në rregull</string>
+    <string name="connected_display_thermally_unavailable_notification_content">Pajisja është shumë e nxehtë dhe nuk mund të pasqyrojë në ekran derisa të ftohet</string>
+    <string name="connected_display_unavailable_notification_content">Përdor një kabllo tjetër dhe provo përsëri</string>
+    <string name="connected_display_unavailable_notification_title">Nuk mund të pasqyrojë tek ekrani</string>
     <string name="console_running_notification_message">Ndikohet cilësia e funksionimit. Për ta çaktivizuar, kontrollo ngarkuesin e sistemit.</string>
     <string name="console_running_notification_title">Paneli komandues i serisë është aktivizuar</string>
     <string name="constrained_status_bar_device_locked">Pajisja e bllokuar</string>
     <string name="contentServiceSync">Sinkronizo</string>
     <string name="contentServiceSyncNotificationTitle">Nuk mund të sinkronizohet</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">U përpoqe të fshish shumë %s.</string>
+    <string name="content_description_collapsed">Palosur</string>
+    <string name="content_description_expanded">Zgjeruar</string>
     <string name="content_description_sliding_handle">Dorezë me rrëshqitje. Preke dhe mbaje të shtypur.</string>
     <string name="conversation_single_line_image_placeholder">dërgoi një imazh</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -530,7 +547,7 @@ Volumi i kufjeve ka qenë më i lartë nga sa rekomandohet, çka mund të të d�
     <string name="decline">Refuzo</string>
     <string name="decline_remote_bugreport_action">REFUZO</string>
     <string name="default_audio_route_category_name">Sistemi</string>
-    <string name="default_audio_route_name">Tablet</string>
+    <string name="default_audio_route_name">Telefon</string>
     <string name="default_audio_route_name_dock_speakers">Altoparlantët e stacionit</string>
     <string name="default_audio_route_name_external_device">Pajisje e jashtme</string>
     <string name="default_audio_route_name_headphones">Kufjet</string>
@@ -553,6 +570,7 @@ Volumi i kufjeve ka qenë më i lartë nga sa rekomandohet, çka mund të të d�
     <string name="device_state_notification_settings_button">Shko te \"Cilësimet\"</string>
     <string name="device_state_notification_turn_off_button">Çaktivizoje</string>
     <string name="device_storage_monitor_notification_channel">Hapësira ruajtëse e pajisjes</string>
+    <string name="device_unlock_notification_name">Shkyçja e pajisjes</string>
     <string name="dial_number_using">"Telefono numrin
 duke përdorur %s"</string>
     <string name="digital_signature_failure_user_notification">Nënshkrimi dixhital është i pavlefshëm për përdoruesin %d</string>
@@ -575,6 +593,7 @@ duke përdorur %s"</string>
     <string name="dpm_wifi_misc_network_insecure">Politika e sigurisë nuk e lejon përdorimin e rrjeteve Wi-Fi të pasiguruara.</string>
     <string name="dpm_wifi_misc_wifi_disabled">Politika e sigurisë nuk lejon përdorimin e Wi-Fi.</string>
     <string name="dpm_wifi_user_profiles_denied">Politika e sigurisë nuk e lejon shtimin e rrjeteve Wi-Fi.</string>
+    <string name="dream_accessibility_action_click">hiq</string>
     <string name="dream_preview_title">Versioni paraprak, %1$s</string>
     <string name="dump_heap_notification">%1$s e ka kaluar kufirin e memories</string>
     <string name="dump_heap_notification_detail">"Grumbulli i skedarëve fiktivë është mbledhur. Trokit për t'i ndarë."</string>
@@ -601,7 +620,9 @@ duke përdorur %s"</string>
     <string name="duration_years_shortest_future">për %d vit</string>
     <string name="dynamic_mode_notification_channel_name">Njoftimi i informacionit të \"Modalitetit rutinë\"</string>
     <string name="dynamic_mode_notification_summary">Po reduktohet përdorimi i baterisë për të rritur kohëzgjatjen e baterisë</string>
+    <string name="dynamic_mode_notification_summary_v2">\"Kursyesi i baterisë\" është aktivizuar për të zgjatur kohëzgjatjen e baterisë</string>
     <string name="dynamic_mode_notification_title">\"Kursyesi i baterisë\" u aktivizua</string>
+    <string name="dynamic_mode_notification_title_v2">\"Kursyesi i baterisë\" është aktiv</string>
     <string name="editTextMenuTitle">Veprimet e tekstit</string>
     <string name="edit_accessibility_shortcut_menu_button">Redakto shkurtoret</string>
     <string name="edit_contact_at_sim_restriction">Politika e sigurisë nuk lejon të redaktohen kontaktet në kartën SIM.</string>
@@ -615,8 +636,10 @@ duke përdorur %s"</string>
     <string name="emergency_call_dialog_number_for_display">Numri i urgjencës</string>
     <string name="emergency_calls_only">Vetëm telefonata urgjente</string>
     <string name="enablePin">Pa sukses! Aktivizo kyçjen e SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s kërkon të aktivizojë funksionin \"Eksploro me prekje\". Kur aktivizohet \"Eksploro me prekje\", mund të dëgjosh ose të shohësh përshkrime se çfarë ka nën gishtin tënd ose të kryesh gjeste për të bashkëvepruar me tabletin.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s kërkon të aktivizojë funksionin \"Eksploro me prekje\". Kur aktivizohet \"Eksploro me prekje\", mund të dëgjosh ose të shohësh përshkrime se çfarë ka nën gishtin tënd ose të kryesh gjeste për të bashkëvepruar me telefonin.</string>
     <string name="enable_explore_by_touch_warning_title">Të aktivizohet opsioni \"Eksploro me prekje\"?</string>
+    <string name="error_handwriting_unsupported">Shkrimi i dorës nuk mbështetet në këtë fushë</string>
+    <string name="error_handwriting_unsupported_password">Shkrimi i dorës nuk mbështetet në fushat e fjalëkalimeve</string>
     <string name="error_message_change_not_allowed">Ky ndryshim nuk lejohet nga administratori</string>
     <string name="error_message_title">Gabim</string>
     <string name="etws_primary_default_message_earthquake">Qëndro i qetë dhe kërko strehim në afërsi.</string>
@@ -696,7 +719,7 @@ duke përdorur %s"</string>
     <string name="face_acquired_too_bright">Me shumë ndriçim. Provo një ndriçim më të butë.</string>
     <string name="face_acquired_too_close">Lëvize telefonin më larg</string>
     <string name="face_acquired_too_dark">Nuk ka dritë të mjaftueshme</string>
-    <string name="face_acquired_too_different">Fytyra nuk mund të njihet. Provo sërish.</string>
+    <string name="face_acquired_too_different">Fytyra nuk njihet. Provo përsëri.</string>
     <string name="face_acquired_too_far">Lëvize telefonin më afër</string>
     <string name="face_acquired_too_high">Ngrije telefonin më lart</string>
     <string name="face_acquired_too_left">Lëvize telefonin në të djathtën tënde</string>
@@ -707,6 +730,8 @@ duke përdorur %s"</string>
     <string name="face_app_setting_name">Përdor \"Shkyçjen me fytyrë\"</string>
     <string name="face_authenticated_confirmation_required">Fytyra u vërtetua, shtyp \"Konfirmo\"</string>
     <string name="face_authenticated_no_confirmation_required">Fytyra u vërtetua</string>
+    <string name="face_dangling_notification_msg">Modeli yt i fytyrës nuk mund të njihet më. Konfiguro \"Shkyçjen me fytyrë\" përsëri.</string>
+    <string name="face_dangling_notification_title">Konfiguro \"Shkyçjen me fytyrë\" përsëri</string>
     <string name="face_dialog_default_subtitle">Përdor fytyrën tënde për të vazhduar</string>
     <string name="face_error_canceled">Veprimi me fytyrën u anulua.</string>
     <string name="face_error_hw_not_available">"Fytyra s'mund të verifikohet. Hardueri nuk ofrohet."</string>
@@ -729,8 +754,6 @@ duke përdorur %s"</string>
     <string name="face_recalibrate_notification_name">Shkyçja me fytyrë</string>
     <string name="face_recalibrate_notification_title">Problem me \"Shkyçjen me fytyrë\"</string>
     <string name="face_sensor_privacy_enabled">Për të përdorur \"Shkyçjen me fytyrë\", aktivizo <b>Qasjen te kamera</b> te \"Cilësimet\" > \"Privatësia\"</string>
-    <string name="face_setup_notification_content">Shkyçe telefonin duke parë tek ai</string>
-    <string name="face_setup_notification_title">Konfiguro \"Shkyçjen me fytyrë\"</string>
     <string name="faceunlock_multiple_failures">Përpjektet maksimale të \"Shkyçjes me fytyrë\" u tejkaluan</string>
     <string name="factory_reset_message">"Aplikacioni i administrimit nuk mund të përdoret. Pajisja jote tani do të fshihet.
 
@@ -756,7 +779,7 @@ Nëse ke pyetje, kontakto me administratorin e organizatës."</string>
     <string name="fingerprint_acquired_imager_dirty">Pastro sensorin e gjurmës së gishtit dhe provo sërish</string>
     <string name="fingerprint_acquired_imager_dirty_alt">Pastro sensorin dhe provo sërish</string>
     <string name="fingerprint_acquired_immobile">Ndrysho paksa pozicionin e gishtit çdo herë</string>
-    <string name="fingerprint_acquired_insufficient">Nuk mund ta dallojë gjurmën e gishtit. Provo përsëri.</string>
+    <string name="fingerprint_acquired_insufficient">Gjurma e gishtit nuk njihet. Provo përsëri.</string>
     <string name="fingerprint_acquired_partial">Shtyp fort te sensori</string>
     <string name="fingerprint_acquired_power_press">U zbulua shtypja e \"Energjisë\"</string>
     <string name="fingerprint_acquired_too_bright">Me shumë ndriçim</string>
@@ -765,21 +788,27 @@ Nëse ke pyetje, kontakto me administratorin e organizatës."</string>
     <string name="fingerprint_acquired_try_adjusting">Provo ta rregullosh</string>
     <string name="fingerprint_app_setting_name">Përdor gjurmën e gishtit</string>
     <string name="fingerprint_authenticated">Gjurma e gishtit u vërtetua</string>
+    <string name="fingerprint_dangling_notification_msg_1">%s nuk mund të njihet më.</string>
+    <string name="fingerprint_dangling_notification_msg_2">%1$s dhe %2$s nuk mund të njihen më.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_1">%s nuk mund të njihet më. Konfiguro përsëri \"Shkyçjen me gjurmën e gishtit\".</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_2">%1$s dhe %2$s nuk mund të njihen më. Konfiguro përsëri \"Shkyçjen me gjurmën e gishtit\".</string>
+    <string name="fingerprint_dangling_notification_title">Konfiguro përsëri \"Shkyçjen me gjurmën e gishtit\"</string>
     <string name="fingerprint_dialog_default_subtitle">Përdor gjurmën e gishtit për të vazhduar</string>
-    <string name="fingerprint_error_bad_calibration">Sensori i gjurmës së gishtit nuk mund të përdoret. Vizito një ofrues të shërbimit të riparimit</string>
-    <string name="fingerprint_error_canceled">Operacioni i gjurmës së gishtit u anulua.</string>
-    <string name="fingerprint_error_hw_not_available">Hardueri i gjurmës së gishtit nuk mundësohet.</string>
-    <string name="fingerprint_error_hw_not_present">Kjo pajisje nuk ka sensor të gjurmës së gishtit.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">Fytyra nuk njihet. Përdor gjurmën e gishtit.</string>
+    <string name="fingerprint_error_bad_calibration">Sensori i gjurmës së gishtit nuk mund të përdoret. Vizito një ofrues të shërbimit të riparimit.</string>
+    <string name="fingerprint_error_canceled">Veprimi i gjurmës së gishtit u anulua</string>
+    <string name="fingerprint_error_hw_not_available">Hardueri i gjurmës së gishtit nuk ofrohet</string>
+    <string name="fingerprint_error_hw_not_present">Kjo pajisje nuk ka sensor të gjurmës së gishtit</string>
     <string name="fingerprint_error_lockout">Shumë përpjekje. Përdor më mirë kyçjen e ekranit.</string>
     <string name="fingerprint_error_lockout_permanent">Shumë përpjekje. Përdor më mirë kyçjen e ekranit.</string>
-    <string name="fingerprint_error_no_fingerprints">Nuk ka asnjë gjurmë gishti të regjistruar.</string>
+    <string name="fingerprint_error_no_fingerprints">Nuk ka asnjë gjurmë gishti të regjistruar</string>
     <string name="fingerprint_error_no_space">Nuk mund të konfigurohet gjurma e gishtit</string>
     <string name="fingerprint_error_not_match">Gjurma e gishtit nuk u njoh</string>
     <string name="fingerprint_error_power_pressed">Butoni i energjisë u shtyp</string>
-    <string name="fingerprint_error_security_update_required">Sensori është çaktivizuar përkohësisht.</string>
+    <string name="fingerprint_error_security_update_required">Sensori është çaktivizuar përkohësisht</string>
     <string name="fingerprint_error_timeout">Konfigurimi i gjurmës së gishtit skadoi. Provo përsëri.</string>
     <string name="fingerprint_error_unable_to_process">Gjurma e gishtit nuk mund të përpunohet. Provo përsëri.</string>
-    <string name="fingerprint_error_user_canceled">Veprimi i gjurmës së gishtit u anulua nga përdoruesi.</string>
+    <string name="fingerprint_error_user_canceled">Veprimi i gjurmës së gishtit u anulua nga përdoruesi</string>
     <string name="fingerprint_error_vendor_unknown">Ndodhi një gabim. Provo sërish.</string>
     <string name="fingerprint_name_template">Gishti %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">Përdor gjurmën e gishtit ose kyçjen e ekranit</string>
@@ -787,8 +816,6 @@ Nëse ke pyetje, kontakto me administratorin e organizatës."</string>
     <string name="fingerprint_recalibrate_notification_content">Vizito një ofrues të shërbimit të riparimit.</string>
     <string name="fingerprint_recalibrate_notification_name">Shkyçja me gjurmën e gishtit</string>
     <string name="fingerprint_recalibrate_notification_title">Sensori i gjurmës së gishtit nuk mund të përdoret</string>
-    <string name="fingerprint_setup_notification_content">Trokit për të shtuar një gjurmë gishti</string>
-    <string name="fingerprint_setup_notification_title">Konfiguri më shumë mënyra për të shkyçur</string>
     <string name="fingerprint_udfps_error_not_match">Gjurma e gishtit nuk u njoh</string>
     <string name="fingerprints">Shenjat e gishtave:</string>
     <string name="firmwarerecovery_restrict">Politika e sigurisë nuk lejon rikuperimin e firmuerit.</string>
@@ -841,7 +868,7 @@ Provo të trokasësh lehtë ndërkohë që konfiguron gjurmën e gishtit."</stri
     <string name="global_action_toggle_sealed_mode">Regjimi hermetik</string>
     <string name="global_action_toggle_silent_mode">Modaliteti \"në heshtje\"</string>
     <string name="global_action_voice_assist">Ndihma zanore</string>
-    <string name="global_actions">Opsionet e tabletit</string>
+    <string name="global_actions">Opsionet e telefonit</string>
     <string name="global_actions_airplane_mode_off_status">Modaliteti i aeroplanit është i ÇAKTIVIZUAR</string>
     <string name="global_actions_airplane_mode_on_status">Modaliteti i aeroplanit është i AKTIVIZUAR</string>
     <string name="global_actions_toggle_airplane_mode">modaliteti i aeroplanit</string>
@@ -860,7 +887,7 @@ Provo të trokasësh lehtë ndërkohë që konfiguron gjurmën e gishtit."</stri
     <string name="granularity_label_link">lidhje</string>
     <string name="granularity_label_word">fjalë</string>
     <string name="guest_name">Vizitor</string>
-    <string name="hardware">Shfaq tastierën virtuale</string>
+    <string name="hardware">Përdor tastierën në ekran</string>
     <string name="hardware_key_restrict">Politika e sigurisë nuk lejon përdorimin e këtij tasti harduer.</string>
     <string name="harmful_app_warning_open_anyway">HAPE GJITHSESI</string>
     <string name="harmful_app_warning_title">U gjet aplikacion i dëmshëm</string>
@@ -910,7 +937,7 @@ Provo të trokasësh lehtë ndërkohë që konfiguron gjurmën e gishtit."</stri
     <string name="ime_action_search">Kërko</string>
     <string name="ime_action_send">Dërgo</string>
     <string name="imei">IMEI</string>
-    <string name="immersive_cling_description">Për të dalë, rrëshqit nga lart poshtë.</string>
+    <string name="immersive_cling_description">Për të dalë, rrëshqit shpejt poshtë nga kreu i ekranit</string>
     <string name="immersive_cling_positive">E kuptova</string>
     <string name="immersive_cling_title">Po shikon ekranin e plotë</string>
     <string name="importance_from_person">Është i rëndësishëm për shkak të personave të përfshirë.</string>
@@ -984,11 +1011,11 @@ Je i sigurt që do të largohesh nga kjo faqe?"</string>
     <string name="keyguard_password_entry_touch_hint"><font size="17">Trokit për të shkruar fjalëkalimin</font></string>
     <string name="keyguard_password_wrong_pin_code">Kodi PIN është i pasaktë.</string>
     <string name="kg_enter_confirm_pin_hint">Konfirmo kodin e dëshiruar PIN</string>
-    <string name="kg_failed_attempts_almost_at_login">"E ke vizatuar gabimisht motivin tënd të shkyçjes %1$d herë. Pas %2$d tentativave të tjera të pasuksesshme do të të kërkohet ta shkyçësh tabletin duke përdorur një llogari mail-i.
+    <string name="kg_failed_attempts_almost_at_login">"Ke vizatuar %1$d herë pa sukses motivin tënd. Pas %2$d tentativave të tjera të pasuksesshme, do të të duhet ta shkyçësh telefonin duke përdorur një llogari mail-i.
 
  Provo sërish për %3$d sekonda."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Ke tentuar %1$d herë pa sukses për ta shkyçur tabletin tënd. Pas %2$d tentativave të tjera të pasuksesshme, tableti do të rivendoset në gjendje fabrike dhe të gjitha të dhënat e përdoruesit do të humbasin.</string>
-    <string name="kg_failed_attempts_now_wiping">Ke tentuar %d herë pa sukses për ta shkyçur tabletin tënd. Tableti tani do të rivendoset në gjendje fabrike.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Ke tentuar %1$d herë pa sukses për ta shkyçur telefonin tënd. Pas %2$d tentativave të tjera të pasuksesshme, telefoni do të rivendoset në gjendje fabrike dhe të gjitha të dhënat e përdoruesit do të humbasin.</string>
+    <string name="kg_failed_attempts_now_wiping">Ke tentuar %d herë ta shkyçësh pa sukses telefonin tënd. Telefoni do të rivendoset tani si në gjendjen e fabrikës.</string>
     <string name="kg_forgot_pattern_button_text">Harrova motivin</string>
     <string name="kg_invalid_confirm_pin_hint">Kodet PIN nuk përputhen</string>
     <string name="kg_invalid_puk">Fut kodin e saktë PUK. Provat e përsëritura do ta çaktivizojnë përgjithmonë kartën SIM.</string>
@@ -1055,11 +1082,11 @@ Provo sërish për %2$d sekonda."</string>
     <string name="lockscreen_access_pattern_start">Motivi filloi</string>
     <string name="lockscreen_carrier_default">Nuk ka shërbim</string>
     <string name="lockscreen_emergency_call">Urgjenca</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Ke tentuar %1$d herë pa sukses për ta shkyçur tabletin. Pas %2$d tentativave të tjera të pasuksesshme, tableti do të rivendoset në gjendjen e fabrikës dhe të gjitha të dhënat e përdoruesit do të humben.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Ke vizatuar %1$d herë gabimisht motivin tënd të shkyçjes. Pas %2$d tentativave të tjera të pasuksesshme, do të të kërkohet ta shkyçësh tabletin duke përdorur identifikimin në Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Ke tentuar %1$d herë pa sukses për ta shkyçur telefonin. Pas %2$d tentativave të tjera të pasuksesshme, telefoni do të rivendoset në gjendjen e fabrikës dhe të gjitha të dhënat e përdoruesit do të humben.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Ke vizatuar %1$d herë gabimisht motivin tënd të shkyçjes. Pas %2$d tentativave të tjera të pasuksesshme, do të të kërkohet ta shkyçësh telefonin duke përdorur identifikimin në Google.
 
  Provo sërish për %3$d sekonda."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Ke tentuar %d herë pa sukses për ta shkyçur tabletin tënd. Tableti tani do të rivendoset në gjendje fabrike.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Ke tentuar %d herë ta shkyçësh pa sukses telefonin tënd. Telefoni do të rivendoset tani si në gjendjen e fabrikës.</string>
     <string name="lockscreen_forgot_pattern_button_text">Harrove motivin?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Harrove emrin e përdoruesit apo fjalëkalimin?
 Vizito "<b>google.com/accounts/recovery</b>.</string>
@@ -1075,7 +1102,7 @@ Vizito "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Shtyp \"Meny\" për të shkyçur ose për të kryer telefonatë urgjence.</string>
     <string name="lockscreen_missing_sim_instructions">Shto një kartë SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">Karta SIM mungon ose është e palexueshme. Shto një kartë SIM.</string>
-    <string name="lockscreen_missing_sim_message">Nuk ka kartë SIM në tablet.</string>
+    <string name="lockscreen_missing_sim_message">Nuk ka kartë SIM në telefon.</string>
     <string name="lockscreen_missing_sim_message_short">Nuk ka kartë SIM</string>
     <string name="lockscreen_network_locked_message">Rrjeti është i kyçur</string>
     <string name="lockscreen_password_wrong">Provo sërish</string>
@@ -1083,7 +1110,7 @@ Vizito "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_pattern_instructions">Vizato modelin për ta shkyçur</string>
     <string name="lockscreen_pattern_wrong">Provo sërish</string>
     <string name="lockscreen_permanent_disabled_sim_instructions">"Karta jote SIM është çaktivizuar përgjithmonë.
- Kontakto me ofruesin e shërbimit me valë për një kartë tjetër SIM."</string>
+ Kontakto me ofruesin e shërbimit wireless për një tjetër kartë SIM."</string>
     <string name="lockscreen_permanent_disabled_sim_message_short">Kartë SIM e papërdorshme.</string>
     <string name="lockscreen_return_to_call">Kthehu te telefonata</string>
     <string name="lockscreen_screen_locked">Ekrani është i kyçur.</string>
@@ -1115,7 +1142,7 @@ Provo sërish për %2$d sekonda."</string>
     <string name="low_internal_storage_view_text">Disa funksione të sistemit mund të mos punojnë</string>
     <string name="low_internal_storage_view_text_no_boot">Nuk ka hapësirë të mjaftueshme ruajtjeje për sistemin. Sigurohu që të kesh 250 MB hapësirë të lirë dhe pastaj të rifillosh.</string>
     <string name="low_internal_storage_view_title">Hapësira ruajtëse po mbaron</string>
-    <string name="low_memory">Hapësira ruajtëse e tabletit është plot. Fshi disa skedarë për të liruar hapësirë.</string>
+    <string name="low_memory">Hapësira ruajtëse e telefonit është plot. Fshi disa skedarë për të liruar hapësirë.</string>
     <string name="managed_profile_app_label">Kalo te %1$s i punës</string>
     <string name="managed_profile_label">Kalo te profili i punës</string>
     <string name="managed_profile_label_badge">Puna %1$s</string>
@@ -1274,6 +1301,8 @@ Provo sërish për %2$d sekonda."</string>
     <string name="miniresolver_open_in_personal">Të hapet te %s personal?</string>
     <string name="miniresolver_open_in_work">Të hapet te %s i punës?</string>
     <string name="miniresolver_open_work">Të hapet %s i punës?</string>
+    <string name="miniresolver_private_space_messages_information">Mund të dërgosh mesazhe SMS vetëm nga aplikacioni personal \"Mesazhet\".</string>
+    <string name="miniresolver_private_space_phone_information">Mund të bësh telefonata vetëm nga aplikacioni personal \"Telefoni\". Telefonatat e bëra me aplikacionin personal \"Telefoni\" do të shtohen te historiku personal i telefonatave.</string>
     <string name="miniresolver_sms_information">Organizata jote të lejon që të dërgosh mesazhe vetëm nga aplikacionet e punës</string>
     <string name="miniresolver_switch">Ndërro</string>
     <string name="miniresolver_switch_to_work">Të kalohet tek aplikacioni i punës?</string>
@@ -1357,6 +1386,7 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="notification_channel_developer">Mesazhet e zhvilluesit</string>
     <string name="notification_channel_developer_important">Mesazhe të rëndësishme të zhvilluesit</string>
     <string name="notification_channel_device_admin">Sinjalizimet nga administratori i teknologjisë së informacionit</string>
+    <string name="notification_channel_display">Ekrani</string>
     <string name="notification_channel_do_not_disturb">Mos shqetëso</string>
     <string name="notification_channel_emergency_callback">Modaliteti i \"Kthimit të telefonatës së urgjencës\"</string>
     <string name="notification_channel_foreground_service">Aplikacionet që konsumojnë baterinë</string>
@@ -1378,6 +1408,7 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="notification_channel_voice_mail">Mesazhet e postës zanore</string>
     <string name="notification_channel_vpn">Statusi i VPN-së</string>
     <string name="notification_channel_wfc">Telefonata me Wi-Fi</string>
+    <string name="notification_compact_heads_up_reply">Përgjigju</string>
     <string name="notification_content_abusive_bg_apps">%1$s po ekzekutohet në sfond. Trokit për të menaxhuar përdorimin e baterisë.</string>
     <string name="notification_content_long_running_fgs">%1$s mund të kenë ndikim në kohëzgjatjen e baterisë. Trokit për të rishikuar aplikacionet aktive.</string>
     <string name="notification_feedback_indicator">Jep komentet</string>
@@ -1414,7 +1445,8 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="other_networks_no_internet">Rrjeti nuk ka qasje në internet</string>
     <string name="owner_name">Zotëruesi</string>
     <string name="package_deleted_device_owner">Fshirë nga administratori</string>
-    <string name="package_installed_device_owner">Instaluar nga administratori</string>
+    <string name="package_installed_device_owner">"Instaluar nga administratori.
+Shko te cilësimet për të shikuar lejet e dhëna"</string>
     <string name="package_module">Paketa</string>
     <string name="package_updated_device_owner">Përditësuar nga administratori</string>
     <string name="passwordIncorrect">Fjalëkalimi është i pasaktë.</string>
@@ -1432,7 +1464,9 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="permdesc_accessCoarseLocation">Ky aplikacion mund të marrë vendndodhjen tënde të përafërt nga shërbimet e vendndodhjes kur aplikacioni është në përdorim. Shërbimet e vendndodhjes për pajisjen tënde duhet të aktivizohen që aplikacioni të marrë vendndodhjen.</string>
     <string name="permdesc_accessDrmCertificates">Lejon një aplikacion të përgatisë dhe përdorë certifikatat DRM. Nuk nevojitet për aplikacionet normale.</string>
     <string name="permdesc_accessFineLocation">Ky aplikacion mund të marrë vendndodhjen tënde të saktë nga shërbimet e vendndodhjes kur aplikacioni është në përdorim. Shërbimet e vendndodhjes për pajisjen tënde duhet të aktivizohen që aplikacioni të marrë vendndodhjen. Kjo mund të rrisë përdorimin e baterisë.</string>
+    <string name="permdesc_accessHiddenProfile">Lejo që aplikacioni të ketë qasje te profilet e fshehura.</string>
     <string name="permdesc_accessImsCallService">Lejon aplikacionin të përdorë shërbimin IMS për të kryer telefonata pa ndërhyrjen tënde.</string>
+    <string name="permdesc_accessLastKnownCellId">Lejon që një aplikacion të ketë qasje tek identiteti i fundit i njohur i celularit i mundësuar nga shërbimi telefonik.</string>
     <string name="permdesc_accessLocationExtraCommands">Lejon aplikacionin të ketë qasje në komandat shtesë të ofruesit për vendndodhjen. Kjo mund ta lejojë aplikacionin të ndërhyjë në operacionin e GPS-së apo të burimeve të tjera për vendndodhjen.</string>
     <string name="permdesc_accessNetworkConditions">Lejon një aplikacion të dëgjojë vërejtjet mbi kushtet e rrjetit. Nuk nevojitet për aplikacionet normale.</string>
     <string name="permdesc_accessNetworkState">Lejon aplikacionin të shohë informacionin rreth lidhjeve të rrjetit, se çfarë rrjetesh ekzistojnë dhe janë të lidhur.</string>
@@ -1453,23 +1487,24 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="permdesc_bindNotificationListenerService">Lejon zotëruesin të lidhet me ndërfaqen e nivelit të lartë të një shërbimi për dëgjimin e njoftimeve. Nuk nevojitet për aplikacionet normale.</string>
     <string name="permdesc_bind_connection_service">Lejon aplikacionin të bashkëveprojë me shërbimet telefonike për të kryer/marrë telefonata.</string>
     <string name="permdesc_bind_incall_service">Lejon aplikacionin të kontrollojë kur dhe si përdoruesi e shikon ekranin e telefonatës.</string>
-    <string name="permdesc_bluetooth">Lejon aplikacionin të shikojë konfigurimin e \"bluetooth-it\" në tablet, të kryejë dhe të pranojë lidhje me pajisjet e çiftuara.</string>
-    <string name="permdesc_bluetoothAdmin">Lejon aplikacionin të konfigurojë tabletin lokal me \"bluetooth\" dhe të zbulojë e çiftohet me pajisjet në distancë.</string>
+    <string name="permdesc_bluetooth">Lejon aplikacionin të shohë konfigurimin e \"bluetooth-it\" në telefon dhe të kryejë e pranojë lidhje me pajisjet e çiftuara.</string>
+    <string name="permdesc_bluetoothAdmin">Lejon aplikacionin të konfigurojë telefonin lokal \"bluetooth\" dhe të zbulojë e çiftohet me pajisjet në distancë.</string>
     <string name="permdesc_bluetooth_advertise">Lejon që aplikacioni të reklamojë në pajisjet me Bluetooth në afërsi</string>
     <string name="permdesc_bluetooth_connect">Lejon që aplikacioni të lidhet me pajisjet e çiftuara me Bluetooth</string>
     <string name="permdesc_bluetooth_scan">Lejon që aplikacioni të zbulojë dhe të çiftohet me pajisjet me Bluetooth në afërsi</string>
     <string name="permdesc_bodySensors">Lejon aplikacionin që të ketë qasje te të dhënat e sensorit të trupit, si p.sh. rrahjet e zemrës, temperatura dhe përqindja e oksigjenit në gjak ndërkohë që aplikacioni është në përdorim.</string>
     <string name="permdesc_bodySensors_background">Lejon aplikacionin që të ketë qasje te të dhënat e sensorit të trupit, si p.sh. rrahjet e zemrës, temperatura dhe përqindja e oksigjenit në gjak ndërkohë që aplikacioni është në sfond.</string>
-    <string name="permdesc_broadcastSticky">Lejon aplikacionin të dërgojë transmetime ngjitëse që qëndrojnë derisa të përfundojë transmetimi. Përdorimi i tepruar mund ta bëjë tabletin të ngadaltë ose të paqëndrueshëm duke e detyruar atë të përdorë shumë kujtesë.</string>
+    <string name="permdesc_broadcastSticky">Lejon aplikacionin të dërgojë transmetime ngjitëse që qëndrojnë derisa të përfundojë transmetimi. Përdorimi i tepruar mund ta bëjë telefonin të ngadaltë ose të paqëndrueshëm duke e detyruar atë të përdorë shumë kujtesë.</string>
     <string name="permdesc_callCompanionApp">Lejon që aplikacioni të shikojë dhe të kontrollojë telefonatat në vazhdim në pajisje. Kjo përfshin informacione si p.sh. numrat e telefonatave për telefonatat dhe gjendjen e telefonatave.</string>
     <string name="permdesc_callPhone">Lejon që aplikacioni të telefonojë numrat e telefonit pa ndërhyrjen tënde. Kjo mund të sjellë telefonata ose tarifa të papritura. Ki parasysh se kjo nuk e lejon aplikacionin të telefonojë numrat e urgjencës. Aplikacionet keqdashëse mund të të shkaktojnë kosto duke kryer telefonata pa konfirmimin tënd ose të formojnë kode të operatorit celular që bëjnë që telefonatat hyrëse të transferohen automatikisht te një numër tjetër.</string>
     <string name="permdesc_camera">Ky aplikacion mund të nxjerrë fotografi dhe të regjistrojë video duke përdorur kamerën kur aplikacioni është në përdorim.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">Ky aplikacion mund të ketë qasje te kamera si \"Përdorues i sistemit pa kokë\".</string>
     <string name="permdesc_cameraOpenCloseListener">Ky aplikacion mund të marrë telefonata mbrapsht kur hapet ose mbyllet një pajisje e kamerës (nga një aplikacion).</string>
     <string name="permdesc_changeNetworkState">Lejon aplikacionin të ndryshojë gjendjen e lidhjes së rrjetit.</string>
     <string name="permdesc_changeTetherState">Lejon aplikacionin të ndryshojë gjendjen e lidhjes së rrjetit.</string>
-    <string name="permdesc_changeWifiMulticastState">Lejon aplikacionin të marrë paketa të dërguara në të gjitha pajisjet brenda një rrjeti Wi-Fi duke përdorur adresa me transferim të shumëfishtë, jo vetëm me tabletin tënd. Përdor më shumë energji se modaliteti \"jo me transferim të shumëfishtë\".</string>
+    <string name="permdesc_changeWifiMulticastState">Lejon aplikacionin të marrë paketa, të dërguara ndaj gjithë pajisjeve në një rrjet Wi-Fi duke përdorur adresa me transmetim të shumëfishtë, jo vetëm të telefonit tënd. Ai konsumon më tepër energji se modaliteti \"jo me transmetim të shumëfishtë\".</string>
     <string name="permdesc_changeWifiState">Lejon aplikacionin të lidhet me pikat e qasjes Wi-Fi, të shkëputet prej tyre dhe të bëjë ndryshime në konfigurimin e pajisjes për rrjetet Wi-Fi.</string>
-    <string name="permdesc_changeWimaxState">Lejon aplikacionin ta lidhë tabletin dhe ta shkëpusë atë nga rrjetet WiMAX.</string>
+    <string name="permdesc_changeWimaxState">Lejon aplikacionin të lidhet me telefonin dhe ta shkëpusë atë nga rrjetet WiMAX.</string>
     <string name="permdesc_companionProfileWatch">Lejon një aplikacion shoqërues të menaxhojë orët.</string>
     <string name="permdesc_connection_manager">Lejon aplikacionin të menaxhojë lidhjet e telekomunikimit.</string>
     <string name="permdesc_control_incall_experience">Lejon aplikacionin të ofrojë përvojë përdoruesi mbi telefonatat.</string>
@@ -1490,6 +1525,7 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="permdesc_foregroundServiceHealth">Lejon që aplikacioni të përdorë shërbimet në plan të parë me llojin \"health\"</string>
     <string name="permdesc_foregroundServiceLocation">Lejon që aplikacioni të përdorë shërbimet në plan të parë me llojin \"location\"</string>
     <string name="permdesc_foregroundServiceMediaPlayback">Lejon që aplikacioni të përdorë shërbimet në plan të parë me llojin \"mediaPlayback\"</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">Lejon që aplikacioni të përdorë shërbimet në plan të parë me llojin \"mediaProcessing\"</string>
     <string name="permdesc_foregroundServiceMediaProjection">Lejon që aplikacioni të përdorë shërbimet në plan të parë me llojin \"mediaProjection\"</string>
     <string name="permdesc_foregroundServiceMicrophone">Lejon që aplikacioni të përdorë shërbimet në plan të parë me llojin \"microphone\"</string>
     <string name="permdesc_foregroundServicePhoneCall">Lejon që aplikacioni të përdorë shërbimet në plan të parë me llojin \"phoneCall\"</string>
@@ -1497,7 +1533,7 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="permdesc_foregroundServiceSpecialUse">Lejon që aplikacioni të përdorë shërbimet në plan të parë me llojin \"specialUse\"</string>
     <string name="permdesc_foregroundServiceSystemExempted">Lejon që aplikacioni të përdorë shërbimet në plan të parë me llojin \"systemExempted\"</string>
     <string name="permdesc_fullScreenIntent">"Lejon që aplikacioni t'i shfaqë njoftimet si aktivitete në ekran të plotë në një pajisje të kyçur"</string>
-    <string name="permdesc_getAccounts">Lejon aplikacionin të marrë listën e llogarive të njohura nga tableti. Kjo mund të përfshijë çdo llogari të krijuar nga aplikacionet që ke instaluar.</string>
+    <string name="permdesc_getAccounts">Lejon aplikacionin të marrë listën e llogarive të njohura nga telefoni. Kjo mund të përfshijë çdo llogari të krijuar nga aplikacionet që ke instaluar.</string>
     <string name="permdesc_getPackageSize">Lejon aplikacionin të gjejë kodin e tij, të dhënat dhe madhësitë e memorieve të përkohshme.</string>
     <string name="permdesc_getTasks">Lejon aplikacionin të gjejë informacione mbi detyrat aktuale dhe të fundit në punë. Kjo mund të lejojë aplikacionin të zbulojë informacione rreth aplikacioneve të përdorura në pajisje.</string>
     <string name="permdesc_handoverStatus">Lejon këtë aplikacion të marrë informacion rreth transferimeve aktuale \"Rrezja android\" (Android Beam)</string>
@@ -1578,17 +1614,18 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="permdesc_mount_unmount_filesystems">Lejon aplikacionin të bashkojë dhe ndajë sistemet e skedarëve për memorien e jashtme.</string>
     <string name="permdesc_nearby_wifi_devices">Lejon që aplikacioni të reklamojë, të lidhet dhe të përcaktojë pozicionin përkatës të pajisjeve Wi-Fi në afërsi</string>
     <string name="permdesc_nfc">Lejon aplikacionin të komunikojë me etiketimet e \"Komunikimit të fushës së afërt (NFC)\", kartat dhe lexuesit.</string>
+    <string name="permdesc_nfcTransactionEvent">Lejon që aplikacioni të marrë informacione për transaksionet që kryhen në një element të sigurt.</string>
     <string name="permdesc_observeCompanionDevicePresence">Lejon një aplikacion shoqërues të vëzhgojë praninë e pajisjes shoqëruese kur pajisjet janë në afërsi ose larg.</string>
-    <string name="permdesc_persistentActivity">Lejon aplikacionin të zaptojë një pjesë të qëndrueshme në kujtesë. Kjo mund të kufizojë kujtesën e disponueshme për aplikacionet e tjera duke e ngadalësuar tabletin.</string>
+    <string name="permdesc_persistentActivity">Lejon aplikacionin të zaptojë një pjesë të qëndrueshme në kujtesë. Kjo mund të kufizojë kujtesën e disponueshme për aplikacionet e tjera duke e ngadalësuar telefonin.</string>
     <string name="permdesc_postNotification">Lejon që aplikacioni të shfaqë njoftime</string>
     <string name="permdesc_preferredPaymentInfo">Lejon aplikacionin të marrë informacione për shërbimin e preferuar të pagesës me NFC si p.sh. ndihmat e regjistruara dhe destinacionin e itinerarit.</string>
     <string name="permdesc_processOutgoingCalls">Lejon aplikacionin të shohë numrin që telefonohet gjatë një telefonate dalëse me opsionin për ta ri-orientuar telefonatën drejt një numri tjetër ose për ta ndërprerë plotësisht telefonatën.</string>
     <string name="permdesc_queryAllPackages">Lejon një aplikacion të shikojë të gjitha paketat e instaluara.</string>
     <string name="permdesc_readBasicPhoneState">Lejo që aplikacioni të ketë qasje në veçoritë telefonike bazë në pajisje.</string>
-    <string name="permdesc_readCalendar">Ky aplikacion mund të lexojë të gjitha ngjarjet e kalendarit të ruajtura në tabletin tënd dhe të ndajë ose të ruajë të dhënat e kalendarit.</string>
+    <string name="permdesc_readCalendar">Ky aplikacion mund të lexojë të gjitha ngjarjet e kalendarit të ruajtura në telefonin tënd dhe të ndajë ose të ruajë të dhënat e kalendarit.</string>
     <string name="permdesc_readCallLog">Ky aplikacion mund të lexojë të gjithë historikun e telefonatave.</string>
     <string name="permdesc_readCellBroadcasts">Lejon aplikacionin të lexojë mesazhet e transmetimit të qelizës, të marra nga pajisja jote. Alarmet e transmetimit të qelizës dërgohen në disa vendndodhje për të të paralajmëruar në situata urgjente. Aplikacionet keqdashëse mund të ndërhyjnë në veprimtarinë ose operacionin e pajisjes tënde kur merret një transmetim urgjent i qelizës.</string>
-    <string name="permdesc_readContacts">Lejon aplikacionin të lexojë të dhëna për kontaktet e ruajtura në tabletin tënd. Aplikacionet do të kenë po ashtu qasje te llogaritë në tabletin tënd, të cilat i kanë krijuar kontaktet. Kjo mund të përfshijë llogaritë e krijuara nga aplikacionet që ke instaluar. Kjo leje lejon që aplikacionet të ruajnë të dhënat e tua të kontakteve dhe aplikacionet keqdashëse mund të ndajnë të dhëna të kontakteve pa dijeninë tënde.</string>
+    <string name="permdesc_readContacts">Lejon aplikacionin të lexojë të dhëna për kontaktet e ruajtura në telefonin tënd. Aplikacionet do të kenë po ashtu qasje te llogaritë në telefonin tënd, të cilat i kanë krijuar kontaktet. Kjo mund të përfshijë llogaritë e krijuara nga aplikacionet që ke instaluar. Kjo leje lejon që aplikacionet të ruajnë të dhënat e tua të kontakteve dhe aplikacionet keqdashëse mund të ndajnë të dhëna të kontakteve pa dijeninë tënde.</string>
     <string name="permdesc_readInstallSessions">Lejon një aplikacion të lexojë sesionet e instalimit. Kjo e lejon atë të shohë detaje rreth instalimeve të paketave aktive.</string>
     <string name="permdesc_readMediaAudio">Lejon që aplikacioni të lexojë skedarët audio nga hapësira ruajtëse e ndarë.</string>
     <string name="permdesc_readMediaImages">Lejon që aplikacioni të lexojë skedarët e imazheve nga hapësira ruajtëse e ndarë.</string>
@@ -1596,11 +1633,11 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="permdesc_readNetworkUsageHistory">Lejon aplikacionin të lexojë përdorimin historik të rrjetit, për rrjete dhe aplikacione të veçantë.</string>
     <string name="permdesc_readPhoneNumbers">Lejon që aplikacioni të ketë qasje te numrat e telefonit të pajisjes.</string>
     <string name="permdesc_readPhoneState">Lejon aplikacionin të hyjë në funksionet telefonike të pajisjes. Kjo leje i mundëson aplikacionit të përcaktojë numrin e telefonit dhe ID-të e pajisjes, nëse një telefonatë është aktive apo nëse numri në distancë është i lidhur me një telefonatë.</string>
-    <string name="permdesc_readSms">Ky aplikacion mund të lexojë të gjitha mesazhet SMS (me tekst) të ruajtura në tabletin tënd.</string>
+    <string name="permdesc_readSms">Ky aplikacion mund të lexojë të gjitha mesazhet SMS (me tekst) të ruajtura në telefonin tënd.</string>
     <string name="permdesc_readSyncSettings">Lejon aplikacionin të lexojë cilësimet e sinkronizimit për një llogari. Për shembull, kjo mund të përcaktojë nëse aplikacioni \"Kontaktet\" është i sinkronizuar me një llogari.</string>
     <string name="permdesc_readSyncStats">Lejon një aplikacion të lexojë statistikat e sinkronizimit për një llogari, përfshirë historikun e ngjarjeve të sinkronizimit dhe se sa të dhëna janë sinkronizuar.</string>
     <string name="permdesc_readVisualUserSelect">Lejon aplikacionin të lexojë imazhin dhe skedarët e videove që ti zgjedh nga hapësira jote ruajtëse e ndarë.</string>
-    <string name="permdesc_receiveBootCompleted">Lejon aplikacionin të fillojë vetë sapo sistemi ka mbaruar nisjen. Kjo mund të zgjasë kohën e ngritjes së tabletit dhe të lejojë aplikacionin të ngadalësojë veprimtarinë në përgjithësi, duke qenë gjithmonë në punë.</string>
+    <string name="permdesc_receiveBootCompleted">Lejon aplikacionin të fillojë vetë sapo sistemi të ketë mbaruar nisjen. Kjo mund të zgjasë kohën e ngritjes së telefonit dhe të lejojë aplikacionin të ngadalësojë përgjithësisht telefonin duke qëndruar gjithnjë në punë.</string>
     <string name="permdesc_receiveMms">"Lejon aplikacionin të marrë dhe përpunojë mesazhe MMS. Kjo do të thotë se aplikacioni mund të monitorojë ose fshijë mesazhe të dërguara në pajisjen tënde, pa t'i treguar ato."</string>
     <string name="permdesc_receiveSms">"Lejon aplikacionin të marrë dhe përpunojë mesazhe SMS. Kjo do të thotë se aplikacioni mund të monitorojë ose fshijë mesazhe të dërguara në pajisjen tënde, pa t'i treguar ato."</string>
     <string name="permdesc_receiveWapPush">"Lejon aplikacionin të marrë dhe përpunojë mesazhe WAP. Kjo do të thotë se aplikacioni mund të monitorojë ose fshijë mesazhe të dërguara në pajisjen tënde, pa t'i treguar ato."</string>
@@ -1622,7 +1659,7 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="permdesc_sendSms">Lejon aplikacionin të dërgojë mesazhe SMS. Kjo mund të rezultojë me tarifa të papritura. Aplikacionet keqdashëse mund të të kushtojnë të holla duke dërguar mesazhe pa konfirmimin tënd.</string>
     <string name="permdesc_setAlarm">Lejon aplikacionin të vendosë një alarm në një aplikacion ore me alarm, i instaluar në pajisje. Disa aplikacione ore me alarm mund të mos e ekzekutojnë këtë funksion.</string>
     <string name="permdesc_setInputCalibration">Lejon aplikacionin të modifikojë parametrat e kalibrimit të ekranit me prekje. Nuk nevojitet për aplikacionet normale.</string>
-    <string name="permdesc_setTimeZone">Lejon aplikacionin të ndryshojë brezin orar të tabletit.</string>
+    <string name="permdesc_setTimeZone">Lejon aplikacionin të ndryshojë brezin orar të telefonit.</string>
     <string name="permdesc_setWallpaper">Lejon aplikacionin të caktojë imazhin e sfondit të sistemit.</string>
     <string name="permdesc_setWallpaperHints">Lejon aplikacionin të caktojë treguesit e imazheve të sfondit në sistem.</string>
     <string name="permdesc_sim_communication">"Lejon aplikacionin t'i dërgojë komanda kartës SIM. Kjo është shumë e rrezikshme."</string>
@@ -1635,7 +1672,7 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="permdesc_subscribedFeedsRead">Lejon aplikacionin të marrë detaje rreth çdo gjëje që sinkronizohet në pajisje.</string>
     <string name="permdesc_systemAlertWindow">Ky aplikacion mund të shfaqet mbi aplikacionet e tjera ose në pjesë të tjera të ekranit. Kjo mund të shkaktojë ndërhyrje në përdorimin normal të aplikacionit dhe në mënyrën se si shfaqen aplikacionet e tjera.</string>
     <string name="permdesc_systemCamera">Ky aplikacion sistemi ose i privilegjuar mund të nxjerrë fotografi dhe të regjistrojë video duke përdorur një kamerë në çdo moment. Kërkon që autorizimi i android.permission.CAMERA të mbahet edhe nga aplikacioni</string>
-    <string name="permdesc_transmitIr">Lejon aplikacionin të përdorë transmetuesin e rrezeve infra të kuqe të tabletit.</string>
+    <string name="permdesc_transmitIr">Lejon aplikacionin të përdorë transmetuesin e rrezeve infra të kuqe të telefonit.</string>
     <string name="permdesc_turnScreenOn">Lejon që aplikacioni të aktivizojë ekranin.</string>
     <string name="permdesc_ucsPlugin">Puno me plugin-e magazina kredencialesh palë të treta.</string>
     <string name="permdesc_uninstall_shortcut">Lejon aplikacionin të heqë shkurtore në ekranin bazë, pa ndërhyrjen e përdoruesit.</string>
@@ -1649,12 +1686,13 @@ Njoftimet e përmirësuara mund të kenë qasje te përmbajtja e njoftimeve, duk
     <string name="permdesc_vibrate">Lejon aplikacionin të kontrollojë dridhësin.</string>
     <string name="permdesc_vibrator_state">Lejon që aplikacioni të ketë qasje te gjendja e dridhësit.</string>
     <string name="permdesc_videoWrite">Lejon aplikacionin të modifikojë koleksionin tënd të videove.</string>
-    <string name="permdesc_wakeLock">Lejon aplikacionin të parandalojë tabletin nga fjetja.</string>
-    <string name="permdesc_writeCalendar">Ky aplikacion mund të shtojë, të heqë ose të ndryshojë ngjarjet e kalendarit në tabletin tënd. Ky aplikacion mund të dërgojë mesazhe që mund të duket se vijnë nga zotëruesit e kalendarit ose të ndryshojë ngjarjet pa i njoftuar zotëruesit e tyre.</string>
-    <string name="permdesc_writeCallLog">Lejon aplikacionin të modifikojë ditarin e telefonatave të tabletit tënd, përfshirë të dhëna rreth telefonatave hyrëse dhe dalëse. Aplikacione keqdashëse mund ta përdorin këtë leje për të fshirë ose modifikuar ditarin tënd të telefonatave.</string>
-    <string name="permdesc_writeContacts">Lejon aplikacionin të modifikojë të dhënat rreth kontakteve të tua të ruajtura në tabletin tënd. Kjo leje lejon që aplikacionet të fshijnë të dhënat e kontakteve.</string>
+    <string name="permdesc_wakeLock">Lejon aplikacionin të parandalojë telefonin nga fjetja.</string>
+    <string name="permdesc_writeCalendar">Ky aplikacion mund të shtojë, të heqë ose të ndryshojë ngjarjet e kalendarit në telefonin tënd. Ky aplikacion mund të dërgojë mesazhe që mund të duket se vijnë nga zotëruesit e kalendarit ose të ndryshojë ngjarjet pa i njoftuar zotëruesit e tyre.</string>
+    <string name="permdesc_writeCallLog">Lejon aplikacionin të modifikojë ditarin e telefonatave të telefonit tënd, përfshirë të dhënat rreth telefonatave hyrëse dhe dalëse. Aplikacionet keqdashëse mund ta përdorin këtë për të fshirë ose modifikuar ditarin tënd të telefonatave.</string>
+    <string name="permdesc_writeContacts">Lejon aplikacionin të modifikojë të dhënat rreth kontakteve të tua të ruajtura në telefonin tënd. Kjo leje lejon që aplikacionet të fshijnë të dhënat e kontakteve.</string>
     <string name="permdesc_writeSettings">Lejon aplikacionin të modifikojë të dhënat e cilësimeve të sistemit. Aplikacionet keqdashëse mund të prishin konfigurimin e sistemit.</string>
     <string name="permdesc_writeSyncSettings">Lejon një aplikacion të modifikojë cilësimet e sinkronizimit për një llogari. Për shembull, kjo mund të përdoret për të mundësuar sinkronizimin e aplikacionit \"Kontaktet\" me një llogari.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">Lejo që aplikacioni të përditësojë gjendjet e verifikimit për çelësat e kontakteve me enkriptimin E2EE që zotërohen nga aplikacionet e tjera</string>
     <string name="permgroupdesc_activityRecognition">qasje në aktivitetin tënd fizik</string>
     <string name="permgroupdesc_calendar">qasje te kalendari yt</string>
     <string name="permgroupdesc_calllog">lexo dhe shkruaj evidencën e telefonatave</string>
@@ -1696,7 +1734,9 @@ për llogarinë %s."</string>
     <string name="permlab_accessCoarseLocation">qasu në vendndodhjen e përafërt vetëm në plan të parë</string>
     <string name="permlab_accessDrmCertificates">qasje në certifikatat DRM</string>
     <string name="permlab_accessFineLocation">qasu në vendndodhjen e saktë vetëm në plan të parë</string>
+    <string name="permlab_accessHiddenProfile">Të qaset te profilet e fshehura</string>
     <string name="permlab_accessImsCallService">qasje në shërbimin e telefonatave IMS</string>
+    <string name="permlab_accessLastKnownCellId">Qasu tek identiteti i fundit i njohur i celularit.</string>
     <string name="permlab_accessLocationExtraCommands">qasje në komandat shtesë të ofruesit të vendndodhjes</string>
     <string name="permlab_accessNetworkConditions">dëgjo për vërejtje në kushtet e rrjetit</string>
     <string name="permlab_accessNetworkState">shiko lidhjet e rrjetit</string>
@@ -1728,6 +1768,7 @@ për llogarinë %s."</string>
     <string name="permlab_callCompanionApp">Shiko dhe kontrollo telefonatat nëpërmjet sistemit.</string>
     <string name="permlab_callPhone">telefono drejtpërdrejt numrat e telefonit</string>
     <string name="permlab_camera">bëj fotografi dhe video</string>
+    <string name="permlab_cameraHeadlessSystemUser">Lejo një aplikacion ose shërbim të ketë qasje te kamera si \"Përdorues i sistemit pa kokë\".</string>
     <string name="permlab_cameraOpenCloseListener">Lejo që një aplikacion ose shërbim të marrë telefonata mbrapsht për pajisjet e kamerës që hapen ose mbyllen.</string>
     <string name="permlab_changeNetworkState">ndrysho lidhjen e rrjetit</string>
     <string name="permlab_changeTetherState">ndrysho lidhjen e kufizuar</string>
@@ -1755,6 +1796,7 @@ për llogarinë %s."</string>
     <string name="permlab_foregroundServiceHealth">të ekzekutojë shërbimin në plan të parë me llojin \"health\"</string>
     <string name="permlab_foregroundServiceLocation">të ekzekutojë shërbimin në plan të parë me llojin \"location\"</string>
     <string name="permlab_foregroundServiceMediaPlayback">të ekzekutojë shërbimin në plan të parë me llojin \"mediaPlayback\"</string>
+    <string name="permlab_foregroundServiceMediaProcessing">të ekzekutojë shërbimin në plan të parë me llojin \"mediaProcessing\"</string>
     <string name="permlab_foregroundServiceMediaProjection">të ekzekutojë shërbimin në plan të parë me llojin \"mediaProjection\"</string>
     <string name="permlab_foregroundServiceMicrophone">të ekzekutojë shërbimin në plan të parë me llojin \"microphone\"</string>
     <string name="permlab_foregroundServicePhoneCall">të ekzekutojë shërbimin në plan të parë me llojin \"phoneCall\"</string>
@@ -1844,6 +1886,7 @@ për llogarinë %s."</string>
     <string name="permlab_mount_unmount_filesystems">aksesi në sistemin e skedarëve të kartës SD</string>
     <string name="permlab_nearby_wifi_devices">të ndërveprojë me pajisjet Wi-Fi në afërsi</string>
     <string name="permlab_nfc">kontrollo \"Komunikimin e fushës në afërsi\" NFC</string>
+    <string name="permlab_nfcTransactionEvent">Ngjarje transaksioni me elementin e sigurt</string>
     <string name="permlab_observeCompanionDevicePresence">Vëzhgo praninë e pajisjes shoqëruese</string>
     <string name="permlab_persistentActivity">bëje aplikacionin të qëndrojë gjithmonë në punë</string>
     <string name="permlab_postNotification">shfaq njoftimet</string>
@@ -1914,12 +1957,13 @@ për llogarinë %s."</string>
     <string name="permlab_uwb_ranging">të përcaktojë pozicionin e përafërt mes pajisjeve në afërsi me brezin ultra të gjerë</string>
     <string name="permlab_vibrate">kontrollo dridhjen</string>
     <string name="permlab_videoWrite">modifiko koleksionin tënd të videove</string>
-    <string name="permlab_wakeLock">parandalo kalimin e tabletit në fjetje</string>
+    <string name="permlab_wakeLock">parandalo kalimin e telefonit në fjetje</string>
     <string name="permlab_writeCalendar">shto ose modifiko ngjarjet e kalendarit dhe dërgoju email të ftuarve pa dijeninë e zotëruesve</string>
     <string name="permlab_writeCallLog">shkruaj ditarin e telefonatave</string>
     <string name="permlab_writeContacts">modifiko kontaktet</string>
     <string name="permlab_writeSettings">modifiko cilësimet e sistemit</string>
     <string name="permlab_writeSyncSettings">ndiz ose fik sinkronizimin</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">Të përditësojë gjendjet e verifikimit për çelësat e kontakteve me enkriptimin E2EE që zotërohen nga aplikacionet e tjera</string>
     <string name="perms_description_app">Ofruar nga %1$s.</string>
     <string name="perms_new_perm_prefix"><font fgcolor="#ff33b5e5" size="12">E RE: </font></string>
     <string name="personal_apps_suspended_turn_profile_on">Aktivizo</string>
@@ -1957,10 +2001,10 @@ për llogarinë %s."</string>
     <string name="policydesc_limitPassword">Kontrollo gjatësinë dhe karakteret e lejuara në fjalëkalimet dhe kodet PIN të kyçjes së ekranit.</string>
     <string name="policydesc_resetPassword">Ndryshon kyçjen e ekranit.</string>
     <string name="policydesc_setGlobalProxy">Cakto proxy-in global të pajisjes që të përdoret kur të aktivizohet politika. Vetëm pronari i pajisjes mund ta caktojë proxy-in global.</string>
-    <string name="policydesc_watchLogin">Monitoro numrin e fjalëkalimeve të shkruar gabim kur shkyç ekranin. Kyç tabletin ose fshi të gjitha të dhënat e tij, nëse shkruhen shumë fjalëkalime të pasakta.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Monitoro numrin e fjalëkalimeve të shkruara gabim kur shkyç ekranin. Kyçe tabletin ose spastro të gjitha të dhënat e këtij përdoruesi nëse shkruhen shumë fjalëkalime të gabuara.</string>
-    <string name="policydesc_wipeData">Fshi të dhënat e tabletit pa paralajmërim duke kryer një rivendosje të të dhënave në gjendje fabrike.</string>
-    <string name="policydesc_wipeData_secondaryUser">Spastroji të dhënat e këtij përdoruesi në këtë tablet pa paralajmërim.</string>
+    <string name="policydesc_watchLogin">Monitoron numrin e fjalëkalimeve të shkruar gabim kur shkyç ekranin. Kyç telefonin ose fshin të gjitha të dhënat e tij, nëse shkruhen shumë fjalëkalime të pasakta.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Monitoro numrin e fjalëkalimeve të shkruara gabim kur shkyç ekranin. Kyçe telefonin ose spastro të gjitha të dhënat e këtij përdoruesi nëse shkruhen shumë fjalëkalime të gabuara.</string>
+    <string name="policydesc_wipeData">Fshin të dhënat e telefonit pa paralajmërim, duke kryer rivendosje të të dhënave në gjendje fabrike.</string>
+    <string name="policydesc_wipeData_secondaryUser">Spastroji të dhënat e këtij përdoruesi në këtë telefon pa paralajmërim.</string>
     <string name="policylab_disableCamera">Çaktivizo kamerat</string>
     <string name="policylab_disableKeyguardFeatures">Çaktivizimin e disa veçorive të kyçjes së ekranit</string>
     <string name="policylab_encryptedStorage">Cakto enkriptimin e hapësirës ruajtëse</string>
@@ -1969,7 +2013,7 @@ për llogarinë %s."</string>
     <string name="policylab_limitPassword">Cakto rregullat e fjalëkalimit</string>
     <string name="policylab_resetPassword">Ndryshimin e kyçjes së ekranit</string>
     <string name="policylab_setGlobalProxy">Cakto proxy-in global të pajisjes</string>
-    <string name="policylab_watchLogin">Monitoro tentativat e shkyçjes së ekranit</string>
+    <string name="policylab_watchLogin">Monitoron tentativat e shkyçjes së ekranit</string>
     <string name="policylab_wipeData">Spastrimin e të gjitha të dhënave</string>
     <string name="policylab_wipeData_secondaryUser">Spatro të dhënat e përdoruesit</string>
     <string name="popup_window_default_title">Dritare kërcyese</string>
@@ -1977,7 +2021,7 @@ për llogarinë %s."</string>
     <string name="postalTypeHome">Shtëpia</string>
     <string name="postalTypeOther">Tjetër</string>
     <string name="postalTypeWork">Puna</string>
-    <string name="power_dialog">Opsionet e tabletit</string>
+    <string name="power_dialog">Opsionet e telefonit</string>
     <string name="power_off">Fik</string>
     <string name="prepend_shortcut_label">Menyja+</string>
     <string name="preposition_for_date">më %s</string>
@@ -1987,9 +2031,21 @@ për llogarinë %s."</string>
     <string name="print_service_installed_title">Shërbimi %s u instalua</string>
     <string name="printing_disabled_by">Printimi është çaktivizuar nga %s.</string>
     <string name="private_dns_broken_detailed">Serveri privat DNS nuk mund të qaset</string>
+    <string name="private_profile_label_badge">%1$s privat</string>
+    <string name="private_space_biometric_prompt_title">Hapësira private</string>
+    <string name="private_space_deleted_by_admin">Hapësira private u hoq</string>
+    <string name="private_space_deleted_by_admin_details">Organizata jote nuk i lejon hapësirat private në këtë pajisje të menaxhuar.</string>
+    <string name="private_space_set_up_screen_lock_message">Për të përdorur hapësirën private, cakto një kyçje ekrani në këtë pajisje</string>
     <string name="profile_encrypted_detail">Profili i punës është i kyçur</string>
     <string name="profile_encrypted_message">Trokit për ta shkyçur profilin e punës</string>
     <string name="profile_encrypted_title">Disa veçori mund të jenë të kufizuara</string>
+    <string name="profile_label_clone">Klon</string>
+    <string name="profile_label_communal">I përbashkët</string>
+    <string name="profile_label_private">Private</string>
+    <string name="profile_label_test">Test</string>
+    <string name="profile_label_work">Puna</string>
+    <string name="profile_label_work_2">Puna 2</string>
+    <string name="profile_label_work_3">Puna 3</string>
     <string name="progress_erasing">Po fshin hapësirën ruajtëse të brendshme…</string>
     <string name="progress_erasing_usbhost">Form. i mem. brend…</string>
     <string name="progress_unmounting">Duke çmontuar kartën SD…</string>
@@ -2008,6 +2064,8 @@ për llogarinë %s."</string>
     <string name="reboot_to_update_reboot">Po rinis…</string>
     <string name="reboot_to_update_title">Përditësimi i sistemit Android</string>
     <string name="recent_tasks_title">Të fundit</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">Përmbajtjet delikate të njoftimeve janë fshehur</string>
     <string name="redo">Ribëj</string>
     <string name="reduce_bright_colors_feature_name">Shumë më i zbehtë</string>
     <string name="region_picker_section_all">Të gjitha rajonet</string>
@@ -2033,8 +2091,8 @@ për llogarinë %s."</string>
     <string name="reset">Rivendos</string>
     <string name="resolver_cant_access_personal_apps_explanation">Kjo përmbajtje nuk mund të hapet me aplikacione personale</string>
     <string name="resolver_cant_access_work_apps_explanation">Kjo përmbajtje nuk mund të hapet me aplikacione pune</string>
-    <string name="resolver_cant_share_with_personal_apps_explanation">Kjo përmbajtje nuk mund të shpërndahet me aplikacione personale</string>
-    <string name="resolver_cant_share_with_work_apps_explanation">Kjo përmbajtje nuk mund të shpërndahet me aplikacione pune</string>
+    <string name="resolver_cant_share_with_personal_apps_explanation">Kjo përmbajtje nuk mund të ndahet me aplikacione personale</string>
+    <string name="resolver_cant_share_with_work_apps_explanation">Kjo përmbajtje nuk mund të ndahet me aplikacione pune</string>
     <string name="resolver_cross_profile_blocked">Bllokuar nga administratori yt i teknologjisë së informacionit</string>
     <string name="resolver_no_personal_apps_available">Nuk ka aplikacione personale</string>
     <string name="resolver_no_work_apps_available">Nuk ka aplikacione pune</string>
@@ -2106,12 +2164,36 @@ për llogarinë %s."</string>
     <string name="safe_media_volume_warning">"Të ngrihet volumi mbi nivelin e rekomanduar?
 
 Dëgjimi me volum të lartë për periudha të gjata mund të dëmtojë dëgjimin."</string>
+    <string name="satellite_notification_how_it_works">Si funksionon</string>
+    <string name="satellite_notification_manual_summary">Dërgo dhe merr mesazhe pa një rrjet celular ose Wi-Fi</string>
+    <string name="satellite_notification_manual_title">Të përdoret shkëmbimi i mesazheve nëpërmjet satelitit?</string>
+    <string name="satellite_notification_open_message">Hap \"Mesazhet\"</string>
+    <string name="satellite_notification_summary">Mund të dërgosh dhe të marrësh mesazhe pa një rrjet celular apo rrjet Wi-Fi</string>
+    <string name="satellite_notification_title">U lidh automatikisht me satelitin</string>
+    <string name="scCellularNetworkSecuritySummary">Enkriptimi, njoftimet për rrjetet e paenkriptuara</string>
+    <string name="scCellularNetworkSecurityTitle">Siguria e rrjetit celular</string>
+    <string name="scIdentifierDisclosureIssueSummary">"Në %1$s, një rrjet në afërsi ka regjistruar ID-në unike (IMSI ose IMEI) të pajisjes sate gjatë përdorimit të kartës sate SIM të %2$s.
+
+Kjo do të thotë që vendndodhja, aktiviteti ose identiteti yt janë regjistruar. Kjo është një praktikë e zakonshme, por mund të jetë problem për personat që janë të shqetësuar në lidhje me privatësinë."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">Në %1$s, një rrjet në afërsi ka regjistruar ID-në unike (IMSI ose IMEI) të pajisjes sate gjatë përdorimit të kartës sate SIM të %2$s</string>
+    <string name="scIdentifierDisclosureIssueTitle">Pati qasje tek ID-ja e pajisjes</string>
+    <string name="scNullCipherIssueActionGotIt">E kuptova</string>
+    <string name="scNullCipherIssueActionLearnMore">Mëso më shumë</string>
+    <string name="scNullCipherIssueActionSettings">Cilësimet e sigurisë së rrjetit celular</string>
+    <string name="scNullCipherIssueEncryptedSummary">Lidhja e kartës SIM të %1$s është më e sigurt tani</string>
+    <string name="scNullCipherIssueEncryptedTitle">Lidhur me rrjetin e enkriptuar %1$s</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"Telefonatat, mesazhet dhe të dhënat janë aktualisht më të cenueshme teksa përdoret karta SIM e %1$s.
+
+Kur lidhja jote të jetë përsëri e enkriptuar, do të marrësh një njoftim tjetër."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">Telefonatat, mesazhet dhe të dhënat janë aktualisht më të cenueshme teksa përdoret karta SIM e %1$s</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">Lidhur me një rrjet të paenkriptuar</string>
     <string name="screen_compat_mode_hint">Aktivizoje sërish këtë te \"Cilësimet e sistemit\" > \"Aplikacionet\" > \"Të shkarkuara\".</string>
     <string name="screen_compat_mode_scale">Shkalla</string>
     <string name="screen_compat_mode_show">Shfaq gjithnjë</string>
     <string name="screen_lock">Kyçja e ekranit</string>
     <string name="screen_lock_app_setting_name">Përdor kyçjen e ekranit</string>
     <string name="screen_lock_dialog_default_subtitle">Fut kyçjen e ekranit për të vazhduar</string>
+    <string name="screen_not_shared_sensitive_content">Përmbajtja e aplikacionit është fshehur nga ndarja e ekranit për arsye sigurie</string>
     <string name="screencapture_restrict">Politika e sigurisë nuk lejon përdorimin e kapjes së ekranit.</string>
     <string name="screenshot_edit">Modifiko</string>
     <string name="search_hint">Kërko...</string>
@@ -2157,15 +2239,17 @@ Dëgjimi me volum të lartë për periudha të gjata mund të dëmtojë dëgjimi
     <string name="serviceErased">Fshirja ishte e suksesshme.</string>
     <string name="serviceNotProvisioned">Shërbimi nuk është përgatitur.</string>
     <string name="serviceRegistered">Regjistrimi ishte i suksesshëm.</string>
+    <string name="set_up_screen_lock_action_label">Cakto kyçjen e ekranit</string>
+    <string name="set_up_screen_lock_title">Cakto një kyçje ekrani</string>
     <string name="sha1_fingerprint">Gjurma e gishtit SHA-1:</string>
     <string name="sha256_fingerprint">Gjurma e gishtit SHA-256:</string>
-    <string name="share">Shpërndaj</string>
-    <string name="share_action_provider_share_with">Shpërndaj me</string>
+    <string name="share">Ndaj</string>
+    <string name="share_action_provider_share_with">Ndaj me</string>
     <string name="share_remote_bugreport_action">SHPËRNDAJ</string>
     <string name="share_remote_bugreport_notification_message_finished">Administratori kërkoi një raport të defekteve në kod për të ndihmuar me zgjidhjen e problemeve. Aplikacioni dhe të dhënat mund të ndahen.</string>
     <string name="share_remote_bugreport_notification_title">Të ndahet raporti i defektit në kod?</string>
-    <string name="shareactionprovider_share_with">Shpërndaj me</string>
-    <string name="shareactionprovider_share_with_application">Shpërndaj me %s</string>
+    <string name="shareactionprovider_share_with">Ndaj me</string>
+    <string name="shareactionprovider_share_with_application">Ndaj me %s</string>
     <string name="sharelist_restrict">Politika e sigurisë nuk e lejon përbashkimin e të dhënave.</string>
     <string name="sharing_remote_bugreport_notification_title">Po ndan raportin e defekteve në kod...</string>
     <string name="shortcut_disabled_reason_unknown">Shkurtorja është çaktivizuar</string>
@@ -2174,7 +2258,7 @@ Dëgjimi me volum të lartë për periudha të gjata mund të dëmtojë dëgjimi
     <string name="shortcut_restore_unknown_issue">Nuk mund të restaurohej shkurtorja</string>
     <string name="shortcut_restored_on_lower_version">Versioni i aplikacionit u ul ose nuk është në përputhje me këtë shkurtore</string>
     <string name="show_ime">Mbaje në ekran ndërsa tastiera fizike është aktive</string>
-    <string name="shutdown_confirm">Tableti yt do të fiket.</string>
+    <string name="shutdown_confirm">Telefoni yt do të fiket.</string>
     <string name="shutdown_confirm_question">Dëshiron ta fikësh?</string>
     <string name="shutdown_progress">Po fiket…</string>
     <string name="silent_mode">Modaliteti \"në heshtje\"</string>
@@ -2280,6 +2364,7 @@ Dëgjimi me volum të lartë për periudha të gjata mund të dëmtojë dëgjimi
     <string name="twilight_service">Shërbimi i muzgut</string>
     <string name="ui_translation_accessibility_translated_text">%1$s i përkthyer.</string>
     <string name="ui_translation_accessibility_translation_finished">Mesazhi u përkthye nga %1$s në %2$s.</string>
+    <string name="unarchival_session_app_label">Në pritje...</string>
     <string name="undo">Zhbëj</string>
     <string name="unpin_specific_target">Zhgozhdoje %1$s</string>
     <string name="unpin_target">Zhgozhdo</string>
@@ -2300,7 +2385,7 @@ Dëgjimi me volum të lartë për periudha të gjata mund të dëmtojë dëgjimi
     <string name="usb_camera_disconnected_notification_title">Kamera u shkëput.</string>
     <string name="usb_cd_installer_notification_title">U lidh si instalues</string>
     <string name="usb_charging_notification_title">Kjo pajisje po karikohet nëpërmjet USB-së</string>
-    <string name="usb_charing_only_notification_title">Lidhur</string>
+    <string name="usb_charing_only_notification_title">Lidhur për ngarkim</string>
     <string name="usb_contaminant_detected_message">Porta e USB-së është çaktivizuar automatikisht. Trokit për të mësuar më shumë.</string>
     <string name="usb_contaminant_detected_title">Lëngje ose papastërti në portën e USB-së</string>
     <string name="usb_contaminant_not_detected_message">Telefoni nuk i dallon më lëngjet apo papastërtitë.</string>
@@ -2358,7 +2443,7 @@ Dëgjimi me volum të lartë për periudha të gjata mund të dëmtojë dëgjimi
     <string name="user_switched">Emri i përdoruesit aktual: %1$s</string>
     <string name="user_switching_message">Po kalon në \"%1$s\"…</string>
     <string name="validity_period">Vlefshmëria:</string>
-    <string name="vdm_camera_access_denied">Nuk mund të qasesh në kamerën e tabletit tënd nga %1$s</string>
+    <string name="vdm_camera_access_denied">Nuk mund të qasesh në kamerën e telefonit tënd nga %1$s</string>
     <string name="vdm_pip_blocked">Figura brenda figurës nuk mund të shikohet gjatë transmetimit</string>
     <string name="vdm_secure_window">Nuk mund të kesh qasje në të gjatë transmetimit. Provoje në telefon më mirë.</string>
     <string name="view_and_control_notification_content">%s mund ta shikojë dhe kontrollojë ekranin tënd. Trokit për ta rishikuar.</string>
@@ -2434,7 +2519,7 @@ Dëshiron ta mbyllësh?"</string>
     <string name="whichOpenLinksWithApp">Hapi lidhjet me %1$s</string>
     <string name="whichSendApplication">Ndaj</string>
     <string name="whichSendApplicationLabel">Ndaj</string>
-    <string name="whichSendApplicationNamed">Shpërndaj me %1$s</string>
+    <string name="whichSendApplicationNamed">Ndaj me %1$s</string>
     <string name="whichSendToApplication">Dërgo me</string>
     <string name="whichSendToApplicationLabel">Dërgo</string>
     <string name="whichSendToApplicationNamed">Dërgo me %1$s</string>
@@ -2448,7 +2533,7 @@ Dëshiron ta mbyllësh?"</string>
     <string name="wifi_open_wifiap_insecure">Politika e sigurisë nuk e lejon përdorimin e tethering të pasiguruar për hotspot.</string>
     <string name="window_magnification_prompt_content">Tani mund të zmadhosh pjesë të ekranit tënd</string>
     <string name="window_magnification_prompt_title">Cilësimet e reja të zmadhimit</string>
-    <string name="wireless_display_route_description">Ekran pa tel</string>
+    <string name="wireless_display_route_description">Ekran wireless</string>
     <string name="work_mode_emergency_call_button">Urgjenca</string>
     <string name="work_mode_off_title">Hiq nga pauza apl. e punës?</string>
     <string name="work_mode_turn_on">Hiq nga pauza</string>
@@ -2463,7 +2548,7 @@ Dëshiron ta mbyllësh?"</string>
     <string name="write_fail_reason_cannot_write">Gabim në shkrimin e përmbajtjes</string>
     <string name="year">vit</string>
     <string name="years">vite</string>
-    <string name="zen_mode_alarm">Deri në %1$s (alarmi tjetër)</string>
+    <string name="zen_mode_alarm">Deri: %1$s (alarmi tjetër)</string>
     <string name="zen_mode_default_events_name">Ngjarje</string>
     <string name="zen_mode_default_every_night_name">Në gjumë</string>
     <string name="zen_mode_default_weekends_name">Fundjava</string>
@@ -2480,9 +2565,15 @@ Dëshiron ta mbyllësh?"</string>
     <string name="zen_mode_feature_name">Mos shqetëso</string>
     <string name="zen_mode_forever">Derisa ta çaktivizosh</string>
     <string name="zen_mode_forever_dnd">Deri sa të çaktivizosh gjendjen \"Mos shqetëso\"</string>
+    <string name="zen_mode_implicit_activated">Aktivizuar</string>
+    <string name="zen_mode_implicit_deactivated">Çaktivizuar</string>
+    <string name="zen_mode_implicit_trigger_description">Menaxhohet nga %1$s</string>
     <string name="zen_mode_rule_name_combination">%1$s / %2$s</string>
-    <string name="zen_mode_until">Deri në %1$s</string>
-    <string name="zen_mode_until_next_day">Deri në %1$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">Çdo kalendar</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s - %2$s</string>
+    <string name="zen_mode_until">Deri: %1$s</string>
+    <string name="zen_mode_until_next_day">Deri: %1$s</string>
     <string name="zen_upgrade_notification_content">Trokit për të shënuar atë që është bllokuar</string>
     <string name="zen_upgrade_notification_title">\"Mos shqetëso\" ka ndryshuar</string>
     <string name="zen_upgrade_notification_visd_content">Trokit për të mësuar më shumë dhe për të ndryshuar.</string>

@@ -44,7 +44,7 @@
     <string name="ColrMmi">সংযোজিত লাইন আইডিৰ সীমাবদ্ধতা</string>
     <string name="CwMmi">কল অপেক্ষাৰত</string>
     <string name="DndMmi">অসুবিধা নিদিব</string>
-    <string name="EmergencyCallWarningSummary">ৱাই-ফাইৰ জৰিয়তে জৰুৰীকালীন কল কৰিব নোৱাৰি</string>
+    <string name="EmergencyCallWarningSummary">জৰুৰীকালীন কল কৰিবলৈ ম’বাইল নেটৱৰ্কৰ প্ৰয়োজন</string>
     <string name="EmergencyCallWarningTitle">জৰুৰীকালীন কল কৰাৰ সুবিধা উপলব্ধ নহয়</string>
     <string name="Midnight">মাজনিশা</string>
     <string name="NetworkPreferenceSwitchSummary">পচন্দৰ নেটৱৰ্ক সলনি কৰি চেষ্টা কৰি চাওক। সলনি কৰিবলৈ টিপক।</string>
@@ -222,7 +222,7 @@
     <string name="accessibility_corner_action_gesture_tip">"আপুনি এই কোণটো %s-লৈ নিয়োগ কৰিছে। আপুনি কাৰ্যটো য'ত সংঘটিত কৰিবলৈ বিচাৰে সেই ঠাইলৈ আপোনাৰ পইণ্টাৰডাল লৈ যাওক আৰু পইণ্টাৰডাল লৰচৰ কৰা বন্ধ হোৱাৰ পিছত কাৰ্যটো আৰম্ভ হ'ব।"</string>
     <string name="accessibility_corner_action_top_left">শীৰ্ষ বাওঁ কোণৰ কাৰ্য</string>
     <string name="accessibility_corner_action_top_right">শীৰ্ষ সোঁ কোণৰ কাৰ্য</string>
-    <string name="accessibility_corner_action_type_accessibility_button">প্ৰৱেশযোগ্যতা বুটাম</string>
+    <string name="accessibility_corner_action_type_accessibility_button">এক্সেছিবিলিটী বুটাম</string>
     <string name="accessibility_corner_action_type_back">পিছলৈ</string>
     <string name="accessibility_corner_action_type_click_and_hold">ক্লিক কৰক আৰু ধৰি থাকক</string>
     <string name="accessibility_corner_action_type_double_click">দুবাৰ ক্লিক কৰক</string>
@@ -232,7 +232,7 @@
     <string name="accessibility_corner_action_type_increase_brightness">উজ্জ্বলতা বৃদ্ধি কৰক</string>
     <string name="accessibility_corner_action_type_media_volume_down">মিডিয়া ভলিউম কমোৱা</string>
     <string name="accessibility_corner_action_type_media_volume_up">মিডিয়া ভলিউম বঢ়োৱা</string>
-    <string name="accessibility_corner_action_type_open_close_notifications">অধিসূচনাসমূহ খোলক/বন্ধ কৰক</string>
+    <string name="accessibility_corner_action_type_open_close_notifications">জাননীসমূহ খোলক/বন্ধ কৰক</string>
     <string name="accessibility_corner_action_type_open_close_quick_panel">ক্ষিপ্ৰ পেনেল খোলক/বন্ধ কৰক</string>
     <string name="accessibility_corner_action_type_pause_auto_click">স্বয়ং ক্লিক বিৰতি দিয়ক</string>
     <string name="accessibility_corner_action_type_power_off_menu">পাৱাৰ অফ মেনু দেখুৱাওক</string>
@@ -255,30 +255,38 @@
     <string name="accessibility_corner_action_type_zoom_in">জুম ইন</string>
     <string name="accessibility_corner_action_type_zoom_out">জুম আউট</string>
     <string name="accessibility_dialog_button_allow">অনুমতি দিয়ক</string>
+    <string name="accessibility_dialog_button_allow_samsung">অনুমতি</string>
     <string name="accessibility_dialog_button_deny">অস্বীকাৰ কৰক</string>
+    <string name="accessibility_dialog_button_deny_samsung">অস্বীকাৰ</string>
+    <string name="accessibility_dialog_button_uninstall">আনইনষ্টল কৰক</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">আনইনষ্টল কৰক</string>
+    <string name="accessibility_dialog_touch_filtered_warning">এটা এপে অনুমতিৰ অনুৰোধটো অস্পষ্ট কৰি আছে আৰু সেয়েহে আপোনাৰ সঁহাৰিটো সত্যাপন কৰিব নোৱাৰি।</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">"পাৱাৰ আৰু ভলিউম বঢ়োৱা কীসমূহ দ্ৰুতভাৱে দবালে নিম্নলিখিত ফাংচনসমূহ অন বা অফ হ'ব:"</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">"কাষৰ আৰু ভলিউম বঢ়োৱা বুটামসমূহ দ্ৰুতভাৱে দবালে নিম্নলিখিত ফাংচনসমূহ অন বা অফ হ'ব:"</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">"পাৱাৰ আৰু ভলিউম বঢ়োৱা কীসমূহ দ্ৰুতভাৱে দবালে %s অন বা অফ হ'ব।"</string>
     <string name="accessibility_direct_access_single_service_warning_samsung_side_key">"কাষৰ আৰু ভলিউম বঢ়োৱা বুটামসমূহ ক্ষিপ্ৰভাৱে দবালে %s অন বা অফ হ'ব।"</string>
     <string name="accessibility_direct_access_spoken_feedback">%s ব্যৱহাৰ কৰিবলৈ পাৱাৰ আৰু ভলিউম বঢ়োৱা দুয়োটা কী দ্ৰুতভাৱে দবাওক।</string>
     <string name="accessibility_direct_access_spoken_feedback_side_key">%s ব্যৱহাৰ কৰিবলৈ কাষৰ আৰু ভলিউম বঢ়োৱা বুটাম দুয়োটা ক্ষিপ্ৰভাৱে দবাওক।</string>
-    <string name="accessibility_direct_access_warning_title_samsung">প্ৰৱেশযোগ্যতাৰ বাবে পাৱাৰ আৰু ভলিউম বঢ়োৱা কীসমূহ ব্যৱহাৰ কৰিবনে?</string>
+    <string name="accessibility_direct_access_warning_title_samsung">এক্সেছিবিলিটীৰ বাবে পাৱাৰ আৰু ভলিউম বঢ়োৱা কীসমূহ ব্যৱহাৰ কৰিবনে?</string>
     <string name="accessibility_direct_access_warning_title_samsung_side_key">এক্সেছিবিলিটীৰ বাবে কাষৰ আৰু ভলিউম বঢ়োৱা বুটামসমূহ ব্যৱহাৰ কৰিবনে?</string>
     <string name="accessibility_direct_access_warning_title_samsung_side_key_talkback">%s-ৰ বাবে কাষৰ আৰু ভলিউম বঢ়োৱা বুটামসমূহ ব্যৱহাৰ কৰিবনে?</string>
     <string name="accessibility_direct_access_warning_title_samsung_talkback">%s-ৰ বাবে পাৱাৰ আৰু ভলিউম বঢ়োৱা কীসমূহ ব্যৱহাৰ কৰিবনে?</string>
     <string name="accessibility_edit_shortcut_menu_button_title">সাধ্য-সুবিধা বুটামটোৰ জৰিয়তে ব্যৱহাৰ কৰিবলৈ সুবিধাসমূহ বাছনি কৰক</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">ভলিউম কীৰ শ্বৰ্টকাটটোৰ জৰিয়তে ব্যৱহাৰ কৰিবলৈ সুবিধাসমূহ বাছনি কৰক</string>
     <string name="accessibility_enable_service_title">%1$sক আপোনাৰ ডিভাইচটোৰ সম্পূর্ণ নিয়ন্ত্ৰণ দিবনে?</string>
-    <string name="accessibility_freeform_caption">%1$sৰ কেপশ্বন বাৰ।</string>
     <string name="accessibility_gesture_3finger_instructional_text">সুবিধাসমূহ সালসলনিকৈ ব্যৱহাৰ কৰিবলৈ তিনিটা আঙুলিৰে ওপৰলৈ ছোৱাইপ কৰি ধৰি ৰাখক।</string>
     <string name="accessibility_gesture_3finger_prompt_text">সাধ্য-সুবিধাৰ নির্দেশৰ জৰিয়তে ব্যৱহাৰ কৰিবলৈ এটা সুবিধা বাছনি কৰক (তিনিটা আঙুলিৰে স্ক্রীনখনৰ একেবাৰে তলিৰ পৰা ওপৰলৈ ছোৱাইপ কৰক):</string>
     <string name="accessibility_gesture_instructional_text">সুবিধাসমূহ সালসলনিকৈ ব্যৱহাৰ কৰিবলৈ দুটা আঙুলিৰে ওপৰলৈ ছোৱাইপ কৰি ধৰি ৰাখক।</string>
     <string name="accessibility_gesture_prompt_text">সাধ্য-সুবিধাৰ নির্দেশৰ জৰিয়তে ব্যৱহাৰ কৰিবলৈ এটা সুবিধা বাছনি কৰক (দুটা আঙুলিৰে স্ক্রীনখনৰ একেবাৰে তলিৰ পৰা ওপৰলৈ ছোৱাইপ কৰক):</string>
+    <string name="accessibility_label_clone_profile">ক্ল’ন</string>
+    <string name="accessibility_label_communal_profile">সম্প্ৰদায়ৰ সৈতে জড়িত</string>
+    <string name="accessibility_label_managed_profile">কৰ্মস্থানৰ প্ৰ’ফাইল</string>
+    <string name="accessibility_label_private_profile">প্ৰাইভেট স্পে’চ</string>
     <string name="accessibility_magnification_chooser_text">বিবৰ্ধন</string>
-    <string name="accessibility_select_different_function">আপুনি ছেটিংছ > প্ৰৱেশযোগ্যতা > উন্নত ছেটিংছত এটা বেলেগ ফাংচন চয়ন কৰিব পাৰে।</string>
+    <string name="accessibility_select_different_function">আপুনি ছেটিংছ > এক্সেছিবিলিটী > উন্নত ছেটিংছত এটা বেলেগ ফাংচন চয়ন কৰিব পাৰে।</string>
     <string name="accessibility_select_shortcut_menu_title">কোনো এটা সুবিধা ব্যৱহাৰ কৰিবলৈ সেইটোত টিপক:</string>
     <string name="accessibility_service_action_perform_description">ই আপুনি কোনো এপ্ বা হার্ডৱেৰ ছেন্সৰৰ সৈতে কৰা ভাব-বিনিময় আৰু আপোনাৰ হৈ অন্য কোনো লোকে এপৰ সৈতে কৰা ভাব-বিনিময় ট্ৰেক কৰিব পাৰে।</string>
-    <string name="accessibility_service_action_perform_title">কার্যসমূহ চাওক আৰু কৰক</string>
+    <string name="accessibility_service_action_perform_title">কার্যসমূহ চোৱা আৰু কৰা</string>
     <string name="accessibility_service_screen_control_description">ই স্ক্ৰীনত থকা আটাইখিনি সমল পঢ়িব পাৰে আৰু অন্য এপ্‌সমূহৰ ওপৰত সমল প্ৰদর্শন কৰিব পাৰে।</string>
     <string name="accessibility_service_screen_control_title">চাওক আৰু স্ক্ৰীন নিয়ন্ত্ৰণ কৰক</string>
     <string name="accessibility_service_warning_description">আপোনাক সাধ্য সুবিধাৰ প্ৰয়োজনসমূহৰ জৰিয়তে সহায় কৰা এপ্‌সমূহৰ বাবে সম্পূর্ণ নিয়ন্ত্ৰণৰ সুবিধাটো সঠিক যদিও অধিকাংশ এপৰ বাবে এয়া সঠিক নহয়।</string>
@@ -342,7 +350,7 @@
     <string name="action_bar_home_description">গৃহ পৃষ্ঠালৈ যাওক</string>
     <string name="action_bar_home_description_format">%1$s: %2$s</string>
     <string name="action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
-    <string name="action_bar_up_description">ওপৰলৈ যাওক</string>
+    <string name="action_bar_up_description">ওপৰলৈ নেভিগেট কৰক</string>
     <string name="action_menu_overflow_description">অধিক বিকল্প</string>
     <string name="action_mode_done">সম্পন্ন হ’ল</string>
     <string name="activity_chooser_view_dialog_title_default">কাৰ্যকলাপ বাছনি কৰক</string>
@@ -382,19 +390,25 @@
     <string name="alert_windows_notification_turn_off_action">অফ কৰক</string>
     <string name="allow">অনুমতি দিয়ক</string>
     <string name="allow_settings_changes">নিৰাপত্তা নীতিয়ে ছেটিংছ সলনি কৰাত প্ৰতিৰোধ কৰে৷</string>
+    <string name="alternative_face_setup_notification_content">আপোনাৰ আঙুলিকেইটা তিতি থকাৰ দৰে পৰিস্থিতিত, আপোনাৰ ফিংগাৰপ্ৰিণ্ট চিনাক্ত কৰিব নোৱাৰিলে ফে’চ আনলক সুবিধাটো ব্যৱহাৰ কৰক</string>
+    <string name="alternative_fp_setup_notification_content">পৰ্যাপ্ত পোহৰ নথকাৰ দৰে পৰিস্থিতিত, আপোনাৰ মুখাৱয়ব চিনাক্ত কৰিব নোৱাৰিলে ফিংগাৰপ্ৰিণ্ট আনলক সুবিধাটো ব্যৱহাৰ কৰক</string>
+    <string name="alternative_unlock_setup_notification_title">আনলক কৰিবলৈ আন এটা উপায় ব্যৱহাৰ কৰি চাওক</string>
     <string name="alwaysUse">এই কার্যৰ বাবে পূর্বনির্ধাৰিত ধৰণে ব্যৱহাৰ কৰক।</string>
+    <string name="always_allow">সদায় অনুমতি দিয়ক</string>
     <string name="android_preparing_apk">%1$sসাজু কৰি থকা হৈছে।</string>
-    <string name="android_start_title">টেবলেটটো আৰম্ভ হৈছে…</string>
+    <string name="android_start_title">"ফ'নটো আৰম্ভ হৈছে…"</string>
     <string name="android_system_label">Android ছিষ্টেম</string>
     <string name="android_upgrading_complete">বুট কাৰ্য সমাপ্ত কৰিছে।</string>
     <string name="android_upgrading_notification_title">ছিষ্টেম আপডে’ট সম্পূৰ্ণ কৰা হৈছে…</string>
     <string name="android_upgrading_starting_apps">আৰম্ভ হৈ থকা এপ্‌সমূহ।</string>
-    <string name="android_upgrading_title">টেবলেটটো আপডে’ট হৈ আছে…</string>
+    <string name="android_upgrading_title">"ফ'নটো আপডে’ট হৈ আছে…"</string>
     <string name="anr_activity_application">%2$sয়ে সঁহাৰি দিয়া নাই</string>
     <string name="anr_activity_process">%1$sয়ে সঁহাৰি দিয়া নাই</string>
     <string name="anr_application_process">%1$sয়ে সঁহাৰি দিয়া নাই</string>
     <string name="anr_process">%1$s প্ৰক্ৰিয়াই সঁহাৰি দিয়া নাই</string>
     <string name="anr_title" />
+    <string name="app_block_button_open">খোলক</string>
+    <string name="app_block_content">%1$s-এ %2$s এপ্প্‌টো খুলিবলৈ বিচাৰিছে।</string>
     <string name="app_blocked_message">এই মুহূৰ্তত %1$s উপলব্ধ নহয়।</string>
     <string name="app_blocked_title">এপ্‌টো উপলব্ধ নহয়</string>
     <string name="app_category_accessibility">সাধ্য সুবিধা</string>
@@ -423,42 +437,31 @@
     <string name="app_restricted_message_concentration_mode">"একাগ্ৰতা ম'ডৰ সময়ত %s ব্লক কৰা হৈছে। অধিক জানিবলৈ আপোনাৰ IT ব্যৱস্থাপকৰ সৈতে সম্পৰ্ক কৰক।"</string>
     <string name="app_running_notification_text">অধিক তথ্য জানিবলৈ বা এপ বন্ধ কৰিবলৈ টিপক।</string>
     <string name="app_running_notification_title">%1$s চলি আছে</string>
-    <string name="app_streaming_blocked_message">এইটো এতিয়া আপোনাৰ %1$sত এক্সেছ কৰিব পৰা নাযায়। তাৰ পৰিৱৰ্তে আপোনাৰ টেবলেটটোত চেষ্টা কৰি চাওক।</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">এই এপ্‌টোৱে অতিৰিক্ত সুৰক্ষাৰ বাবে অনুৰোধ কৰিছে। তাৰ পৰিৱৰ্তে আপোনাৰ টেবলেটত চেষ্টা কৰি চাওক।</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">এইটো আপোনাৰ %1$sত এক্সেছ কৰিব নোৱাৰি। তাৰ পৰিৱৰ্তে আপোনাৰ টেবলেটত চেষ্টা কৰি চাওক।</string>
+    <string name="app_streaming_blocked_message">এইটো এতিয়া আপোনাৰ %1$sত এক্সেছ কৰিব পৰা নাযায়। তাৰ পৰিৱৰ্তে আপোনাৰ ফ’নত চেষ্টা কৰি চাওক।</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">এই এপ্‌টোৱে অতিৰিক্ত সুৰক্ষাৰ বাবে অনুৰোধ কৰিছে। তাৰ পৰিৱৰ্তে আপোনাৰ ফ’নত চেষ্টা কৰি চাওক।</string>
+    <string name="app_streaming_blocked_message_for_permission_request">এই এপ্‌টোৱে অতিৰিক্ত অনুমতিৰ বাবে অনুৰোধ কৰিছে, কিন্তু ষ্ট্ৰীমিং ছেশ্বনত অনুমতি দিব নোৱাৰি। আপোনাৰ ফ’নটোত প্ৰথমে অনুমতি দিয়ক।</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">এইটো আপোনাৰ %1$sত এক্সেছ কৰিব নোৱাৰি। তাৰ পৰিৱৰ্তে আপোনাৰ ফ’নত চেষ্টা কৰি চাওক।</string>
     <string name="app_streaming_blocked_title">%1$s উপলব্ধ নহয়</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">কেমেৰা উপলব্ধ নহয়</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">ফ’নতে অব্যাহত ৰাখক</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">মাইক্ৰ’ফ’ন উপলব্ধ নহয়</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">অনুমতিৰ প্ৰয়োজন</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">অনুমতিৰ অনুৰোধ অৱদমন কৰা হৈছে</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store উপলব্ধ নহয়</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">টেবলেটৰ ছেটিং উপলব্ধ নহয়</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">ফ’নৰ ছেটিং উপলব্ধ নহয়</string>
     <string name="app_suspended_default_message">এই মুহূৰ্তত %1$s উপলব্ধ নহয়। ইয়াক %2$sএ পৰিচালনা কৰে।</string>
     <string name="app_suspended_more_details">অধিক জানক</string>
     <string name="app_suspended_title">এপ্‌টো নাই</string>
     <string name="app_suspended_unsuspend_message">এপ্‌ আনপজ কৰক</string>
     <string name="app_updating_message">%s আপডেট কৰি থকা হৈছে। পিছত পুনঃচেষ্টা কৰক।</string>
     <string name="app_upgrading_toast">%1$sক আপগ্ৰেড কৰি থকা হৈছে…</string>
-    <string name="appblock_block_subtitle1_phone">আপোনাৰ ফোন আৰু ব্যক্তিগত ডাটা সুৰক্ষিত কৰিবলৈ, এই এপ্প্‌টো ইনষ্টল কৰিব নোৱাৰি কাৰণ ইয়াক দূষিত বুলি সন্দেহ কৰা হৈছে।</string>
-    <string name="appblock_block_subtitle1_tablet">আপোনাৰ টেবলেট আৰু ব্যক্তিগত ডাটা সুৰক্ষিত কৰিবলৈ, এই এপ্প্‌টো ইনষ্টল কৰিব নোৱাৰি কাৰণ ইয়াক দূষিত বুলি সন্দেহ কৰা হৈছে।</string>
-    <string name="appblock_block_subtitle2">"এই এপ্প্‌টোক ইনষ্টল কৰিব নোৱাৰি কাৰণ ইয়াক এটা দূষিত বুলি ৰিপ'ৰ্ট কৰা হৈছে।"</string>
-    <string name="appblock_block_text1">এই এপ্প্‌টো কোনো সত্যাপন কৰা উৎসৰ নহয় আৰু ইয়াৰ বাবে সংবেদনশীল অনুমতিৰ আৱশ্যক হয় যিবোৰ আপোনাৰ ব্যক্তিগত ডাটা চুৰি বা ফাদিল কৰিবলৈ ব্যৱহাৰ কৰিব পাৰি।</string>
-    <string name="appblock_block_text2">"দূষিত এপ্প্‌সমূহে আপোনাৰ ব্যক্তিগত ডাটা চুৰি কৰিবলৈ, আপোনাৰ পৰিচয়ৰ ছদ্মৱেশ ধাৰণ কৰিবলৈ বা আপোনাৰ বিত্তীয় একাউণ্টসমূহ এক্সেছ কৰিবলৈ সংবেদনশীল অনুমতিসমূহ ব্যৱহাৰ কৰিব পাৰে।
-
-বৈধ বিত্তীয় প্ৰতিষ্ঠানসমূহৰ বাবে ইনষ্টলেশ্বন ZIP ফাইলসমূহ, APK ফাইলসমূহ বা ফাইল পৰিচালক এপ্প্‌সমূহৰ আৱশ্যকতা নাই।
-
-আপুনি ইনষ্টল কৰা এপ্প্‌সমূহ এটা বিশ্বাসযোগ্য উৎসৰ পৰা অহাটো সদায় নিশ্চিত কৰক।"</string>
-    <string name="appblock_warn_subtitle">এই এপ্প্‌টোৱে আপোনাৰ ব্যক্তিগত তথ্য চুৰি বা ফাদিল কৰিব পাৰে।</string>
+    <string name="appblock_block_text_phone">"এই এপ্প্‌টোক ইনষ্টল কৰিব নোৱাৰি কাৰণ ইয়াক দূষিত ৰূপে ৰিপ'ৰ্ট কৰা হৈছে বা এইটো দূষিত ৰূপে ৰিপ'ৰ্ট কৰা এটা এপ্প্‌ৰ সৈতে একেধৰণৰ। এই এপ্প্‌টোক ফিচিংৰ দৰে অপৰাধত ব্যৱহাৰ কৰাৰ সম্ভাৱনা আছে। আপোনাৰ ফোন আৰু ডাটা নিৰাপদে ৰাখিবলৈ, এই প্ৰতিবন্ধকতাক বাইপাছ কৰিব নোৱাৰি।"</string>
+    <string name="appblock_block_text_tablet">"এই এপ্প্‌টোক ইনষ্টল কৰিব নোৱাৰি কাৰণ ইয়াক দূষিত ৰূপে ৰিপ'ৰ্ট কৰা হৈছে বা এইটো দূষিত ৰূপে ৰিপ'ৰ্ট কৰা এটা এপ্প্‌ৰ সৈতে একেধৰণৰ। এই এপ্প্‌টোক ফিচিংৰ দৰে অপৰাধত ব্যৱহাৰ কৰাৰ সম্ভাৱনা আছে। আপোনাৰ টেবলেট আৰু ডাটা নিৰাপদে ৰাখিবলৈ, এই প্ৰতিবন্ধকতাক বাইপাছ কৰিব নোৱাৰি।"</string>
+    <string name="appblock_link_text">অধিক শিকক</string>
     <string name="appblock_warn_text1">"সত্যাপন নকৰা উৎসৰ পৰা অহা এপ্প্‌সমূহ ইনষ্টল কৰিলে এপ্প্‌সমূহে আপোনাৰ ব্যক্তিগত তথ্য সংগ্ৰহ কৰিবলৈ বা আপোনাৰ কাৰ্যকলাপ ট্ৰেক কৰিবলৈ অনুমতি দিব পাৰে।
 
 এই এপ্প্‌টো ইনষ্টল কৰাৰ অনুমোদন জনোৱা নাই।
 
 আপুনি ইয়াক যিকোনো প্ৰকাৰে ইনষ্টল কৰিবলৈ পছন্দ কৰিলে, এপ্প্‌টোৰ গোপনীয়তা জাননী মনোযোগেৰে পঢ়ক আৰু আপুনি কেৱল প্ৰয়োজনীয় অনুমতি প্ৰদান কৰাটো নিশ্চিত কৰক।"</string>
-    <string name="appblock_warn_text2">"দূষিত এপ্প্‌সমূহে প্ৰায়ে সম্পর্কসমূহ, SMS আৰু ফটোসমূহৰ অনুমতি ব্যৱহাৰ কৰি আপোনাৰ ব্যক্তিগত তথ্য লাভ কৰিবলৈ চেষ্টা কৰে।
-
-এই এপ্প্‌টো ইনষ্টল কৰাৰ অনুমোদন জনোৱা নাই।
-
-আপুনি এই এপ্প্‌টো যিকোনো প্ৰকাৰে ইনষ্টল কৰিবলৈ পছন্দ কৰিলে, এইটো আপুনি বিশ্বাস কৰা এটা উৎসৰ পৰা অহাটো নিশ্চিত কৰক আৰু আপোনাৰ ডাটালৈ অনুমতি বা অন্য এক্সেছৰ অনুমতি দিয়াৰ ক্ষেত্ৰত সাৱধান হওক।"</string>
     <string name="application_default_restrict">"ডিভাইচ ব্যৱস্থাপকৰ দ্বাৰা অন্য এপ্প্‌ ডিফ'ল্ট ৰূপে ছেট হৈছে৷"</string>
     <string name="as_app_forced_to_restricted_bucket">%1$sক সীমাবদ্ধ বাকেটটোত ৰখা হৈছে</string>
     <string name="auto_click_paused">স্বয়ং ক্লিক বিৰতি দিছে।</string>
@@ -490,9 +493,10 @@
     <string name="autofill_save_type_payment_card">পৰিশোধৰ বাবে ব্যৱহাৰ কৰা কার্ড</string>
     <string name="autofill_save_type_username">ব্যৱহাৰকাৰীৰ নাম</string>
     <string name="autofill_save_yes">ছেভ কৰক</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="autofill_update_title"><b>%1$s</b>ত আপডে’ট কৰিবনে?</string>
     <string name="autofill_update_title_with_2types"><b>%3$s</b>ত %1$s আৰু %2$s আপডে’ট কৰিবনে?</string>
-    <string name="autofill_update_title_with_3types">এই তথ্যবোৰ <b>%4$s</b>: %1$s, %2$s আৰু %3$sত আপডে’ট কৰিবনে ?</string>
+    <string name="autofill_update_title_with_3types">এই তথ্যবোৰ <b>%4$s</b>: %1$s, %2$s আৰু %3$sত আপডে’ট কৰিবনে?</string>
     <string name="autofill_update_title_with_type"><b>%2$s</b>ত %1$s আপডে’ট কৰিবনে?</string>
     <string name="autofill_update_yes">আপডে’ট কৰক</string>
     <string name="autofill_window_title">%1$sৰ জৰিয়তে স্বয়ংক্ৰিয়ভাৱে পূৰ্ণ কৰা সুবিধা</string>
@@ -503,7 +507,7 @@
     <string name="badPuk">আপুনি লিখা PUKটো শুদ্ধ নহয়।</string>
     <string name="badPuk2">আপুনি প্ৰৱিষ্ট কৰা PUK2 অশুদ্ধ।</string>
     <string name="batt_cooldown_mode_ok">ঠিক</string>
-    <string name="battery_saver_charged_notification_summary">টেবলেটটোত পর্যাপ্ত পৰিমাণে চার্জ আছে। সুবিধাবোৰ আৰু সীমাবদ্ধ কৰা নাই।</string>
+    <string name="battery_saver_charged_notification_summary">"ফ'নটোত পর্যাপ্ত পৰিমাণে চার্জ আছে। সুবিধাবোৰ আৰু সীমাবদ্ধ কৰা নাই।"</string>
     <string name="battery_saver_description">বেটাৰী সঞ্চয়কাৰীয়ে গাঢ় ৰঙৰ থীম অন কৰে আৰু নেপথ্যৰ কাৰ্যকলাপ, কিছুমান ভিজুৱেল ইফেক্ট, নিৰ্দিষ্ট কিছুমান সুবিধা আৰু নেটৱৰ্কৰ সংযোগ অফ কৰে অথবা সীমাবদ্ধ কৰে।</string>
     <string name="battery_saver_description_with_learn_more">বেটাৰী সঞ্চয়কাৰীয়ে গাঢ় ৰঙৰ থীম অন কৰে আৰু নেপথ্যৰ কাৰ্যকলাপ, কিছুমান ভিজুৱেল ইফেক্ট, নিৰ্দিষ্ট কিছুমান সুবিধা আৰু নেটৱৰ্কৰ সংযোগ সীমিত অথবা অফ কৰে।</string>
     <string name="battery_saver_notification_channel_name">বেটাৰী সঞ্চয়কাৰী</string>
@@ -517,6 +521,7 @@
     <string name="biometric_error_generic">আসোঁৱাহৰ বিশ্বাসযোগ্যতা প্ৰমাণীকৰণ কৰি থকা হৈছে</string>
     <string name="biometric_error_hw_unavailable">বায়োমেট্ৰিক হাৰ্ডৱেৰ উপলব্ধ নহয়</string>
     <string name="biometric_error_user_canceled">বিশ্বাসযোগ্যতাৰ প্ৰমাণীকৰণ বাতিল কৰা হৈছে</string>
+    <string name="biometric_face_not_recognized">মুখাৱয়ব চিনি পোৱা নাই</string>
     <string name="biometric_not_recognized">চিনাক্ত কৰিব পৰা নাই</string>
     <string name="biometric_or_screen_lock_app_setting_name">"বায়'মেট্ৰিক অথবা স্ক্ৰীন লক ব্যৱহাৰ কৰক"</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">অব্যাহত ৰাখিবলৈ আপোনাৰ বায়’মেট্ৰিক অথবা স্ক্ৰীন লক ব্যৱহাৰ কৰক</string>
@@ -528,8 +533,6 @@
     <string name="bluetooth_airplane_mode_toast">"এয়াৰপ্লেন ম'ডৰ সময়ত ব্লুটুথ অন হৈ থাকিব"</string>
     <string name="bluetooth_avrcp_restrict">"নিৰাপত্তা নীতিয়ে ব্লুটুথ অডিঅ'/ভিডিঅ' নিয়ন্ত্ৰণ ব্যৱহাৰ কৰাত প্ৰতিৰোধ কৰে৷"</string>
     <string name="bluetooth_bpp_restrict">নিৰাপত্তা নীতিয়ে ব্লুটুথৰ মাধ্যমেদি প্ৰিণ্ট কৰাত প্ৰতিৰোধ কৰে৷</string>
-    <string name="bluetooth_china_popup_message">%1$s-এ %2$s ব্যৱহাৰ কৰিবলৈ অনুমতিৰ অনুৰোধ কৰি আছে। অনুমতি দিবনে?</string>
-    <string name="bluetooth_china_popup_title">ব্লুটুথ</string>
     <string name="bluetooth_data_transfer_restrict">নিৰাপত্তা নীতিয়ে ব্লুটুথৰ মাধ্যমেদি ডাটা স্থানান্তৰ কৰাত প্ৰতিৰোধ কৰে৷</string>
     <string name="bluetooth_desktop_restrict">"নিৰাপত্তা নীতিয়ে ব্লুটুথৰ মাধ্যমেদি আপোনাৰ ডেস্কট'পলৈ সংযোগ স্থাপন কৰা প্ৰতিৰোধ কৰে৷"</string>
     <string name="bluetooth_device_restrict">নিৰাপত্তা নীতিয়ে এই ব্লুটুথ ডিভাইচ পেয়াৰ কৰাত প্ৰতিৰোধ কৰে৷</string>
@@ -540,7 +543,6 @@
     <string name="bluetooth_outgoing_call_restrict">নিৰাপত্তা নীতিয়ে ব্লুটুথৰ মাধ্যমেদি আউটগয়িং কলসমূহ কৰাত প্ৰতিৰোধ কৰে৷</string>
     <string name="bluetooth_pairing_restrict">নিৰাপত্তা নীতিয়ে ব্লুটুথ পেয়াৰ কৰাত প্ৰতিৰোধ কৰে৷</string>
     <string name="bluetooth_pbap_restrict">নিৰাপত্তা নীতিয়ে ব্লুটুথ ঠিকনা বহী ব্যৱহাৰ কৰাত প্ৰতিৰোধ কৰে৷</string>
-    <string name="bluetooth_permission_request">ব্লুটুথৰ বাবে অনুমতিৰ অনুৰোধ</string>
     <string name="bluetooth_restrict">নিৰাপত্তা নীতিয়ে ব্লুটুথ ব্যৱহাৰ কৰাত প্ৰতিৰোধ কৰে৷</string>
     <string name="bluetooth_sap_restrict">নিৰাপত্তা নীতিয়ে আপোনাৰ SIM কাৰ্ডলৈ ব্লুটুথৰ মাধ্যমেদি প্ৰৱেশ কৰাত প্ৰতিৰোধ কৰে৷</string>
     <string name="bluetooth_security_mode_disable">নিৰাপত্তা নীতিয়ে ব্লুটুথ ব্যৱহাৰ প্ৰতিৰোধ কৰে।</string>
@@ -652,11 +654,11 @@
     <string name="common_secure_boot_nwlock_notification_text">এই SIM কাৰ্ডখন সমৰ্থিত নহয়৷</string>
     <string name="common_secure_boot_nwlock_notification_title">Invalid SIM card inserted</string>
     <string name="concurrent_display_notification_active_content">%1$sএ সমল দেখুৱাবলৈ দুয়োখন ডিছপ্লে’ ব্যৱহাৰ কৰি আছে</string>
-    <string name="concurrent_display_notification_active_title">ডুৱেল স্ক্ৰীন অন আছে</string>
-    <string name="concurrent_display_notification_name">দ্বৈত স্ক্ৰীন</string>
+    <string name="concurrent_display_notification_active_title">Dual Screen অন আছে</string>
+    <string name="concurrent_display_notification_name">Dual Screen</string>
     <string name="concurrent_display_notification_power_save_content">বেটাৰী সঞ্চয়কাৰী অন হৈ থকাৰ কাৰণে Dual Screen সুবিধাটো উপলব্ধ নহয়। আপুনি ছেটিঙত এই সুবিধাটো অফ কৰিব পাৰে।</string>
     <string name="concurrent_display_notification_power_save_title">Dual Screen উপলব্ধ নহয়</string>
-    <string name="concurrent_display_notification_thermal_content">আপোনাৰ ফ’নটো অতি বেছি গৰম হোৱাৰ বাবে ডুৱেল স্ক্ৰীন উপলব্ধ নহয়</string>
+    <string name="concurrent_display_notification_thermal_content">আপোনাৰ ফ’নটো অতি বেছি গৰম হোৱাৰ বাবে Dual Screen উপলব্ধ নহয়</string>
     <string name="concurrent_display_notification_thermal_title">ডিভাইচটো অতি বেছি গৰম হৈছে</string>
     <string name="condition_provider_service_binding_label">অৱস্থা প্ৰদানকাৰী</string>
     <string name="conference_call">কনফাৰেঞ্চ কল</string>
@@ -665,12 +667,17 @@
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">ঠিক আছে</string>
+    <string name="connected_display_thermally_unavailable_notification_content">আপোনাৰ ডিভাইচটো অত্যধিক গৰম হৈছে আৰু এইটো ঠাণ্ডা নোহোৱালৈকে ডিছপ্লে’ত প্ৰতিবিম্বকৰণ কৰিব নোৱাৰি</string>
+    <string name="connected_display_unavailable_notification_content">অন্য এডাল কে’বল ব্যৱহাৰ কৰি পুনৰ চেষ্টা কৰক</string>
+    <string name="connected_display_unavailable_notification_title">সংযুক্ত ডিছপ্লে’ উপলব্ধ নহয়</string>
     <string name="console_running_notification_message">কাৰ্যক্ষমতা প্ৰভাৱিত হৈছে। অক্ষম কৰিবলৈ বুটল’ডাৰ পৰীক্ষা কৰক।</string>
     <string name="console_running_notification_title">ক্ৰমিক কনছ’ল সক্ষম কৰা আছে</string>
     <string name="constrained_status_bar_device_locked">ডিভাইচ অৱৰোধিত</string>
     <string name="contentServiceSync">ছিংক ত্ৰুটি</string>
     <string name="contentServiceSyncNotificationTitle">ছিংক কৰিব নোৱাৰি</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">একেলগে বহুত %s মচিবলৈ চেষ্টা কৰা হৈছে</string>
+    <string name="content_description_collapsed">সংকোচন কৰা আছে</string>
+    <string name="content_description_expanded">বিস্তাৰ কৰা আছে</string>
     <string name="content_description_sliding_handle">শ্লাইড কৰা হেণ্ডেল৷ স্পৰ্শ কৰক আৰু ধৰি ৰাখক৷</string>
     <string name="conversation_single_line_image_placeholder">এখন প্ৰতিচ্ছবি পঠিয়াইছে</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -696,12 +703,10 @@
     <string name="data_saver_description">"ডেটা ব্যৱহাৰ হ্ৰাস কৰিবলৈ ডেটা সঞ্চয়কাৰীয়ে কিছুমান এপক নেপথ্য়ত ডেটা প্ৰেৰণ বা সংগ্ৰহ কৰাত বাধা প্ৰদান কৰে। আপুনি বৰ্তমান ব্যৱহাৰ কৰি থকা এটা এপে ডেটা এক্সেছ কৰিব পাৰে, কিন্তু সঘনাই এক্সেছ কৰিব নোৱাৰিব পাৰে। ইয়াৰ অৰ্থ উদাহৰণস্বৰূপে এয়া হ'ব পাৰে যে, আপুনি নিটিপা পর্যন্ত প্ৰতিচ্ছবিসমূহ দেখুওৱা নহ’ব।"</string>
     <string name="data_saver_enable_button">অন কৰক</string>
     <string name="data_saver_enable_title">ডেটা সঞ্চয়কাৰী অন কৰিবনে?</string>
-    <string name="data_usage_disable_mobile">"ম'বাইল ডাটা সংযোগ অক্ষম নেকি?"</string>
-    <string name="data_usage_enable_mobile_warning">পকেট ডাটাৰ যোগেদি সংযোগ কৰিলে অতিৰিক্ত ধন আদায় দিব লাগিব পাৰে৷ জাৰী ৰাখিবনে?</string>
     <string name="data_usage_limit_body">"আপোনাৰ বিলিং চাইকেল সমাপ্ত নোহোৱালৈকে ম'বাইল ডাটা বিৰতি দিয়া হয়।"</string>
     <string name="data_usage_limit_snoozed_body">আপুনি নিৰ্ধাৰিত সীমাতকৈ %s অধিক ব্যৱহাৰ কৰিছে</string>
     <string name="data_usage_mobile_limit_snoozed_title">"আপোনাৰ ম'বাইল ডাটাৰ সীমা পাৰ কৰিছে"</string>
-    <string name="data_usage_mobile_limit_title">"ম'বাইল ডাটাৰ সীমাত উপনীত হৈছে"</string>
+    <string name="data_usage_mobile_limit_title">ম’বাইল ডেটা ব্যৱাহৰৰ সীমা শেষ হৈছে</string>
     <string name="data_usage_rapid_app_body">%s-এ সাধাৰণতকৈ বেছি ডাটা ব্যৱহাৰ কৰিছে।</string>
     <string name="data_usage_rapid_body">আপোনাৰ এপ্প্‌সমূহে সাধাৰণতকৈ বেছি ডাটা ব্যৱহাৰ কৰিছে।</string>
     <string name="data_usage_rapid_title">"উচ্চ ম'বাইল ডাটাৰ ব্যৱহাৰ"</string>
@@ -731,7 +736,7 @@
     <string name="decline">প্ৰত্যাখ্যান কৰক</string>
     <string name="decline_remote_bugreport_action">প্ৰত্যাখ্যান কৰক</string>
     <string name="default_audio_route_category_name">ছিষ্টেম</string>
-    <string name="default_audio_route_name">টেবলেট</string>
+    <string name="default_audio_route_name">"ফ'ন"</string>
     <string name="default_audio_route_name_dock_speakers">"ড'ক স্পীকাৰসমূহ"</string>
     <string name="default_audio_route_name_external_device">বাহ্যিক ডিভাইচ</string>
     <string name="default_audio_route_name_headphones">"হেডফ'নবোৰ"</string>
@@ -749,11 +754,13 @@
     <string name="deprecated_target_sdk_message">এই এপ্‌টো Androidৰ এটা পুৰণা সংস্কৰণৰ বাবে বনোৱা হৈছিল। এইটোৱে সঠিকভাৱে কাম নকৰিব পাৰে আৰু ইয়াত শেহতীয়া সুৰক্ষা আৰু গোপনীয়তা সম্পৰ্কীয় সুৰক্ষাসমূহ নাথাকে। কোনো আপডে’ট আছে নেকি চাওক অথবা এপৰ বিকাশকৰ্তাগৰাকীৰ সৈতে যোগাযোগ কৰক।</string>
     <string name="description_target_unlock_tablet">স্ক্ৰীন আনলক কৰিবলৈ ছোৱাইপ কৰক৷</string>
     <string name="device_disabled">ডিভাইচ অক্ষম৷ IT কৰ্তৃপক্ষৰ সৈতে যোগাযোগ কৰক৷</string>
+    <string name="device_info_not_available">উপলভ্য নহয়৷</string>
     <string name="device_ownership_relinquished">প্ৰশাসকে ডিভাইচটো ব্যক্তিগত ব্যৱহাৰৰ বাবে বাজেয়প্ত কৰিছে</string>
     <string name="device_policy_manager_service">ডিভাইচৰ নীতিৰ পৰিচালক সেৱা</string>
     <string name="device_state_notification_settings_button">ছেটিঙলৈ যাওক</string>
     <string name="device_state_notification_turn_off_button">অফ কৰক</string>
     <string name="device_storage_monitor_notification_channel">ডিভাইচৰ ষ্ট’ৰেজ</string>
+    <string name="device_unlock_notification_name">ডিভাইচ আনলক</string>
     <string name="dex_cant_change_user_profile">"Samsung DeX ম'ডত থাকোতে ব্যৱহাৰকাৰীৰ প্ৰ'ফাইল পৰিৱৰ্তন কৰিব নোৱাৰে।"</string>
     <string name="dex_dialog_launch_toast">"খোলা এপ্প্‌সমূহ বন্ধ হ'ব পাৰে। Samsung DeX আৰম্ভ বা প্ৰস্থান কৰাৰ পূৰ্বে আপোনাৰ ডাটা সংৰক্ষণ কৰক।"</string>
     <string name="dex_disconnected_from_device">%s-ৰ পৰা DeX সংযোগহীন হৈছে। আপোনাৰ TV-ত নেটৱৰ্ক সংযোগটো পৰীক্ষা কৰক।</string>
@@ -762,9 +769,6 @@
     <string name="dex_launcher_mode_change">Samsung DeX-লৈ সলনি কৰিবলৈ %s বন্ধ হৈছে।</string>
     <string name="dex_mirroring_jit_msg">"আপুনি আপোনাৰ টেবলেটত Samsung DeX চলোৱাৰ সময়ত, আপুনি ডাঙৰ দৃশ্যৰ বাবে কোনো HDMI-সংযোজিত ডিচপ্লেত স্ক্ৰীণখন মিৰ'ৰ কৰিব পাৰে।"</string>
     <string name="dex_mirroring_jit_title">"এখন ডাঙৰ স্ক্ৰীণত DeX মিৰ'ৰ কৰক"</string>
-    <string name="dex_restart_app_dialog_button_positive">পুনৰাৰম্ভ</string>
-    <string name="dex_restart_app_dialog_message">এই এপ্প্‌টো ইতিমধ্যে অন্য প্ৰদৰ্শনত চলি আছে। ইয়াক ইয়াত খুলিবলৈ, এপ্প্‌টো পুনৰাৰম্ভ কৰাৰ প্ৰয়োজন। আপুনি ইয়াক পুনৰাৰম্ভ কৰাৰ পূৰ্বে কোনো গুৰুত্বপূৰ্ণ বস্তু সংৰক্ষণ কৰক।</string>
-    <string name="dex_restart_app_dialog_title">%s পুনৰাৰম্ভ কৰিবনে?</string>
     <string name="dex_restriction_blockerMessage">নিৰাপত্তা নীতিয়ে Samsung DeX-ৰ ব্যৱহাৰ প্ৰতিৰোধ কৰে।</string>
     <string name="dex_restriction_ethernetOnly">"নিৰাপত্তা নীতিয়ে DeX-ত Wi-Fi ডাটা, ম'বাইল ডাটা আৰু টিথাৰিঙৰ ব্যৱহাৰ প্ৰতিৰোধ কৰে। নেটৱৰ্ক সুবিধাৰ বাবে এটা তাঁৰযুক্ত সংযোগৰ আৱশ্যক।"</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">নিৰাপত্তা নীতিৰ বাবে, Samsung DeX-ৰ পৰা প্ৰস্থান কৰিবলৈ বাহ্যিক প্ৰদৰ্শন সংযোগহীন কৰক।</string>
@@ -793,7 +797,6 @@
     <string name="disableupdate_application_restrict">নিৰাপত্তা নীতিয়ে এই এপ্লিকেশ্বন আপডেট কৰাটো প্ৰতিৰোধ কৰে৷</string>
     <string name="dismiss_action">অগ্ৰাহ্য কৰক</string>
     <string name="display_chooser_button_positive">পুনৰাৰম্ভ</string>
-    <string name="display_chooser_dont_show_again">পুনঃ নেদেখুৱাব</string>
     <string name="display_manager_built_in_display_name">বিল্ট-ইন স্ক্ৰীন</string>
     <string name="display_manager_hdmi_display_name">HDMI স্ক্ৰীন</string>
     <string name="display_manager_overlay_display_name">"অ'ভাৰলে' #%1$d"</string>
@@ -814,6 +817,7 @@
     <string name="dpm_wifi_misc_network_insecure">নিৰাপত্তা নীতিয়ে অসুৰক্ষিত Wi-Fi নেটৱৰ্কসমূহ ব্যৱহাৰ কৰাত প্ৰতিৰোধ কৰে৷</string>
     <string name="dpm_wifi_misc_wifi_disabled">নিৰাপত্তা নীতিয়ে Wi-Fi ব্যৱহাৰক প্ৰতিৰোধ কৰে৷</string>
     <string name="dpm_wifi_user_profiles_denied">নিৰাপত্তা নীতিয়ে Wi-Fi নেটৱৰ্কৰ যোগকৰণত প্ৰতিৰোধ কৰে৷</string>
+    <string name="dream_accessibility_action_click">অগ্ৰাহ্য কৰক</string>
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">"মাল্টি উইণ্ড' দৰ্শনত এই এপ্প্‌ ব্যৱহাৰ কৰিব নোৱাৰে।"</string>
     <string name="dream_preview_title">পূৰ্বদৰ্শন কৰক, %1$s</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">"মাল্টি উইণ্ড' দৰ্শনত এই সুবিধা ব্যৱহাৰ কৰিব নোৱাৰে।"</string>
@@ -842,11 +846,13 @@
     <string name="duration_years_shortest_future">%d বছৰত</string>
     <string name="dynamic_mode_notification_channel_name">ৰুটিন ম’ডৰ তথ্য জাননী</string>
     <string name="dynamic_mode_notification_summary">বেটাৰীৰ জীৱনকাল বৃদ্ধি কৰিবলৈ বেটাৰীৰ ব্যৱহাৰ কমোৱা হৈছে</string>
+    <string name="dynamic_mode_notification_summary_v2">বেটাৰীৰ জীৱনকাল বৃদ্ধি কৰিবলৈ বেটাৰী সঞ্চয়কাৰী অন কৰা হৈছে</string>
     <string name="dynamic_mode_notification_title">বেটাৰী সঞ্চয়কাৰী অন কৰা হৈছে</string>
+    <string name="dynamic_mode_notification_title_v2">বেটাৰী সঞ্চয়কাৰী অন কৰা হৈছে</string>
     <string name="editTextMenuTitle">পাঠ বিষয়ক কাৰ্য</string>
     <string name="edit_accessibility_shortcut_menu_button">শ্বৰ্টকাটসমূহ সম্পাদনা কৰক</string>
     <string name="edit_contact_at_sim_restriction">নিৰাপত্তা নীতিয়ে SIM কাৰ্ডৰ সম্পৰ্ক সম্পাদনা কৰাত প্ৰতিৰোধ কৰে৷</string>
-    <string name="edm_policy_not_allow_open_wifiap">অনুমতি দিয়া ডিভাইচসমূহ</string>
+    <string name="edm_policy_not_allow_open_wifiap">"নিৰাপত্তা নীতিয়ে হ'টস্প'টৰ বাবে অসুৰক্ষিত টেডাৰিং ব্যৱহাৰ কৰাৰ পৰা প্ৰতিবন্ধিত কৰে৷"</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
     <string name="elapsed_time_short_format_mm_ss">%1$02d:%2$02d</string>
     <string name="emailTypeCustom">নিজৰ উপযোগিতা অনুযায়ী</string>
@@ -857,8 +863,10 @@
     <string name="emergency_call_dialog_number_for_display">জৰুৰীকালীন নম্বৰ</string>
     <string name="emergency_calls_only">কেৱল জৰুৰীকালীন কল</string>
     <string name="enablePin">অসফল, ছিম/RUIM লক সক্ষম কৰক।</string>
-    <string name="enable_explore_by_touch_warning_message">%1$sএ স্পৰ্শৰ দ্বাৰা অন্বেষণ কৰিব বিচাৰে। যেতিয়া স্পৰ্শৰ দ্বাৰা অন্বেষণ কৰা সুবিধা অন কৰা থাকে তেতিয়া আপোনাৰ আঙুলিৰ তলত থকা বিৱৰণবোৰ শুনিব বা চাব পাৰে বা আঙুলিৰ সংকেতৰ জৰিয়তে টেবলেট ব্যৱহাৰ কৰিব পাৰে।</string>
+    <string name="enable_explore_by_touch_warning_message">"%1$sএ স্পৰ্শৰ দ্বাৰা অন্বেষণ কৰিব বিচাৰে। যেতিয়া স্পৰ্শৰ দ্বাৰা অন্বেষণ কৰা সুবিধা অন কৰা থাকে তেতিয়া আপোনাৰ আঙুলিৰ তলত থকা বিৱৰণবোৰ শুনিব বা চাব পাৰে বা আঙুলিৰ ইংগিতৰ জৰিয়তে ফ'ন ব্যৱহাৰ কৰিব পাৰে।"</string>
     <string name="enable_explore_by_touch_warning_title">স্পৰ্শৰে অন্বেষণ কৰা সুবিধা সক্ষম কৰিবনে?</string>
+    <string name="error_handwriting_unsupported">এই ক্ষেত্ৰত হস্তলিপি সমৰ্থিত নহয়</string>
+    <string name="error_handwriting_unsupported_password">পাছৱৰ্ড ক্ষেত্ৰসমূহত হস্তলিপি সমৰ্থিত নহয়</string>
     <string name="error_message_change_not_allowed">আপোনাৰ প্ৰশাসকে এই অৱস্থাটো সলনি কৰিবলৈ অনুমতি নিদিয়ে</string>
     <string name="error_message_title">আসোঁৱাহ</string>
     <string name="ethernet_cable_connected_notification_message">ছেট কৰিবলৈ টিপক৷</string>
@@ -889,7 +897,7 @@
     <string name="ext_media_move_specific_title">%sক স্থানান্তৰ কৰি থকা হৈছে</string>
     <string name="ext_media_move_success_message">%sলৈ সমল স্থানান্তৰ কৰা হ’ল</string>
     <string name="ext_media_move_success_title">সমলৰ স্থানান্তৰণ সমাপ্ত হ’ল</string>
-    <string name="ext_media_move_title">ডেটা স্থানান্তৰ কৰি থকা হৈছে</string>
+    <string name="ext_media_move_title">ডেটা স্থানান্তৰ কৰি থকা হৈ\ufffd\ufffd\ufffdে</string>
     <string name="ext_media_new_notification_message">ছেট আপ কৰিবলৈ টিপক</string>
     <string name="ext_media_new_notification_title">নতুন %s</string>
     <string name="ext_media_nofs_notification_message">এচডি কাৰ্ড উকা বা অসমৰ্থিত ফাইল ছিষ্টেম আছে৷</string>
@@ -920,7 +928,7 @@
     <string name="ext_media_unsupported_notification_message">এই ডিভাইচে এই %s সমৰ্থন নকৰে। এটা সমৰ্থিত ফৰ্মেটত ছেট আপ কৰিবলৈ টিপক।</string>
     <string name="ext_media_unsupported_notification_title">অসমৰ্থিত %s</string>
     <string name="ext_storage_bad_removal_button">পুনৰাৰম্ভ কৰক</string>
-    <string name="ext_storage_bad_removal_title">আপোনাৰ টেবলেট পুনৰাৰম্ভ কৰক</string>
+    <string name="ext_storage_bad_removal_title">আপোনাৰ ফোন পুনৰাৰম্ভ কৰক</string>
     <string name="extmedia_format_button_format">সজ্জা</string>
     <string name="extmedia_format_message">SD কাৰ্ড সজ্জা কৰিব বিচৰাটো আপুনি নিশ্চিতনে? আপোনাৰ কাৰ্ডত সকলো ডাটা হেৰুৱাব পাৰে৷</string>
     <string name="extmedia_format_message_usbhost">আপোনাৰ USB সংগ্রহত সংৰক্ষিত হৈ থকা যিকোনো ফাইল মোহাৰ খাই যাব পাৰে। কাৰ্য্য ঘুৰাই আনিব নোৱাৰে৷</string>
@@ -942,7 +950,7 @@
     <string name="face_acquired_too_bright">অতি উজ্জ্বল। ইয়াতকৈ কম পোহৰৰ উৎস ব্যৱহাৰ কৰক।</string>
     <string name="face_acquired_too_close">ফ’নটো আৰু আঁতৰলৈ নিয়ক</string>
     <string name="face_acquired_too_dark">পৰ্যাপ্ত পোহৰ নাই</string>
-    <string name="face_acquired_too_different">মুখাৱয়ব চিনিব নোৱাৰি। পুনৰ চেষ্টা কৰক।</string>
+    <string name="face_acquired_too_different">মুখাৱয়ব চিনাক্ত কৰিব পৰা নাই। পুনৰ চেষ্টা কৰক।</string>
     <string name="face_acquired_too_far">ফ’নটো ওচৰলৈ আনক</string>
     <string name="face_acquired_too_high">ফ’নটো ওপৰলৈ নিয়ক</string>
     <string name="face_acquired_too_left">ফ’নটো আপোনাৰ সোঁফাললৈ নিয়ক</string>
@@ -972,11 +980,9 @@
     <string name="face_or_screen_lock_app_setting_name">ফেচ আনলক অথবা স্ক্ৰীন লক ব্যৱহাৰ কৰক</string>
     <string name="face_or_screen_lock_dialog_default_subtitle">অব্যাহত ৰাখিবলৈ আপোনাৰ মুখাৱয়ব অথবা স্ক্ৰীন লক ব্যৱহাৰ কৰক</string>
     <string name="face_recalibrate_notification_content">আপোনাৰ মুখাৱয়বৰ মডেলটো মচিবলৈ টিপক, তাৰ পাছত পুনৰ আপোনাৰ মুখাৱয়ব যোগ দিয়ক</string>
-    <string name="face_recalibrate_notification_name">ফেচ আনলক</string>
+    <string name="face_recalibrate_notification_name">ফে’চ আনলক</string>
     <string name="face_recalibrate_notification_title">ফেচ আনলক ব্যৱহাৰ কৰোঁতে সমস্যা হৈছে</string>
     <string name="face_sensor_privacy_enabled">ফেচ আনলক সুবিধাটো ব্যৱহাৰ কৰিবলৈ ছেটিং > গোপনীয়তাত <b>কেমেৰাৰ এক্সেছ</b> অন কৰক</string>
-    <string name="face_setup_notification_content">আপোনাৰ ফ’নটোলৈ চাই সেইটো আনলক কৰক</string>
-    <string name="face_setup_notification_title">ফেচ আনলক সুবিধাটো ছেট আপ কৰক</string>
     <string name="faceunlock_multiple_failures">গৰাকীৰ ফেচ আনলক কৰা সৰ্বাধিক সীমা অতিক্ৰম কৰা হ’ল</string>
     <string name="factory_reset_message">"এই প্ৰশাসক এপ্‌টো ব্যৱহাৰ কৰিব নোৱাৰি। এতিয়া আপোনাৰ ডিভাইচটোৰ ডেটা মচা হ'ব।
 
@@ -1012,20 +1018,21 @@
     <string name="fingerprint_app_setting_name">ফিংগাৰপ্ৰিণ্ট ব্যৱহাৰ কৰক</string>
     <string name="fingerprint_authenticated">ফিংগাৰপ্ৰিণ্টৰ সত্যাপন কৰা হ’ল</string>
     <string name="fingerprint_dialog_default_subtitle">অব্যাহত ৰাখিবলৈ আপোনাৰ ফিংগাৰপ্ৰিণ্ট ব্যৱহাৰ কৰক</string>
-    <string name="fingerprint_error_bad_calibration">ফিংগাৰপ্ৰিণ্ট ছেন্সৰ ব্যৱহাৰ কৰিব নোৱাৰি। মেৰামতি সেৱা প্ৰদানকাৰী কোনো প্ৰতিষ্ঠানলৈ যাওক</string>
-    <string name="fingerprint_error_canceled">ফিংগাৰপ্ৰিণ্ট কাৰ্য বাতিল কৰা হ’ল।</string>
-    <string name="fingerprint_error_hw_not_available">ফিংগাৰপ্ৰিণ্ট হাৰ্ডৱেৰ নাই।</string>
-    <string name="fingerprint_error_hw_not_present">এই ডিভাইচটোত ফিংগাৰপ্ৰিণ্ট ছেন্সৰ নাই।</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">মুখাৱয়ব চিনাক্ত কৰিব পৰা নাই। ইয়াৰ পৰিৱৰ্তে ফিংগাৰপ্ৰিণ্ট ব্যৱহাৰ কৰক।</string>
+    <string name="fingerprint_error_bad_calibration">ফিংগাৰপ্ৰিণ্ট ছেন্সৰ ব্যৱহাৰ কৰিব নোৱাৰি। মেৰামতি সেৱা প্ৰদানকাৰী কোনো প্ৰতিষ্ঠানলৈ যাওক।</string>
+    <string name="fingerprint_error_canceled">ফিংগাৰপ্ৰিণ্টৰ দ্বাৰা বিশ্বাসযোগ্যতা প্ৰমাণীকৰণ কাৰ্যটো বাতিল কৰা হৈছে</string>
+    <string name="fingerprint_error_hw_not_available">ফিংগাৰপ্ৰিণ্ট হাৰ্ডৱেৰ নাই</string>
+    <string name="fingerprint_error_hw_not_present">এই ডিভাইচটোত ফিংগাৰপ্ৰিণ্ট ছেন্সৰ নাই</string>
     <string name="fingerprint_error_lockout">অতি বেছিসংখ্যক প্ৰয়াস। ইয়াৰ সলনি স্ক্ৰীন লক ব্যৱহাৰ কৰক।</string>
     <string name="fingerprint_error_lockout_permanent">অতি বেছিসংখ্যক প্ৰয়াস। ইয়াৰ সলনি স্ক্ৰীন লক ব্যৱহাৰ কৰক।</string>
-    <string name="fingerprint_error_no_fingerprints">"কোনো ফিংগাৰপ্ৰিণ্ট যোগ কৰা নহ'ল।"</string>
+    <string name="fingerprint_error_no_fingerprints">কোনো ফিংগাৰপ্ৰিণ্ট পঞ্জীয়ন কৰা হোৱা নাই</string>
     <string name="fingerprint_error_no_space">ফিংগাৰপ্ৰিণ্ট ছেট আপ কৰিব নোৱাৰি</string>
     <string name="fingerprint_error_not_match">ফিংগাৰপ্ৰিণ্ট চিনাক্ত কৰিব পৰা নাই</string>
     <string name="fingerprint_error_power_pressed">পাৱাৰ বুটাম টিপা হৈছে</string>
-    <string name="fingerprint_error_security_update_required">ছেন্সৰটো সাময়িকভাৱে অক্ষম হৈ আছে।</string>
+    <string name="fingerprint_error_security_update_required">ছেন্সৰটো সাময়িকভাৱে অক্ষম হৈ আছে</string>
     <string name="fingerprint_error_timeout">ফিংগাৰপ্ৰিণ্ট ছেটআপ কৰাৰ সময় উকলি গৈছে। পুনৰ চেষ্টা কৰক।</string>
     <string name="fingerprint_error_unable_to_process">ফিংগাৰপ্ৰিণ্ট চিনাক্তকৰণ প্ৰক্ৰিয়া কৰিব পৰা নাই। পুনৰ চেষ্টা কৰক।</string>
-    <string name="fingerprint_error_user_canceled">ব্যৱহাৰকাৰীয়ে ফিংগাৰপ্ৰিণ্ট ক্ৰিয়া বাতিল কৰিছে।</string>
+    <string name="fingerprint_error_user_canceled">ব্যৱহাৰকাৰীয়ে ফিংগাৰপ্ৰিণ্টৰ দ্বাৰা বিশ্বাসযোগ্যতা প্ৰমাণীকৰণ কাৰ্য বাতিল কৰিছে</string>
     <string name="fingerprint_error_vendor_unknown">কিবা ভুল হ’ল। পুনৰ চেষ্টা কৰক।</string>
     <string name="fingerprint_name_template">%d আঙুলি</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">ফিংগাৰপ্ৰিণ্ট অথবা স্ক্ৰীন লক ব্যৱহাৰ কৰক</string>
@@ -1033,8 +1040,6 @@
     <string name="fingerprint_recalibrate_notification_content">মেৰামতি সেৱা প্ৰদানকাৰী কোনো প্ৰতিষ্ঠানলৈ যাওক।</string>
     <string name="fingerprint_recalibrate_notification_name">ফিংগাৰপ্ৰিন্ট আনলক</string>
     <string name="fingerprint_recalibrate_notification_title">ফিংগাৰপ্ৰিণ্ট ছেন্সৰ ব্যৱহাৰ কৰিব নোৱাৰি</string>
-    <string name="fingerprint_setup_notification_content">এটা ফিংগাৰপ্ৰিণ্ট যোগ দিবলৈ টিপক</string>
-    <string name="fingerprint_setup_notification_title">আনলক কৰাৰ অধিক উপায় ছেট আপ কৰক</string>
     <string name="fingerprint_udfps_error_not_match">ফিংগাৰপ্ৰিণ্ট চিনাক্ত কৰিব পৰা নাই</string>
     <string name="fingerprints">ফিংগাৰপ্ৰিণ্ট:</string>
     <string name="firmwarerecovery_restrict">নিৰাপত্তা নীতিয়ে ফাৰ্মৱেৰ পুনৰুদ্ধাৰক প্ৰতিৰোধ কৰে৷</string>
@@ -1123,7 +1128,7 @@
     <string name="global_action_toggle_sealed_mode">"চিল কৰা ম'ড"</string>
     <string name="global_action_toggle_silent_mode">"নিঃশব্দ ম'ড"</string>
     <string name="global_action_voice_assist">কণ্ঠধ্বনিৰে সহায়</string>
-    <string name="global_actions">"টে'বলেটৰ বিকল্পসমূহ"</string>
+    <string name="global_actions">"ফ'নৰ বিকল্পসমূহ"</string>
     <string name="global_actions_airplane_mode_off_status">"এয়াৰপ্লেইন ম'ড অফ কৰা আছে"</string>
     <string name="global_actions_airplane_mode_on_status">"এয়াৰপ্লেইন ম'ড অন কৰা আছে"</string>
     <string name="global_actions_toggle_airplane_mode">এয়াৰপ্লে’ন ম’ড</string>
@@ -1144,6 +1149,7 @@
     <string name="globalactions_unable_restart_msg_fmm">"পুনৰাৰম্ভ কৰিব নোৱাৰে কাৰণ ফোনটো মোৰ ম'বাইল বিচাৰক ব্যৱহাৰ কৰি দূৰৱৰ্তীভাৱে লক কৰা হৈছে।"</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">"পুনৰাৰম্ভ কৰিব নোৱাৰে কাৰণ টেবলেটটো মোৰ ম'বাইল বিচাৰক ব্যৱহাৰ কৰি দূৰৱৰ্তীভাৱে লক কৰা হৈছে।"</string>
     <string name="globalactions_unable_restart_msg_securelock">"লক হৈ থাকোতে ফোন পুনৰাৰম্ভ কৰিব নোৱাৰে। ফোনটো পুনৰাৰম্ভ কৰিবলৈ ক'ভাৰ খোলক আৰু আনলক কৰক।"</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">SIM কাৰ্ড লক হৈ থাকোতে ফোন পুনৰাৰম্ভ কৰিব নোৱাৰে।</string>
     <string name="gnss_service">GNSS সেৱা</string>
     <string name="gnss_time_update_service">GNSS সময় আপডে’ট প্ৰদান কৰা সেৱা</string>
     <string name="gpsNotifMessage">%1$s (%2$s)এ অনুৰোধ কৰিছে</string>
@@ -1159,7 +1165,7 @@
     <string name="granularity_label_link">লিংক</string>
     <string name="granularity_label_word">শব্দ</string>
     <string name="guest_name">অতিথি</string>
-    <string name="hardware">"ভাৰ্শ্বুৱল কীব'ৰ্ড দেখুৱাওক"</string>
+    <string name="hardware">অন-স্ক্ৰীন কীব’ৰ্ড ব্যৱহাৰ কৰক</string>
     <string name="hardware_key_restrict">নিৰাপত্তা আঁচনিয়ে এই হাৰ্ডৱেৰ কী ব্যৱহাৰ কৰাত প্ৰতিৰোধ কৰে৷</string>
     <string name="hardware_sec">"অন-স্ক্ৰীণ কীব'ৰ্ড"</string>
     <string name="harmful_app_warning_open_anyway">"যিহ'লেও খোলক"</string>
@@ -1279,7 +1285,7 @@
     <string name="keyguard_accessibility_add_widget">ৱিজেট যোগ কৰক।</string>
     <string name="keyguard_accessibility_camera">কেমেৰা</string>
     <string name="keyguard_accessibility_expand_lock_area">আনলক ক্ষেত্ৰ বিস্তাৰ কৰক।</string>
-    <string name="keyguard_accessibility_face_unlock">ফেচ আনলক।</string>
+    <string name="keyguard_accessibility_face_unlock">ফে’চ আনলক।</string>
     <string name="keyguard_accessibility_password_unlock">পাছৱৰ্ডৰদ্বাৰা আনলক।</string>
     <string name="keyguard_accessibility_pattern_area">আৰ্হি ক্ষেত্ৰ।</string>
     <string name="keyguard_accessibility_pattern_unlock">আৰ্হিৰদ্বাৰা আনলক।</string>
@@ -1308,11 +1314,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>&lt;/font> পাছৱর্ড লিখিবলৈ টিপক</string>
     <string name="keyguard_password_wrong_pin_code">"ভুল পিন ক'ড।"</string>
     <string name="kg_enter_confirm_pin_hint">"ইচ্ছা কৰা পিন ক'ড নিশ্চিত কৰক"</string>
-    <string name="kg_failed_attempts_almost_at_login">"আপুনি আপোনাৰ ল'ক খোলাৰ আৰ্হিটো %1$dবাৰ ভুলকৈ আঁকিছে। %2$dতকৈ বেছি বাৰ ভুল আৰ্হি আঁকিলে আপোনাৰ টেবলেটটো কোনো একাউণ্টৰ জৰিয়তে আনলক কৰিবলৈ কোৱা হ'ব।
+    <string name="kg_failed_attempts_almost_at_login">"আপুনি আপোনাৰ ল'ক খোলাৰ আৰ্হিটো %1$dবাৰ ভুলকৈ আঁকিছে। %2$dতকৈ বেছি বাৰ ভুল আৰ্হি আঁকিলে আপোনাৰ ফ'নটো কোনো একাউণ্টৰ জৰিয়তে আনলক কৰিবলৈ কোৱা হ'ব।
 
  %3$d ছেকেণ্ডৰ পাছত আকৌ চেষ্টা কৰক।"</string>
-    <string name="kg_failed_attempts_almost_at_wipe">"আপুনি %1$dবাৰ ভুলকৈ টেবলেটৰ ল'ক খোলাৰ প্ৰয়াস কৰিছে। %2$dতকৈ বেছি বাৰ ভুল প্ৰয়াস কৰিলে টেবলেটটো ফেক্টৰী ডিফ'ল্টলৈ ৰিছেট কৰা হ'ব আৰু আটাইবোৰ ব্যৱহাৰকাৰীৰ ডেটা হেৰুৱাব।"</string>
-    <string name="kg_failed_attempts_now_wiping">"আপুনি %dবাৰ ভুলকৈ টেবলেটৰ ল'ক খোলাৰ প্ৰয়াস কৰিছে। টেবলেটটো এতিয়া ফেক্টৰী ডিফ'ল্টলৈ ৰিছেট কৰা হ'ব।"</string>
+    <string name="kg_failed_attempts_almost_at_wipe">"আপুনি %1$dবাৰ ভুলকৈ ফ'নৰ ল'ক খোলাৰ প্ৰয়াস কৰিছে। %2$dতকৈ বেছি বাৰ ভুল প্ৰয়াস কৰিলে ফ'নটো ফেক্টৰী ডিফ'ল্টলৈ ৰিছেট কৰা হ'ব আৰু ব্যৱহাৰকাৰীৰ আটাইবোৰ ডেটা হেৰুৱাব।"</string>
+    <string name="kg_failed_attempts_now_wiping">"আপুনি %dবাৰ ভুলকৈ ফ'নৰ ল'ক খোলাৰ প্ৰয়াস কৰিছে। ফ'নটো এতিয়া ফেক্টৰী ডিফ'ল্টলৈ ৰিছেট কৰা হ'ব।"</string>
     <string name="kg_forgot_pattern_button_text">আৰ্হি পাহৰিলেনে</string>
     <string name="kg_invalid_confirm_pin_hint">"পিন ক'ড মিলা নাই"</string>
     <string name="kg_invalid_puk">"শুদ্ধ PUK ক'ডটো পুনৰ দিয়ক। বাৰে বাৰে ভুল ক'ড দিলে ছিমখন স্থায়ীভাৱে অক্ষম হ'ব।"</string>
@@ -1371,7 +1377,7 @@
     <string name="language_picker_section_all">সকলো ভাষা</string>
     <string name="language_picker_section_show_all">সকলো ভাষা</string>
     <string name="language_picker_section_show_other">অন্য ভাষাসমূহ</string>
-    <string name="language_picker_section_suggested">প্ৰস্তাৱিত</string>
+    <string name="language_picker_section_suggested">পৰামৰ্শিত</string>
     <string name="language_picker_section_suggested_bilingual">পৰামৰ্শিত ভাষাসমূহ</string>
     <string name="language_picker_section_suggested_sec">চেমচাঙৰ পৰামৰ্শ দিয়া হৈছে</string>
     <string name="language_picker_section_suggested_sec_jpn">Galaxy suggested</string>
@@ -1383,7 +1389,7 @@
     <string name="launch_warning_replace">এতিয়া %1$s চলি আছে।</string>
     <string name="launch_warning_title">আন এটা এপৰ ওপৰত</string>
     <string name="leave_accessibility_shortcut_on">শ্বৰ্টকাট ব্যৱহাৰ কৰক</string>
-    <string name="loading">"ল'ড কৰি থকা হৈছে…"</string>
+    <string name="loading">ল’ড হৈ আছে…</string>
     <string name="locale_search_menu">সন্ধান কৰক</string>
     <string name="location_changed_notification_text">অধিক জানিবলৈ আপোনাৰ আইটি প্ৰশাসকৰ সৈতে যোগাযোগ কৰক</string>
     <string name="location_changed_notification_title">এপ্‌সমূহে আপোনাৰ অৱস্থান এক্সেছ কৰিব পাৰে</string>
@@ -1400,11 +1406,11 @@
     <string name="lockscreen_carrier_default">কোনো সেৱা নাই</string>
     <string name="lockscreen_carrier_noservice">(সেৱা নাই)৷</string>
     <string name="lockscreen_emergency_call">জৰুৰীকালীন</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">"আপুনি টে'বলেটটো %1$d বাৰ ভুলকৈ আনলক কৰিবলৈ প্ৰয়াস কৰিছে। %2$d বাৰতকৈ বেছি প্ৰয়াস কৰিলে টে'বলেটটো ফেক্টৰী ডিফ'ল্টলৈ ৰিছেট কৰা হ'ব আৰু আটাইবোৰ ব্যৱহাৰকাৰী ডেটা হেৰুৱাব।"</string>
+    <string name="lockscreen_failed_attempts_almost_at_wipe">"আপুনি ফ'নটো %1$d বাৰ ভুলকৈ আনলক কৰিবলৈ প্ৰয়াস কৰিছে। %2$d বাৰতকৈ বেছি প্ৰয়াস কৰিলে ফ'নটো ফেক্টৰী ডিফ'ল্টলৈ ৰিছেট কৰা হ'ব আৰু আটাইবোৰ ব্যৱহাৰকাৰী ডেটা হেৰুৱাব।"</string>
     <string name="lockscreen_failed_attempts_almost_glogin">"আপুনি অশুদ্ধভাৱে আপোনাৰ লক খোলাৰ আৰ্হিটো %1$d বাৰ আঁকিলে৷ %2$d তকৈ অধিকবাৰ অসফলভাৱে কৰা প্ৰয়াসৰ পাছত, আপোনাৰ ফ'নটো আনলক কৰিবৰ বাবে Google ছাইন ইনৰ জৰিয়তে কাৰ্যটো কৰিবলৈ কোৱা হ'ব৷
 
  %3$d ছেকেণ্ডৰ পাছত পুনৰ চেষ্টা কৰক৷"</string>
-    <string name="lockscreen_failed_attempts_now_wiping">"আপুনি অশুদ্ধভাৱে টে'বলেটটো আনলক কৰিবলৈ %d বাৰ চেষ্টা কৰিছিল। টে'বলেটটো এতিয়া ফেক্টৰী ডিফ'ল্টলৈ ৰিছেট কৰা হ'ব।"</string>
+    <string name="lockscreen_failed_attempts_now_wiping">"আপুনি অশুদ্ধভাৱে ফ'নটো আনলক কৰিবলৈ %d বাৰ চেষ্টা কৰিছিল। ফ'নটো এতিয়া ফেক্টৰী ডিফ'ল্টলৈ ৰিছেট কৰা হ'ব।"</string>
     <string name="lockscreen_forgot_pattern_button_text">আর্হি পাহৰিলে নেকি?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"আপোনাৰ ব্যৱহাৰকাৰী নাম আৰু পাছৱর্ড পাহৰিলে নেকি?
 "<b>google.com/accounts/recovery</b> চাওক।</string>
@@ -1420,7 +1426,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">আনলক কৰিবলৈ বা জৰুৰীকালীন কল কৰিবলৈ মেনু টিপক।</string>
     <string name="lockscreen_missing_sim_instructions">এখন ছিম যোগ দিয়ক।</string>
     <string name="lockscreen_missing_sim_instructions_long">ছিম নাই অথবা সেইখন পঢ়িব নোৱাৰি। এখন ছিম যোগ দিয়ক।</string>
-    <string name="lockscreen_missing_sim_message">টেবলেটত কোনো ছিম নাই।</string>
+    <string name="lockscreen_missing_sim_message">ফ’নত কোনো ছিম নাই।</string>
     <string name="lockscreen_missing_sim_message_short">কোনো ছিম নাই</string>
     <string name="lockscreen_network_locked_message">নেটৱর্ক অৱৰোধিত</string>
     <string name="lockscreen_password_wrong">আকৌ চেষ্টা কৰক</string>
@@ -1460,7 +1466,7 @@
     <string name="low_internal_storage_view_text">ছিষ্টেমৰ কিছুমান কাৰ্যকলাপে কাম নকৰিবও পাৰে</string>
     <string name="low_internal_storage_view_text_no_boot">ছিষ্টেমৰ বাবে পৰ্যাপ্ত খালী ঠাই নাই। আপোনাৰ ২৫০এমবি খালী ঠাই থকাটো নিশ্চিত কৰক আৰু ৰিষ্টাৰ্ট কৰক।</string>
     <string name="low_internal_storage_view_title">ষ্ট’ৰেজৰ খালী ঠাই শেষ হৈ আছে</string>
-    <string name="low_memory">টেবলেটৰ ষ্ট’ৰেজত খালী ঠাই নাই। ঠাই খালী কৰিবলৈ কিছুমান ফাইল মচক।</string>
+    <string name="low_memory">"ফ'নৰ ষ্ট’ৰেজত খালী ঠাই নাই। ঠাই খালী কৰিবলৈ কিছুমান ফাইল মচক।"</string>
     <string name="ltb_kill_content_v2_phone">আপোনাৰ ফোনটো অধিক গৰম হোৱাৰ কাৰণে %s বন্ধ হৈছিল। আপোনাৰ ফোনটো ঠাণ্ডা হোৱাৰ পিছত আপুনি ইয়াক পুনৰ খুলিব পাৰে।</string>
     <string name="ltb_kill_content_v2_tablet">আপোনাৰ টেবলেটটো অধিক গৰম হোৱাৰ কাৰণে %s বন্ধ হৈছিল। আপোনাৰ টেবলেটটো ঠাণ্ডা হোৱাৰ পিছত আপুনি ইয়াক পুনৰ খুলিব পাৰে।</string>
     <string name="ltb_warning_button">বন্ধ নকৰিব</string>
@@ -1480,16 +1486,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">"আপুনি মেৰামতি ম'ড অফ কৰিবলৈ আপোনাৰ টেবলেট আনলক কৰিব লাগিব।"</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">"মেৰামতি ম'ড অন থকাৰ সময়ত হোৱা একো সংৰক্ষণ কৰা নহ'ব, যেনে ডাউনলোড কৰা ডাটা, এপ্প্‌ ইনষ্টলেশ্বন বা ছেটিংছ পৰিৱৰ্তন।"</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">স্ক্ৰীণ লক ছেট কৰক</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">লগ নবনোৱাকৈয়ে পুনৰাৰম্ভ কৰক</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">লগ বনাওক আৰু পুনৰাৰম্ভ কৰক</string>
     <string name="maintenance_mode_intro_dialog_message_phone">"মেৰামতি ম'ড অন কৰিবলৈ আপোনাৰ ফোন পুনৰাৰম্ভ কৰিব লাগিব।"</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">প্ৰথমে এটা স্ক্ৰীণ লক ছেট কৰক।</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">"মেৰামতি ম'ড অন কৰিবলৈ আপোনাৰ টেবলেট পুনৰাৰম্ভ কৰাৰ প্ৰয়োজন।"</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"আপোনাৰ ফোনৰ যিকোনো সমস্যা বিশ্লেষণ কৰাত আমাৰ সহায়ক কৰ্মচাৰীসকলক সহায় কৰিবলৈ, আমি মেৰামতি ম'ড আৰম্ভ কৰাৰ পূৰ্বে ছিষ্টেমৰ লগ সৃষ্টি কৰাৰ অনুমোদন জনাও।
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"আপোনাৰ ফোনৰ সৈতে থকা কোনো সমস্যাৰ নিদান আৰু বিশ্লেষণ কৰাত আমাৰ সমৰ্থন কৰ্মীক সহায় কৰিবলৈ, আমি মেৰামতি ম'ড আৰম্ভ কৰাৰ পূৰ্বে এটা ছিষ্টেম লগ সৃষ্টি কৰাৰ অনুমোদন জনাও।
 
-লগটোৱে কোনবোৰ এপ্প্‌ ব্যৱহাৰ কৰা হৈছিল আৰু শেহতীয়াকৈ উদ্ভৱ হ'ব পৰা যিকোনো ত্ৰুটি দেখুৱায়, কিন্তু আন যিকোনো ব্যক্তিগত তথ্য অন্তৰ্ভুক্ত নকৰে। লগটো কেৱল সমস্যাসমূহ বিশ্লেষণ কৰিবলৈহে ব্যৱহাৰ কৰা হ'ব আৰু আন যিকোনো উদ্দেশ্যে ব্যৱহাৰ কৰা নহয়। লগটো বনাবলৈ ইয়াত সাধাৰণতে প্ৰায় 2 মিনিট সময় লয়।"</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"আপোনাৰ টেবলেটৰ যিকোনো সমস্যা বিশ্লেষণ কৰাত আমাৰ সহায়ক কৰ্মচাৰীসকলক সহায় কৰিবলৈ, আমি মেৰামতি ম'ড আৰম্ভ কৰাৰ পূৰ্বে ছিষ্টেমৰ লগ সৃষ্টি কৰাৰ অনুমোদন জনাও।
+লগটোত কেৱল আপোনাৰ ফোনৰ মেৰামতিৰ বাবে আৱশ্যকীয় তথ্য অন্তৰ্ভুক্ত কৰে, যেনে যিবোৰ এপ্প্‌ ব্যৱহাৰ কৰিছিল, শেহতীয়াভাৱে সংঘটিত হোৱা ত্ৰুটিসমূহ, ব্লক কৰা ফোন নম্বৰসমূহ আৰু ফাইল ষ্ট'ৰেজৰ ক্ষমতা। লগটো কেৱল সমস্যাসমূহৰ নিদান আৰু বিশ্লেষণ কৰিবলৈহে ব্যৱহাৰ কৰা হ'ব আৰু আন যিকোনো উদ্দেশ্যে ব্যৱহাৰ কৰা নহয়। লগটো বনাবলৈ ইয়াত সাধাৰণতে প্ৰায় 2 মিনিট সময় লাগে।"</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"আপোনাৰ টেবলেটৰ সৈতে থকা কোনো সমস্যাৰ নিদান আৰু বিশ্লেষণ কৰাত আমাৰ সমৰ্থন কৰ্মীক সহায় কৰিবলৈ, আমি মেৰামতি ম'ড আৰম্ভ কৰাৰ পূৰ্বে এটা ছিষ্টেম লগ সৃষ্টি কৰাৰ অনুমোদন জনাও।
 
-লগটোৱে কোনবোৰ এপ্প্‌ ব্যৱহাৰ কৰা হৈছিল আৰু শেহতীয়াকৈ উদ্ভৱ হ'ব পৰা যিকোনো ত্ৰুটি দেখুৱায়, কিন্তু আন যিকোনো ব্যক্তিগত তথ্য অন্তৰ্ভুক্ত নকৰে। লগটো কেৱল সমস্যাসমূহ বিশ্লেষণ কৰিবলৈহে ব্যৱহাৰ কৰা হ'ব আৰু আন যিকোনো উদ্দেশ্যে ব্যৱহাৰ কৰা নহয়। লগটো বনাবলৈ ইয়াত সাধাৰণতে প্ৰায় 2 মিনিট সময় লয়।"</string>
+লগটোত কেৱল আপোনাৰ টেবলেটৰ মেৰামতিৰ বাবে আৱশ্যকীয় তথ্য অন্তৰ্ভুক্ত কৰে, যেনে যিবোৰ এপ্প্‌ ব্যৱহাৰ কৰিছিল, শেহতীয়াভাৱে সংঘটিত হোৱা ত্ৰুটিসমূহ, ব্লক কৰা ফোন নম্বৰসমূহ আৰু ফাইল ষ্ট'ৰেজৰ ক্ষমতা। লগটো কেৱল সমস্যাসমূহৰ নিদান আৰু বিশ্লেষণ কৰিবলৈহে ব্যৱহাৰ কৰা হ'ব আৰু আন যিকোনো উদ্দেশ্যে ব্যৱহাৰ কৰা নহয়। লগটো বনাবলৈ ইয়াত সাধাৰণতে প্ৰায় 2 মিনিট সময় লাগে।"</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">"ষ্ট'ৰেজ বিশ্লেষণ কৰক"</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">"আপোনাৰ ফোনৰ আভ্যন্তৰীণ ষ্ট'ৰেজ প্ৰায় ভৰ্তি। যদি আপোনাৰ ষ্ট'ৰেজ স্পেচ শেষ হয়, তেন্তে কিছুমান এপ্প্‌ আৰু সুবিধাই সঠিকভাৱে কাম কৰাটো বন্ধ কৰিব পাৰে। আপোনাক আৰু প্ৰয়োজন নোহোৱা কিছুমান ফাইল বা এপ্প্‌ বিলোপ কৰি চেষ্টা কৰক। বিলোপ কৰাৰ পিছত, ট্ৰেচ খালী কৰি ৰাখিবলৈ নাপাহৰিব।"</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">"আপোনাৰ টেবলেটৰ আভ্যন্তৰীণ ষ্ট'ৰেজ সম্পূৰ্ণৰূপে ভৰ্তি। যদি আপোনাৰ ষ্ট'ৰেজ স্পেচ শেষ হয়, তেন্তে কিছুমান এপ্প্‌ আৰু সুবিধাই সঠিকভাৱে কাম কৰাটো বন্ধ কৰিব পাৰে। আপোনাক আৰু প্ৰয়োজন নোহোৱা কিছুমান ফাইল বা এপ্প্‌ বিলোপ কৰি চেষ্টা কৰক। বিলোপ কৰাৰ পিছত, ট্ৰেচ খালী কৰি ৰাখিবলৈ নাপাহৰিব।"</string>
@@ -1511,10 +1517,17 @@
     <string name="maintenance_mode_outro_label">"মেৰামতি ম'ডৰ পৰা প্ৰস্থান কৰক"</string>
     <string name="maintenance_mode_outro_textview_message_phone">"আপুনি মেৰামতি ম'ড অফ কৰিবলৈ আপোনাৰ ফোন আনলক কৰিব লাগিব। আপুনি যেতিয়া কৰে, মেৰামতি ম'ড প্ৰথমে অন কৰিলে সকলোবোৰ আগৰ অৱস্থালৈ ঘূৰি যাব। মেৰামতি ম'ড অন থকাৰ সময়ত কৰা পৰিৱৰ্তনসমূহ, যেনে ডাউনলোড কৰা ডাটা, ইনষ্টল কৰা এপ্প্‌সমূহ বা ছেটিংছৰ পৰিৱৰ্তন সংৰক্ষিত নহয়।"</string>
     <string name="maintenance_mode_outro_textview_message_tablet">"আপুনি মেৰামতি ম'ড অফ কৰিবলৈ আপোনাৰ টেবলেট আনলক কৰিব লাগিব। আপুনি যেতিয়া কৰে, মেৰামতি ম'ড প্ৰথমে অন কৰিলে সকলোবোৰ আগৰ অৱস্থালৈ ঘূৰি যাব। মেৰামতি ম'ড অন থকাৰ সময়ত কৰা পৰিৱৰ্তনসমূহ, যেনে ডাউনলোড কৰা ডাটা, ইনষ্টল কৰা এপ্প্‌সমূহ বা ছেটিংছৰ পৰিৱৰ্তন সংৰক্ষিত নহয়।"</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">"%s সক্ৰিয় হৈ থাকিলে মেৰামতি ম'ড ব্যৱহাৰ কৰিব নোৱাৰি।"</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">"সীমিত এপ্প্‌সমূহ আৰু হোম স্ক্ৰীণৰ সৈতে পাৱাৰ সংৰক্ষণ অন কৰা থাকিলে মেৰামতি ম'ড ব্যৱহাৰ কৰিব নোৱাৰে।"</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">"মেৰামতি ম'ড এই ফোনটোত সমৰ্থিত নহয়।"</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">"মেৰামতি ম'ড এই টেবলেটটোত সমৰ্থিত নহয়।"</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s কেৱল ডিভাইচৰ গৰাকীয়ে ব্যৱহাৰ কৰিব পাৰে৷</string>
     <string name="maintenance_mode_stop_backup_dialog_message">"আপোনাৰ ডাটাৰ বেকআপ লোৱা বন্ধ কৰি মেৰামতি ম'ড অন কৰিবনে?"</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">"মেৰামতি ম'ড অন কৰিবলৈ, আপুনি আপোনাৰ অসম্পূৰ্ণ বেকআপ সমাপ্ত বা বিলোপ কৰিব লাগিব।"</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">"মেৰামতি ম'ড অন কৰিবলৈ, আপুনি আপোনাৰ চলি থকা বেকআপ বন্ধ কৰিব লাগিব।"</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">"মেৰামতি ম'ড অন কৰিবলৈ, আপুনি আপোনাৰ বেকআপ ডাটা পুনঃস্থাপন কৰা বন্ধ কৰিব লাগিব।"</string>
+    <string name="maintenance_mode_toast_text_device_admin">ডিভাইচ ব্যৱস্থাপক এপ্প্‌</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">লগ বনাই আছে…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">"এই কাৰ্যই সাধাৰণতে প্ৰায় 2 মিনিট সময় লয়। লগটো সৃষ্টি হোৱাৰ পিছত, আপোনাৰ ফোন মেৰামতি ম'ডত পুনৰাৰম্ভ হ'ব আৰু আপুনি আপোনাৰ ফোন মেৰামতিৰ বাবে সুৰক্ষিতভাৱে হস্তান্তৰ কৰিব পাৰে।"</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">"এই কাৰ্যই সাধাৰণতে প্ৰায় 2 মিনিট সময় লয়। লগটো সৃষ্টি হোৱাৰ পিছত, আপোনাৰ টেবলেট মেৰামতি ম'ডত পুনৰাৰম্ভ হ'ব আৰু আপুনি আপোনাৰ টেবলেট মেৰামতিৰ বাবে সুৰক্ষিতভাৱে হস্তান্তৰ কৰিব পাৰে।"</string>
@@ -1663,6 +1676,7 @@
     <string name="menu_shift_shortcut_label">শ্বিফ্ট+</string>
     <string name="menu_space_shortcut_label">স্পেচ</string>
     <string name="menu_sym_shortcut_label">Sym+</string>
+    <string name="message_on_crash">স্বয়ং ব্লকাৰৰ দ্বাৰা অৱৰোধিত</string>
     <string name="mic_access_off_toast">মাইক্ৰ’ফ’নটো অৱৰোধ কৰি থোৱা আছে</string>
     <string name="mic_access_on_toast">মাইক্ৰ’ফ’নটো উপলব্ধ</string>
     <string name="microphone_restrict">"নিৰাপত্তা নীতিয়ে মাইক্ৰ'ফোন ব্যৱহাৰ কৰাত প্ৰতিৰোধ কৰে৷"</string>
@@ -1686,14 +1700,16 @@
     <string name="mime_type_video">ভিডিঅ’</string>
     <string name="mime_type_video_ext">%1$s ভিডিঅ’</string>
     <string name="miniresolver_call">কল কৰক</string>
-    <string name="miniresolver_call_in_work">কামৰ এপ্প্‌ৰ পৰা কল কৰিবনে?</string>
-    <string name="miniresolver_call_information">আপোনাৰ প্ৰতিষ্ঠানেহে কেৱল কামৰ এপ্প্‌সমূহৰ পৰা কল কৰিবলৈ অনুমতি দিয়ে।</string>
+    <string name="miniresolver_call_in_work">কাম সম্পৰ্কীয় এপৰ পৰা কল কৰিবনে?</string>
+    <string name="miniresolver_call_information">আপোনাৰ প্ৰতিষ্ঠানে আপোনাক কেৱল কাম সম্পৰ্কীয় এপ্‌সমূহৰ পৰা কল কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="miniresolver_open_in_personal">ব্যক্তিগত %sত খুলিবনে?</string>
     <string name="miniresolver_open_in_work">কৰ্মস্থানৰ %sত খুলিবনে?</string>
     <string name="miniresolver_open_work">কৰ্মস্থানৰ %sত খুলিবনে?</string>
-    <string name="miniresolver_sms_information">আপোনাৰ প্ৰতিষ্ঠানেহে কেৱল কামৰ এপ্প্‌সমূহৰ পৰা মেচেজসমূহ প্ৰেৰণ কৰিবলৈ অনুমতি দিয়ে।</string>
-    <string name="miniresolver_switch">সলনি</string>
-    <string name="miniresolver_switch_to_work">কাৰ্য এপ্প্‌লৈ সলনি কৰিবনে?</string>
+    <string name="miniresolver_private_space_messages_information">আপুনি আপোনাৰ ব্যক্তিগত Messages এপৰ পৰা কেৱল এছএমএছ বাৰ্তা পঠিয়াব পাৰিব।</string>
+    <string name="miniresolver_private_space_phone_information">আপুনি আপোনাৰ ব্যক্তিগত Phone এপৰ পৰা কেৱল ফ’ন কল কৰিব পাৰিব। ব্যক্তিগত Phone এপৰ জৰিয়তে কৰা কল আপোনাৰ ব্যক্তিগত কলৰ ইতিহাসত যোগ দিয়া হ’ব।</string>
+    <string name="miniresolver_sms_information">আপোনাৰ প্ৰতিষ্ঠানে আপোনাক কেৱল কাম সম্পৰ্কীয় এপ্‌সমূহৰ পৰা বাৰ্তা পঠিওৱাৰ অনুমতি দিয়ে</string>
+    <string name="miniresolver_switch">সলনি কৰক</string>
+    <string name="miniresolver_switch_to_work">ইয়াৰ সলনি কাম সম্পৰ্কীয় এপ্ ব্যৱহাৰ কৰিবনে?</string>
     <string name="miniresolver_use_personal_browser">ব্যক্তিগত ব্ৰাউজাৰ ব্যৱহাৰ কৰক</string>
     <string name="miniresolver_use_work_browser">কৰ্মস্থানৰ ব্ৰাউজাৰ ব্যৱহাৰ কৰক</string>
     <string name="minute">মিনিট</string>
@@ -1726,30 +1742,6 @@
     <string name="mock_location_reminder_title">"ম'ক অৱস্থান অন আছে"</string>
     <string name="more_apps">অধিক এপ্প্‌</string>
     <string name="more_item_label">অধিক</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s সেৱা সমৰ্থিত নহয়। গ্ৰাহক সেৱাৰ লগত যোগাযোগ কৰক।</string>
-    <string name="mptcp_message_address_type_not_supported">%s-ৰ সংযোগ দূৰ্বল। উপলব্ধ নেটৱৰ্ক হৈ পুনঃসংযোগ কৰি আছে…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s-ৰ সংযোগ দূৰ্বল। উপলব্ধ নেটৱৰ্ক হৈ পুনঃসংযোগ কৰি আছে…</string>
-    <string name="mptcp_message_cmd_not_supported">%s নেটৱৰ্ক অস্থায়ীভাৱে উপলব্ধ নহয়। উপলব্ধ নেটৱৰ্ক হৈ পুনঃসংযোগ কৰি আছে…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s-ৰ সংযোগ দূৰ্বল। উপলব্ধ নেটৱৰ্ক হৈ পুনঃসংযোগ কৰি আছে…</string>
-    <string name="mptcp_message_connection_refused">%s-ৰ সংযোগ দূৰ্বল। উপলব্ধ নেটৱৰ্ক হৈ পুনঃসংযোগ কৰি আছে…</string>
-    <string name="mptcp_message_data_usage_limit">ডাটাৰ ব্যৱহাৰ সীমাত উপনীত হৈছে৷ ডাটাৰ ব্যৱহাৰ সীমা পৰিৱৰ্তন কৰিবলৈ, ছেটিংছলৈ যাওক৷</string>
-    <string name="mptcp_message_host_unreachable">%s-ৰ সংযোগ দূৰ্বল। উপলব্ধ নেটৱৰ্ক হৈ পুনঃসংযোগ কৰি আছে…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">%s সক্ষম কৰাত অক্ষম। LTE নেটৱৰ্কত ডিভাইচ সংযোজিত হোৱা নাই।</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">আন্তঃৰাষ্ট্ৰীয় ৰোমিঙত থকাৰ সময়ত %s সক্ষম কৰাত অক্ষম।</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">"ম'বাইল হ'টস্প'ট বা USB টিথাৰিং সক্ষম হৈ থাকোতে %s সক্ষম কৰাত অক্ষম।"</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Wi-Fi Direct সক্ষম হৈ থকাৰ সময়ত %s সক্ষম কৰাত অক্ষম৷</string>
-    <string name="mptcp_message_mptcp_capability_airplane">"বিমান ম'ড সক্ষম হৈ থকাৰ সময়ত %s সক্ষম কৰাত অক্ষম।"</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">"ম'বাইল ডাটা অফ হৈ থকাৰ সময়ত %s সক্ষম কৰাত অক্ষম।"</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">সেৱা প্ৰদানকাৰীৰ পৰা কোনো উত্তৰ পোৱা নাই৷</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">%1$s সক্ষম কৰাত অক্ষম। %2$s আপোনাৰ ইণ্টাৰনেট পেকেজৰ সৈতে উপলব্ধ নহয় বা %3$s চাৰ্ভাৰৰ পৰা কোনো সঁহাৰি প্ৰাপ্ত কৰা নাই।</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">%s সক্ৰিয়কৰণৰ অনুৰোধ প্ৰেৰণ কৰাত বিফল৷ উপলব্ধ নেটৱৰ্ক হৈ পুনঃসংযোগ কৰি আছে…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">%s সক্ষম কৰাত অক্ষম। অশুদ্ধ SIM কাৰ্ড আন্তঃসংযোগ হৈছে।</string>
-    <string name="mptcp_message_network_unreachable">%s-ৰ সংযোগ দূৰ্বল। উপলব্ধ নেটৱৰ্ক হৈ পুনঃসংযোগ কৰি আছে…</string>
-    <string name="mptcp_message_non_mptcp_plan">Giga মাল্টি-পাথ সক্ষম কৰাত অক্ষম। ডাটা পৰিকল্পনাৰ দ্বাৰা ফাংচন সমৰ্থিত নহয়।</string>
-    <string name="mptcp_message_operation_disabled_overheating">"ডিভাইচৰ অধিক গৰম হোৱাটো প্ৰতিৰোধ কৰিবলৈ %s অক্ষম কৰা হৈছে। ইয়াৰ পৰিৱৰ্তে ম'বাইল নেটৱৰ্ক হৈ ডাউনলোড কৰি আছে…"</string>
-    <string name="mptcp_message_server_error">%s-ৰ সংযোগ দূৰ্বল। উপলব্ধ নেটৱৰ্ক হৈ পুনঃসংযোগ কৰি আছে…</string>
-    <string name="mptcp_message_setting_disabled_overheating">%s সক্ষম কৰাত অক্ষম। ডিভাইচ অধিক গৰম হৈছে। ডিভাইচ ঠাণ্ডা নোহোৱালৈকে অপেক্ষা কৰক আৰু পুনঃচেষ্টা কৰক।</string>
-    <string name="mptcp_message_ttl_expired">%s নেটৱৰ্ক অস্থায়ীভাৱে উপলব্ধ নহয়। উপলব্ধ নেটৱৰ্ক হৈ পুনঃসংযোগ কৰি আছে…</string>
     <string name="mte_override_notification_message">কাৰ্যক্ষমতা আৰু স্থিৰতা প্ৰভাৱিত হ’ব পাৰে। অক্ষম কৰিবলৈ ৰিবুট কৰক। যদি arm64.memtag.bootctl ব্যৱহাৰ কৰি সক্ষম কৰা হয়, আগৰ পৰা একো নাই-ত ছেট কৰক।</string>
     <string name="mte_override_notification_title">"পৰীক্ষামূলক MTE সক্ষম কৰা হ'ল"</string>
     <string name="multi_user_capability_restrict">নিৰাপত্তা নীতিয়ে আপোনাৰ ডিভাইচত একাধিক ব্যৱহাৰকাৰী সক্ষমতাক প্ৰতিৰোধ কৰক৷</string>
@@ -1770,18 +1762,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">"আপোনাৰ ব্লুটুথ অডিঅ' ডিভাইচত ধ্বনি বজাই আছে। এইটো অফ কৰিবলৈ ইয়াত টিপক"</string>
     <string name="multisound_sound_via_headphone">%s ধ্বনি আপোনাৰ হেডফোনৰ যোগেদি বজাই আছে। এইটো অফ কৰিবলৈ ইয়াত টিপক।</string>
     <string name="multisound_sound_via_headphone_multiselection">আপোনাৰ হেডফোনৰ যোগেদি ধ্বনি বজাই আছে। এইটো অফ কৰিবলৈ ইয়াত টিপক।</string>
-    <string name="multisound_sound_via_phone_speaker">%s ধ্বনি আপোনাৰ টেবলেটৰ স্পিকাৰৰ যোগেদি বাজি আছে। এইটো অফ কৰিবলৈ ইয়াত টিপক।</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">আপোনাৰ টেবলেটৰ স্পিকাৰৰ যোগেদি ধ্বনি বজাই আছে। এইটো অফ কৰিবলৈ ইয়াত টিপক।</string>
+    <string name="multisound_sound_via_phone_speaker">আপোনাৰ ফোনৰ স্পিকাৰৰ যোগেদি %s ধ্বনি বজাই আছে। ইয়াক অফ কৰিবলৈ ইয়াত টিপক।</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">আপোনাৰ ফোনৰ স্পিকাৰৰ যোগেদি ধ্বনি বজাই আছে। এইটো অফ কৰিবলৈ ইয়াত টিপক।</string>
     <string name="multisound_sound_via_usb_audio">"%s ধ্বনি আপোনাৰ USB অডিঅ' ডিভাইচৰ যোগেদি বজাই আছে। এইটো অফ কৰিবলৈ ইয়াত টিপক।"</string>
     <string name="multisound_sound_via_usb_audio_multiselection">"আপোনাৰ USB অডিঅ' ডিভাইচৰ যোগেদি ধ্বনি বজাই আছে। এইটো অফ কৰিবলৈ ইয়াত টিপক।"</string>
     <string name="multisound_title">পৃথক এপ্প্‌ ধ্বনি</string>
     <string name="multisound_turn_off_multisound">অফ কৰক</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">"%sক Samsung DeX-ত চলাব নোৱাৰে। টেবলেট ম'ডত চলাবলৈ চেষ্টা কৰক।"</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%sক Samsung DeX-ত চলাব নোৱাৰে। ইয়াক টেবলেটৰ হোম স্ক্ৰীণসমূহৰ বাবে ডিজাইন কৰা হৈছে।</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">"কিছুমান গেম কেৱল টাচ্চ্‌ স্ক্ৰীণত কাম কৰে। মাউচ নিয়ন্ত্ৰণে Samsung DeX-ত কাম নকৰিলে, ইয়াৰ পৰিৱৰ্তে টেবলেট ম'ডত খেলিবলৈ চেষ্টা কৰক।"</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">"%s-ক Samsung DeX-ত চলাব নোৱাৰে। ফোন ম'ডত চলাবলৈ চেষ্টা কৰক।"</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s-ক Samsung DeX-ত চলাব নোৱাৰে। ইয়াক ফোনৰ হোম স্ক্ৰীণৰ বাবে ডিজাইন কৰা হৈছে।</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">"কিছুমান গেম কেৱল টাচ্চ্‌ স্ক্ৰীণত কাম কৰে। মাউচ নিয়ন্ত্ৰণে Samsung DeX-ত কাম নকৰিলে, ইয়াৰ পৰিৱৰ্তে ফোন ম'ডত খেলিবলৈ চেষ্টা কৰক।"</string>
     <string name="music_recognition_manager_service">সংগীত চিনাক্তকৰণ পৰিচালক সেৱা</string>
     <string name="muted_by">%1$sএ কিছুমান ধ্বনি মিউট কৰি আছে</string>
-    <string name="my_device">এই টেবলেট</string>
+    <string name="my_device">এই ফোন</string>
     <string name="nas_upgrade_notification_content">এতিয়া উন্নত জাননীয়ে পৰামৰ্শ দিয়া কাৰ্য আৰু প্ৰত্যুত্তৰ প্ৰদান কৰে। Androidৰ অভিযোজিত জাননী আৰু সমৰ্থিত নহয়।</string>
     <string name="nas_upgrade_notification_disable_action">অফ কৰক</string>
     <string name="nas_upgrade_notification_enable_action">ঠিক আছে</string>
@@ -1821,10 +1813,9 @@
     <string name="nosim_limited_service">সীমিত সেৱা</string>
     <string name="not_checked">টিক চিহ্ন দিয়া হোৱা নাই</string>
     <string name="not_selected">বাছনি কৰা হোৱা নাই</string>
-    <string name="not_support_ai_key">"AI কীয়ে এতিয়াও আপোনাৰ টেবলেটৰ সৈতে কাম কৰা নাই। এটা আপডেট সোনকালে উপলব্ধ হ'ব।"</string>
     <string name="notification_action_check_bg_apps">সক্ৰিয় এপ্‌সমূহ পৰীক্ষা কৰক</string>
     <string name="notification_alerted_content_description">সতৰ্ক কৰা হ’ল</string>
-    <string name="notification_app_name_settings">ছেটিংছ</string>
+    <string name="notification_app_name_settings">ছেটিং</string>
     <string name="notification_app_name_system">ছিষ্টেম</string>
     <string name="notification_appops_camera_active">কেমেৰা</string>
     <string name="notification_appops_microphone_active">"মাইক্ৰ'ফ'ন"</string>
@@ -1840,6 +1831,7 @@
     <string name="notification_channel_developer_important">বিকাশকৰ্তাৰ জৰুৰী বাৰ্তা</string>
     <string name="notification_channel_device_admin">আপোনাৰ আইটি প্ৰশাসকৰ পৰা অহা সতৰ্কবাণী</string>
     <string name="notification_channel_dex_policy">Samsung DeX-ৰ নীতি</string>
+    <string name="notification_channel_display">ডিছপ্লে’</string>
     <string name="notification_channel_do_not_disturb">অসুবিধা নিদিব</string>
     <string name="notification_channel_emergency_callback">"জৰুৰীকালীন ক'লবেক ম'ড"</string>
     <string name="notification_channel_foreground_service">বেটাৰী খৰচ কৰা এপ্‌সমূহ</string>
@@ -1902,7 +1894,8 @@
     <string name="overheat_warning_title_v2_tablet">টেবলেট অধিক গৰম হৈছে</string>
     <string name="owner_name">গৰাকী</string>
     <string name="package_deleted_device_owner">আপোনাৰ প্ৰশাসকে মচিছে</string>
-    <string name="package_installed_device_owner">আপোনাৰ প্ৰশাসকে ইনষ্টল কৰিছে</string>
+    <string name="package_installed_device_owner">"আপোনাৰ প্ৰশাসকে ইনষ্টল কৰিছে।
+প্ৰদান কৰা অনুমতিসমূহ চাবলৈ ছেটিঙলৈ যাওক"</string>
     <string name="package_module">পেকেজ</string>
     <string name="package_night_mode_dialog_got_it">বুজি পালো</string>
     <string name="package_night_mode_dialog_message">"বেটাৰী সংৰক্ষণ কৰিবলৈ %s ডাৰ্ক ম'ডত চলি আছে। আপুনি ছেটিংছ Labs-ত লাইট ম'ডলৈ সলনি কৰিব পাৰে।"</string>
@@ -1925,7 +1918,9 @@
     <string name="permdesc_accessCoarseLocation">এই এপ্‌টো ব্যৱহাৰ হৈ থকা অৱস্থাত ই অৱস্থান সেৱাসমূহৰ পৰা আপোনাৰ আনুমানিক অৱস্থান লাভ কৰিব পাৰে। এপ্‌টোৱে অৱস্থান লাভ কৰিবলৈ হ’লে আপোনাৰ ডিভাইচৰ অৱস্থান সেৱাসমূহ অন কৰি ৰাখিবই লাগিব।</string>
     <string name="permdesc_accessDrmCertificates">এটা এপ্লিকেশ্বনক DRM প্ৰমাণপত্ৰ গোটাবলৈ আৰু ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে। সাধাৰণ এপসমূহৰ বাবে সাধাৰণতে প্ৰয়োজন নহয়।</string>
     <string name="permdesc_accessFineLocation">এই এপ্‌টো ব্যৱহাৰ হৈ থকা অৱস্থাত ই অৱস্থান সেৱাসমূহৰ পৰা আপোনাৰ সঠিক অৱস্থান লাভ কৰিব পাৰে। এপ্‌টোৱে অৱস্থান লাভ কৰিবলৈ হ’লে আপোনাৰ ডিভাইচৰ অৱস্থান সেৱাসমূহ অন কৰি ৰাখিবই লাগিব। ইয়াৰ ফলত বেটাৰীৰ ব্যৱহাৰ বাঢ়িব পাৰে।</string>
+    <string name="permdesc_accessHiddenProfile">এপ্‌টোক লুকুৱাই ৰখা প্ৰ’ফাইলসমূহ এক্সেছ কৰিবলৈ দিয়ে।</string>
     <string name="permdesc_accessImsCallService">আপোনাৰ হস্তক্ষেপৰ অবিহনে আইএমএছ সেৱা ব্যৱহাৰ কৰি কল কৰিবলৈ এপক অনুমতি দিয়ে।</string>
+    <string name="permdesc_accessLastKnownCellId">কোনো এপক টেলিফ’নীয়ে প্ৰদান কৰা অন্তিম জ্ঞাত চেলৰ পৰিচয়টো এক্সেছ কৰাৰ অনুমতি দিয়ে।</string>
     <string name="permdesc_accessLocationExtraCommands">অৱস্থানৰ অতিৰিক্ত নির্দেশনাসমূহ এক্সেছ কৰিবলৈ এপক অনুমতি দিয়ে। ই এপ্‌টোক জিপিএছ বা অন্য অৱস্থান উৎসসমূহৰ কাৰ্যকলাপত হস্তক্ষেপ কৰাৰ সুযোগ দিব পাৰে।</string>
     <string name="permdesc_accessNetworkConditions">এটা এপ্লিকেশ্বনক নেটৱৰ্ক অৱস্থাসমূহত নিৰীক্ষণৰ বাবে শুনিবলৈ অনুমতি দিয়ে। সাধাৰণ এপসমূহৰ বাবে সাধাৰণতে প্ৰয়োজন নহয়।</string>
     <string name="permdesc_accessNetworkState">মজুত থকা আৰু সংযোগ হৈ থকা নেটৱৰ্ক সংযোগসমূহৰ বিষয়ে তথ্য চাবলৈ এপ্‌টোক অনুমতি দিয়ে৷</string>
@@ -1938,7 +1933,7 @@
     <string name="permdesc_answerPhoneCalls">"এপ্‌টোক অন্তৰ্গামী ফ'ন কলৰ উত্তৰ দিবলৈ অনুমতি দিয়ে।"</string>
     <string name="permdesc_audioWrite">এপক আপোনাৰ সংগীত সংগ্ৰহ সালসলনি কৰিবলৈ দিয়ে।</string>
     <string name="permdesc_backgroundCamera">এই এপ্‌টোৱে যিকোনো সময়তে কেমেৰা ব্যৱহাৰ কৰি ফট’ তুলিব আৰু ভিডিঅ’ ৰেকর্ড কৰিব পাৰে।</string>
-    <string name="permdesc_bindCarrierMessagingService">বাহক মেছেজিং সেৱাৰ উচ্চ স্তৰৰ ইণ্টাৰফেইচত সংযোগ কৰিবলৈ ধাৰকক অনুমতি দিয়ে। এয়া সাধাৰণ এপবোৰৰ বাবে কেতিয়াও প্ৰয়োজন নহয়।</string>
+    <string name="permdesc_bindCarrierMessagingService">বাহক মেছেজিং সেৱাৰ উচ্চ স্তৰৰ ইণ্টাৰফেইচত সংযোগ কৰিবলৈ ধাৰকক অনুমতি দিয়ে। এয়া সাধাৰণ এপবোৰৰ \ufffd\ufffd\ufffdাবে কেতিয়াও প্ৰয়োজন নহয়।</string>
     <string name="permdesc_bindCarrierServices">"বাহক সেৱাৰ সৈতে সংযুক্ত হ'বলৈ ধাৰকক অনুমতি দিয়ে। সাধাৰণ এপসমূহৰ বাবে সাধাৰণতে প্ৰয়োজন হ'ব নালাগে।"</string>
     <string name="permdesc_bindCellBroadcastService">"চেল সম্প্ৰচাৰ বাৰ্তাসমূহ লাভ কৰিলে সেইবোৰ ফৰৱাৰ্ড কৰিবলৈ এপ্‌টোক চেল সম্প্ৰচাৰ মডিউলটোৰ সৈতে সংযুক্ত হ'বলৈ অনুমতি দিয়ে। আপোনাক জৰুৰীকালীন পৰিস্থিতিসমূহৰ বিষয়ে সতৰ্ক কৰিবলৈ কিছুমান অৱস্থানত চেল সম্প্ৰচাৰ সতৰ্কবাৰ্তাসমূহ ডেলিভাৰ কৰা হয়। কোনো জৰুৰীকালীন চেল সম্প্ৰচাৰ লাভ কৰিলে ক্ষতিকাৰক এপ্‌সমূহে আপোনাৰ ডিভাইচটোৰ কাৰ্যক্ষমতা অথবা কাৰ্যপ্ৰণালীত হস্তক্ষেপ কৰিব পাৰে।"</string>
     <string name="permdesc_bindConditionProviderService">"অৱস্থা প্ৰদানকাৰী সেৱাৰ শীৰ্ষ স্তৰৰ ইণ্টাৰফেচইলৈ সংযুক্ত হ'বলৈ বাহকক অনুমতি দিয়ে। সাধাৰণ এপসমূহৰ বাবে সাধাৰণতে প্ৰয়োজন নহয়।"</string>
@@ -1946,23 +1941,24 @@
     <string name="permdesc_bindNotificationListenerService">"এটা জাননী শ্ৰৱণ সেৱা প্ৰদানকাৰীৰ শীৰ্ষ স্তৰৰ ইণ্টাৰফেইচৰ লগত সংযুক্ত হ'বলৈ ধাৰকক অনুমতি দিয়ে। সাধাৰণ এপসমূহৰ বাবে সাধাৰণতে প্ৰয়োজন নহয়।"</string>
     <string name="permdesc_bind_connection_service">"কল কৰিবলৈ/লাভ কৰিবলৈ টেলিফ'নী সেৱাসমূহৰ সৈতে এপক সংযোগ স্থাপনৰ বাবে অনুমতি দিয়ে।"</string>
     <string name="permdesc_bind_incall_service">ব্যৱহাৰকাৰীগৰাকীয়ে কেতিয়া আৰু কেনেদৰে ইন-কল-স্ক্ৰীন চায় সেয়া নিয়ন্ত্ৰণ কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে।</string>
-    <string name="permdesc_bluetooth">টেবলেটত ব্লুটুথৰ কনফিগাৰেশ্বন চাবলৈ আৰু যোৰা লগোৱা ডিভাইচসমূহৰ জৰিয়তে সংযোগ কৰিবলৈ আৰু সংযোগৰ অনুৰোধ স্বীকাৰ কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে৷</string>
-    <string name="permdesc_bluetoothAdmin">স্থানীয় ব্লুটুথ টেবলেট কনফিগাৰ কৰিবলৈ আৰু দূৰৱৰ্তী ডিভাইচসমূহৰ সৈতে পেয়াৰ কৰিবলৈ আৰু বিচাৰি উলিয়াবলৈ এপ্‌টোক অনুমতি দিয়ে।</string>
+    <string name="permdesc_bluetooth">"ফ'নটোত ব্লুটুথৰ কনফিগাৰেশ্বন চাবলৈ আৰু যোৰা লগোৱা ডিভাইচসমূহৰ জৰিয়তে সংযোগ কৰিবলৈ আৰু সংযোগৰ অনুৰোধ স্বীকাৰ কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে৷"</string>
+    <string name="permdesc_bluetoothAdmin">স্থানীয় ব্লুটুথ ফ’ন কনফিগাৰ কৰিবলৈ আৰু দূৰৱৰ্তী ডিভাইচসমূহৰ সৈতে পেয়াৰ কৰিবলৈ আৰু বিচাৰি উলিয়াবলৈ এপ্‌টোক অনুমতি দিয়ে।</string>
     <string name="permdesc_bluetooth_advertise">এপ্‌টোক নিকটৱৰ্তী ব্লুটুথ ডিভাইচত বিজ্ঞাপন প্ৰচাৰ কৰিবলৈ দিয়ে</string>
     <string name="permdesc_bluetooth_connect">এপ্‌টোক পেয়াৰ কৰা ব্লুটুথ ডিভাইচৰ সৈতে সংযোগ কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="permdesc_bluetooth_scan">এপ্‌টোক নিকটৱৰ্তী ব্লুটুথ ডিভাইচ বিচাৰি উলিয়াবলৈ আৰু সেইসমূহৰ সৈতে পেয়াৰ কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="permdesc_bodySensors">এপ্‌টো ব্যৱহাৰ কৰি থকাৰ সময়ত এপ্‌টোক হৃদস্পন্দনৰ হাৰ, উষ্ণতা আৰু তেজত অক্সিজেনৰ শতকৰা হাৰৰ দৰে শৰীৰৰ ছেন্সৰৰ ডেটা এক্সেছ কৰিবলৈ অনুমতি দিয়ে।</string>
     <string name="permdesc_bodySensors_background">এপ্‌টো নেপথ্যত থকাৰ সময়ত এপ্‌টোক হৃদস্পন্দনৰ হাৰ, উষ্ণতা আৰু তেজত অক্সিজেনৰ শতকৰা হাৰৰ দৰে শৰীৰৰ ছেন্সৰৰ ডেটা এক্সেছ কৰিবলৈ অনুমতি দিয়ে।</string>
-    <string name="permdesc_broadcastSticky">"সম্প্ৰচাৰৰ শেষত বাকী ৰোৱা ষ্টিকী ব্ৰ'ডকাষ্টবোৰ প্ৰেৰণ কৰিবলৈ এপক অনুমতি দিয়ে। ইয়াক অত্য়ধিক ব্যৱহাৰ কৰাৰ ফলত মেম'ৰি অধিক খৰচ হোৱাৰ বাবে টেবলেট লেহেমীয়া বা অস্থিৰ হৈ পৰে।"</string>
+    <string name="permdesc_broadcastSticky">"সম্প্ৰচাৰৰ শেষত বাকী ৰোৱা ষ্টিকী ব্ৰ'ডকাষ্টবোৰ প্ৰেৰণ কৰিবলৈ এপক অনুমতি দিয়ে। ইয়াক অত্য়ধিক ব্যৱহাৰ কৰাৰ ফলত মেম'ৰি অধিক খৰচ হোৱাৰ বাবে ফ'নটো লেহেমীয়া বা অস্থিৰ হৈ পৰে।"</string>
     <string name="permdesc_callCompanionApp">এপ্‌টোক ডিভাইচত চলি থকা কল চাবলৈ আৰু নিয়ন্ত্ৰণ কৰিবলৈ অনুমতি দিয়ে। কলৰ সংখ্যা আৰু কলবোৰৰ স্থিতি ইয়াত অন্তৰ্ভুক্ত হয়।</string>
     <string name="permdesc_callPhone">এপ্‌টোক আপোনাৰ হস্তক্ষেপ অবিহনে ফ’ন নম্বৰসমূহলৈ কল কৰিবলৈ অনুমতি দিয়ে। ইয়াৰ ফলত অপ্ৰত্যাশিত মাচুল লোৱা অথবা কল কৰা হ’ব পাৰে। মনত ৰাখিব যে ই এপ্‌টোক জৰুৰীকালীন নম্বৰসমূহত কল কৰিবলৈ অনুমতি নিদিয়ে। ক্ষতিকাৰক এপ্‌সমূহে আপোনাৰ অনুমতি নোলোৱাকৈয়ে কল কৰি আপোনাৰ টকা খৰছ কৰাব পাৰে অথবা এনেকুৱা বাহকৰ ক’ড ডায়েল কৰিব পাৰে যাৰ ফলত অন্তৰ্গামী কলসমূহ স্বয়ংক্ৰিয়ভাৱে অন্য নম্বৰলৈ ফৰৱাৰ্ড হয়।</string>
     <string name="permdesc_camera">এই এপ্‌টোৱে ইয়াক ব্যৱহাৰ কৰি থাকোঁতে কেমেৰা ব্যৱহাৰ কৰি ফট’ তুলিব আৰু ভিডিঅ’ ৰেকর্ড কৰিব পাৰে।</string>
+    <string name="permdesc_cameraHeadlessSystemUser">এই এপ্‌টোৱে পৰিধীয় ডিভাইচহীন ছিষ্টেম ব্যৱহাৰকাৰী হিচাপে কেমেৰা এক্সেছ কৰিব পাৰে।</string>
     <string name="permdesc_cameraOpenCloseListener">যিকোনো কেমেৰা ডিভাইচ খুলি থকা অথবা বন্ধ কৰি থকাৰ সময়ত (কোনো এপ্লিকেশ্বনৰ দ্বাৰা) এই এপ্‌টোৱে কলবেক গ্ৰহণ কৰিব পাৰে।</string>
     <string name="permdesc_changeNetworkState">নেটৱৰ্ক সংযোগৰ অৱস্থাটো সলনি কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে।</string>
     <string name="permdesc_changeTetherState">টেডাৰ হৈ থকা ইণ্টাৰনেট সংযোগৰ অৱস্থা সলনি কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে৷</string>
-    <string name="permdesc_changeWifiMulticastState">"কেৱল আপোনাৰ টেবলেটটোৱেই নহয়, মাল্টিকাষ্ট ঠিকনা ব্যৱহাৰ কৰি এটা ৱাই-ফাই নেটৱর্কত থকা আটাইবোৰ ডিভাইচলৈ পঠিওৱা পেকেট লাভ কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে। এই কার্যই নন মাল্টিকাষ্ট ম'ডতকৈ অধিক বেটাৰী ব্যৱহাৰ কৰে।"</string>
+    <string name="permdesc_changeWifiMulticastState">"আপোনাৰ ফ'নৰ লগতে ৱাই-ফাই নেটৱর্কত থকা আটাইবোৰ ডিভাইচলৈ মাল্টিকাষ্ট ঠিকনা ব্যৱহাৰ কৰি পঠিওৱা পেকেট লাভ কৰিবলৈ এপক অনুমতি দিয়ে। এই কার্যই নন-মাল্টিকাষ্ট ম'ডতকৈ বেটাৰীৰ অধিক চাৰ্জ ব্যৱহাৰ কৰে।"</string>
     <string name="permdesc_changeWifiState">এপ্‌টোক ৱাই-ফাই এক্সেছ পইণ্টলৈ সংযোগ কৰিবলৈ আৰু তাৰ সংযোগ বিচ্ছিন্ন কৰিবলৈ আৰু ৱাই-ফাই নেটৱৰ্কসমূহৰ বাবে ডিভাইচ কনফিগাৰেশ্বনত সাল-সলনি কৰিবলৈ অনুমতি দিয়ে৷</string>
-    <string name="permdesc_changeWimaxState">এপ্‌টোক টেবলেটলৈ সংযোগ কৰিবলৈ আৰু WiMAX নেটৱৰ্কসমূহৰ পৰা টেবলেটৰ সংযোগ বিচ্ছিন্ন কৰিবলৈ অনুমতি দিয়ে৷</string>
+    <string name="permdesc_changeWimaxState">"এপ্‌টোক ফ'নলৈ সংযোগ কৰিবলৈ আৰু WiMAX নেটৱৰ্কসমূহৰ পৰা ফ'নৰ সংযোগ বিচ্ছিন্ন কৰিবলৈ অনুমতি দিয়ে৷"</string>
     <string name="permdesc_companionProfileWatch">এটা সহযোগী এপক ঘড়ী পৰিচালনা কৰিবলৈ দিয়ে।</string>
     <string name="permdesc_connection_manager">এপ্‌টোক টেলিকম সংযোগ পৰিচালনা কৰিবলৈ অনুমতি দিয়ে।</string>
     <string name="permdesc_control_incall_experience">এপ্‌টোক ইন-কল ব্যৱহাৰকাৰীৰ অভিজ্ঞতা প্ৰদান কৰিবলৈ অনুমতি দিয়ে।</string>
@@ -1983,14 +1979,15 @@
     <string name="permdesc_foregroundServiceHealth">এপ্‌টোক \"স্বাস্থ্য\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="permdesc_foregroundServiceLocation">এপ্‌টোক \"অৱস্থান\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="permdesc_foregroundServiceMediaPlayback">এপ্‌টোক \"mediaPlayback\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">এপ্‌টোক \"mediaProcessing\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="permdesc_foregroundServiceMediaProjection">এপ্‌টোক \"mediaProjection\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="permdesc_foregroundServiceMicrophone">এপ্‌টোক \"মাইক্ৰ’ফ’ন\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে</string>
-    <string name="permdesc_foregroundServicePhoneCall">এপ্‌টোক \"phoneCall\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে</string>
+    <string name="permdesc_foregroundServicePhoneCall">এপ্‌টোক \"phoneCall\" সম্প\ufffd\ufffd\ufffd্কীয় অগ্ৰভূমি সেৱাসমূহ ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="permdesc_foregroundServiceRemoteMessaging">এপ্‌টোক \"remoteMessaging\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="permdesc_foregroundServiceSpecialUse">এপ্‌টোক \"specialUse\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="permdesc_foregroundServiceSystemExempted">এপ্‌টোক \"systemExempted\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ ব্যৱহাৰ কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="permdesc_fullScreenIntent">এপ্‌টোক কোনো লক কৰি ৰখা ডিভাইচত জাননী পূৰ্ণ স্ক্ৰীনৰ কাৰ্যকলাপ হিচাপে প্ৰদৰ্শন কৰিবলৈ অনুমতি দিয়ে</string>
-    <string name="permdesc_getAccounts">এপ্‌টোক টেবলেটটোৰ জ্ঞাত একাউণ্টসমূহৰ সূচীখন পাবলৈ অনুমতি দিয়ে৷ এইটোৱে আপুনি ইনষ্টল কৰি ৰখা এপ্লিকেশ্বনসমূহে সৃষ্টি কৰা যিকোনো একাউণ্টক অন্তৰ্ভুক্ত কৰিব পাৰে৷</string>
+    <string name="permdesc_getAccounts">"এপ্‌টোক ফ'নটোৰ জ্ঞাত একাউণ্টসমূহৰ সূচীখন পাবলৈ অনুমতি দিয়ে৷ এইটোৱে আপুনি ইনষ্টল কৰি ৰখা এপ্লিকেশ্বনসমূহে সৃষ্টি কৰা যিকোনো একাউণ্টক অন্তৰ্ভুক্ত কৰিব পাৰে৷"</string>
     <string name="permdesc_getAppList">ইনষ্টল কৰি থোৱা এপ্প্‌সমূহৰ সূচীখন পঢ়িবলৈ এটা এপ্প্‌ক অনুমতি দিয়ে।</string>
     <string name="permdesc_getPackageSize">"এপ্‌টোক ইয়াৰ ক'ড, ডেটা আৰু কেশ্বৰ আকাৰ বিচাৰি উলিয়াবলৈ অনুমতি দিয়ে"</string>
     <string name="permdesc_getTasks">এপ্‌টোক বৰ্তমানে আৰু শেহতীয়াভাৱে চলি থকা কাৰ্যসমূহৰ বিষয়ে তথ্য পুনৰুদ্ধাৰ কৰিবলৈ অনুমতি দিয়ে৷ এইটোৱে এপ্‌টোক ডিভাইচটোত কোনবোৰ এপ্লিকেশ্বন ব্যৱহাৰ হৈ আছে তাৰ বিষয়ে তথ্য বিচাৰি উলিয়াবলৈ অনুমতি দিব পাৰে৷</string>
@@ -2088,17 +2085,18 @@
     <string name="permdesc_mount_unmount_filesystems">"ৰিম'ভেৱল ষ্ট'ৰেজৰ বাবে এই এপ্লিকেশ্বনটোক ফাইল ছিষ্টেমসমূহক মাউণ্ট আৰু আনমাউণ্ট কৰিবৰ বাবে অনুমতি দিয়ক৷"</string>
     <string name="permdesc_nearby_wifi_devices">এপ্‌টোক বিজ্ঞাপন প্ৰচাৰ কৰিবলৈ, সংযোগ কৰিবলৈ আৰু নিকটৱৰ্তী ৱাই-ফাই ডিভাইচৰ আপেক্ষিক স্থান নিৰ্ধাৰণ কৰিবলৈ অনুমতি দিয়ে</string>
     <string name="permdesc_nfc">এপ্‌টোক নিয়েৰ ফিল্ড কমিউনিকেশ্বন (NFC) টেগ, কাৰ্ড আৰু ৰিডাৰসমূহৰ সৈতে যোগাযোগ কৰিবলৈ অনুমতি দিয়ে।</string>
+    <string name="permdesc_nfcTransactionEvent">এপ্‌টোক এটা সুৰক্ষিত উপাদানত হোৱা লেনদেনৰ বিষয়ে তথ্য লাভ কৰাৰ অনুমতি দিয়ে।</string>
     <string name="permdesc_observeCompanionDevicePresence">ডিভাইচসমূহ আশে-পাশে অথবা দূৰত থাকিলে এটা সহযোগী এপক সহযোগী ডিভাইচৰ উপস্থিতি পৰ্যবেক্ষণ কৰিবলৈ অনুমতি দিয়ে।</string>
-    <string name="permdesc_persistentActivity">"মেম'ৰিত নিজৰ বাবে প্ৰয়োজনীয় ঠাই পৃথক কৰিবলৈ এপক অনুমতি দিয়ে। এই কার্যই টেবলেটৰ কার্যক লেহেমীয়া কৰি অন্য এপবোৰৰ বাবে উপলব্ধ মেম'ৰিক সীমাবদ্ধ কৰে।"</string>
+    <string name="permdesc_persistentActivity">"মেম'ৰিত নিজৰ বাবে প্ৰয়োজনীয় ঠাই পৃথক কৰিবলৈ এপক অনুমতি দিয়ে। এই কার্যই ফ'নৰ কার্যক লেহেমীয়া কৰি অন্য এপবোৰৰ বাবে উপলব্ধ মেম'ৰিক সীমাবদ্ধ কৰে।"</string>
     <string name="permdesc_postNotification">এপ্‌টোক জাননী দেখুৱাবলৈ দিয়ে</string>
     <string name="permdesc_preferredPaymentInfo">এপ্‌টোক অগ্ৰাধিকাৰ দিয়া nfc পৰিশোধ সেৱাৰ পঞ্জীকৃত সহায়কসমূহ আৰু পৰিশোধ কৰিব লগা লক্ষ্যস্থান দৰে তথ্য পাবলৈ অনুমতি দিয়ে।</string>
     <string name="permdesc_processOutgoingCalls">এটা বৰ্হিগামী কল কৰি থকাৰ সময়ত ডায়েল কৰা নম্বৰ চাবলৈ আৰু লগতে এটা পৃথক নম্বৰলৈ কল সংযোগ কৰিবলৈ বা সকলোকে একেলগে বন্ধ কৰিবলৈ এপক অনুমতি দিয়ে।</string>
     <string name="permdesc_queryAllPackages">এপক আটাইবোৰ ইনষ্টল কৰি থোৱা পেকেজ চাবলৈ দিয়ে।</string>
     <string name="permdesc_readBasicPhoneState">এপ্‌টোক ডিভাইচটোৰ প্ৰাথমিক টেলিফ’নী সুবিধাসমূহ এক্সেছ কৰাৰ অনুমতি দিয়ে।</string>
-    <string name="permdesc_readCalendar">এই এপ্‌টোৱে আপোনাৰ টেবলেটটোত সংৰক্ষিত আটাইবোৰ কেলেণ্ডাৰ কাৰ্যক্ৰম পঢ়িব পাৰে আৰু আপোনাৰ কেলেণ্ডাৰৰ ডেটা শ্বেয়াৰ বা ছেভ কৰিব পাৰে।</string>
+    <string name="permdesc_readCalendar">"এই এপ্‌টোৱে আপোনাৰ ফ'নটোত সংৰক্ষিত আটাইবোৰ কেলেণ্ডাৰ কাৰ্যক্ৰম পঢ়িব পাৰে আৰু আপোনাৰ কেলেণ্ডাৰৰ ডেটা শ্বেয়াৰ বা ছেভ কৰিব পাৰে।"</string>
     <string name="permdesc_readCallLog">এই এপে আপোনাৰ কলৰ ইতিহাস পঢ়িব পাৰে।</string>
     <string name="permdesc_readCellBroadcasts">আপোনাৰ ডিভাইচে লাভ কৰা চেল সম্প্ৰচাৰৰ বার্তাবোৰ পঢ়িবলৈ এপক অনুমতি দিয়ে। আপোনাক জৰুৰীকালীন পৰিস্থিতিবোৰত সর্তক কৰিবলৈ চেল সম্প্ৰচাৰৰ বার্তাবোৰ প্ৰেৰণ কৰা হয়। জৰুৰীকালীন চেল সম্প্ৰচাৰ লাভ কৰাৰ সময়ত আপোনাৰ ডিভাইচৰ কাৰ্যদক্ষতা বা কাৰ্যপ্ৰণালীত ক্ষতিকাৰক এপবোৰে হস্তক্ষেপ কৰিব পাৰে।</string>
-    <string name="permdesc_readContacts">এপ্‌টোক আপোনাৰ টেবলেটত ষ্ট’ৰ কৰি ৰখা সম্পৰ্কবোৰৰ ডেটা পঢ়িবলৈ দিয়ে। এপ্‌সমূহৰ আপোনাৰ টেবলেটত থকা একাউণ্টসমূহলৈও এক্সেছ থাকিব যি সম্পৰ্কসমূহ সৃষ্টি কৰিছে। ইয়াত আপুনি ইনষ্টল কৰা এপ্‌সমূহে সৃষ্টি কৰা একাউণ্টসমূহ অন্তৰ্ভুক্ত হ’ব পাৰে। এই অনুমতিটোৱে এপ্‌সমূহক আপোনাৰ সম্পর্ক ডেটা ছেভ কৰিবলৈ দিয়ে আৰু ক্ষতিকাৰক এপ্‌সমূহে আপুনি নজনাকৈ সম্পর্ক ডেটা শ্বেয়াৰ কৰিব পাৰে।</string>
+    <string name="permdesc_readContacts">এপ্‌টোক আপোনাৰ ফ’নত ষ্ট’ৰ কৰি ৰখা সম্পৰ্কবোৰৰ ডেটা পঢ়িবলৈ দিয়ে। এপ্‌সমূহৰ আপোনাৰ ফ’নত থকা একাউণ্টসমূহলৈও এক্সেছ থাকিব যিবোৰে সম্পৰ্কসমূহ সৃষ্টি কৰিছে। ইয়াত আপুনি ইনষ্টল কৰা এপ্‌সমূহে সৃষ্টি কৰা একাউণ্টসমূহ অন্তৰ্ভুক্ত হ’ব পাৰে। এই অনুমতিটোৱে এপ্‌সমূহক আপোনাৰ সম্পর্ক ডেটা ছেভ কৰিবলৈ দিয়ে আৰু ক্ষতিকাৰক এপ্‌সমূহে আপুনি নজনাকৈ সম্পর্ক ডেটা শ্বেয়াৰ কৰিব পাৰে।</string>
     <string name="permdesc_readInstallSessions">এটা এপ্লিকেশ্বনক ইনষ্টল কৰা ছেশ্বনসমূহ পঢ়িবলৈ অনুমতি দিয়ে। এই কাৰ্যই সক্ৰিয় পেকেজ ইনষ্টলেশ্বনৰ বিষয়ে চাবলৈ অনুমতি দিয়ে।</string>
     <string name="permdesc_readMediaAudio">আপোনাৰ শ্বেয়াৰ কৰি ৰখা ষ্ট’ৰেজৰ পৰা অডিঅ’ ফাইল পঢ়িবলৈ এপ্‌টোক অনুমতি দিয়ে।</string>
     <string name="permdesc_readMediaImages">আপোনাৰ শ্বেয়াৰ কৰি ৰখা ষ্ট’ৰেজৰ পৰা প্ৰতিচ্ছবিৰ ফাইল পঢ়িবলৈ এপ্‌টোক অনুমতি দিয়ে।</string>
@@ -2106,7 +2104,7 @@
     <string name="permdesc_readNetworkUsageHistory">এপ্‌টোক বিশেষ নেটৱৰ্কবিলাকৰ আৰু এপ্‌সমূহৰ নেটৱৰ্ক ব্যৱহাৰৰ ইতিহাস পঢ়িবলৈ অনুমতি দিয়ে।</string>
     <string name="permdesc_readPhoneNumbers">"এপ্‌টোক ডিভাইচটোৰ ফ'ন নম্বৰসমূহ চাবলৈ অনুমতি দিয়ে।"</string>
     <string name="permdesc_readPhoneState">"ডিভাইচত থকা ফ'নৰ সুবিধাসমূহ ব্যৱহাৰ কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে৷ এই অনুমতিয়ে কোনো কল সক্ৰিয় হৈ থাককেই বা নাথাকক আৰু দূৰবৰ্তী নম্বৰটো কলৰ দ্বাৰা সংযোজিত হওকেই বা নহওক এপ্‌টোক ফ'ন নম্বৰ আৰু ডিভাইচৰ পৰিচয় নিৰ্ধাৰণ কৰিবলৈ অনুমতি দিয়ে৷"</string>
-    <string name="permdesc_readSms">এই এপ্‌টোৱে আপোনাৰ টেবলেটটোত সংৰক্ষিত আটাইবোৰ এছএমএছ (পাঠ) বাৰ্তা পঢ়িব পাৰে।</string>
+    <string name="permdesc_readSms">"এই এপ্‌টোৱে আপোনাৰ ফ'নত সংৰক্ষিত আটাইবোৰ এছএমএছ (পাঠ) বাৰ্তা পঢ়িব পাৰে।"</string>
     <string name="permdesc_readSyncSettings">একাউণ্টৰ ছিংক ছেটিংবোৰ পঢ়িবলৈ এপক অনুমতি দিয়ে। যেনে, People এপ্‌টো কোনো একাউণ্টৰ সৈতে ছিংক কৰা হৈছে নে নাই সেয়া নির্ধাৰণ কৰিব পাৰে।</string>
     <string name="permdesc_readSyncStats">ছিংকৰ কাৰ্যক্ৰমসমূহৰ ইতিহাস আৰু ছিংক কৰা ডেটাৰ পৰিমাণসহ কোনো একাউণ্টৰ ছিংকৰ তথ্য পঢ়িবলৈ এপক অনুমতি দিয়ে।</string>
     <string name="permdesc_readVisualUserSelect">আপুনি নিজৰ শ্বেয়াৰ কৰা ষ্ট’ৰেজৰ পৰা বাছনি কৰা প্ৰতিচ্ছবি আৰু ভিডিঅ’ ফাইলসমূহ পঢ়িবলৈ এপ্‌টোক অনুমতি দিয়ে।</string>
@@ -2132,7 +2130,7 @@
     <string name="permdesc_sendSms">"এপ্‌টোক এছএমএছ বাৰ্তা পঠিয়াবলৈ অনুমতি দিয়ে৷ ইয়াৰ ফলত অপ্ৰত্যাশিত মাচুল ভৰিবলগা হ'ব পাৰে৷ ক্ষতিকাৰক এপসমূহে আপোনাৰ অনুমতি নোলোৱাকৈয়ে বাৰ্তা পঠিয়াই আপোনাৰ পৰা মাচুল কাটিব পাৰে৷"</string>
     <string name="permdesc_setAlarm">এপ্‌টোক ইনষ্টল হৈ থকা এলাৰ্ম ক্লক এপত এলাৰ্ম ছেট কৰিবলৈ অনুমতি দিয়ে। কিছুমান এলাৰ্ম ক্লক এপত এই সুবিধাটো প্ৰযোজ্য নহ’ব পাৰে।</string>
     <string name="permdesc_setInputCalibration">টাচ্চ স্ক্ৰীনৰ কেলিব্ৰেশ্বন পেৰামিটাৰ সংশোধন কৰিবলৈ এপক অনুমতি দিয়ে। সাধাৰণ এপসমূহৰ বাবে কেতিয়াও প্ৰয়োজন হোৱা উচিত নহয়।</string>
-    <string name="permdesc_setTimeZone">"টে'বলেটৰ সময় মণ্ডল সলনি কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে।"</string>
+    <string name="permdesc_setTimeZone">"ফ'নৰ সময় মণ্ডল সলনি কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে।"</string>
     <string name="permdesc_setWallpaper">ছিষ্টেমৰ ৱালপেপাৰ ছেট কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে।</string>
     <string name="permdesc_setWallpaperHints">ছিষ্টেমৰ ৱালপেপাৰৰ আকাৰ হিণ্ট ছেট কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে।</string>
     <string name="permdesc_sim_communication">ছিমলৈ নিৰ্দেশসমূহ প্ৰেৰণ কৰিবলৈ এপক অনুমতি দিয়ে। ই অতি ক্ষতিকাৰক।</string>
@@ -2146,7 +2144,7 @@
     <string name="permdesc_subscribedFeedsRead">বৰ্তমান ছিংক কৰা ফীডৰ সবিশেষ লাভ কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে।</string>
     <string name="permdesc_systemAlertWindow">"এই এপ্‌টো অন্য এপৰ ওপৰত বা স্ক্ৰীনৰ অন্য অংশত প্ৰদৰ্শিত হ'ব পাৰে। এই কাৰ্যই এপৰ স্বাভাৱিক ব্যৱহাৰত ব্যাঘাত জন্মাব পাৰে আৰু অন্য এপ্‌সমূহক স্ক্ৰীনত কেনেকৈ দেখা পোৱা যায় সেইটো সলনি কৰিব পাৰে।"</string>
     <string name="permdesc_systemCamera">এই বিশেষাধিকাৰ প্ৰাপ্ত অথবা ছিষ্টেম এপ্‌টোৱে এটা ছিষ্টেম কেমেৰা ব্যৱহাৰ কৰি যিকোনো সময়তে ফট’ উঠাব পাৰে আৰু ভিডিঅ’ ৰেকৰ্ড কৰিব পাৰে। লগতে এপ্‌টোৰো android.permission.CAMERAৰ অনুমতি থকাটো প্ৰয়োজনীয়</string>
-    <string name="permdesc_transmitIr">"টে'বলেটৰ ইনফ্ৰাৰেড ট্ৰান্সমিটাৰ ব্যৱহাৰ কৰিবলৈ এপক অনুমতি দিয়ে।"</string>
+    <string name="permdesc_transmitIr">"ফ'নৰ ইনফ্ৰাৰেড ট্ৰান্সমিটাৰ ব্যৱহাৰ কৰিবলৈ এপক অনুমতি দিয়ে।"</string>
     <string name="permdesc_turnScreenOn">এপ্‌টোক স্ক্ৰীনখন অন কৰিবলৈ দিয়ে।</string>
     <string name="permdesc_ucsPlugin">"তৃতীয়-পক্ষ ক্ৰিডেন্সিয়েল ষ্ট'ৰেজ প্লাগ-ইনচৰ সৈতে কাম কৰক।"</string>
     <string name="permdesc_uninstall_shortcut">ব্যৱহাৰকাৰীৰ হস্তক্ষেপৰ অবিহনে গৃহ স্ক্ৰীনৰ শ্বৰ্টকাটসমূহ আঁতৰাবলৈ এপ্লিকেশ্বনক অনুমতি দিয়ে।</string>
@@ -2160,12 +2158,13 @@
     <string name="permdesc_vibrate">ভাইব্ৰেটৰ নিয়ন্ত্ৰণ কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে।</string>
     <string name="permdesc_vibrator_state">এপ্‌টোক কম্পন স্থিতিটো এক্সেছ কৰিবলৈ অনুমতি দিয়ে।</string>
     <string name="permdesc_videoWrite">এপক আপোনাৰ ভিডিঅ’ সংগ্ৰহ সালসলনি কৰিবলৈ দিয়ে।</string>
-    <string name="permdesc_wakeLock">"টে'বলেট সুপ্ত অৱস্থালৈ যোৱাৰ পৰা প্ৰতিৰোধ কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে।"</string>
-    <string name="permdesc_writeCalendar">এই এপটোৱে আপোনাৰ টেবলেটত কেলেণ্ডাৰ কাৰ্যক্ৰম যোগ কৰিব, আঁতৰাব বা সলনি কৰিব পাৰে। ই এনে বাৰ্তা পঠিয়াব পাৰে যিবোৰ কেলেণ্ডাৰৰ গৰাকীৰ পৰা অহা যেন লাগিব বা ই গৰাকীক নজনোৱাকৈ কাৰ্যক্ৰম সলনি কৰিব পাৰে৷</string>
-    <string name="permdesc_writeCallLog">অন্তৰ্গামী আৰু বহিৰ্গামী কলৰ ডেটাকে ধৰি আপোনাৰ টেবলেটৰ কল লগ সংশোধন কৰিবলৈ এপক অনুমতি দিয়ে। ক্ষতিকাৰক এপবোৰে আপোনাৰ কল লগ মচিবলৈ বা সংশোধন কৰিবলৈ ইয়াক ব্যৱহাৰ কৰিব পাৰে।</string>
-    <string name="permdesc_writeContacts">এপ্‌টোক আপোনাৰ টেবলেটত ষ্ট’ৰ কৰি ৰখা সম্পৰ্কবোৰৰ ডেটা সংশোধন কৰিবলৈ দিয়ে। এই অনুমতিয়ে এপ্‌সমূহক সম্পর্ক ডেটা মচিবলৈ দিয়ে।</string>
+    <string name="permdesc_wakeLock">"ফ'ন সুপ্ত অৱস্থালৈ যোৱাৰ পৰা প্ৰতিৰোধ কৰিবলৈ এপ্‌টোক অনুমতি দিয়ে।"</string>
+    <string name="permdesc_writeCalendar">"এই এপে আপোনাৰ ফ'নৰ কেলেণ্ডাৰত কার্যক্ৰম যোগ দিব, আঁতৰাব বা সলনি কৰিব পাৰে। ই এনে বাৰ্তা পঠিয়াব পাৰে যিবোৰ কেলেণ্ডাৰৰ গৰাকীৰ পৰা অহা যেন লাগে বা ই গৰাকীক নজনোৱাকৈ কাৰ্যক্ৰম সলনি কৰিব পাৰে৷"</string>
+    <string name="permdesc_writeCallLog">"অন্তৰ্গামী আৰু বহিৰ্গামী কলৰ ডেটাকে ধৰি আপোনাৰ ফ'নৰ কল লগ সংশোধন কৰিবলৈ এপক অনুমতি দিয়ে। ক্ষতিকাৰক এপবোৰে আপোনাৰ কল লগ মচিবলৈ বা সংশোধন কৰিবলৈ ইয়াক ব্যৱহাৰ কৰিব পাৰে।"</string>
+    <string name="permdesc_writeContacts">"এপ্‌টোক আপোনাৰ ফ'নত ষ্ট’ৰ কৰি ৰখা সম্পৰ্কবোৰৰ ডেটা সংশোধন কৰিবলৈ দিয়ে। এই অনুমতিয়ে এপ্‌সমূহক সম্পর্ক ডেটা মচিবলৈ দিয়ে।"</string>
     <string name="permdesc_writeSettings">এপ্‌টোক ছিষ্টেমৰ ছেটিঙৰ ডেটা সংশোধন কৰিবলৈ অনুমতি দিয়ে৷ ক্ষতিকাৰক এপ্‌সমূহে আপোনাৰ ছিষ্টেম কনফিগাৰেশ্বনক ক্ষতিগ্ৰস্ত কৰিব পাৰে৷</string>
     <string name="permdesc_writeSyncSettings">এপ্‌টোক কোনো একাউণ্টৰ ছিংক সম্পৰ্কীয় ছেটিংসমূহ সংশোধন কৰিবলৈ অনুমতি দিয়ে৷ উদাহৰণস্বৰূপে, এই কাৰ্যক কোনো একাউণ্টৰ জৰিয়তে People এপ্‌টোৰ ছিংক সক্ষম কৰিবলৈ ব্যৱহাৰ কৰিব পাৰি৷</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">এপ্‌টোক আন এপৰ মালিকানাধীন E2EE সম্পৰ্কৰ কীসমূহৰ সত্যাপনৰ স্থিতি আপডে’ট কৰিবলৈ দিয়ে</string>
     <string name="permgroupdesc_activityRecognition">শাৰীৰিক কাৰ্যকলাপ এক্সেছ কৰা</string>
     <string name="permgroupdesc_calendar">আপোনাৰ কেলেণ্ডাৰ ব্যৱহাৰ কৰিব পাৰে</string>
     <string name="permgroupdesc_calllog">"ফ'নৰ কল লগ পঢ়ক আৰু লিখক"</string>
@@ -2207,7 +2206,9 @@
     <string name="permlab_accessCoarseLocation">কেৱল অগ্ৰভূমিত আনুমানিক অৱস্থান এক্সেছ কৰক</string>
     <string name="permlab_accessDrmCertificates">DRM প্ৰমাণপত্ৰসমূহ এক্সেছ কৰে</string>
     <string name="permlab_accessFineLocation">কেৱল অগ্ৰভূমিত অৱস্থানৰ সঠিক তথ্য পাওক</string>
+    <string name="permlab_accessHiddenProfile">লুকুৱাই ৰখা প্ৰ’ফাইলসমূহ এক্সেছ কৰা</string>
     <string name="permlab_accessImsCallService">আইএমএছ কল সেৱা ব্যৱহাৰ কৰিব পাৰে</string>
+    <string name="permlab_accessLastKnownCellId">অন্তিম জ্ঞাত চেলৰ পৰিচয় এক্সেছ কৰক।</string>
     <string name="permlab_accessLocationExtraCommands">অতিৰিক্ত অৱস্থান প্ৰদানকাৰী নির্দেশসমূহ এক্সেছ কৰে</string>
     <string name="permlab_accessNetworkConditions">নেটৱৰ্ক অৱস্থাসমূহৰ ওপৰত নিৰীক্ষণৰ বাবে শুনিব পাৰে</string>
     <string name="permlab_accessNetworkState">নেটৱৰ্কৰ সংযোগবোৰ চাওক</string>
@@ -2239,6 +2240,7 @@
     <string name="permlab_callCompanionApp">ছিষ্টেমৰ জৰিয়তে কলবোৰ চোৱা আৰু নিয়ন্ত্ৰণ কৰা।</string>
     <string name="permlab_callPhone">"পোনপটীয়াকৈ ফ'ন নম্বৰলৈ কল কৰক"</string>
     <string name="permlab_camera">"ফট' তোলা আৰু ভিডিঅ' ৰেকৰ্ড কৰা"</string>
+    <string name="permlab_cameraHeadlessSystemUser">কোনো এপ্লিকেশ্বন বা সেৱাক পৰিধীয় ডিভাইচহীন ছিষ্টেম ব্যৱহাৰকাৰী হিচাপে কেমেৰা এক্সেছ কৰা অনুমতি দিয়ক।</string>
     <string name="permlab_cameraOpenCloseListener">কোনো এপ্লিকেশ্বন অথবা সেৱাক কেমেৰা ডিভাইচসমূহ খোলা অথবা বন্ধ কৰাৰ বিষয়ে কলবেকসমূহ গ্ৰহণ কৰিবলৈ অনুমতি দিয়ক।</string>
     <string name="permlab_changeNetworkState">নেটৱৰ্কৰ সংযোগ সলনি কৰক</string>
     <string name="permlab_changeTetherState">টেডাৰিং সংযোগ সলনি কৰক</string>
@@ -2266,6 +2268,7 @@
     <string name="permlab_foregroundServiceHealth">\"স্বাস্থ্য\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ চলাওক</string>
     <string name="permlab_foregroundServiceLocation">\"অৱস্থান\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ চলাওক</string>
     <string name="permlab_foregroundServiceMediaPlayback">\"mediaPlayback\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ চলাওক</string>
+    <string name="permlab_foregroundServiceMediaProcessing">\"mediaProcessing\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ চলাওক</string>
     <string name="permlab_foregroundServiceMediaProjection">\"mediaProjection\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ চলাওক</string>
     <string name="permlab_foregroundServiceMicrophone">\"মাইক্ৰ’ফ’ন\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ চলাওক</string>
     <string name="permlab_foregroundServicePhoneCall">\"phoneCall\" সম্পৰ্কীয় অগ্ৰভূমি সেৱাসমূহ চলাওক</string>
@@ -2366,6 +2369,7 @@
     <string name="permlab_mount_unmount_filesystems">SD কাৰ্ড ফাইল ছিষ্টেম প্ৰৱেশ কৰক</string>
     <string name="permlab_nearby_wifi_devices">নিকটৱৰ্তী ৱাই-ফাই ডিভাইচসমূহৰ সৈতে ভাব বিনিময় কৰক</string>
     <string name="permlab_nfc">নিয়েৰ ফিল্ড কমিউনিকেশ্বন নিয়ন্ত্ৰণ কৰক</string>
+    <string name="permlab_nfcTransactionEvent">সুৰক্ষিত উপাদানৰ লেনদেন সম্পৰ্কীয় অনুষ্ঠান</string>
     <string name="permlab_observeCompanionDevicePresence">সহযোগী ডিভাইচৰ উপস্থিতি পৰ্যবেক্ষণ কৰক</string>
     <string name="permlab_persistentActivity">এপক সদায়ে চলি থকা কৰক</string>
     <string name="permlab_postNotification">জাননী দেখুৱাওক</string>
@@ -2438,12 +2442,13 @@
     <string name="permlab_uwb_ranging">নিকটৱৰ্তী আল্ট্ৰা-ৱাইডবেণ্ড ডিভাইচৰ মাজৰ আপেক্ষিক স্থান নিৰ্ধাৰণ কৰক</string>
     <string name="permlab_vibrate">কম্পন নিয়ন্ত্ৰণ কৰক</string>
     <string name="permlab_videoWrite">আপোনাৰ ভিডিঅ’ সংগ্ৰহ সালসলনি কৰিবলৈ</string>
-    <string name="permlab_wakeLock">"টে'বলেট সুপ্ত অৱস্থালৈ যোৱাত বাধা দিয়ক"</string>
+    <string name="permlab_wakeLock">"ফ'ন সুপ্ত অৱস্থালৈ যোৱাত বাধা দিয়ক"</string>
     <string name="permlab_writeCalendar">গৰাকীয়ে নজনাকৈয়ে কেলেণ্ডাৰৰ কাৰ্যক্ৰম সংশোধন কৰি অতিথিসকললৈ ইমেইল প্ৰেৰণ কৰক</string>
     <string name="permlab_writeCallLog">কল লগ লিখক</string>
     <string name="permlab_writeContacts">আপোনাৰ সম্পর্ক সূচী সংশোধন কৰক</string>
     <string name="permlab_writeSettings">ছিষ্টেম ছেটিংহ সংশোধন কৰক</string>
     <string name="permlab_writeSyncSettings">"ছিংকক অন আৰু অফ ট'গল কৰক"</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">আন এপৰ মালিকানাধীন E2EE সম্পৰ্কৰ কীসমূহৰ সত্যাপনৰ স্থিতি আপডে’ট কৰা</string>
     <string name="perms_description_app">%1$sএ প্ৰদান কৰা</string>
     <string name="perms_new_perm_prefix">&lt;font fgcolor=#ff33b5e5 size=12>নতুন: &lt;/font></string>
     <string name="personal_apps_suspended_turn_profile_on">অন কৰক</string>
@@ -2480,7 +2485,7 @@
     <string name="policydesc_allow_desktopsync">ডেস্কটপ চিংকৰ ব্যৱহাৰ প্ৰতিৰোধ কৰক।</string>
     <string name="policydesc_allow_internetsharing">"ম'বাইল হ'টস্প'টৰ ব্যৱহাৰ প্ৰতিৰোধ কৰক।"</string>
     <string name="policydesc_allow_irda">IrDA-ৰ ব্যৱহাৰ প্ৰতিৰোধ কৰক।</string>
-    <string name="policydesc_allow_popimapemail">টেবলেটত POP আৰু IMAP ইমেইলৰ ব্যৱহাৰ প্ৰতিৰোধ কৰক।</string>
+    <string name="policydesc_allow_popimapemail">ফোনত POP আৰু IMAP ইমেইলৰ ব্যৱহাৰ প্ৰতিৰোধ কৰক।</string>
     <string name="policydesc_allow_storagecard">SD কাৰ্ডৰ ব্যৱহাৰ প্ৰতিৰোধ কৰক।</string>
     <string name="policydesc_allow_textmessaging">পাঠ আৰু মাল্টিমিডিয়া মেচেজিঙৰ ব্যৱহাৰ প্ৰতিৰোধ কৰক।</string>
     <string name="policydesc_allow_thirdParty">এই এপ্লিকেশ্বনটোৱে তৃতীয়-পক্ষৰ এপ্লিকেশ্বনসমূহ চলাটো প্ৰতিৰোধ কৰিব পাৰে৷</string>
@@ -2498,10 +2503,10 @@
     <string name="policydesc_setGlobalProxy">"নীতি সক্ষম কৰি থোৱা অৱস্থাত ব্যৱহাৰ কৰিবৰ বাবে ডিভাইচৰ বাবে গ্ল'বেল প্ৰক্সী ছেট কৰক। কেৱল ডিভাইচৰ গৰাকীয়েহে গ্ল'বেল প্ৰক্সী ছেট কৰিব পাৰে।"</string>
     <string name="policydesc_unsigned_app">এই এপ্লিকেশ্বনটোৱে অজ্ঞাত উৎসৰ পৰা এপ্লিকেশ্বনসমূহ চলাটো প্ৰতিৰোধ কৰিব পাৰে৷</string>
     <string name="policydesc_unsigned_pkg">এই এপ্লিকেশ্বনটোৱে অজ্ঞাত উৎসৰ পৰা এপ্লিকেশ্বনসমূহ ইনষ্টল হোৱাটো প্ৰতিৰোধ কৰিব পাৰে৷</string>
-    <string name="policydesc_watchLogin">স্ক্ৰীন আনলক কৰোঁতে টাইপ কৰা অশুদ্ধ পাছৱৰ্ডৰ সংখ্যা নিৰীক্ষণ কৰক আৰু যদিহে অত্যাধিকবাৰ অশুদ্ধ পাছৱৰ্ড টাইপ কৰা হয়, তেন্তে টেবলেটটো লক কৰক বা টেবলেটটোৰ আটাইখিনি ডেটা মচক।</string>
-    <string name="policydesc_watchLogin_secondaryUser">স্ক্ৰীন আনলক কৰোঁতে টাইপ কৰা অশুদ্ধ পাছৱৰ্ডৰ সংখ্যা নিৰীক্ষণ কৰক আৰু যদিহে অত্যধিকবাৰ অশুদ্ধ পাছৱৰ্ড টাইপ কৰা হয়, তেন্তে টেবলেটটো লক কৰক বা এই ব্যৱহাৰকাৰীৰ আটাইখিনি ডেটা মচক।</string>
-    <string name="policydesc_wipeData">সতৰ্কবাণী প্ৰেৰণ নকৰাকৈয়ে ফেক্টৰী ডেটা ৰিছেট কৰি টেবলেটৰ ডেটা মচক।</string>
-    <string name="policydesc_wipeData_secondaryUser">এই টেবলেটটোত থকা এই ব্যৱহাৰকাৰীৰ তথ্য কোনো সর্তকবাণী নিদিয়াকৈ মচি পেলাওক।</string>
+    <string name="policydesc_watchLogin">"স্ক্ৰীন আনলক কৰোঁতে টাইপ কৰা অশুদ্ধ পাছৱৰ্ডৰ সংখ্যা নিৰীক্ষণ কৰক আৰু যদিহে অত্যাধিকবাৰ অশুদ্ধ পাছৱৰ্ড টাইপ কৰা হয়, তেন্তে ফ'নটো লক কৰক বা ফ'নটোৰ আটাইখিনি ডেটা মচক।"</string>
+    <string name="policydesc_watchLogin_secondaryUser">"স্ক্ৰীনখন আনলক কৰোঁতে টাইপ কৰা ভুল পাছৱৰ্ডবোৰৰ সংখ্যা নিৰীক্ষণ কৰক আৰু যদিহে অত্যধিকবাৰ ভুল পাছৱৰ্ড টাইপ কৰা হয়, তেন্তে ফ'নটো লক কৰক অথবা এই ব্যৱহাৰকাৰীৰ আটাইখিনি ডেটা মচক।"</string>
+    <string name="policydesc_wipeData">"সতৰ্কবাণী প্ৰেৰণ নকৰাকৈয়ে ফেক্টৰী ডেটা ৰিছেট কৰি ফ'নৰ ডেটা মচক।"</string>
+    <string name="policydesc_wipeData_secondaryUser">"এই ফ'নটোত থকা এই ব্যৱহাৰকাৰীৰ তথ্য কোনো সর্তকবাণী নিদিয়াকৈ মচি পেলাওক।"</string>
     <string name="policylab_allow_bluetoothmode">ব্লুটুথ অক্ষম কৰক</string>
     <string name="policylab_allow_browser">ইণ্টাৰনেট অক্ষম কৰক</string>
     <string name="policylab_allow_camera">কেমেৰাবিলাক অক্ষম কৰক</string>
@@ -2535,7 +2540,7 @@
     <string name="postalTypeHome">ঘৰৰ ঠিকনা</string>
     <string name="postalTypeOther">অন্যান্য</string>
     <string name="postalTypeWork">কৰ্মস্থানৰ ঠিকনা</string>
-    <string name="power_dialog">"টে'বলেটৰ বিকল্পসমূহ"</string>
+    <string name="power_dialog">"ফ'নৰ বিকল্পসমূহ"</string>
     <string name="power_off">পাৱাৰ অফ</string>
     <string name="prepend_shortcut_label">মেনু+</string>
     <string name="preposition_for_date">%s তাৰিখে</string>
@@ -2547,6 +2552,8 @@
     <string name="print_service_installed_title">%s সেৱা ইনষ্টল কৰা হ’ল</string>
     <string name="printing_disabled_by">প্ৰিণ্ট কৰা কাৰ্য %sএ অক্ষম কৰি ৰাখিছে।</string>
     <string name="private_dns_broken_detailed">ব্যক্তিগত DNS ছাৰ্ভাৰ এক্সেছ কৰিব নোৱাৰি</string>
+    <string name="private_profile_label_badge">ব্যক্তিগত %1$s</string>
+    <string name="private_space_set_up_screen_lock_message">"আপোনাৰ প্ৰাইভেট স্পে'চ ব্যৱহাৰ কৰিবলৈ এই ডিভাইচটোত স্ক্ৰীন লক ছেট কৰক"</string>
     <string name="profile_encrypted_detail">কৰ্মস্থানৰ প্ৰ’ফাইল লক হৈ আছে</string>
     <string name="profile_encrypted_detail_workspace_premium">%s লক হৈছে</string>
     <string name="profile_encrypted_detail_workspace_prime">"কাৰ্য প্ৰ'ফাইল লক হৈছে"</string>
@@ -2556,6 +2563,13 @@
     <string name="profile_encrypted_message_workspace_prime">"কাৰ্য এপ্প্‌সমূহৰ বিষয়ে জাননীসমূহ লাভ কৰিবলৈ আপোনাৰ কাৰ্য প্ৰ'ফাইল আনলক কৰক।"</string>
     <string name="profile_encrypted_title">কিছুমান কাৰ্যকাৰিতা সীমিত হ’ব পাৰে</string>
     <string name="profile_encrypted_title_secure_folder">"সুৰক্ষিত ফ'ল্ডাৰ লক হৈছে।"</string>
+    <string name="profile_label_clone">ক্ল’ন</string>
+    <string name="profile_label_communal">শ্বেয়াৰ কৰা</string>
+    <string name="profile_label_private">ব্যক্তিগত</string>
+    <string name="profile_label_test">পৰীক্ষা</string>
+    <string name="profile_label_work">কৰ্মস্থান</string>
+    <string name="profile_label_work_2">কৰ্মস্থান ২</string>
+    <string name="profile_label_work_3">কৰ্মস্থান ৩</string>
     <string name="profile_restarting_message_premium">আপুনি %1$s লক হৈ থাকোতে কাৰ্য এপ্প্‌সমূহৰ পৰা সকলো জাননী প্ৰাপ্ত নকৰিব। %2$s আনলক কৰিবলৈ ইয়াত টিপক।</string>
     <string name="profile_restarting_message_prime">"আপুনি আপোনাৰ কাৰ্য প্ৰ'ফাইল লক হৈ থাকোতে কাৰ্য এপ্প্‌সমূহৰ পৰা সকলো জাননী প্ৰাপ্ত নকৰিব। আপোনাৰ কাৰ্য প্ৰ'ফাইল আনলক কৰিবলৈ ইয়াত টিপক।"</string>
     <string name="profile_restarting_title_premium">%s লক হৈছে</string>
@@ -2581,9 +2595,11 @@
     <string name="recent_tasks_title">শেহতীয়া</string>
     <string name="recording_fail">মাইক %2$sত ব্যৱহাৰ হৈ থকাৰ সময়ত এইটো %1$sত ব্যৱহাৰ কৰিব নোৱাৰে।</string>
     <string name="recording_popup">"%s-এ মাইক্ৰ'ফোন ব্যৱহাৰ কৰি আছে।"</string>
-    <string name="recording_popup_device">টেবলেট</string>
+    <string name="recording_popup_device">ফোন</string>
     <string name="recording_popup_with_bluetooth">"%s-এ ব্লুটুথ মাইক্ৰ'ফোন ব্যৱহাৰ কৰি আছে।"</string>
     <string name="recording_popup_with_device">"%1$s-এ %2$s-ৰ মাইক্ৰ'ফোন ব্যৱহাৰ কৰি আছে।"</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">সংবেদনশীল জাননী লুকুওৱা হৈছে</string>
     <string name="redo">পুনৰ কৰক</string>
     <string name="reduce_bright_colors_feature_name">অতিৰিক্ত ডিম</string>
     <string name="region_picker_section_all">আটাইবোৰ অঞ্চল</string>
@@ -2714,6 +2730,29 @@
     <string name="samsung_global_action_restart">পুনৰাৰম্ভ</string>
     <string name="samsung_keyboard_settings">"চেমচাং কীব'ৰ্ডৰ ছেটিংছ"</string>
     <string name="sanitized_content_text_sf">সমল লুকাই আছে</string>
+    <string name="satellite_notification_how_it_works">ই কেনেকৈ কাম কৰে</string>
+    <string name="satellite_notification_manual_summary">আপুনি কোনো ম’বাইল বা ৱাই-ফাই নেটৱৰ্ক নোহোৱাকৈ বাৰ্তা পঠিয়াওক আৰু লাভ কৰক</string>
+    <string name="satellite_notification_manual_title">উপগ্ৰহৰ জৰিয়তে বাৰ্তা বিনিময়ৰ সুবিধাটো ব্যৱহাৰ কৰিবনে?</string>
+    <string name="satellite_notification_open_message">Messages খোলক</string>
+    <string name="satellite_notification_summary">আপুনি ম’বাইল বা ৱাই-ফাই নেটৱৰ্কৰ জৰিয়তে পাঠ বাৰ্তা পঠিয়াব বা লাভ কৰিব পাৰে</string>
+    <string name="satellite_notification_title">উপগ্ৰহৰ সৈতে স্বয়ংক্ৰিয়ভাৱে সংযুক্ত হৈছে</string>
+    <string name="scCellularNetworkSecuritySummary">এনক্ৰিপশ্বন, এনক্ৰিপ্ট নকৰা নেটৱৰ্কৰ বাবে জাননী</string>
+    <string name="scCellularNetworkSecurityTitle">ম’বাইল নেটৱৰ্কৰ সুৰক্ষা</string>
+    <string name="scIdentifierDisclosureIssueSummary">"%1$sত, এটা নিকটৱৰ্তী নেটৱৰ্কে আপোনাৰ %2$s ছিম ব্যৱহাৰ কৰাৰ সময়ত আপোনাৰ ডিভাইচৰ অদ্বিতীয় আইডি (IMSI বা IMEI) ৰেকৰ্ড কৰিছে।
+
+ ইয়াৰ অৰ্থ হৈছে যে আপোনাৰ অৱস্থান, কাৰ্যকলাপ বা পৰিচয়ৰ লগ তৈয়াৰ কৰা হৈছে। এইটো সাধাৰণভাৱে কৰা অনুশীলন যদিও গোপনীয়তাক সম্পৰ্কে চিন্তিত লোকসকলৰ বাবে ই এটা সমস্যা হ’ব পাৰে।"</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">%1$sত, এটা নিকটৱৰ্তী নেটৱৰ্কে আপোনাৰ %2$s ছিম ব্যৱহাৰ কৰাৰ সময়ত আপোনাৰ ডিভাইচৰ অদ্বিতীয় আইডি (IMSI বা IMEI) ৰেকৰ্ড কৰিছে</string>
+    <string name="scIdentifierDisclosureIssueTitle">ডিভাইচৰ আইডি এক্সেছ কৰা হৈছে</string>
+    <string name="scNullCipherIssueActionGotIt">বুজি পালোঁ</string>
+    <string name="scNullCipherIssueActionLearnMore">অধিক জানক</string>
+    <string name="scNullCipherIssueActionSettings">ম’বাইল নেটৱৰ্কৰ সুৰক্ষাৰ ছেটিং</string>
+    <string name="scNullCipherIssueEncryptedSummary">%1$s ছিমৰ সংযোগ এতিয়া অধিক সুৰক্ষিত</string>
+    <string name="scNullCipherIssueEncryptedTitle">এনক্ৰিপ্ট কৰা নেটৱৰ্ক %1$sৰ সৈতে সংযুক্ত কৰা আছে</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"আপোনাৰ %1$s ছিম ব্যৱহাৰ কৰাৰ সময়ত কল, বাৰ্তা আৰু ডেটা বৰ্তমানে অধিক অসুৰক্ষিত হোৱাৰ বিপদাশংকা আছে।
+
+যেতিয়া আপোনাৰ সংযোগ পুনৰ এনক্ৰিপ্ট কৰা হয়, তেতিয়া আপুনি আন এটা জাননী পাব।"</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">আপোনাৰ %1$s ছিম ব্যৱহাৰ কৰাৰ সময়ত কল, বাৰ্তা আৰু ডেটা বৰ্তমানে অধিক অসুৰক্ষিত হোৱাৰ বিপদাশংকা আছে</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">এনক্ৰিপ্ট নকৰা নেটৱৰ্কৰ সৈতে সংযুক্ত কৰা আছে</string>
     <string name="scan_text">পাঠ বাহিৰ উলিয়াওক</string>
     <string name="screen_compat_mode_hint">ছিষ্টেমৰ ছেটিং > এপ্‌ > ডাউনল’ড কৰা সমল-লৈ গৈ ইয়াক আকৌ সক্ষম কৰক।</string>
     <string name="screen_compat_mode_scale">স্কেল</string>
@@ -2724,16 +2763,17 @@
     <string name="screen_lock">স্ক্ৰীন লক</string>
     <string name="screen_lock_app_setting_name">"স্ক্ৰীন ল'ক ব্যৱহাৰ কৰক"</string>
     <string name="screen_lock_dialog_default_subtitle">অব্যাহত ৰাখিবলৈ আপোনাৰ স্ক্ৰীন লক দিয়ক</string>
+    <string name="screen_not_shared_sensitive_content">সুৰক্ষাৰ বাবে এপৰ সমল স্ক্ৰীণ শ্বেয়াৰ কৰাৰ পৰা লুকুৱাই ৰখা হৈছে</string>
     <string name="screencapture_restrict">নিৰাপত্তা নীতিয়ে স্ক্ৰীণ কেপচাৰ ব্যৱহাৰ কৰাত প্ৰতিৰোধ কৰে৷</string>
     <string name="screenshot_edit">সম্পাদনা কৰক</string>
     <string name="sd_card_unavailable_message">"আপুনি SD কাৰ্ডখন ব্যৱহাৰ কৰিব নোৱাৰে কাৰণ এটা বেলেগ ব্যৱহাৰকাৰীৰ প্ৰ'ফাইল ব্যৱহাৰ হৈ থকাৰ সময়ত এইখন সুমুওৱা হৈছিল।"</string>
     <string name="sd_card_unavailable_title">SD কাৰ্ড উপলব্ধ নহয়</string>
-    <string name="sdcard_bad_removal_message">এখন SD কাৰ্ড অসুৰক্ষিতভাৱে আঁতৰোৱা হৈছিল। আপোনাৰ টেবলেট অপ্ৰত্যাশিতভাৱে পুনৰাৰম্ভ হোৱাৰ পৰা বাধা দিবলৈ, অসংৰক্ষিত ডাটা সংৰক্ষণ কৰক আৰু এতিয়া পুনৰাৰম্ভ কৰক।</string>
+    <string name="sdcard_bad_removal_message">এখন SD কাৰ্ড অসুৰক্ষিতভাৱে আঁতৰোৱা হৈছিল। আপোনাৰ ফোন অপ্ৰত্যাশিতভাৱে পুনৰাৰম্ভ হোৱাৰ পৰা বাধা দিবলৈ, অসংৰক্ষিত ডাটা সংৰক্ষণ কৰক আৰু এতিয়া পুনৰাৰম্ভ কৰক।</string>
     <string name="sdcard_batch_decrypt_noti_content">SD কাৰ্ড ডিক্ৰিপ্ট কৰক</string>
     <string name="sdcard_batch_decrypt_noti_title">SD কাৰ্ড ডিক্ৰিপ্টশ্বন</string>
     <string name="sdcard_batch_decrypt_popup_content">"এনক্ৰিপ্ট কৰা SD কাৰ্ড ব্যৱহাৰ কৰাৰ আগতে ডিক্ৰিপ্ট কৰিব লাগিব৷ ডিক্ৰিপ্টশ্বন এঘণ্টা বা ততোধিক সময় ল'ব পাৰে৷ কোনো চাৰ্জ হৈ থকা বেটাৰীৰ সৈতে আৰম্ভ কৰক আৰু ডিক্ৰিপ্টশ্বন শেষ নোহোৱালৈকে ডিভাইচ প্লাগইন কৰি ৰাখক৷ ডিক্ৰিপ্টশ্বন প্ৰক্ৰিয়াত ব্যাঘাত ঘটাই কিছুমান বা সকলো ডাটা হেৰুৱাব লগা হ'ব পাৰে"</string>
     <string name="sdcard_decrypt_err_notification">SD কাৰ্ড ডিক্ৰিপ্টশ্বন ত্ৰুটি ঘটিছে৷</string>
-    <string name="sdcard_decrypt_error_otherdevice">আপোনাৰ SD কাৰ্ডত থকা কিছুমান ফাইল অন্য ডিভাইচত এনক্ৰিপ্ট কৰা হৈছিল আৰু এই টেবলেটটোত ব্যৱহাৰ কৰিব পৰা নাযায়।</string>
+    <string name="sdcard_decrypt_error_otherdevice">আপোনাৰ SD কাৰ্ডত থকা কিছুমান ফাইল অন্য ডিভাইচত এনক্ৰিপ্ট কৰা হৈছিল আৰু এই ফোনটোত ব্যৱহাৰ কৰিব পৰা নাযায়।</string>
     <string name="sdcard_decrypt_notification">SD কাৰ্ড ডিক্ৰিপ্ট হৈছে৷</string>
     <string name="sdcard_decrypt_title_notification">SD কাৰ্ড ডিক্ৰিপ্টশ্বন</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD কাৰ্ড ডিক্ৰিপ্ট…</string>
@@ -2757,14 +2797,6 @@
     <string name="searchview_description_submit">প্ৰশ্ন দাখিল কৰক</string>
     <string name="searchview_description_voice">কণ্ঠধ্বনিৰ যোগেৰে সন্ধান কৰক</string>
     <string name="sec_bluetooth_airplane_mode_toast">"বিমান ম'ডত ব্লুটুথ অন থাকিব।"</string>
-    <string name="sec_immersive_cling_button_ok">ঠিক</string>
-    <string name="sec_immersive_cling_guide_text_gesture">এই এপ্প্‌টোৱে সম্পূৰ্ণ স্ক্ৰীণ ব্যৱহাৰ কৰি আছে। নেভিগেশ্বনৰ বাবে ঘহোৱা ভংগীমাই স্থিতি দণ্ডিকা দেখুৱাব। নেভিগেট কৰিবলৈ, স্থিতি দণ্ডিকা দৃশ্যমান হোৱাৰ সময়ত পুনৰ ঘহাঁওক।</string>
-    <string name="sec_immersive_cling_guide_text_phone">"এই এপ্প্‌টোৱে সম্পূৰ্ণ স্ক্ৰীণ ব্যৱহাৰ কৰি আছে। চিত্তবিক্ষেপ মিনিমাইজ কৰিবলৈ আৰু আপোনাক এপ্প্‌টো অকস্মাৎ এৰি দিয়াত প্ৰতিৰোধ কৰিবলৈ হোম, পিছলৈ আৰু শেহতীয়া বুটাম লুকুওৱা হৈছে।
-
-আনকি আপুনি আপোনাৰ ফোন ঘূৰালে, বুটামসমূহ সদায় চাৰ্জিং প'ৰ্টৰ কাষত থাকিব। আপুনি কাঁড়ৰ দ্বাৰা দেখুওৱাৰ দৰে স্ক্ৰীণৰ কাষৰ পৰা ভিতৰলৈ ঘহাই বুটামসমূহ পুনঃদেখুৱাব পাৰে।"</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"এই এপ্প্‌টোৱে সম্পূৰ্ণ স্ক্ৰীণ ব্যৱহাৰ কৰি আছে। চিত্তবিক্ষেপ মিনিমাইজ কৰিবলৈ আৰু আপোনাক এপ্প্‌টো অকস্মাৎ এৰি দিয়াত প্ৰতিৰোধ কৰিবলৈ হোম, পিছলৈ আৰু শেহতীয়া বুটাম লুকুওৱা হৈছে।
-
-বুটামসমূহ পুনঃদেখুৱাবলৈ, কাঁড়ৰ দ্বাৰা দেখুওৱাৰ দৰে স্ক্ৰীণৰ তলৰ পৰা ওপৰলৈ ঘহাঁওক।"</string>
     <string name="sec_monotype_default">"ডিফ'ল্ট"</string>
     <string name="sec_ringtone_category_brand_sound">চেমচাং ব্ৰেণ্ডৰ ধ্বনি</string>
     <string name="sec_ringtone_category_calm">শান্ত</string>
@@ -2774,6 +2806,10 @@
     <string name="sec_ringtone_category_open_theme">"সাম্প্ৰতিক থীমৰ ডিফ'ল্ট"</string>
     <string name="sec_ringtone_category_retro">"ৰেট্ৰ'"</string>
     <string name="sec_ringtone_silent">নিৰৱ</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">বাতিল</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">এটা ছেটেলাইটত সংযোগ কৰিবলৈ, আপোনাৰ নেটৱৰ্ক অপাৰেটৰক “স্বয়ংক্ৰিয়ভাৱে চয়ন কৰক”-লৈ ছেট কৰিব লাগিব।</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">অন কৰক</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">স্বয়ংক্ৰিয় নেটৱৰ্ক চয়ন অন কৰিবনে?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">"কথা পাতিবলৈ মাইক্ৰ'ফোনত এক্সেছ অন কৰক।"</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">%s ব্যৱহাৰ কৰিবলৈ কেমেৰাত এক্সেছ অন কৰক।</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">"%s ব্যৱহাৰ কৰিবলৈ মাইক্ৰ'ফোনত এক্সেছ অন কৰক।"</string>
@@ -2879,8 +2915,10 @@
     <string name="sem_face_acquired_too_dark">মুখ চিনাক্ত কৰিবলৈ বহুত আন্ধাৰ</string>
     <string name="sem_face_error_DB_corrupted">আপোনাৰ মুখৰ ডাটাৰ সৈতে এটা সমস্যা হৈছিল। আপোনাৰ মুখ পুনঃ পঞ্জীয়ন কৰক।</string>
     <string name="sem_face_error_already_in_use_by_VT">"ভিডিঅ' কলৰ সময়ত মুখ চিনাক্তকৰণ ব্যৱহাৰ কৰিব নোৱাৰে।"</string>
-    <string name="sem_face_error_camera_access_off">মুখ চিনাক্তকৰণ ব্যৱহাৰ কৰিব নোৱাৰে কাৰণ কেমেৰাত প্ৰৱেশ অফ আছে</string>
+    <string name="sem_face_error_camera_access_off">মুখ চিনাক্তকৰণ ব্যৱহাৰ কৰিব নোৱাৰে কাৰণ কেমেৰাত এক্সেছ অফ আছে</string>
     <string name="sem_face_error_camera_fail">"কেমেৰা খুলিব পৰা নগ'ল। পুনঃচেষ্টা কৰক।"</string>
+    <string name="sem_face_error_lockout">"বহু বেছি অশুদ্ধ প্ৰয়াসৰ কাৰণে বায়'মেট্ৰিক সত্যাপন উপলব্ধ নহয়।"</string>
+    <string name="sem_face_error_lockout_permanent">"বহু বেছি অশুদ্ধ প্ৰয়াসৰ কাৰণে বায়'মেট্ৰিক সত্যাপন উপলব্ধ নহয়।"</string>
     <string name="sem_face_error_ppp_timeout">আপুনি আপোনাৰ পৰিচয় সত্যাপন কৰাৰ পৰা বহুত সময় পাৰ হৈছে। আপোনাৰ মুখ পঞ্জীয়ন কৰিবলৈ আপুনি পুনৰ আৰম্ভ কৰিব লাগিব।</string>
     <string name="sem_face_error_too_dark">মুখ চিনাক্ত কৰিবলৈ বহুত আন্ধাৰ</string>
     <string name="sem_face_error_too_dark_to_enroll">বহুত বেছি আন্ধাৰ। লাইট অন কৰি বা কোনো পোহৰ থকা ঠাইলৈ গৈ চেষ্টা কৰক।</string>
@@ -2896,13 +2934,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">আপোনাৰ আঙুলিৰ ছাপ স্কেন কৰিবলৈ স্ক্ৰীণৰ পৰা আপোনাৰ S Pen-ৰ আভাস দূৰত লৰচৰ কৰক।</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">আঙুলিৰ ছাপসমূহ ব্যৱহাৰ কৰিবলৈ, প্ৰথমে এটা সুৰক্ষিত স্ক্ৰীণ লকৰ প্ৰকাৰ (আৰ্হি, PIN বা পাছৱৰ্ড) ছেট কৰক।</string>
+    <string name="sem_fingerprint_error_lockout">"বহু বেছি অশুদ্ধ প্ৰয়াসৰ কাৰণে বায়'মেট্ৰিক সত্যাপন উপলব্ধ নহয়।"</string>
+    <string name="sem_fingerprint_error_lockout_permanent">"বহু বেছি অশুদ্ধ প্ৰয়াসৰ কাৰণে বায়'মেট্ৰিক সত্যাপন উপলব্ধ নহয়।"</string>
     <string name="sem_fingerprint_error_onehand_mode">"এহতীয়া ম'ডত আঙুলিৰ ছাপ স্কেনাৰ ব্যৱহাৰ কৰিব নোৱাৰে।"</string>
     <string name="sem_fingerprint_error_smart_view">%s ব্যৱহাৰ কৰি থাকোতে আঙুলিৰ ছাপ স্কেন কৰিব নোৱাৰে।</string>
+    <string name="sem_fingerprint_error_system_failure">আঙুলিৰ ছাপ চেনচৰে সঁহাৰি জনোৱা নাই। পিছত পুনঃচেষ্টা কৰক। এইটো অব্যাহত থাকিলে, আপোনাৰ ফোন পুনৰাৰম্ভ কৰি চেষ্টা কৰক।</string>
+    <string name="sem_fingerprint_error_template_corrupt">আঙুলিৰ ছাপৰ ডাটা দূষিত কৰা হৈছে৷ আপোনাৰ আঙুলিৰ ছাপ পুনৰ যোগ কৰক৷</string>
     <string name="sem_fingerprint_error_wireless_charger">আপোনাৰ আঙুলিৰ ছাপ ব্যৱহাৰ কৰিবলৈ ৱায়াৰলেচ চাৰ্জাৰৰ পৰা সংযোগহীন কৰক</string>
     <string name="sem_fingerprint_name_template">আঙুলিৰ ছাপ %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">পিছত</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">এতিয়া নহয়</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">আঁতৰাওক আৰু পঞ্জীয়ন কৰক</string>
+    <string name="sem_fingerprint_register_dialog_message">"শেহতীয়া চফ্টৱেৰ আপডেটত আঙুলিৰ ছাপ চিনাক্তকৰণ উন্নত কৰা হৈছিল। আপুনি আপোনাৰ আঙুলিৰ ছাপ আঁতৰ নকৰালৈকে আৰু সেইবোৰ পুনৰ পঞ্জীয়ন নকৰালৈকে আপুনি আঙুলিৰ ছাপ চিনাক্তকৰণ ব্যৱহাৰ কৰিবলৈ সক্ষম নহ'ব।"</string>
     <string name="sem_fingerprint_register_dialog_title">আঙুলিৰ ছাপ পুনৰ পঞ্জীয়ন কৰক</string>
     <string name="sem_fingerprint_result_failed">মিলা নাই।</string>
     <string name="sem_fingerprint_result_retry">পুনঃচেষ্টা কৰক।</string>
@@ -2922,7 +2965,7 @@
     <string name="sem_resolver_button_always_accessibility">সদায় চয়ন কৰা এপ্প্‌ ব্যৱহাৰ কৰক</string>
     <string name="sem_resolver_button_just_once_accessibility">চয়ন কৰা এপ্প্‌ মাত্ৰ এবাৰ ব্যৱহাৰ কৰক</string>
     <string name="sem_resolver_choose_what_to_do">কি কৰিব লাগে পছন্দ কৰক</string>
-    <string name="sem_resolver_go_to_settings_tips_description">"ডিফ'ল্ট এপ্প্‌ ছেটিংছ পৰিৱৰ্তন কৰিবলৈ, ছেটিংছ > এপ্প্‌সমূহ > ডিফ'ল্ট এপ্প্‌সমূহ চয়ন কৰকলৈ যাওক।"</string>
+    <string name="sem_resolver_go_to_settings_tips_description">"এই প্ৰকাৰৰ ফাইল খুলিবলৈ ব্যৱহৃত ডিফ'ল্ট এপ্প্‌টো পৰিৱৰ্তন কৰিবলৈ, ছেটিংছ > এপ্প্‌সমূহলৈ যাওক, সাম্প্ৰতিক ডিফ'ল্ট এপ্প্‌টো চয়ন কৰক, তাৰপিছত “ডিফ'ল্ট ৰূপে ছেট কৰক” টিপক > ডিফ'ল্টসমূহ পৰিষ্কাৰ কৰক।"</string>
     <string name="sem_resolver_icon_content_description">তথ্য</string>
     <string name="sem_resolver_personal_tab_accessibility">ব্যক্তিগত</string>
     <string name="sem_resolver_share_live_default_text">কাষৰীয়া ব্যক্তিৰ সৈতে তাৎক্ষণিকভাৱে শ্বেয়াৰ কৰক। যিসকল ব্যক্তিয়ে তেওঁলোকৰ ডিভাইচসমূহ দৃশ্যমান বনাইছে সিহঁতক ইয়াত দেখুৱাব।</string>
@@ -2938,9 +2981,9 @@
     <string name="sending">পঠিয়াই থকা হৈছে…</string>
     <string name="sensor_notification_service">ছেন্সৰ জাননী সেৱা</string>
     <string name="sensor_privacy_notification_channel_label">ছেন্সৰ সম্পৰ্কীয় গোপনীয়তাৰ নীতি</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">সকলো এপ্প্‌ৰ বাবে কেমেৰাত এক্সেছ অফ কৰিছে</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">অন কৰক</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">"সকলো এপ্প্‌ৰ বাবে মাইক্ৰ'ফোনত এক্সেছ অফ কৰিছে"</string>
+    <string name="sensor_privacy_start_use_camera_notification_content_title">ডিভাইচৰ কেমেৰা অৱৰোধৰ পৰা আঁতৰাওক</string>
+    <string name="sensor_privacy_start_use_dialog_turn_on_button">অৱৰোধৰ পৰা আঁতৰাওক</string>
+    <string name="sensor_privacy_start_use_mic_notification_content_title">"ডিভাইচৰ মাইক্ৰ'ফ'ন অৱৰোধৰ পৰা আঁতৰাওক"</string>
     <string name="sensor_privacy_start_use_notification_content_text"><b>%s</b> আৰু আটাইবোৰ এপ্‌ আৰু সেৱাৰ বাবে</string>
     <string name="serial_number">ক্ৰমিক নম্বৰ:</string>
     <string name="serviceClassData">ডেটা</string>
@@ -2965,6 +3008,9 @@
     <string name="serviceRegistered">পঞ্জীকৰণ সফল হ’ল।</string>
     <string name="serviceisDisabled">সেৱা নিস্ক্ৰিয় হৈ আছে৷</string>
     <string name="serviceisEnabled">সেৱা সক্ষম কৰা হৈছে৷</string>
+    <string name="set_up_screen_lock_action_label">স্ক্ৰীন লক ছেট কৰা</string>
+    <string name="set_up_screen_lock_title">এটা স্ক্ৰীন লক ছেট কৰক</string>
+    <string name="settings">ছেটিংছ</string>
     <string name="sf_quick_switch_not_supported">এই পৰিস্থিতিত দ্ৰুত সলনা-সলনি সমৰ্থিত নহয়।</string>
     <string name="sf_quick_switch_securefolder_view">%s-লৈ সলনি কৰিছে।</string>
     <string name="sha1_fingerprint">SHA-1 ফিংগাৰপ্ৰিণ্ট:</string>
@@ -2988,12 +3034,14 @@
     <string name="show_ime">কায়িক কীব’ৰ্ড সক্ৰিয় হৈ থাকোঁতে ইয়াক স্ক্ৰীনত ৰাখক</string>
     <string name="show_keyboard_button">"কীব'ৰ্ড বুটাম দেখুৱাওক"</string>
     <string name="show_keyboard_button_description">নেভিগেশ্বন দণ্ডিকাত %s দেখুৱাওক।</string>
+    <string name="showing_esc_dialog">আপুনি Esc কীটো এটা পিছলৈ বুটাম ৰূপে কাম কৰিবলৈ ছেট কৰিব পাৰে।</string>
     <string name="showing_touch_sensitivity_noti_action">অন কৰক</string>
     <string name="showing_touch_sensitivity_noti_text">অধিক সঠিক স্পৰ্শৰ প্ৰতিক্ৰিয়াশীলতাৰ বাবে Privacy Screen বা Notepaper Screen ব্যৱহাৰ কৰাৰ সময়ত স্পৰ্শৰ সংবেদনশীলতা অন কৰক।</string>
     <string name="showing_touch_sensitivity_noti_title">স্পৰ্শৰ সংবেদনশীলতা বৃদ্ধি কৰক</string>
-    <string name="shutdown_confirm">"আপোনাৰ টে'বলেটটো বন্ধ হ'ব।"</string>
+    <string name="shutdown_confirm">"আপোনাৰ ফ'নটো বন্ধ হ'ব।"</string>
     <string name="shutdown_confirm_question">"আপুনি ফ'নটোৰ পাৱাৰ অফ কৰিব বিচাৰেনে?"</string>
     <string name="shutdown_progress">বন্ধ কৰি থকা হৈছে…</string>
+    <string name="side_key_double_press_archived_app">এপ্প্‌ আৰ্কাইভ হৈছে। অন্য কিবা পছন্দ কৰক।</string>
     <string name="side_key_double_press_deleted_app">এপ্প্‌ আনইনষ্টল হৈছে। অন্য কিবা চয়ন কৰক।</string>
     <string name="side_key_double_press_disabled_app">%s অক্ষম হৈছে। অন্য কিবা চয়ন কৰক।</string>
     <string name="signature_identity_toast">ইয়াৰ দ্বাৰা %s ছাইন কৰিছে</string>
@@ -3006,18 +3054,20 @@
     <string name="sim_added_message">"ম'বাইলৰ নেটৱর্ক ব্যৱহাৰ কৰিবলৈ আপোনাৰ ডিভাইচটো ৰিষ্টার্ট কৰক।"</string>
     <string name="sim_added_title">ছিম যোগ দিয়া হৈছে</string>
     <string name="sim_check_old_sim_message">"পুৰণি বা ক্ষতিগ্ৰস্ত SIM কাৰ্ডসমূহৰ কাৰণে নেটৱৰ্ক সংযোগৰ সমস্যা হ'ব পাৰে। আপোনাৰ সেৱা প্ৰদানকাৰীক সম্পৰ্ক কৰক বা ইয়াক সলনি কৰিব লাগে নে নাই পৰীক্ষা কৰিবলৈ তেওঁলোকৰ ষ্ট'ৰসমূহৰ কোনোবা এটালৈ যাওক।"</string>
+    <string name="sim_check_old_sim_message_skt">"পুৰণি বা ক্ষতিগ্ৰস্ত SIM কাৰ্ডসমূহৰ কাৰণে নেটৱৰ্ক সংযোগত সমস্যা হ'ব পাৰে। আপোনাৰ সেৱা প্ৰদানকাৰীক সম্পৰ্ক কৰক বা ইয়াক সলনি কৰিব লাগিবনে নাই পৰীক্ষা কৰিবলৈ তেওঁলোকৰ কোনো এটা ষ্ট'ৰলৈ যাওক।"</string>
     <string name="sim_check_old_sim_title">আপোনাৰ SIM সলনি কৰিব লাগিব পাৰে</string>
+    <string name="sim_check_old_sim_title_skt">আপোনাৰ SIM সলনি কৰিব লাগিব পাৰে</string>
     <string name="sim_count_mismatched_ds_to_ss">"SIM কাৰ্ড ম'ড দ্বৈত SIM-ৰ পৰা একক SIM-লৈ সলনি হৈছে। এই ছেটিংছ প্ৰয়োগ কৰিবলৈ, ডিভাইচক ইয়াৰ ফেক্টৰী ডিফ'ল্ট ছেটিংছলৈ পুনঃছেট কৰা হ'ব আৰু পুনৰাৰম্ভ হ'ব।"</string>
     <string name="sim_count_mismatched_ss_to_ds">"SIM কাৰ্ড ম'ড একক SIM-ৰ পৰা দ্বৈত SIM-লৈ সলনি হৈছে। এই ছেটিংছ প্ৰয়োগ কৰিবলৈ, ডিভাইচক ইয়াৰ ফেক্টৰী ডিফ'ল্ট ছেটিংছলৈ পুনঃছেট কৰা হ'ব আৰু পুনৰাৰম্ভ হ'ব।"</string>
     <string name="sim_count_mismatched_title">"SIM কাৰ্ড ম'ড সলনি হৈছে"</string>
     <string name="sim_done_button">সম্পন্ন হ’ল</string>
-    <string name="sim_imsreg_error_message_lgt">"আপোনাৰ ফোনত ভইচ কলসমূহ কৰিবলৈ সক্ষম নহ'ব কাৰণ ই SIM কাৰ্ডখন চিনাক্ত কৰিব নোৱাৰে। SIM কাৰ্ডখন আঁতৰাবলৈ আৰু ইয়াক পুনৰ সুমুৱাবলৈ চেষ্টা কৰক। এই সমস্যাটো চলি থাকিলে, আপুনি আপোনাৰ SIM কাৰ্ড প্ৰতিস্থাপন কৰিব লাগিব পাৰে। সহায়ৰ বাবে, LG U+ ষ্ট'ৰলৈ যাওক বা 1544-0010-ত LG U+ গ্ৰাহক সেৱাৰ সৈতে সম্পৰ্ক কৰক।"</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">"আপোনাৰ টেবলেটত ভইচ কলসমূহ কৰিবলৈ সক্ষম নহ'ব কাৰণ ই SIM কাৰ্ড চিনাক্ত কৰিব নোৱাৰে। SIM কাৰ্ডখন আঁতৰাবলৈ আৰু ইয়াক পুনৰ সুমুৱাবলৈ চেষ্টা কৰক। এই সমস্যাটো চলি থাকিলে, আপুনি আপোনাৰ SIM কাৰ্ড প্ৰতিস্থাপন কৰিব লাগিব পাৰে। সহায়ৰ বাবে, LG U+ ষ্ট'ৰলৈ যাওক বা 1544-0010-ত LG U+ গ্ৰাহক সেৱাক সম্পৰ্ক কৰক।"</string>
+    <string name="sim_imsreg_error_message_lgt">"আপোনাৰ ফোনত ভইচ কলসমূহ কৰিবলৈ সক্ষম নহ'ব কাৰণ ই SIM কাৰ্ডখন চিনাক্ত কৰিব নোৱাৰে। SIM কাৰ্ডখন আঁতৰাবলৈ আৰু ইয়াক পুনৰ সুমুৱাবলৈ চেষ্টা কৰক। এই সমস্যাটো চলি থাকিলে, আপুনি আপোনাৰ SIM কাৰ্ড এটা LG U+ ষ্ট'ৰত প্ৰতিস্থাপন কৰিব লাগিব পাৰে।"</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">"আপোনাৰ টেবলেটত ভইচ কলসমূহ কৰিবলৈ সক্ষম নহ'ব কাৰণ ই SIM কাৰ্ড চিনাক্ত কৰিব নোৱাৰে। SIM কাৰ্ডখন আঁতৰাবলৈ আৰু ইয়াক পুনৰ সুমুৱাবলৈ চেষ্টা কৰক। এই সমস্যাটো চলি থাকিলে, আপুনি আপোনাৰ SIM কাৰ্ড এটা LG U+ ষ্ট'ৰত প্ৰতিস্থাপন কৰিব লাগিব পাৰে।"</string>
     <string name="sim_off_noti_message">সকলো SIM অফ কৰা থাকিলে আপুনি কল কৰিব, মেচেজ প্ৰেৰণ কৰিব বা ডাটা ব্যৱহাৰ কৰিব নোৱাৰে। SIM অন কৰিবলৈ ইয়াত টিপক।</string>
     <string name="sim_off_noti_title">সকলো SIM অফ কৰা হৈছে</string>
     <string name="sim_off_toast_message">আপুনি সুমুওৱা SIM কাৰ্ডখন অফ আছে। এইটো ব্যৱহাৰ কৰিবলৈ, ছেটিংছ > সংযোগসমূহ > SIM মেনেজাৰলৈ যাওক, তাৰপিছত এইটো অন কৰক।</string>
     <string name="sim_recognize_error_message_kt">"আপোনাৰ SIM কাৰ্ড চিনাক্ত হোৱা নাছিল। SIM কাৰ্ডখন আঁতৰাবলৈ আৰু ইয়াক পুনৰ সুমুৱাবলৈ চেষ্টা কৰক। এই সমস্যাটো চলি থাকিলে, আপুনি আপোনাৰ SIM কাৰ্ড প্ৰতিস্থাপন কৰিব লাগিব পাৰে। সহায়ৰ বাবে, KT ষ্ট'ৰলৈ যাওক বা 1588-0010-ত KT গ্ৰাহক সেৱাৰ সৈতে সম্পৰ্ক কৰক।"</string>
-    <string name="sim_recognize_error_message_lgt">"আপোনাৰ SIM কাৰ্ড চিনাক্ত হোৱা নাছিল। SIM কাৰ্ডখন আঁতৰাবলৈ আৰু ইয়াক পুনৰ সুমুৱাবলৈ চেষ্টা কৰক। এই সমস্যাটো চলি থাকিলে, আপুনি আপোনাৰ SIM কাৰ্ড প্ৰতিস্থাপন কৰিব লাগিব পাৰে। সহায়ৰ বাবে, LG U+ ষ্ট'ৰলৈ যাওক বা 1544-0010-ত LG U+ গ্ৰাহক সেৱাৰ সৈতে সম্পৰ্ক কৰক।"</string>
+    <string name="sim_recognize_error_message_lgt">"আপোনাৰ SIM কাৰ্ড চিনাক্ত হোৱা নাছিল। SIM কাৰ্ডখন আঁতৰাবলৈ আৰু ইয়াক পুনৰ সুমুৱাবলৈ চেষ্টা কৰক। এই সমস্যাটো চলি থাকিলে, আপুনি আপোনাৰ SIM কাৰ্ড LG U+ ষ্ট'ৰত প্ৰতিস্থাপন কৰিব লাগিব পাৰে।"</string>
     <string name="sim_recognize_error_message_skt">SIM কাৰ্ড পঢ়িব নোৱাৰে। কিছুমান এপ্প্‌ আৰু সুবিধাসমূহে কাম নকৰিব পাৰে। আপোনাৰ SIM কাৰ্ড আঁতৰাওক আৰু পুনৰ সুমুৱাওক, তাৰপিছত আপোনাৰ ফোন পুনৰাৰম্ভ কৰক। সেইটোৱে সমস্যাটো সমাধান নকৰিলে, আপোনাৰ ফোন আৰু SIM কাৰ্ড গ্ৰাহক সেৱাৰ স্থানলৈ লৈ যাওক।</string>
     <string name="sim_recognize_error_message_skt_tablet">SIM কাৰ্ড পঢ়িব নোৱাৰে। কিছুমান এপ্প্‌ আৰু সুবিধাসমূহে কাম নকৰিব পাৰে। আপোনাৰ SIM কাৰ্ড আঁতৰাওক আৰু পুনৰ সুমুৱাওক, তাৰপিছত আপোনাৰ টেবলেট পুনৰাৰম্ভ কৰক। সেইটোৱে সমস্যাটো সমাধান নকৰিলে, আপোনাৰ টেবলেট আৰু SIM কাৰ্ড গ্ৰাহক সেৱাৰ স্থানলৈ লৈ যাওক।</string>
     <string name="sim_recognize_error_title_lgt">USIM কাৰ্ড চিনাক্ত কৰিব নোৱাৰে</string>
@@ -3037,6 +3087,7 @@
     <string name="skip_button_label">এৰি যাওক</string>
     <string name="slice_more_content">+ %1$d</string>
     <string name="slices_permission_request">%1$sএ %2$sৰ অংশ দেখুওৱাব খুজিছে</string>
+    <string name="smart_tip_action_click_hint_text">বন্ধ</string>
     <string name="smartclip_restrict">নিৰাপত্তা নীতিয়ে সহজ ক্লিপৰ ব্যৱহাৰ প্ৰতিৰোধ কৰে৷</string>
     <string name="sms_control_message"><b>%1$s</b> এ বহু সংখ্যক এছএমএছ বার্তাবোৰ প্ৰেৰণ কৰি আছে। আপুনি এই এপে বার্তা প্ৰেৰণ কৰি থকাটো বিচাৰেনে?</string>
     <string name="sms_control_no">অস্বীকাৰ কৰক</string>
@@ -3050,9 +3101,7 @@
     <string name="sms_short_code_confirm_never_allow">কেতিয়াও অনুমতি নিদিব</string>
     <string name="sms_short_code_details">ইয়াৰ বাবে <b> মাচুল ভৰিবলগীয়া হ’ব পাৰে</b>।</string>
     <string name="sms_short_code_remember_choice">মোৰ পচন্দ মনত ৰাখিব</string>
-    <string name="sms_short_code_remember_undo_instruction">আপুনি ইয়াক পিছত ছেটিংছ > এপ্প্‌সমূহলৈ গৈ সলনি কৰিব পাৰে</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">আপুনি ছেটিংছ > এপ্প্‌সমূহ > অধিক বিকল্প বুটাম > বিশেষ প্ৰৱেশ > প্ৰিমিয়াম পাঠ মেচেজ সেৱাসমূহ ব্যৱহাৰলৈ গৈ ইয়াক পিছত পৰিৱৰ্তন কৰিব পাৰে</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">"যদি আপুনি “কেতিয়াও অনুমতি নিদিব” টিপে, তেন্তে এই এপ্প্‌ৰ বাবে পাঠ মেচেজসমূহৰ অনুমতি প্ৰেৰণ প্ৰদান কৰিলেও ই পৃষ্ঠভূমি মেচেজসমূহ প্ৰেৰণ কৰিবলৈ সক্ষম নহ'ব।"</string>
+    <string name="sms_short_code_remember_undo_instruction">আপুনি ইয়াক পাছত ছেটিং > এপত সলনি কৰিব পাৰে</string>
     <string name="smv_application">এপটোৱে %1$s (প্ৰক্ৰিয়াটোৱে %2$s) নিজে বলবৎ কৰা StrictMode নীতি ভংগ কৰিলে।</string>
     <string name="smv_process">%1$s প্ৰক্ৰিয়াটোৱে নিজে বলৱৎ কৰা StrictMode নীতি ভংগ কৰিলে।</string>
     <string name="splash_screen_view_branding_description">এপ্লিকেশ্বনৰ ব্ৰেণ্ডৰ প্ৰতিচ্ছবি</string>
@@ -3136,7 +3185,6 @@
     <string name="time_picker_radial_mode_description">"সময়ৰ ইনপুটৰ বাবে ঘড়ী ম'ডলৈ যাওক।"</string>
     <string name="time_picker_text_input_mode_description">"সময়ৰ ইনপুটৰ বাবে পাঠৰ ইনপুট ম'ডলৈ যাওক।"</string>
     <string name="title_dialog_check_rotate_or_not">স্বয়ং-ঘূৰ্ণন স্ক্ৰীণ অফ কৰিবনে?</string>
-    <string name="title_uds">"অত্যাধিক ডাটা সংৰক্ষণ ম'ড"</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">আপোনাৰ ফোন ছেট আপ কৰি থকাৰ সময়ত Bixby ব্যৱহাৰ কৰিব নোৱাৰে।</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">আপোনাৰ টেবলেট ছেট আপ কৰি থকাৰ সময়ত Bixby ব্যৱহাৰ কৰিব নোৱাৰে।</string>
     <string name="toast_warning_pattern_lock">ইউনিভাৰ্চেল চুইচৰ সৈতে আৰ্হি লক ব্যৱহাৰ কৰিব পৰা নাযায়। প্ৰথমে এটা বেলেগ লকৰ প্ৰকাৰলৈ পৰিৱৰ্তন কৰক।</string>
@@ -3166,6 +3214,7 @@
     <string name="ucm_smartcard_is_encrypting_phone">স্মাৰ্টকাৰ্ডে ফোন এনক্ৰিপ্ট কৰি আছে…</string>
     <string name="ui_translation_accessibility_translated_text">%1$s অনুবাদ কৰা হ’ল।</string>
     <string name="ui_translation_accessibility_translation_finished">বাৰ্তাটো %1$sৰ পৰা %2$sলৈ অনুবাদ কৰা হ’ল।</string>
+    <string name="unarchival_session_app_label">বিবেচনাধীন হৈ আছে...</string>
     <string name="undo">পূৰ্বৰ দৰে</string>
     <string name="unknown_install_activity_warning_title">দূষিত এপ্প্‌ বুলি সন্দেহ কৰা হৈছে</string>
     <string name="unknown_install_blocked_dlg_desc">"এই এপ্প্‌টোক ইনষ্টল কৰিব নোৱাৰি কাৰণ ই দূষিত হ'ব পাৰে।"</string>
@@ -3185,9 +3234,13 @@
     <string name="unknown_install_blocked_esm_title">অজ্ঞাত এপ্প্‌ ব্লক কৰা হৈছে</string>
     <string name="unknown_install_dlg_desc">"এই এপ্প্‌টোক কোনো অনুমোদিত ষ্ট'ৰৰ পৰা ডাউনলোড কৰা হোৱা নাছিল। এই এপ্প্‌টোক ইনষ্টল কৰিলে আপোনাৰ নিৰাপত্তা আৰু গোপনীয়তাক বিপদত পেলাব পাৰে। এপ্প্‌টোৱে আপোনাৰ ব্যক্তিগত তথ্য সংগ্ৰহ কৰিব পাৰে বা ইয়াৰ কাৰণে আপোনাৰ ডাটা হেৰাব পাৰে।"</string>
     <string name="unknown_install_dlg_desc2">এই এপ্প্‌টোৱে শেহতীয়া নিৰাপত্তা সুবিধাসমূহ সমৰ্থন নকৰে। এই এপ্প্‌টো ইনষ্টল কৰাৰ ফলত নিম্নলিখিত নিৰাপত্তা বিপদাশংকা আহিব পাৰে:</string>
+    <string name="unknown_install_dlg_desc_global_phone">"এই এপ্প্‌ ইনষ্টলেশ্বন ফাইলটো সুৰক্ষিত নহ'ব পাৰে। এইটো দাবী কৰিবলগীয়া এপ্প্‌টো নহ'ব পাৰে। আপোনাৰ ফোন আৰু ব্যক্তিগত ডাটা সুৰক্ষিত কৰিবলৈ, আপুনি ইয়াৰ পৰিৱৰ্তে বিশ্বাস কৰা এটা এপ্প্‌ ষ্ট'ৰৰ পৰা এপ্প্‌টো ইনষ্টল কৰক।"</string>
+    <string name="unknown_install_dlg_desc_global_tablet">"এই এপ্প্‌ ইনষ্টলেশ্বন ফাইলটো সুৰক্ষিত নহ'ব পাৰে। এইটো দাবী কৰিবলগীয়া এপ্প্‌টো নহ'ব পাৰে। আপোনাৰ টেবলেট আৰু ব্যক্তিগত ডাটা সুৰক্ষিত কৰিবলৈ, আপুনি ইয়াৰ পৰিৱৰ্তে বিশ্বাস কৰা এটা এপ্প্‌ ষ্ট'ৰৰ পৰা এপ্প্‌টো ইনষ্টল কৰক।"</string>
     <string name="unknown_install_dlg_desc_phishing_phone">এই এপ্প্‌টো দূষিত বুলি সন্দেহ কৰা হৈছে আৰু ই আপোনাৰ ফোন আৰু ডাটাক বিপদত পেলাব পাৰে। এই এপ্প্‌ ইনষ্টল কৰাটো অনুমোদিত নহয়।</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">এই এপ্প্‌টো দূষিত বুলি সন্দেহ কৰা হৈছে আৰু ই আপোনাৰ টেবলেট আৰু ডাটাক বিপদত পেলাব পাৰে। এই এপ্প্‌ ইনষ্টল কৰাটো অনুমোদিত নহয়।</string>
-    <string name="unknown_install_dlg_general_title">এই এপ্প্‌টো এটা অজ্ঞাত উৎসৰ পৰা অহা</string>
+    <string name="unknown_install_dlg_desc_phone">"এই এপ্প্‌টো কোনো কৰ্তৃত্বশীল এপ্প্‌ ষ্ট'ৰৰ নহয়। আপোনাৰ ফোন আৰু ব্যক্তিগত তথ্য সুৰক্ষিত কৰিবলৈ, Play Store বা Galaxy Store-ৰ দৰে এটা কৰ্তৃত্বশীল ষ্ট'ৰৰ পৰা এপ্প্‌টো ইনষ্টল কৰক।"</string>
+    <string name="unknown_install_dlg_desc_tablet">"এই এপ্প্‌টো কোনো কৰ্তৃত্বশীল এপ্প্‌ ষ্ট'ৰৰ নহয়। আপোনাৰ টেবলেট আৰু ব্যক্তিগত তথ্য সুৰক্ষিত কৰিবলৈ, Play Store বা Galaxy Store-ৰ দৰে এটা কৰ্তৃত্বশীল ষ্ট'ৰৰ পৰা এপ্প্‌টো ইনষ্টল কৰক।"</string>
+    <string name="unknown_install_dlg_general_title">এই এপ্প্‌টো ইনষ্টল কৰাৰ অনুমোদন জনোৱা নাই</string>
     <string name="unknown_install_dlg_negative_button">ইনষ্টল নকৰিব</string>
     <string name="unknown_install_dlg_perm_desc1">"এপ্প্‌টোৱে আপুনি পোৱা পাঠ মেচেজসমূহৰ পৰা সত্যাপন ক'ডবোৰক বাধা দিব পাৰে।"</string>
     <string name="unknown_install_dlg_perm_desc2">"আউটগয়িং কলবোৰ আপোনাৰ অজ্ঞাতেই কোনো বেলেগ ফোন নম্বৰলৈ পুনঃনিৰ্দেশিত হ'ব পাৰে।"</string>
@@ -3217,7 +3270,7 @@
     <string name="usb_abnormal_reset_title">USB সংযোগ স্থিৰ নহয়</string>
     <string name="usb_abnormal_reset_toast">"USB সংযোগ স্থিৰ নহয়। কেব'লডাল আনপ্লাগ কৰক আৰু ইয়াক পুনৰ প্লাগ ইন কৰক বা এডাল বেলেগ কেব'ল ব্যৱহাৰ কৰি চাওক।"</string>
     <string name="usb_accessory_notification_title">"USB একচেচ'ৰীলৈ সংযোগ কৰক"</string>
-    <string name="usb_bad_removal_message">USB সংগ্ৰহণ ডিভাইচ অসুৰক্ষিতভাৱে আঁতৰোৱা হৈছিল। আপোনাৰ টেবলেট অপ্ৰত্যাশিতভাৱে পুনৰাৰম্ভ হোৱাৰ পৰা বাধা দিবলৈ, অসংৰক্ষিত ডাটা সংৰক্ষণ কৰক আৰু এতিয়া পুনৰাৰম্ভ কৰক।</string>
+    <string name="usb_bad_removal_message">"USB ষ্ট'ৰেজ ডিভাইচ অসুৰক্ষিতভাৱে আঁতৰোৱা হৈছিল। আপোনাৰ ফোন অপ্ৰত্যাশিতভাৱে পুনৰাৰম্ভ হোৱাৰ পৰা বাধা দিবলৈ, অসংৰক্ষিত ডাটা সংৰক্ষণ কৰক আৰু এতিয়া পুনৰাৰম্ভ কৰক।"</string>
     <string name="usb_blocked_by_emergency_mode">"জৰুৰীকালীন ম'ডত কিছুমান USB ফাংচন উপলব্ধ নহয়।"</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">"সৰ্বাধিক পাৱাৰ সংৰক্ষণ ম'ড সক্ষম হৈ থকাৰ সময়ত সংযোজিত USB ডিভাইচৰ লগত সম্বন্ধিত ফাংচন ব্যৱহাৰ কৰাত অক্ষম।"</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">"সৰ্বাধিক পাৱাৰ সংৰক্ষণ ম'ড অন হৈ থাকোতে কিছু USB ফাংচন সীমিত কৰা হ'ব পাৰে।"</string>
@@ -3227,7 +3280,9 @@
     <string name="usb_camera_disconnected_notification_title">মিডিয়া ডিভাইচ সংযোগহীন হৈছে</string>
     <string name="usb_cd_installer_notification_title">চফ্টৱেৰ আপডেট</string>
     <string name="usb_charging_notification_title">ইউএছবিৰ জৰিয়তে এই ডিভাইচটো চাৰ্জ কৰি থকা হৈছে</string>
-    <string name="usb_charing_only_notification_title">সংযোজিত</string>
+    <string name="usb_charing_only_notification_title">USB চাৰ্জিং</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">সৰ্বাধিক প্ৰতিবন্ধকতাৰ সৈতে স্বয়ং ব্লকাৰ অন হৈ আছে।</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB সংযোগ ব্লক কৰা হৈছে</string>
     <string name="usb_contaminant_detected_message">ইউএছবি প’ৰ্ট স্বয়ংক্ৰিয়ভাৱে অক্ষম কৰা হয়। অধিক জানিবৰ বাবে টিপক।</string>
     <string name="usb_contaminant_detected_title">ইউএছবি প’ৰ্টত তৰল বা ধূলি-মাকতি আছে</string>
     <string name="usb_contaminant_not_detected_message">ফ’নটোৱে তৰল বা ধূলি-মাকতি আৰু চিনাক্ত নকৰে।</string>
@@ -3239,11 +3294,11 @@
     <string name="usb_host_cable_disconnected_notification_title">USB কানেক্টৰ সংযোগহীন৷</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">এই ডিভাইচ প্ৰৱিষ্ট কৰিবলৈ অক্ষম৷ সংযোগ হোৱা ডিভাইচত অতিৰিক্ত পাৱাৰৰ প্ৰয়োজন হৈছে</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">উচ্চ-ক্ষমতা USB ডিভাইচ সংযোগ কৰা হৈছে৷</string>
-    <string name="usb_host_resource_exceed_message">আপোনাৰ টেবলেটৰ USB নিয়ন্ত্ৰকৰ এই ডিভাইচটো সংযোগ কৰিবলৈ পৰ্যাপ্ত সম্পদ নাই। ডিভাইচটো সংযোগহীন কৰি আৰু ইয়াক পুনৰ সংযোগ কৰি চেষ্টা কৰক।</string>
+    <string name="usb_host_resource_exceed_message">আপোনাৰ ফোনৰ USB নিয়ন্ত্ৰকৰ এই ডিভাইচটো সংযোগ কৰিবলৈ পৰ্যাপ্ত সম্পদ নাই। ডিভাইচটো সংযোগহীন কৰি আৰু ইয়াক পুনৰ সংযোগ কৰি চেষ্টা কৰক।</string>
     <string name="usb_host_resource_exceed_title">পৰ্যাপ্ত USB নিয়ন্ত্ৰক সম্পদ নাই</string>
-    <string name="usb_hub_depth_exceed_message">আপোনাৰ টেবলেটে একে সময়ত কেৱল 5 টালৈকে USB হাব সংযোগ সমৰ্থন কৰিব পাৰে।</string>
+    <string name="usb_hub_depth_exceed_message">আপোনাৰ ফোনে একে সময়ত কেৱল 5 টালৈকে USB হাব সংযোগ সমৰ্থন কৰিব পাৰে।</string>
     <string name="usb_hub_depth_exceed_title">সৰ্বাধিক USB হাব সংযোগ</string>
-    <string name="usb_hub_power_exceed_message">আপোনাৰ টেবলেটে এই USB ডিভাইচটোৰ বাবে পৰ্যাপ্ত পাৱাৰ প্ৰদান কৰিব নোৱাৰে। ডিভাইচটো আপোনাৰ টেবলেটত সংযোগ কৰাৰ পূৰ্বে এইটো এটা স্ব-পাৱাৰযুক্ত USB হাবলৈ সংযোগ কৰক।</string>
+    <string name="usb_hub_power_exceed_message">আপোনাৰ ফোনে এই USB ডিভাইচটোৰ বাবে পৰ্যাপ্ত পাৱাৰ প্ৰদান কৰিব নোৱাৰে। ডিভাইচটো আপোনাৰ ফোনত সংযোগ কৰাৰ পূৰ্বে এইটো এটা স্ব-পাৱাৰযুক্ত USB হাবলৈ সংযোগ কৰক।</string>
     <string name="usb_increase_battery_usage">USB সংযোগে বেটাৰীৰ ব্যৱহাৰ বঢ়াব পাৰে।</string>
     <string name="usb_keyboard_connected_notification_title">"কীব'ৰ্ড সংযোগ হৈছে"</string>
     <string name="usb_keyboard_disconnected_notification_title">"কীব'ৰ্ড সংযোগহীন হৈছে"</string>
@@ -3284,8 +3339,9 @@
     <string name="usb_ums_connected_notification_message_usbhost">USB অধিক সংগ্ৰহ অপ্ৰত্যাশিতভাৱে আঁতৰোৱা হৈছে৷</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB মাছ সংগ্ৰহ সংযোগ হৈছে</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">USB অধিক সংগ্ৰহ সুৰক্ষিতভাৱে আঁতৰোৱা হৈছে৷</string>
-    <string name="usb_unblock_by_screen_unlock">সংযোজিত USB ডিভাইচ ব্যৱহাৰ কৰিবলৈ আপোনাৰ টেবলেট আনলক কৰক।</string>
-    <string name="usb_unsupport_accessory_message">এই USB ডিভাইচ আপোনাৰ টেবলেটৰ দ্বাৰা সমৰ্থিত নহয়।</string>
+    <string name="usb_unblock_by_screen_unlock">সংযোজিত USB ডিভাইচ ব্যৱহাৰ কৰিবলৈ আপোনাৰ ফোন আনলক কৰক।</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USB ডিভাইচ ব্যৱহাৰ কৰিবলৈ, আপোনাৰ ফোন আনলক কৰক আৰু USB ডিভাইচটো পুনঃসংযোগ কৰক।</string>
+    <string name="usb_unsupport_accessory_message">এই USB ডিভাইচ আপোনাৰ ফোনৰ দ্বাৰা সমৰ্থিত নহয়।</string>
     <string name="usb_unsupport_accessory_title">USB ডিভাইচ সমৰ্থিত নহয়</string>
     <string name="usb_unsupported_audio_accessory_message">"সংলগ্ন কৰা ডিভাইচটোৱে এই ফ'নটোৰ সৈতে কাম কৰিব নোৱাৰে। অধিক জানিবলৈ টিপক।"</string>
     <string name="usb_unsupported_audio_accessory_title">"এনাল'গ অডিঅ' সহায়ক সামগ্ৰী পোৱা গৈছে"</string>
@@ -3306,28 +3362,28 @@
     <string name="usb_water_dialg_method_2_desc_2">"আপুনি প'ৰ্টটোৰ ফালে এখন ফেন বা ড্ৰায়াৰ (কেৱল ঠাণ্ড বতাহ) কেন্দ্ৰিত কৰি শুকোৱাৰ গতি বঢ়াব পাৰে।"</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"আমি আপোনাৰ চাৰ্জিং/USB প'ৰ্টত আৰ্দ্ৰতা বা বাহিৰৰ উপাদান চিনাক্ত কৰিছো।
 
-ধুলি বা অৱশিষ্টৰ দৰে যিকোনো বাহিৰৰ উপাদানৰ বাবে আপোনাৰ চাৰ্জিং/USB প'ৰ্ট পৰীক্ষা কৰক। আপোনাৰ টেবলেটৰ ক্ষতি প্ৰতিৰোধ কৰিবলৈ, চাৰ্জিং প'ৰ্টটো পৰিষ্কাৰ নোহোৱালৈকে আৰু আৰ্দ্ৰতা নোযোৱালৈকে একোকে প্লাগ ইন নকৰিব।
+ধুলি বা অৱশিষ্টৰ দৰে যিকোনো বাহিৰৰ উপাদানৰ বাবে আপোনাৰ চাৰ্জিং/USB প'ৰ্ট পৰীক্ষা কৰক। আপোনাৰ ফোনৰ ক্ষতি প্ৰতিৰোধ কৰিবলৈ, চাৰ্জিং প'ৰ্টটো পৰিষ্কাৰ নোহোৱালৈকে আৰু আৰ্দ্ৰতা নোযোৱালৈকে একোকে প্লাগ ইন নকৰিব।
 
 প'ৰ্টটো শুকান কৰিবলৈ, যিকোনো আৰ্দ্ৰতা লৰাওক তাৰপিছত এইটো শুকান হোৱালৈ অপেক্ষা কৰক, যিটোত কেইবা ঘণ্টা লাগিব পাৰে। আপুনি প'ৰ্টটোৰ ফালে এখন ফেন বা ড্ৰায়াৰ (কেৱল ঠাণ্ডা বতাহ) কেন্দ্ৰিত কৰি শুকোৱাৰ গতি বঢ়াব পাৰে।"</string>
     <string name="usb_water_dialg_positive_button">ঠিক</string>
     <string name="usb_water_dialg_support_wireless_charging">"আমি আপোনাৰ চাৰ্জিং/USB প'ৰ্টত আৰ্দ্ৰতা বা বাহিৰৰ উপাদান চিনাক্ত কৰিছো।
 
-ধুলি বা অৱশিষ্টৰ দৰে যিকোনো বাহিৰৰ উপাদানৰ বাবে আপোনাৰ চাৰ্জিং/USB প'ৰ্ট পৰীক্ষা কৰক। আপোনাৰ টেবলেটৰ ক্ষতি প্ৰতিৰোধ কৰিবলৈ, চাৰ্জিং প'ৰ্টটো পৰিষ্কাৰ নোহোৱালৈকে আৰু আৰ্দ্ৰতা আঁতৰি নোযোৱালৈকে একোকে প্লাগ ইন নকৰিব।
+ধুলি বা অৱশিষ্টৰ দৰে যিকোনো বাহিৰৰ উপাদানৰ বাবে আপোনাৰ চাৰ্জিং/USB প'ৰ্ট পৰীক্ষা কৰক। আপোনাৰ ফোনৰ ক্ষতি প্ৰতিৰোধ কৰিবলৈ, চাৰ্জিং প'ৰ্টটো পৰিষ্কাৰ নোহোৱালৈকে আৰু আৰ্দ্ৰতা নোযোৱালৈকে একোকে প্লাগ ইন নকৰিব।
 
-প'ৰ্টটো শুকান কৰিবলৈ, যিকোনো আৰ্দ্ৰতা লৰাওক তাৰপিছত এইটো শুকান হোৱালৈ অপেক্ষা কৰক, যিটোত বহুত সময় লাগিব পাৰে। আপুনি প'ৰ্টটোৰ ফালে এখন ফেন বা ড্ৰায়াৰ (কেৱল ঠাণ্ডা বতাহ) কেন্দ্ৰিত কৰি শুকোৱাৰ গতি বঢ়াব পাৰে।
+প'ৰ্টটো শুকান কৰিবলৈ, যিকোনো আৰ্দ্ৰতা লৰাওক তাৰপিছত এইটো শুকান হোৱালৈ অপেক্ষা কৰক, যিটোত কেইবা ঘণ্টা লাগিব পাৰে। আপুনি প'ৰ্টটোৰ ফালে এখন ফেন বা ড্ৰায়াৰ (কেৱল ঠাণ্ডা বতাহ) কেন্দ্ৰিত কৰি শুকোৱাৰ গতি বঢ়াব পাৰে।
 
-একে সময়তে, আপুনি আপোনাৰ টেবলেটটো বেতাঁৰহীনভাৱে চাৰ্জ কৰিব পাৰে।"</string>
+একে সময়তে, আপুনি আপোনাৰ ফোনটো বেতাঁৰহীনভাৱে চাৰ্জ কৰিব পাৰে।"</string>
     <string name="usb_water_notification_content">"আপোনাৰ চাৰ্জিং/USB প'ৰ্টত আদ্ৰতা বা বিদেশী পদাৰ্থ আছে। চাৰ্জ কৰাৰ পূৰ্বে পৰীক্ষা কৰক।"</string>
-    <string name="usb_water_notification_message">"আপোনাৰ চাৰ্জাৰ/USB পৰ্টত তলৰ পদাৰ্থ চিনাক্ত হৈছে। আপোনাৰ টেবলেট চাৰ্জ হোৱাৰ পূৰ্বে এইটো শুকান হৈ থকাটো নিশ্চিত কৰক। ই সম্পূৰ্ণৰূপে শুকান কৰাত কিছু সময় ল'ব পাৰে।"</string>
+    <string name="usb_water_notification_message">"আপোনাৰ চাৰ্জাৰ/USB পৰ্টত তলৰ পদাৰ্থ চিনাক্ত হৈছে। আপোনাৰ ফোন চাৰ্জ হোৱাৰ পূৰ্বে এইটো শুকান হৈ থকাটো নিশ্চিত কৰক। ই সম্পূৰ্ণৰূপে শুকান কৰাত কিছু সময় ল'ব পাৰে।"</string>
     <string name="usb_water_notification_message_button">বিৱৰণ</string>
     <string name="usb_water_notification_title">চাৰ্জাৰ/USB পৰ্ট পৰীক্ষা কৰক</string>
     <string name="usbhostStorage_restrict">"নিৰাপত্তা নীতিয়ে USB হ'ষ্ট ষ্ট'ৰেজ ব্যৱহাৰ কৰাত প্ৰতিৰোধ কৰে।"</string>
     <string name="usbmemory_added_notification_title">"USB ষ্ট'ৰেজ যোগ কৰিছে"</string>
-    <string name="usbmemory_readonly_mount_notification_message">আপোনাৰ USB সংগ্ৰহণ ডিভাইচ সঠিকভাৱে কাম কৰি থকা নাই আৰু ডাটাৰ ক্ষতি প্ৰতিৰোধ কৰিবলৈ ৰিড-অনলিলৈ ছেট কৰা হৈছে। আপোনাৰ USB সংগ্ৰহণ ডিভাইচত ডাটাৰ বেক আপ লোৱাটো অনুমোদিত।</string>
-    <string name="usbmemory_readonly_mount_notification_title">USB সংগ্ৰহণত লিখিব নোৱাৰে</string>
+    <string name="usbmemory_readonly_mount_notification_message">"আপোনাৰ USB ষ্ট'ৰেজ ডিভাইচ সঠিকভাৱে কাম কৰি থকা নাই আৰু ডাটাৰ ক্ষতি প্ৰতিৰোধ কৰিবলৈ ৰিড-অনলিলৈ ছেট কৰা হৈছে। আপোনাৰ USB ষ্ট'ৰেজ ডিভাইচত ডাটাৰ বেক আপ লোৱাটো অনুমোদিত।"</string>
+    <string name="usbmemory_readonly_mount_notification_title">"USB ষ্ট'ৰেজত লিখিব নোৱাৰে"</string>
     <string name="use_a_different_app">এটা পৃথক এপ্ ব্যৱহাৰ কৰক</string>
-    <string name="user_creation_account_exists">%1$sক %2$sৰ (এই একাউণ্টটোৰ এজন ব্যৱহাৰকাৰী ইতিমধ্যে আছে) জৰিয়তে এজন নতুন ব্যৱহাৰকাৰী সৃষ্টি কৰিবলৈ অনুমতি দিবনে ?</string>
-    <string name="user_creation_adding">%1$sক %2$sৰ জৰিয়তে এজন নতুন ব্যৱহাৰকাৰী সৃষ্টি কৰিবলৈ অনুমতি দিবনে?</string>
+    <string name="user_creation_account_exists">%1$sক %2$sৰ (এই একাউণ্টটোৰ এগৰাকী ব্যৱহাৰকাৰী ইতিমধ্যে আছে) জৰিয়তে এগৰাকী নতুন ব্যৱহাৰকাৰী সৃষ্টি কৰিবলৈ অনুমতি দিবনে ?</string>
+    <string name="user_creation_adding">%1$sক %2$sৰ জৰিয়তে এগৰাকী নতুন ব্যৱহাৰকাৰী সৃষ্টি কৰিবলৈ অনুমতি দিবনে?</string>
     <string name="user_encrypted_title_phone">ফোনটো পুনৰাৰম্ভ হৈছে</string>
     <string name="user_encrypted_title_tablet">টেবলেট পুনৰাৰম্ভ হৈছে</string>
     <string name="user_logging_out_message">%1$sৰ পৰা লগ আউট কৰি থকা হৈছে…</string>
@@ -3336,7 +3392,7 @@
     <string name="user_switched">বৰ্তমানৰ ব্যৱহাৰকাৰী %1$s।</string>
     <string name="user_switching_message">%1$sলৈ সলনি কৰি থকা হৈছে…</string>
     <string name="validity_period">মান্যতা:</string>
-    <string name="vdm_camera_access_denied">আপোনাৰ %1$sৰ পৰা টেবলেটটোৰ কেমেৰা এক্সেছ কৰিব নোৱাৰি</string>
+    <string name="vdm_camera_access_denied">আপোনাৰ %1$sৰ পৰা ফ’নটোৰ কেমেৰা এক্সেছ কৰিব নোৱাৰি</string>
     <string name="vdm_pip_blocked">ষ্ট্ৰীম কৰি থকাৰ সময়ত picture-in-picture চাব নোৱাৰি</string>
     <string name="vdm_secure_window">ষ্ট্ৰীম কৰি থকাৰ সময়ত এইটো এক্সেছ কৰিব নোৱাৰি। তাৰ পৰিৱৰ্তে আপোনাৰ ফ’নত চেষ্টা কৰি চাওক।</string>
     <string name="view_and_control_notification_content">%sএ আপোনাৰ স্ক্ৰীনখন চাব আৰু পৰিচালনা কৰিব পাৰে। পৰ্যালোচনা কৰিবলৈ টিপক।</string>
@@ -3361,6 +3417,8 @@
     <string name="vpn_allowOnlySecureConnection">"VPN প্ৰ'ফাইল সুৰক্ষিত নহয়৷"</string>
     <string name="vpn_error_text">VPN লৈ পুনৰ সংযোগ কৰিবলৈ চেষ্টা কৰিবলৈ টিপক৷</string>
     <string name="vpn_error_title">VPN সংযোগ ত্ৰুটি</string>
+    <string name="vpn_fail_text_long">"%s-ত সংযোগ কৰিব পৰা নগ'ল। এই VPN পৰিচালনা কৰিবলৈ টিপক।"</string>
+    <string name="vpn_fail_title">VPN সংযোজিত হোৱা নাই</string>
     <string name="vpn_lockdown_config">নেটৱৰ্ক বা VPN ছেটিং সলনি কৰক</string>
     <string name="vpn_lockdown_connected">সদা-সক্ৰিয় ভিপিএন সংযোগ কৰা হ’ল</string>
     <string name="vpn_lockdown_connecting">সদা-সক্ৰিয় ভিপিএন সংযোগ কৰি থকা হৈছে…</string>
@@ -3487,6 +3545,7 @@
     <string name="wifi_networks_available_detailed">মুক্ত Wi-Fi নেটৱৰ্কসমূহ উপলব্ধ।</string>
     <string name="wifi_no_internet">%1$sৰ ইণ্টাৰনেটৰ এক্সেছ নাই</string>
     <string name="wifi_no_internet_detailed">অধিক বিকল্পৰ বাবে টিপক</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">"%s-এ ম'বাইল ডাটা ব্যৱহাৰ কৰি আছে কাৰণ আপোনাৰ WLAN সংযোগ মন্থৰ বা অস্থিৰ হৈছে।"</string>
     <string name="wifi_notification_switch_wifi_detail">"Wi-Fi নেটৱৰ্ক অস্থিৰ হোৱাৰ কাৰণে আপোনাৰ ফোন ম'বাইল ডাটালৈ সলনি হৈছে।"</string>
     <string name="wifi_notification_switch_wifi_title">"ম'বাইল ডাটালৈ সলনি কৰিছে"</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">জৰুৰীকালীন অধিসূচনা</string>
@@ -3528,16 +3587,16 @@
     <string name="work_profile_on_message">"এইটোৱে আপোনাক কাৰ্য এপ্প্‌সমূহ, জাননীসমূহৰ ডাটা আৰু অন্য কাৰ্য প্ৰ'ফাইল সুবিধাসমূহত এক্সেছ কৰিবলৈ অনুমতি দিব।"</string>
     <string name="work_profile_on_title">"কাৰ্য প্ৰ'ফাইল অন কৰিবনে?"</string>
     <string name="work_profile_restricted">"স্বয়ং ব্লকাৰ সৰ্বাধিক প্ৰতিবন্ধকতাৰ সৈতে অন আছে। আপোনাৰ নিৰাপত্তা সুৰক্ষিত কৰিবলৈ, কাৰ্য প্ৰ'ফাইলসমূহ বনাব নোৱাৰে।"</string>
-    <string name="work_profile_telephony_paused_text">আপুনি আপোনাৰ কামৰ এপ্প্‌সমূহক বিৰতি দিছে। আপুনি সেইবিলাকৰ পৰা ফোন কল বা পাঠ মেচেজসমূহ প্ৰাপ্ত নকৰিব।</string>
-    <string name="work_profile_telephony_paused_title">কল আৰু মেচেজসমূহ অফ কৰা আছে</string>
-    <string name="work_profile_telephony_paused_turn_on_button">"কাৰ্য প্ৰ'ফাইল অন কৰিবনে?"</string>
+    <string name="work_profile_telephony_paused_text">আপুনি কাম সম্পৰ্কীয় এপ্‌সমূহ পজ কৰিছে। আপুনি ফ’ন কল অথবা পাঠ বাৰ্তাসমূহ নাপাব</string>
+    <string name="work_profile_telephony_paused_title">কল আৰু বাৰ্তা অফ কৰা আছে</string>
+    <string name="work_profile_telephony_paused_turn_on_button">কাম সম্পৰ্কীয় এপ্ আনপজ কৰক</string>
     <string name="workspace_title">Workspace</string>
     <string name="write_fail_reason_cancelled">বাতিল কৰা হ’ল</string>
     <string name="write_fail_reason_cannot_write">সমল লিখাত আসোঁৱাহ</string>
     <string name="year">বছৰ</string>
     <string name="years">কেইবছৰমান</string>
     <string name="zen_mode_alarm">%1$s (পৰৱৰ্তী এলার্ম) পর্যন্ত</string>
-    <string name="zen_mode_default_events_name">কার্যক্ৰম</string>
+    <string name="zen_mode_default_events_name">অনুষ্ঠান</string>
     <string name="zen_mode_default_every_night_name">নিদ্ৰাৰত</string>
     <string name="zen_mode_default_weekends_name">সপ্তাহ অন্ত</string>
     <string name="zen_mode_default_weeknights_name">কাৰ্য-দিনৰ নিশা</string>
@@ -3551,9 +3610,15 @@
     <string name="zen_mode_duration_minutes_summary">{count,plural, =1{এক মিনিটৰ বাবে ({formattedTime} পৰ্যন্ত)}one{# মিনিটৰ বাবে ({formattedTime} পৰ্যন্ত)}other{# মিনিটৰ বাবে ({formattedTime} পৰ্যন্ত)}}</string>
     <string name="zen_mode_duration_minutes_summary_short">{count,plural, =1{১ মিনিটৰ বাবে ({formattedTime} পর্যন্ত)}one{# মিনিটৰ বাবে ({formattedTime} পর্যন্ত)}other{# মিনিটৰ বাবে ({formattedTime} পর্যন্ত)}}</string>
     <string name="zen_mode_feature_name">অসুবিধা নিদিব</string>
-    <string name="zen_mode_forever">মই ইয়াক অফ নকৰালৈকে</string>
+    <string name="zen_mode_forever">আপুনি অফ নকৰা পর্যন্ত</string>
     <string name="zen_mode_forever_dnd">আপুনি যেতিয়ালৈকে অসুবিধা নিদিব অফ নকৰে</string>
+    <string name="zen_mode_implicit_activated">অন আছে</string>
+    <string name="zen_mode_implicit_deactivated">অফ আছে</string>
+    <string name="zen_mode_implicit_trigger_description">%1$sএ পৰিচালনা কৰা</string>
     <string name="zen_mode_rule_name_combination">%1$s / %2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">যিকোনো কেলেণ্ডাৰ</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s - %2$s</string>
     <string name="zen_mode_until">%1$s পৰ্যন্ত</string>
     <string name="zen_mode_until_next_day">%1$s পৰ্যন্ত</string>
     <string name="zen_upgrade_notification_content">কি কি অৱৰোধ কৰা হৈছে জানিবলৈ টিপক।</string>

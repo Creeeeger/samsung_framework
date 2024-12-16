@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Гаварыць з Bixby</string>
     <string name="accessibility_corner_action_type_zoom_in">Павялічыць</string>
     <string name="accessibility_corner_action_type_zoom_out">Паменшыць</string>
+    <string name="accessibility_dialog_button_allow_samsung">Дазволіць</string>
+    <string name="accessibility_dialog_button_deny_samsung">Адхіліць</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Выдаліць</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Хуткае адначасовае націсканне клавішы ўключэння і клавішы павелічэння гучнасці ўключае або выключае наступныя функцыі:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Хуткае адначасовае націсканне бакавой кнопкі і кнопкі павелічэння гучнасці ўключае або выключае наступныя функцыі:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Хуткае адначасовае націсканне клавішы ўключэння і клавішы павелічэння гучнасці ўключае або выключае %s.</string>
@@ -117,12 +120,16 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">Палітыка бяспекі не дазваляе дадаць гэты ўліковы запіс.</string>
     <string name="account_removal_restrict">Палітыка бяспекі забараняе выдаленне гэтага ўліковага запісу.</string>
+    <string name="action_bar_up_description">Пераход уверх</string>
     <string name="action_menu_overflow_description">Іншыя параметры</string>
     <string name="add_contact_to_sim_restriction">Палітыка бяспекі не дазваляе дадаваць кантакты на SIM-карту.</string>
     <string name="admin_device_restart">Ваш адміністратар перазапусціць прыладу.</string>
     <string name="advance_wifi_sharing_msg">Выяўлена даступная сетка Wi-Fi. Падлучыцеся, каб выкарыстоўваць для мабільнага хот-споту абагуленне праз Wi-Fi замест мабільнай перадачы даных.</string>
     <string name="airplanemode_restrict">Палітыка бяспекі забараняе ўключэнне рэжыму «У самалёце».</string>
     <string name="allow_settings_changes">Палітыка бяспекі забараняе змяненне налад.</string>
+    <string name="always_allow">Заўжды дазваляць</string>
+    <string name="app_block_button_open">Адкрыць</string>
+    <string name="app_block_content">Праграма «%1$s» спрабуе адкрыць праграму «%2$s».</string>
     <string name="app_clone_storage">Унутр схов (два сэрвісы абм павед)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Выбраць праграмы</string>
     <string name="app_continuity_guide_cling_button_not_now">Не зараз</string>
@@ -137,32 +144,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">Вы выкарысталі ўвесь час %s на сёння. Вы можаце змяніць гэта ў наладах.</string>
     <string name="app_restricted_message_concentration_mode">Праграма %s заблакіравана ў рэжыме канцэнтрацыі. Звярніцеся да IT-адміністратара, каб даведацца больш.</string>
     <string name="app_updating_message">%s абнаўляецца. Паўтарыце спробу пазней.</string>
-    <string name="appblock_block_subtitle1_phone">У мэтах абароны тэлефона і асабістых даных немагчыма ўсталяваць гэту праграму, таму што ёсць падазрэнні, што яна шкоднасная.</string>
-    <string name="appblock_block_subtitle1_tablet">У мэтах абароны планшэта і асабістых даных немагчыма ўсталяваць гэту праграму, таму што ёсць падазрэнні, што яна шкоднасная.</string>
-    <string name="appblock_block_subtitle2">Немагчыма ўсталяваць гэту праграму, таму што было паведамлена, што яна шкоднасная.</string>
-    <string name="appblock_block_text1">Гэта праграма паходзіць з невядомай крыніцы і патрабуе прыватных дазволаў, якія могуць быць выкарыстаны, каб скрасці вашы асабістыя даныя або выклікаць іх уцечку.</string>
-    <string name="appblock_block_text2">"Шкоднасныя праграмы могуць выкарыстоўваць прыватныя дазволы, каб скрасці вашы асабістыя даныя, імітаваць вашу асобу або атрымаць доступ да вашых фінансавых рахункаў.
-
-Фінансавыя ўстановы, якія дзейнічаюць законна, не патрабуюць zip-файлаў для ўсталёўкі, файлаў APK і праграм-менеджараў файлаў.
-
-Заўсёды правярайце, ці праграмы, якія вы ўсталёўвайце, паходзяць з даверанай крыніцы."</string>
-    <string name="appblock_warn_subtitle">Гэта праграма можа скрасці вашу асабістую інфармацыю або выклікаць яе ўцечку.</string>
+    <string name="appblock_block_text_phone">Немагчыма ўсталяваць гэту праграму, таму што яна была пазначана як шкоднасная або падобная на праграму, заяўленую як шкоднасная. Гэта праграма можа выкарыстоўвацца ў такіх злачынствах, як фішынг. Гэта абмежаванне немагчыма абысці, бо яно абараняе ваш тэлефон і даныя.</string>
+    <string name="appblock_block_text_tablet">Немагчыма ўсталяваць гэту праграму, таму што яна была пазначана як шкоднасная або падобная на праграму, заяўленую як шкоднасная. Гэта праграма можа выкарыстоўвацца ў такіх злачынствах, як фішынг. Гэта абмежаванне немагчыма абысці, бо яно абараняе ваш планшэт і даныя.</string>
+    <string name="appblock_link_text">Даведацца больш</string>
     <string name="appblock_warn_text1">"Усталёўка праграм з невядомых крыніц можа дазволіць праграмам збіраць вашу асабістую інфармацыю або адсочваць вашы дзеянні.
 
 Не рэкамендуецца ўсталёўваць гэту праграму.
 
 Калі вы ўсё роўна вырашыце ўсталяваць яе, уважліва прачытайце яе Апавяшчэнне аб прыватнасці і упэўніцеся, што даяце толькі абавязковыя дазволы."</string>
-    <string name="appblock_warn_text2">"Шкоднасныя праграмы часта імкнуцца атрымаць вашу асабістую інфармацыю з дапамогай дазволаў на доступ да кантактаў, SMS і фота.
-
-Не рэкамендуецца ўсталёўваць гэту праграму.
-
-Калі вы ўсё роўна вырашыце ўсталяваць яе, упэўніцеся, што яна паходзіць з даверанай крыніцы і з асцярожнасцю давайце дазволы або іншыя віды доступу да сваіх даных."</string>
     <string name="application_default_restrict">Яшчэ адна праграма зададзена па змаўчанні адміністратарам прылады.</string>
     <string name="auto_click_paused">Аўтаклік прыпынены.</string>
     <string name="auto_click_resumed">Аўтаклік узноўлены.</string>
     <string name="autofill_never_use_for_this_app">Ніколі не выкарыстоўвайце %s для гэтай праграмы</string>
     <string name="autofill_save_cancel">Скасаваць</string>
     <string name="autofill_save_never_OK">ОК</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">Палітыка бяспекі забараняе ўжыванне рэзервовага капіравання.</string>
     <string name="badPin2">Няправільны PIN2-код. Паўтарыце спробу.</string>
     <string name="badPuk2">Вы ўвялі няправільны PUK2-код.</string>
@@ -173,8 +169,6 @@
     <string name="bluetooth_a2dp_restrict">Палітыка бяспекі забараняе ўжыванне гукавога мультымедыя Bluetooth.</string>
     <string name="bluetooth_avrcp_restrict">Палітыка бяспекі забараняе кіраванне аўдыя і відэа праз Bluetooth.</string>
     <string name="bluetooth_bpp_restrict">Палітыка бяспекі забараняе друк праз Bluetooth.</string>
-    <string name="bluetooth_china_popup_message">%1$s запытвае дазвол выкарыстоўваць %2$s. Дазволіць?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Палітыка бяспекі забараняе перадачу даных праз Bluetooth.</string>
     <string name="bluetooth_desktop_restrict">Палітыка бяспекі забараняе падлучэнне да працоўнага стала праз Bluetooth.</string>
     <string name="bluetooth_device_restrict">Палітыка бяспекі забараняе спалучэнне сувязь з гэтай прыладай Bluetooth.</string>
@@ -185,7 +179,6 @@
     <string name="bluetooth_outgoing_call_restrict">Палітыка бяспекі забараняе выходныя выклікі праз Bluetooth.</string>
     <string name="bluetooth_pairing_restrict">Палітыка бяспекі забараняе спалучэнне прылад праз Bluetooth.</string>
     <string name="bluetooth_pbap_restrict">Палітыка бяспекі забараняе ўжыванне адраснай кнігі Bluetooth.</string>
-    <string name="bluetooth_permission_request">Запыт дазволу на падлучэнне праз Bluetooth</string>
     <string name="bluetooth_restrict">Палітыка бяспекі забараняе ўжыванне Bluetooth.</string>
     <string name="bluetooth_sap_restrict">Палітыка бяспекі забараняе доступ да SIM-карты праз Bluetooth.</string>
     <string name="bluetooth_security_mode_disable">Палітыка бяспекі забараняе выкарыстанне Bluetooth.</string>
@@ -247,11 +240,8 @@
     <string name="ctc_plmn_locked_card">Locked Card</string>
     <string name="d2dalloweddevice">Дазволеныя прылады</string>
     <string name="data_call_restriction">Палітыка бяспекі абмяжоўвае выкарыстанне мабільнай перадачы даных.</string>
-    <string name="data_usage_disable_mobile">Адключыць злучэнне з мабільнай сеткай перадачы даных?</string>
-    <string name="data_usage_enable_mobile_warning">Перадача пакетных даных можа патрабаваць дадатковай аплаты. Далей?</string>
     <string name="data_usage_limit_body">Мабільная перадача даных прыпынена да канца цыкла выстаўлення рахунку.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Перавышае ліміт маб. трафіку</string>
-    <string name="data_usage_mobile_limit_title">Дасягнуты ліміт маб. пер. даных</string>
     <string name="data_usage_rapid_app_body">Праграма %s выкарыстала больш даных, чым звычайна.</string>
     <string name="data_usage_rapid_body">Вашы праграмы выкарыстоўвалі больш даных, чым звычайна.</string>
     <string name="data_usage_rapid_title">Інтэнсіўнае ўжыванне мабільнай перадачы даных</string>
@@ -262,6 +252,7 @@
     <string name="data_usage_warning_title_offpeak_chn">У пазапікавы час выкар %s даных</string>
     <string name="data_usage_warning_title_unlimited_chn">Дасягн. ліміт хутк. маб. даных</string>
     <string name="device_disabled">Прылада адключана. Звярніцеся да IT-адміністратара.</string>
+    <string name="device_info_not_available">Недаступна.</string>
     <string name="dex_cant_change_user_profile">Немагчыма змяніць профіль карыстальніка ў рэжыме Samsung DeX.</string>
     <string name="dex_dialog_launch_toast">Адкрытыя праграмы могуць закрыцца. Захоўвайце вашы даныя перад запускам або выхадам з Samsung DeX.</string>
     <string name="dex_disconnected_from_device">DeX адлучаны ад %s. Праверце сеткавае падлучэнне на тэлевізары.</string>
@@ -270,9 +261,6 @@
     <string name="dex_launcher_mode_change">%s закрыта для пераключэння на Samsung DeX.</string>
     <string name="dex_mirroring_jit_msg">Пры запуску Samsung DeX на вашым планшэце вы можаце дубляваць экран на любы дысплэй, падлучаны праз HDMI, для буйнейшага прагляду.</string>
     <string name="dex_mirroring_jit_title">Дубляваць DeX на большы экран</string>
-    <string name="dex_restart_app_dialog_button_positive">Перазап.</string>
-    <string name="dex_restart_app_dialog_message">Гэта праграма ўжо працуе на іншым дысплэі. Каб адкрыць праграму тут, яе трэба перазапусціць. Перад гэтым захавайце ўсё важнае.</string>
-    <string name="dex_restart_app_dialog_title">Перазапусціць %s?</string>
     <string name="dex_restriction_blockerMessage">Палітыка бяспекі забараняе выкарыстанне Samsung DeX.</string>
     <string name="dex_restriction_ethernetOnly">Палітыка бяспекі забараняе выкарыстанне даных па Wi-Fi, мабільных даных і мадэма ў DeX. Для функцый сеткі патрабуецца правадное падлучэнне.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">З-за палітыкі бяспекі адлучыце знешні дысплэй, каб выйсці з Samsung DeX.</string>
@@ -297,7 +285,6 @@
     <string name="digital_signature_failure_user_notification">Лічбавы подпіс несапраўдны для карыстальніка %d</string>
     <string name="disableupdate_application_restrict">Палітыка бяспекі забараняе абнаўленне гэтай праграмы.</string>
     <string name="display_chooser_button_positive">Перазап.</string>
-    <string name="display_chooser_dont_show_again">Больш не паказваць</string>
     <string name="dlg_ics_security_policy">Палітыка бяспекі абмяжоўвае выкарыстанне супольнага доступу да інтэрнэту.</string>
     <string name="do_change_lock_type_noti_msg">Змяніце ваш тып блакіроўкі экрана. Гэта неабходна зрабіць, згодна з палітыкай бяспекі.</string>
     <string name="do_change_lock_type_noti_title">Змяніце блакіроўку</string>
@@ -309,7 +296,7 @@
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Немагчыма выкарыстоўваць гэту праграму ў рэжыме некалькі вокнаў.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Немагчыма выкарыстоўваць гэту функцыю ў рэжыме некалькі вокнаў.</string>
     <string name="edit_contact_at_sim_restriction">Палітыка бяспекі не дазваляе рэдагаваць кантакты на SIM-карце.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Дазволеныя прылады</string>
+    <string name="edm_policy_not_allow_open_wifiap">Палітыка бяспекі абмяжоўвае выкарыстанне неабароненага мадэма або хот-спота.</string>
     <string name="emergency_calls_only">Толькі экстранныя выклікі</string>
     <string name="ethernet_cable_connected_notification_message">Націсніце для наладкі.</string>
     <string name="ethernet_cable_connected_notification_title">Кабель Ethernet падлучаны.</string>
@@ -324,7 +311,7 @@
     <string name="ext_media_unsupported_notification_message">Гэта прылада не падтрымлівае гэту %s. Націсніце для наладкі ў фармаце, які падтрымліваецца.</string>
     <string name="ext_media_unsupported_notification_title">%s не падтрымліваецца</string>
     <string name="ext_storage_bad_removal_button">Перазапусціць</string>
-    <string name="ext_storage_bad_removal_title">Перазапусціце планшэт</string>
+    <string name="ext_storage_bad_removal_title">Перазапусціце тэлефон</string>
     <string name="factoryreset_restrict">Палітыка бяспекі абмяжоўвае аднаўленне заводскіх налад.</string>
     <string name="firmwarerecovery_restrict">Палітыка бяспекі абмяжоўвае аднаўленне ўбудаванага ПЗ.</string>
     <string name="foldable_restart_app_dialog_checkbox">Больш не пытацца для ўсіх праграм</string>
@@ -390,6 +377,7 @@
     <string name="globalactions_unable_restart_msg_fmm">Немагчыма перазапусціць, таму што тэлефон быў аддалена заблакіраваны функцыяй «Знайсці мой тэлефон».</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Немагчыма перазапусціць, таму што планшэт быў аддалена заблакіраваны функцыяй «Знайсці мой тэлефон».</string>
     <string name="globalactions_unable_restart_msg_securelock">Немагчыма перазапусціць заблакіраваны тэлефон. Адкрыйце вокладку і разблакіруйце, каб перазапусціць тэлефон.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Немагчыма перазапусціць тэлефон пры заблакіраванай SIM-карце.</string>
     <string name="hardware_key_restrict">Палітыка бяспекі забараняе ўжыванне гэтай апаратнай клавішы.</string>
     <string name="hardware_sec">Экранная клавіятура</string>
     <string name="hbd_translate">Перакласці друк. тэкст</string>
@@ -459,16 +447,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Каб выключыць рэжым абслугоўвання, вам трэба будзе разблакіраваць планшэт.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Вынікі дзеянняў, якія адбываюцца пры ўключаным рэжыме абслугоўвання, напрыклад, спампаваныя даныя, усталёўка праграм або змяненні налад, захаваны не будуць.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Задаць блакір экрана</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Перазапусціць без стварэння журнала</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Стварыць журнал і перазапусціць</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Для ўключэння рэжыму абслугоўвання неабходна перазапусціць тэлефон.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Перш задайце тып блакіроўкі экрана.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Для ўключэння рэжыму абслугоўвання неабходна перазапусціць планшэт.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Каб дапамагчы супрацоўнікам службы падтрымкі аналізаваць любыя праблемы з вашым тэлефонам, рэкамендуем стварыць журнал сістэмы перад запускам рэжыму абслугоўвання.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Каб дапамагчы супрацоўнікам службы падтрымкі дыягнаставаць і аналізаваць любыя праблемы з вашым тэлефонам, рэкамендуем перад запускам рэжыму абслугоўвання стварыць журнал сістэмы.
 
-Журнал паказвае, якія праграмы выкарыстоўваліся, і любыя памылкі, якія маглі нядаўна адбыцца, але не змяшчае ніякай іншай асабістай інфармацыі. Журнал будзе выкарыстоўвацца толькі для аналізу праблем і ні для якіх іншых мэт. Стварэнне журнала звычайна займае 2 хвіліны."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Каб дапамагчы супрацоўнікам службы падтрымкі аналізаваць любыя праблемы з вашым планшэтам, рэкамендуем стварыць журнал сістэмы перад запускам рэжыму абслугоўвання.
+Гэты журнал змяшчае толькі інфармацыю, неабходную для рамонту вашага тэлефона, напрыклад, якія праграмы выкарыстоўваліся, якія памылкі адбыліся нядаўна, якія нумары тэлефонаў былі заблакіраваны і якая ёмістасць сховішча для файлаў. Гэты журнал будзе выкарыстоўвацца толькі для дыягностыкі і аналізу праблем і ні для якіх іншых мэт. Стварэнне журнала звычайна займае каля 2 хвілін."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Каб дапамагчы супрацоўнікам службы падтрымкі дыягнаставаць і аналізаваць любыя праблемы з вашым планшэтам, рэкамендуем перад запускам рэжыму абслугоўвання стварыць журнал сістэмы.
 
-Журнал паказвае, якія праграмы выкарыстоўваліся, і любыя памылкі, якія маглі нядаўна адбыцца, але не змяшчае ніякай іншай асабістай інфармацыі. Журнал будзе выкарыстоўвацца толькі для аналізу праблем і ні для якіх іншых мэт. Стварэнне журнала звычайна займае 2 хвіліны."</string>
+Гэты журнал змяшчае толькі інфармацыю, неабходную для рамонту вашага планшэта, напрыклад, якія праграмы выкарыстоўваліся, якія памылкі адбыліся нядаўна, якія нумары тэлефонаў былі заблакіраваны і якая ёмістасць сховішча для файлаў. Гэты журнал будзе выкарыстоўвацца толькі для дыягностыкі і аналізу праблем і ні для якіх іншых мэт. Стварэнне журнала звычайна займае каля 2 хвілін."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Аналіз сховішча</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Унутранае сховішча тэлефона амаль цалкам запоўнена. Калі прастора сховішча скончыцца, некаторыя праграмы і функцыі могуць перастаць правільна працаваць. Паспрабуйце выдаліць частку файлаў або праграм, якія вам больш не патрэбны. Пасля іх выдалення не забудзьце ачысціць сметніцу.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Унутранае сховішча планшэта амаль цалкам запоўнена. Калі прастора сховішча скончыцца, некаторыя праграмы і функцыі могуць перастаць правільна працаваць. Паспрабуйце выдаліць частку файлаў або праграм, якія вам больш не патрэбны. Пасля іх выдалення не забудзьце ачысціць сметніцу.</string>
@@ -490,10 +478,17 @@
     <string name="maintenance_mode_outro_label">Выйсці з рэжыму абслугоўвання</string>
     <string name="maintenance_mode_outro_textview_message_phone">Каб выключыць рэжым абслугоўвання, неабходна разблакіраваць тэлефон. Калі вы зробіце гэта, усё вернецца да таго, што было пры першым уключэнні рэжыму абслугоўвання. Змяненні, унесеныя ў рэжыме абслугоўвання, напрыклад спампаваныя даныя, усталяваныя праграмы ці змяненні налад, не захоўваюцца.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Каб выключыць рэжым абслугоўвання, неабходна разблакіраваць планшэт. Калі вы зробіце гэта, усё вернецца да таго, што было пры першым уключэнні рэжыму абслугоўвання. Змяненні, унесеныя ў рэжыме абслугоўвання, напрыклад спампаваныя даныя, усталяваныя праграмы ці змяненні налад, не захоўваюцца.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Немагчыма выкарыстоўваць рэжым абслугоўвання, пакуль працуе функцыя %s.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Немагчыма выкарыстоўваць рэжыме абслугоўвання пры ўключаным энергазберажэнні з опцыяй «Абмежаваць праграмы і галоўны экран».</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Рэжым абслугоўвання не падтрымліваецца на гэтым тэлефоне.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Рэжым абслугоўвання не падтрымліваецца на гэтым планшэце.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s можа выкарыстоўвацца ўладальнікам прылады.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Спыніць рэзервовае капіраванне даных і ўключыць рэжым абслугоўвання?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Для ўключэння рэжыму абслугоўвання неабходна завяршыць або выдаліць незавершанае рэзервовае капіраванне.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Для ўключэння рэжыму абслугоўвання неабходна спыніць бягучае рэзервовае капіраванне.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Для ўключэння рэжыму абслугоўвання неабходна спыніць аднаўленне даных рэзервовага капіравання.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Праграма адміністратара прылады</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Стварэнне журнала…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Звычайна гэта займае каля 2 хвілін. Пасля стварэння журнала ваш тэлефон перазагрузіцца ў рэжыме абслугоўвання, і вы зможаце бяспечна перадаць яго на абслугоўванне.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Звычайна гэта займае каля 2 хвілін. Пасля стварэння журнала ваш планшэт перазагрузіцца ў рэжыме абслугоўвання, і вы зможаце бяспечна перадаць яго на абслугоўванне.</string>
@@ -513,13 +508,8 @@
     <string name="mdf_title_enabled_n_ready">Перазапусціць прыладу</string>
     <string name="mdf_title_enforced">Нельга ўключыць рэжым CC</string>
     <string name="mediaplayer_restrict">Палітыка бяспекі забараняе ўжыванне медыяпрайгравальніка MTP.</string>
+    <string name="message_on_crash">Заблакіравана аўтаблакіроўшчыкам</string>
     <string name="microphone_restrict">Палітыка бяспекі забараняе выкарыстанне мікрафона.</string>
-    <string name="miniresolver_call">Выклік</string>
-    <string name="miniresolver_call_in_work">Зрабіць выклік з працоўнай праграмы?</string>
-    <string name="miniresolver_call_information">Ваша арганізацыя дазваляе вам рабіць выклікі толькі з працоўных праграм.</string>
-    <string name="miniresolver_sms_information">Ваша арганізацыя дазваляе вам адпраўляць паведамленні толькі з працоўных праграм.</string>
-    <string name="miniresolver_switch">Пераключыць</string>
-    <string name="miniresolver_switch_to_work">Пераключыцца на рабочую праграму?</string>
     <string name="mmcc_authentication_reject_name_template">%s не дазволена</string>
     <string name="mmcc_illegal_me_name_template">%s не дазволена</string>
     <string name="mmcc_illegal_ms_name_template">%s не дазволена</string>
@@ -531,30 +521,6 @@
     <string name="mock_location_reminder_disable">Выключыць</string>
     <string name="mock_location_reminder_title">Імітацыя месцазнаходжання ўкл</string>
     <string name="more_apps">Іншыя праграмы</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">Сэрвіс %s недаступны. Звярніцеся ў службу абслугоўвання кліентаў.</string>
-    <string name="mptcp_message_address_type_not_supported">Кепскае злучэнне %s. Перападлучэнне праз даступную сетку…</string>
-    <string name="mptcp_message_busy_ntime_wait">Кепскае злучэнне %s. Перападлучэнне праз даступную сетку…</string>
-    <string name="mptcp_message_cmd_not_supported">Сетка %s часова недаступна. Перападлучэнне праз даступную сетку…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">Кепскае злучэнне %s. Перападлучэнне праз даступную сетку…</string>
-    <string name="mptcp_message_connection_refused">Кепскае злучэнне %s. Перападлучэнне праз даступную сетку…</string>
-    <string name="mptcp_message_data_usage_limit">Дасягнуты ліміт выкарыстання даных. Каб змяніць ліміт выкарыстання даных, перайдзіце ў налады.</string>
-    <string name="mptcp_message_host_unreachable">Кепскае злучэнне %s. Перападлучэнне праз даступную сетку…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Немагчыма ўключыць %s. Прылада не падлучана да сеткі LTE.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Немагчыма ўключыць %s у міжнародным роўмінгу.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Немагчыма ўключыць %s пры ўключаным мабільным хот-споце або USB-мадэме.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Немагчыма ўключыць %s пры ўключаным Wi-Fi Direct.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Немагчыма ўключыць %s пры ўключаным рэжыме «У самалёце».</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Немагчыма ўключыць %s пры выключанай мабільнай перадачы даных.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Няма адказу ад пастаўшчыка паслуг.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Немагчыма ўключыць %1$s. %2$s адсутнічае ў пакеце для Інтэрнэту, ці адказ ад сервера %3$s не быў атрыманы.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Не ўдалося адправіць запыт актывацыі %s. Перападлучэнне праз даступныя мабільныя сеткі…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Немагчыма ўключыць %s. Устаўлена няправільная SIM-карта.</string>
-    <string name="mptcp_message_network_unreachable">Кепскае злучэнне %s. Перападлучэнне праз даступную сетку…</string>
-    <string name="mptcp_message_non_mptcp_plan">Немагчыма ўключыць Giga Multi-Path. Функцыя не падтрымліваецца тарыфным планам.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s адключана, каб прылада не перагрэлася. Замест гэтага спампоўванне робіцца праз мабільную сетку…</string>
-    <string name="mptcp_message_server_error">Кепскае злучэнне %s. Перападлучэнне праз даступную сетку…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Немагчыма ўключыць %s. Прылада пераграваецца. Пачакайце, пакуль прылада астыне, і паўтарыце спробу.</string>
-    <string name="mptcp_message_ttl_expired">Сетка %s часова недаступна. Перападлучэнне праз даступную сетку…</string>
     <string name="multi_user_capability_restrict">Палітыка бяспекі забараняе ўжыванне прылады некалькімі карыстальнікамі.</string>
     <string name="multi_user_creation_restrict">Палітыка бяспекі забараняе стварэнне новых уліковых запісаў карыстальнікаў на прыладзе.</string>
     <string name="multi_user_removal_restrict">Палітыка бяспекі забараняе выдаленне ўліковых запісаў карыстальнікаў з прылады.</string>
@@ -573,24 +539,22 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Гук прайграецца на аўдыяпрыладзе Bluetooth. Націсніце тут, каб выключыць</string>
     <string name="multisound_sound_via_headphone">Гук %s прайграецца праз вашы навушнікі. Націсніце тут, каб выключыць.</string>
     <string name="multisound_sound_via_headphone_multiselection">Гук прайграецца праз навушнікі. Націсніце тут, каб выключыць.</string>
-    <string name="multisound_sound_via_phone_speaker">Гук %s прайграецца ў дынаміку планшэта. Націсніце тут, каб выключыць.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Гук прайграецца праз дынамік планшэта. Націсніце тут, каб выключыць.</string>
+    <string name="multisound_sound_via_phone_speaker">Гук %s прайграецца ў дынаміку тэлефона. Націсніце тут, каб выключыць.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Гук прайграецца праз дынамік тэлефона. Націсніце тут, каб выключыць.</string>
     <string name="multisound_sound_via_usb_audio">Гук %s прайграецца праз вашу аўдыяпрыладу USB. Націсніце тут, каб выключыць.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Гук прайграецца на аўдыяпрыладзе USB. Націсніце тут, каб выключыць.</string>
     <string name="multisound_title">Асобны гук праграмы</string>
     <string name="multisound_turn_off_multisound">Выключыць</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Немагчыма запусціць праграму %s у Samsung DeX. Паспрабуйце запусціць у рэжыме планшэта.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Немагчыма запусціць праграму %s у Samsung DeX. Яна распрацавана для галоўных экранаў планшэтаў.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Некаторыя гульні працуюць толькі на сэнсарных экранах. Калі функцыі мышы не працуюць у Samsung DeX, паспрабуйце гуляць у рэжыме планшэта.</string>
-    <string name="my_device">Гэты планшэт</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Немагчыма запусціць %s у Samsung DeX. Паспрабуйце запусціць у рэжыме тэлефона.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s немагчыма запусціць у Samsung DeX. Яна распрацавана для галоўных экранаў тэлефонаў.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Некаторыя гульні працуюць толькі на сэнсарных экранах. Калі функцыі мышы не працуюць у Samsung DeX, паспрабуйце гуляць у рэжыме тэлефона.</string>
+    <string name="my_device">Гэты тэлефон</string>
     <string name="network_locked_sim_dialog_message_ais">Ваша SIM-карта не поўнасцю працаздольна на гэтым тэлефоне, таму што не адпавядае ўмовам вашай падпіскі. Калі ў вас узніклі пытанні ці вам неабходна дадатковая інфармацыя па гэтым пытанні, звярніцеся ў службу падтрымкі кліентаў Samsung або краму, якая прадала вам гэтыя вырабы.</string>
     <string name="network_locked_sim_notification_text">Устаўлена SIM-карта заблак. сеткі.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Змяніце стандартную праграму галоўнага экрана на «Галоўны экран One UI».</string>
     <string name="nfc_restrict">Палітыка бяспекі забараняе выкарыстоўванне NFC.</string>
     <string name="nosim_limited_service">Абмежаваны сэрвіс</string>
-    <string name="not_support_ai_key">Клавіша штучнага інтэлекту пакуль не працуе з вашым планшэтам. Неўзабаве будзе даступна абнаўленне.</string>
-    <string name="notification_app_name_settings">Налады</string>
     <string name="notification_channel_dex_policy">Палітыка Samsung DeX</string>
     <string name="ntfs_usb_storage_readonly_mount_message">Гэта сховішча прызначана толькі для чытання, таму што яно выкарыстоўвае фармат NTFS.</string>
     <string name="ntfs_usb_storage_readonly_mount_title">Дад. USB-схов. толькі для чыт.</string>
@@ -759,7 +723,6 @@
     <string name="permlab_scheduleExactAlarm">Наладжваць будзільнікі і напаміны</string>
     <string name="permlab_spdControl">Кіраваць абнаўленнямі палітыкі бяспекі</string>
     <string name="permlab_ucsPlugin">Плагін для ўніверсальнага кіравання ўліковымі данымі</string>
-    <string name="personal_apps_suspended_turn_profile_on">Уключыць</string>
     <string name="phoneTypeConference">Канферэнцыя</string>
     <string name="policydesc_allow_bluetoothmode">Забараніць выкарыстанне Bluetooth.</string>
     <string name="policydesc_allow_browser">Забараніць выкарыстанне Інтэрнэту.</string>
@@ -767,7 +730,7 @@
     <string name="policydesc_allow_desktopsync">Забараніць сінхранізацыю з ПК.</string>
     <string name="policydesc_allow_internetsharing">Забараніць выкарыстанне мабільнага хот-споту.</string>
     <string name="policydesc_allow_irda">Забараніць выкарыстанне IrDA.</string>
-    <string name="policydesc_allow_popimapemail">Забараніць выкарыстанне эл. пошты праз POP і IMAP на планшэце.</string>
+    <string name="policydesc_allow_popimapemail">Забараніць выкарыстанне эл. пошты праз POP і IMAP на тэлефоне.</string>
     <string name="policydesc_allow_storagecard">Забараніць выкарыстанне SD-карт.</string>
     <string name="policydesc_allow_textmessaging">Забараніць выкарыстанне функцыі абмену тэкставымі і мультымедыйнымі паведамленнямі.</string>
     <string name="policydesc_allow_thirdParty">Гэта праграма можа не дазваляць запуск праграм іншых вытворцаў.</string>
@@ -810,7 +773,7 @@
     <string name="pwd_change_enforced">Палітыка бяспекі абмяжоўвае змяніць пароль.</string>
     <string name="recording_fail">Немагчыма выкарыстоўваць мікрафон у %1$s падчас яго выкарыстання ў %2$s.</string>
     <string name="recording_popup">%s выкарыстоўвае мікрафон.</string>
-    <string name="recording_popup_device">Планшэт</string>
+    <string name="recording_popup_device">Тэлефон</string>
     <string name="recording_popup_with_bluetooth">%s выкарыстоўвае мікрафон Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s выкарыстоўвае мікрафон прылады «%2$s».</string>
     <string name="redo">Паўтарыць</string>
@@ -875,12 +838,12 @@
     <string name="screencapture_restrict">Палітыка бяспекі забараняе здымкі экрана.</string>
     <string name="sd_card_unavailable_message">Вы не можаце выкарыстоўваць SD-карту, таму што яна была ўстаўлена падчас таго, як выкарыстоўваўся іншы профіль карыстальніка.</string>
     <string name="sd_card_unavailable_title">SD-карта недаступна</string>
-    <string name="sdcard_bad_removal_message">SD-карта была выдалена небяспечным чынам. Каб прадухіліць нечаканы перазапуск планшэта, захавайце незахаваныя даныя і перазапусціце яго зараз.</string>
+    <string name="sdcard_bad_removal_message">SD-карта была выдалена небяспечным чынам. Каб прадухіліць нечаканы перазапуск тэлефона, захавайце незахаваныя даныя і перазапусціце яго зараз.</string>
     <string name="sdcard_batch_decrypt_noti_content">Расшыфраваць SD-карту</string>
     <string name="sdcard_batch_decrypt_noti_title">Расшыфроўка SD-карты</string>
     <string name="sdcard_batch_decrypt_popup_content">Каб скарыстацца зашыфраванай SD-картай, яе трэба расшыфраваць. На расшыфроўку можа спатрэбіцца гадзіна ці болей. Зарадзіце акумулятар і не адлучайце прыладу ад сілкавання да завяршэння расшыфроўкі. Перарыванне расшыфроўкі можа спрычыніцца да частковай ці поўнай страты даных.</string>
     <string name="sdcard_decrypt_err_notification">Памылка расшыфроўкі SD-карты.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Некаторыя файлы на SD-карце былі зашыфраваны на іншай прыладзе, і іх немагчыма выкарыстоўваць на гэтым планшэце.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Некаторыя файлы на SD-карце былі зашыфраваны на іншай прыладзе, і іх немагчыма выкарыстоўваць на гэтым тэлефоне.</string>
     <string name="sdcard_decrypt_notification">SD-карта расшыфравана.</string>
     <string name="sdcard_decrypt_title_notification">Расшыфроўка SD-карты</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Расшыфроўка SD-карты…</string>
@@ -897,14 +860,6 @@
     <string name="sdcard_unmount_policy_noti_title">SD-карта адключана з-за IT-палітыкі.</string>
     <string name="sdhms_nr_control_low_battery">Выключайце 5G, каб зэканоміць зарад акумулятара тэлефона, калі яго застаецца менш 15 %.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth застанецца ў рэжыме «У самалёце».</string>
-    <string name="sec_immersive_cling_button_ok">ОК</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Гэта праграма выкарыстоўвае поўнаэкранны рэжым. Жэсты правядзення для навігацыі будуць адлюстроўваць панэль стану. Для навігацыі правядзіце зноў, пакуль панэль стану бачная.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Гэта праграма выкарыстоўвае поўнаэкранны рэжым. Кнопкі галоўнага экрана, вяртання і кнопка «Апошнія» схаваны, каб звесці да мінімуму адцягванне ўвагі і прадухіліць выпадковы выхад з праграмы.
-
-Нават калі вы павернеце свой тэлефон, кнопкі будуць заўсёды размяшчацца побач з портам для зарадкі. Вы можаце прымусіць кнопкі з’явіцца зноў, правёўшы ўнутр ад краю экрана, як паказана стрэлкай."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Гэта праграма выкарыстоўвае поўнаэкранны рэжым. Кнопкі «Галоўны экран», «Назад» і «Апошнія» схаваны, каб звесці да мінімуму адцягванне ўвагі і прадухіліць выпадковы выхад з праграмы.
-
-Каб кнопкі былі паказаны зноў, правядзіце ўверх з ніжняй часткі экрана, як паказана стрэлкай."</string>
     <string name="sec_monotype_default">Стандартны</string>
     <string name="sec_ringtone_category_brand_sound">Фірменны гук Samsung</string>
     <string name="sec_ringtone_category_calm">Спакойны</string>
@@ -914,6 +869,10 @@
     <string name="sec_ringtone_category_open_theme">Налады бягучай тэмы па змаўчанні</string>
     <string name="sec_ringtone_category_retro">Рэтра</string>
     <string name="sec_ringtone_silent">Без гуку</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Скасаваць</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Каб падлучыцца да спадарожніка, задайце для выбару аператара сеткі параметр «Выбіраць аўтаматычна».</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Уключыць</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Уключыць аўтаматычны выбар сеткі?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Каб гаварыць, уключыце доступ да мікрафона.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Для выкарыстання %s уключыце доступ да камеры.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Для выкарыстання %s уключыце доступ да мікрафона.</string>
@@ -1009,6 +968,8 @@
     <string name="sem_face_error_already_in_use_by_VT">Немагчыма выкарыстоўваць распазнаванне твару абалонкі падчас відэавыклікаў.</string>
     <string name="sem_face_error_camera_access_off">Немагчыма выкарыстаць распазнаванне твару, таму што доступ да камеры выключаны</string>
     <string name="sem_face_error_camera_fail">Немагчыма адкрыць камеру. Паўтарыце спробу.</string>
+    <string name="sem_face_error_lockout">Біяметрычная праверка сапраўднасці недаступная з-за занадта вялікай колькасці няправільных спроб.</string>
+    <string name="sem_face_error_lockout_permanent">Біяметрычная праверка сапраўднасці недаступная з-за занадта вялікай колькасці няправільных спроб.</string>
     <string name="sem_face_error_ppp_timeout">Прайшло многа з часу з таго моманту, як вы правяралі сваю асобу. Для таго каб зарэгістраваць твар, трэба будзе пачаць нанова.</string>
     <string name="sem_face_error_too_dark">Занадта цёмна для выяўлення твару</string>
     <string name="sem_face_error_too_dark_to_enroll">Занадта цёмна. Паспрабуйце ўключыць святло або перайдзіце ў святлейшае месца.</string>
@@ -1024,13 +985,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">Перамясціце кончык S Pen ад экрана, каб прасканіраваць адбітак пальца.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Для выкарыстання адбіткаў пальцаў перш задайце бяспечны тып блакіроўкі экрана (узор, PIN-код або пароль).</string>
+    <string name="sem_fingerprint_error_lockout">Біяметрычная праверка сапраўднасці недаступная з-за занадта вялікай колькасці няправільных спроб.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Біяметрычная праверка сапраўднасці недаступная з-за занадта вялікай колькасці няправільных спроб.</string>
     <string name="sem_fingerprint_error_onehand_mode">Немагчыма выкарыстоўваць сканер адбіткаў пальцаў у рэжыме работы адной рукой.</string>
     <string name="sem_fingerprint_error_smart_view">Немагчыма сканіраваць адбітак пальца падчас выкарыстання %s.</string>
+    <string name="sem_fingerprint_error_system_failure">Датчык адбіткаў пальцаў не адказвае. Паўтарыце спробу пазней. Калі праблема не знікне, паспрабуйце перазапусціць тэлефон.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Даныя адбіткаў пальцаў былі пашкоджаны. Дадаць адбіткі пальцаў зноў.</string>
     <string name="sem_fingerprint_error_wireless_charger">Каб выкарыстаць адбітак пальца, адлучыцеся ад бесправадной зараднай прылады</string>
     <string name="sem_fingerprint_name_template">Адбітак пальца %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Пазней</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Не зараз</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Выдаліць і зарэгістраваць</string>
+    <string name="sem_fingerprint_register_dialog_message">Пры апошнім абнаўленні праграмнага забеспячэння было палепшана распазнаванне адбіткаў пальцаў. Вы не зможаце выкарыстоўваць распазнаванне адбіткаў пальцаў, пакуль не выдаліце свае адбіткі пальцаў і не зарэгіструеце іх зноў.</string>
     <string name="sem_fingerprint_register_dialog_title">Зарэгістр. адбіткі пальцаў зноў</string>
     <string name="sem_fingerprint_result_failed">Супадзенняў няма.</string>
     <string name="sem_fingerprint_result_retry">Паўтарыце спробу.</string>
@@ -1050,7 +1016,7 @@
     <string name="sem_resolver_button_always_accessibility">Заўсёды выкарыстоўваць выбраную праграму</string>
     <string name="sem_resolver_button_just_once_accessibility">Выкарыстаць выбраную праграму толькі аднойчы</string>
     <string name="sem_resolver_choose_what_to_do">Выберыце, што трэба зрабіць</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Каб змяніць налады стандартных праграм, перайдзіце ў раздзел «Налады > Праграмы > Выбраць стандартныя праграмы».</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Каб змяніць стандартную праграму, якая выкарыстоўваецца для адкрыцця гэтага тыпу файла, перайдзіце ў меню «Налады > Праграмы», выберыце бягучую стандартную праграму, потым націсніце «Зрабіць стандартным > Ачысціць стандартнае».</string>
     <string name="sem_resolver_icon_content_description">Інфармацыя</string>
     <string name="sem_resolver_personal_tab_accessibility">Асабістае</string>
     <string name="sem_resolver_share_live_default_text">Імгненна дзяліцеся з людзьмі паблізу. Людзі, якія зрабілі свае прылады бачнымі, будуць паказаны тут.</string>
@@ -1062,9 +1028,6 @@
     <string name="sem_resolver_work_tab_accessibility">Праца</string>
     <string name="sem_switch_off">Не выкарыстоўваецца</string>
     <string name="sem_switch_on">Выкарыстоўваецца</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Доступ да камеры выключ. для ўсіх праграм</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Уключыць</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Доступ да мікрафона выкл. для ўсіх праграм</string>
     <string name="serviceErased">Выдаленне паспяхова выканана.</string>
     <string name="serviceModeAll">Усе</string>
     <string name="serviceModeAllConditional">з умовамі.</string>
@@ -1074,6 +1037,7 @@
     <string name="serviceModeUnconditional">без умоў.</string>
     <string name="serviceisDisabled">Сэрвіс адключаны.</string>
     <string name="serviceisEnabled">Сэрвіс уключаны.</string>
+    <string name="settings">Налады</string>
     <string name="sf_quick_switch_not_supported">Хуткае пераключэнне не падтрымліваецца ў гэтай сітуацыі.</string>
     <string name="sf_quick_switch_securefolder_view">Пераключана на %s.</string>
     <string name="share">Падзяліцца</string>
@@ -1082,26 +1046,30 @@
     <string name="sharelist_restrict">Палітыка бяспекі забараняе абагуленне да даных.</string>
     <string name="show_keyboard_button">Паказаць кнопку «Клавіятура»</string>
     <string name="show_keyboard_button_description">Паказваць %s на панэлі навігацыі.</string>
+    <string name="showing_esc_dialog">Вы можаце наладзіць клавішу Esc так, каб яна працавала як кнопка «Назад».</string>
     <string name="showing_touch_sensitivity_noti_action">Уключыць</string>
     <string name="showing_touch_sensitivity_noti_text">Уключыце павелічэнне адчувальнасці сэнсара падчас выкарыстання Privacy Screen або Notepaper Screen для больш дакладнага рэагавання на дотык.</string>
     <string name="showing_touch_sensitivity_noti_title">Павелічэнне адчувальн. сэнсара</string>
+    <string name="side_key_double_press_archived_app">Праграма заархівавана. Выберыце штосьці іншае.</string>
     <string name="side_key_double_press_deleted_app">Праграма выдалена. Выберыце што-небудзь іншае.</string>
     <string name="side_key_double_press_disabled_app">%s адключана. Выберыце што-небудзь іншае.</string>
     <string name="signature_identity_toast">%s падпісаны</string>
     <string name="simRefresh">Абнаўленне даных SIM-карты</string>
     <string name="simReset">Абнаўленне даных SIM-карты…</string>
     <string name="sim_check_old_sim_message">Старыя або пашкоджаныя SIM-карты могуць выклікаць праблемы з падлучэннем. Звярніцеся да пастаўшчыка паслуг або наведайце адну з яго крам, каб даведацца, ці SIM-карту трэба замяніць.</string>
+    <string name="sim_check_old_sim_message_skt">Старыя ці пашкоджаныя SIM-карты могуць ствараць праблемы пры злучэнні з сеткай. Звярніцеся да вашага пастаўшчыка паслуг ці наведайце адну з яго крам, каб даведацца, ці патрабуецца яе замена.</string>
     <string name="sim_check_old_sim_title">Магчыма, вам трэба замяніць SIM-карту</string>
+    <string name="sim_check_old_sim_title_skt">Магчыма, вам трэба замяніць SIM-карту</string>
     <string name="sim_count_mismatched_ds_to_ss">Рэжым дзвюх SIM-картаў зменены на рэжым адной SIM-карты. Каб прымяніць гэту наладу, налады вашай прылады будуць скінуты да стандартных заводскіх і будзе выкананы перазапуск прылады.</string>
     <string name="sim_count_mismatched_ss_to_ds">Рэжым адной SIM-карты зменены на рэжым дзвюх SIM-картаў. Каб прымяніць гэту наладу, налады вашай прылады будуць скінуты да стандартных заводскіх і будзе выкананы перазапуск прылады.</string>
     <string name="sim_count_mismatched_title">Рэжым SIM-карты пераключаны</string>
-    <string name="sim_imsreg_error_message_lgt">Тэлефон не зможа выконваць галасавыя выклікі, таму што ён не можа распазнаць SIM-карту. Паспрабуйце выняць SIM-карту і ўставіць яе зноў. Калі праблема не знікне, магчыма, спатрэбіцца замяніць SIM-карту. Для атрымання дапамогі наведайце краму LG U+ або звяжыцеся са службай падтрымкі кліентаў LG U+ па нумары 1544-0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Планшэт не зможа выконваць галасавыя выклікі, таму што ён не можа распазнаць SIM-карту. Паспрабуйце выняць SIM-карту і зноў уставіць яе. Калі праблема не знікне, магчыма, SIM-карту трэба будзе замяніць. Для атрымання дапамогі звярніцеся ў краму LG U+ або ў службу падтрымкі кліентаў LG U+ па нумары 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">Тэлефон не зможа выконваць галасавыя выклікі, таму што ён не можа распазнаць SIM-карту. Паспрабуйце выняць SIM-карту і ўставіць яе зноў. Калі праблема не знікне, магчыма, спатрэбіцца замяніць SIM-карту ў краме LG U+.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Планшэт не зможа выконваць галасавыя выклікі, таму што ён не можа распазнаць SIM-карту. Паспрабуйце выняць SIM-карту і ўставіць яе зноў. Калі праблема не знікне, магчыма, спатрэбіцца замяніць SIM-карту ў краме LG U+.</string>
     <string name="sim_off_noti_message">Вы не можаце ажыццяўляць выклікі, адпраўляць паведамленні або выкарыстоўваць даныя, калі ўсе SIM-карты выключаны. Націсніце тут, каб уключыць SIM-карты.</string>
     <string name="sim_off_noti_title">Усе SIM-карты выключаны</string>
     <string name="sim_off_toast_message">Устаўленая вамі SIM-карта выключана. Каб выкарыстоўваць яе, перайдзіце ў меню «Налады > Падлучэнні > Менеджар SIM-карт», а потым уключыце яе.</string>
     <string name="sim_recognize_error_message_kt">SIM-карта не была распазнана. Паспрабуйце выняць SIM-карту і ўставіць яе зноў. Калі праблема не знікне, магчыма, спатрэбіцца замяніць SIM-карту. Для атрымання дапамогі наведайце краму KT або звяжыцеся са службай падтрымкі кліентаў KT па нумары 1588-0010.</string>
-    <string name="sim_recognize_error_message_lgt">SIM-карта не была распазнана. Паспрабуйце выняць SIM-карту і ўставіць яе зноў. Калі праблема не знікне, магчыма, спатрэбіцца замяніць SIM-карту. Для атрымання дапамогі наведайце краму LG U+ або звяжыцеся са службай падтрымкі кліентаў LG U+ па нумары 1544-0010.</string>
+    <string name="sim_recognize_error_message_lgt">SIM-карта не была распазнана. Паспрабуйце выняць SIM-карту і зноў уставіць яе. Калі праблема не знікне, магчыма, SIM-карту трэба будзе замяніць у краме LG U+.</string>
     <string name="sim_recognize_error_message_skt">Немагчыма прачытаць SIM-карту. Магчыма, некаторыя праграмы і функцыі не працуюць. Выміце і паўторна ўстаўце сваю SIM-карту, а потым перазапусціце тэлефон. Калі гэта не выправіць праблему, аднясіце тэлефон і SIM-карту ў службу падтрымкі кліентаў.</string>
     <string name="sim_recognize_error_message_skt_tablet">Немагчыма прачытаць SIM-карту. Магчыма, некаторыя праграмы і функцыі не працуюць. Выміце і паўторна ўстаўце сваю SIM-карту, а потым перазапусціце планшэт. Калі гэта не выправіць праблему, аднясіце планшэт і SIM-карту ў службу падтрымкі кліентаў.</string>
     <string name="sim_recognize_error_title_lgt">Немагчыма распазнаць карту USIM</string>
@@ -1111,10 +1079,8 @@
     <string name="sim_removed_message_hotswap_us_tablet">Падлучыцеся да сеткі Wi-Fi або ўстаўце SIM-карту, каб выкарыстоўваць перадачу мабільных даных.</string>
     <string name="sim_removed_title_hotswap">SIM-карта не ўстаўлена</string>
     <string name="sim_removed_title_hotswap_us_tablet">Устаўце SIM-карту</string>
+    <string name="smart_tip_action_click_hint_text">Закр</string>
     <string name="smartclip_restrict">Палітыка бяспекі забараняе выкарыстанне Простай абрэзкі.</string>
-    <string name="sms_short_code_remember_undo_instruction">Гэта можна змяніць пазней у меню «Налады» > «Праграмы».</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Вы можаце змяніць гэта пазней шляхам пераходу ў «Налады > Праграмы > Кнопка «Іншыя параметры» > Спецыяльны доступ > Выкарыстоўваць прэміум-паслугі абмену тэкставымі паведамленнямі».</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Калі вы націснеце «НІКОЛІ НЕ ДАЗВАЛЯЦЬ», гэта праграма не зможа адпраўляць паведамленні ў фоне, нават калі дадзены дазвол на адпраўку тэкставых паведамленняў.</string>
     <string name="ss_do_not_show_again_us">Больш не паказваць</string>
     <string name="sss_translate">Перакласці</string>
     <string name="ssu_lock_body_vzw">Прабачце, у дадзены момант вашу прыладу немагчыма актываваць у сетцы іншага аператара. Звярніцеся па дапамогу ў Verizon па нумары %1$s або %2$s (перадаплачаныя планы)</string>
@@ -1141,7 +1107,6 @@
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">Мабільны хот-спот</string>
     <string name="title_dialog_check_rotate_or_not">Выключыць аўтапаварот экрана?</string>
-    <string name="title_uds">Рэжым максімальнага захавання даных</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Немагчыма выкарыстоўваць Bixby падчас наладжвання тэлефона.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Немагчыма выкарыстоўваць Bixby падчас наладжвання планшэта.</string>
     <string name="toast_warning_pattern_lock">Блакіроўку ўзорам немагчыма выкарыстоўваць з універсальным пераключальнікам. Спачатку змяніце тып блакіроўкі.</string>
@@ -1181,9 +1146,13 @@
     <string name="unknown_install_blocked_esm_title">Заблакіравана невядомая праграма</string>
     <string name="unknown_install_dlg_desc">Гэта праграма не была спампавана з ухваленай крамы. Усталёўка гэтай праграмы можа паставіць пад пагрозу вашу бяспеку і канфідэнцыяльнасць. Праграма можа збіраць вашу асабістую інфармацыю або прывесці да страты вашых даных.</string>
     <string name="unknown_install_dlg_desc2">Гэта праграма не падтрымлівае апошнія функцыі бяспекі. Усталёўка гэтай праграмы можа прывесці да наступных пагроз бяспекі:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Магчыма, гэты файл для ўсталявання праграмы небяспечны. Гэта можа быць зусім не тая праграма, пра якую ідзе гаворка. Каб абараніць свой тэлефон і асабістыя даныя, замест гэтага ўсталюйце праграму з крамы праграм, якой вы давяраеце.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Магчыма, гэты файл для ўсталявання праграмы небяспечны. Гэта можа быць зусім не тая праграма, пра якую ідзе гаворка. Каб абараніць свой планшэт і асабістыя даныя, замест гэтага ўсталюйце праграму з крамы праграм, якой вы давяраеце.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Ёсць падазрэнні, што гэта праграма шкоднасная і можа падвергнуць тэлефон і даныя рызыцы. Не рэкамендуецца ўсталёўваць гэту праграму.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Ёсць падазрэнні, што гэта праграма шкоднасная і можа падвергнуць планшэт і даныя рызыцы. Не рэкамендуецца ўсталёўваць гэту праграму.</string>
-    <string name="unknown_install_dlg_general_title">Гэта праграма паходзіць з невядомай крыніцы</string>
+    <string name="unknown_install_dlg_desc_phone">Гэта праграма не паходзіць з аўтарызаванай крамы праграм. Каб абараніць свой тэлефон і асабістую інфармацыю, усталёўвайце праграмы толькі з аўтарызаванай крамы, такой як Play Store або Galaxy Store.</string>
+    <string name="unknown_install_dlg_desc_tablet">Гэта праграма не паходзіць з аўтарызаванай крамы праграм. Каб абараніць свой планшэт і асабістую інфармацыю, усталёўвайце праграмы толькі з аўтарызаванай крамы, такой як Play Store або Galaxy Store.</string>
+    <string name="unknown_install_dlg_general_title">Усталяванне гэтай праграмы не рэкамендавана</string>
     <string name="unknown_install_dlg_negative_button">Не ўсталёўваць</string>
     <string name="unknown_install_dlg_perm_desc1">Праграма можа перахопліваць коды спраўджання з атрыманых вамі тэкставых паведамленняў.</string>
     <string name="unknown_install_dlg_perm_desc2">Выходныя выклікі могуць пераадрасоўвацца на іншы нумар тэлефона без вашага ведама.</string>
@@ -1201,7 +1170,7 @@
     <string name="usb_abnormal_reset_message">Адключыце кабель і падключыце яго зноў ці паспрабуйце выкарыстаць іншы кабель.</string>
     <string name="usb_abnormal_reset_title">USB-падлучэнне нестабільнае</string>
     <string name="usb_abnormal_reset_toast">USB-падлучэнне нестабільнае. Адключыце кабель і падключыце яго зноў ці паспрабуйце выкарыстаць іншы кабель.</string>
-    <string name="usb_bad_removal_message">Прылада сховішча USB была выдалена небяспечным чынам. Каб прадухіліць нечаканы перазапуск планшэта, захавайце незахаваныя даныя і перазапусціце яго зараз.</string>
+    <string name="usb_bad_removal_message">Прылада сховішча USB была выдалена небяспечным чынам. Каб прадухіліць нечаканы перазапуск тэлефона, захавайце незахаваныя даныя і перазапусціце яго зараз.</string>
     <string name="usb_blocked_by_emergency_mode">Некаторыя функцыі USB недаступны ў экстранным рэжыме.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Немагчыма выкарыстоўваць функцыі, звязаныя з падлучанай прыладай USB, пры ўключаным рэжыме максімальнага энергазберажэння.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Некаторыя функцыі USB будуць абмежаваны пры ўключаным рэжыме максімальнага энергазберажэння.</string>
@@ -1209,13 +1178,15 @@
     <string name="usb_camera_connected_notification_title">Падлучана медыяпрылада</string>
     <string name="usb_camera_disconnected_notification_title">Медыяпрылада адлучана</string>
     <string name="usb_cd_installer_notification_title">Абнаўленне праграмнага забеспячэння</string>
-    <string name="usb_charing_only_notification_title">Падлучана</string>
+    <string name="usb_charing_only_notification_title">Зарадка праз USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Уключаны аўтаблакіроўшчык з максімальнымі абмежаваннямі.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB-падлучэнне заблакіравана</string>
     <string name="usb_debugging_only_notification_title">Толькі адладка</string>
-    <string name="usb_host_resource_exceed_message">У USB-кантролера вашага планшэта не хапае рэсурсаў для падлучэння да гэтай прылады. Паспрабуйце адлучыць прыладу і падлучыць яе зноў.</string>
+    <string name="usb_host_resource_exceed_message">У USB-кантролера вашага тэлефона не хапае рэсурсаў для падлучэння да гэтай прылады. Паспрабуйце адлучыць прыладу і падлучыць яе зноў.</string>
     <string name="usb_host_resource_exceed_title">Не хапае рэсурсаў USB-кантролера</string>
-    <string name="usb_hub_depth_exceed_message">Планшэт можа падтрымліваць максімум 5 падлучэнняў праз USB-канцэнтратар адначасова.</string>
+    <string name="usb_hub_depth_exceed_message">Тэлефон можа падтрымліваць максімум 5 падлучэнняў праз USB-канцэнтратар адначасова.</string>
     <string name="usb_hub_depth_exceed_title">Макс падлуч праз USB-канцэнтр</string>
-    <string name="usb_hub_power_exceed_message">Ваш планшэт не можа забяспечыць дастатковы зарад для гэтай прылады USB. Падлучыце прыладу да канцэнтратара USB з аўтаномным сілкаваннем, перш чым падлучаць яе да планшэта.</string>
+    <string name="usb_hub_power_exceed_message">Ваш тэлефон не можа забяспечыць дастатковы зарад для гэтай прылады USB. Падлучыце прыладу да канцэнтратара USB з аўтаномным сілкаваннем, перш чым падлучаць яе да тэлефона.</string>
     <string name="usb_increase_battery_usage">USB-падлучэнне можа павялічыць спажыванне акумулятара.</string>
     <string name="usb_mass_storage_restrict">Палітыка бяспекі забараняе выкарыстанне масавага USB-сховішча.</string>
     <string name="usb_midi_notification_title">USB для MIDI</string>
@@ -1227,8 +1198,9 @@
     <string name="usb_open_charging_notification_title">Зарадка праз USB</string>
     <string name="usb_ptp_notification_title">USB для перадачы відарыса</string>
     <string name="usb_type_c_supply_power_notification_title">Зарадка падлуч прыл праз USB</string>
-    <string name="usb_unblock_by_screen_unlock">Каб выкарыстоўваць падлучаную USB-прыладу, разблакіруйце планшэт.</string>
-    <string name="usb_unsupport_accessory_message">Гэта прылада USB не падтрымліваецца вашым планшэтам.</string>
+    <string name="usb_unblock_by_screen_unlock">Каб выкарыстоўваць падлучаную USB-прыладу, разблакіруйце тэлефон.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">Каб выкарыстоўваць прыладу USB, разблакіруйце тэлефон і падлучыце прыладу USB паўторна.</string>
+    <string name="usb_unsupport_accessory_message">Гэта прылада USB не падтрымліваецца вашым тэлефонам.</string>
     <string name="usb_unsupport_accessory_title">Прылада USB не падтрымліваецца</string>
     <string name="usb_unsupported_device">Падлучаная прылада USB не падтрымліваецца.</string>
     <string name="usb_unsupported_device_title">Прылада не падтрымліваецца</string>
@@ -1246,19 +1218,19 @@
     <string name="usb_water_dialg_method_2_desc_2">Вы можаце паскорыць сушку, накіраваўшы вентылятар або фен (толькі халоднае паветра) на порт.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"У зарадным порце або порце USB выяўлена вільгаць або іншародны матэрыял.
 
-Праверце порт зарадкі або порт USB на наяўнасць іншароднага матэрыялу, напрыклад пылу або смецця. Каб прадухіліць пашкоджанне планшэта, не падключайце нічога, пакуль зарадны порт не стане чыстым, а вільгаць не знікне.
+Праверце порт зарадкі або порт USB на наяўнасць іншароднага матэрыялу, напрыклад пылу або смецця. Каб прадухіліць пашкоджанне тэлефона, не падключайце нічога, пакуль зарадны порт не стане чыстым, а вільгаць не знікне.
 
 Каб высушыць порт, вытрасіце вільгаць і пачакайце, пакуль ён высахне; гэта можа заняць некалькі гадзін. Вы можаце паскорыць сушку, накіраваўшы вентылятар або фен (толькі халоднае паветра) на порт."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"У зарадным порце або порце USB выяўлена вільгаць або іншародны матэрыял.
 
-Праверце порт зарадкі або порт USB на наяўнасць іншароднага матэрыялу, напрыклад пылу або смецця. Каб прадухіліць пашкоджанне планшэта, не падключайце нічога, пакуль зарадны порт не стане чыстым, вільгаць не знікне, а апавяшчэнне не будзе ачышчана.
+Праверце порт зарадкі або порт USB на наяўнасць іншароднага матэрыялу, напрыклад пылу або смецця. Каб прадухіліць пашкоджанне тэлефона, не падключайце нічога, пакуль зарадны порт не стане чыстым, а вільгаць не знікне.
 
-Каб высушыць порт, вытрасіце вільгаць і пачакайце, пакуль ён высахне; гэта можа заняць некалькі гадзін. Вы можаце паскорыць сушку, накіраваўшы вентылятар ці фен (толькі халоднае паветра) на порт.
+Каб высушыць порт, вытрасіце вільгаць і пачакайце, пакуль ён высахне; гэта можа заняць некалькі гадзін. Вы можаце паскорыць сушку, накіраваўшы вентылятар або фен (толькі халоднае паветра) у бок порта.
 
-Тым часам вы можаце зараджаць планшэт па бесправадной тэхналогіі."</string>
+Тым часам вы можаце зараджаць тэлефон па бесправадной тэхналогіі."</string>
     <string name="usb_water_notification_content">У зарадным порце або порце USB вільгаць або іншародны матэрыял. Праверце перад зарадкай.</string>
-    <string name="usb_water_notification_message">У вашай зараднай прыладзе/порце USB выяўлена вільгаць. Перш чым зараджаць планшэт, упэўніцеся, што прылада ці порт сухія. Працэс поўнага высыхання можа заняць некаторы час.</string>
+    <string name="usb_water_notification_message">У вашай зараднай прыладзе/порце USB выяўлена вільгаць. Перш чым зараджаць тэлефон, упэўніцеся, што прылада ці порт сухія. Працэс поўнага высыхання можа заняць некаторы час.</string>
     <string name="usb_water_notification_message_button">Падрабязнасці</string>
     <string name="usb_water_notification_title">Праверыць зар прыл (USB-порт)</string>
     <string name="usbhostStorage_restrict">Палітыка бяспекі забараняе выкарыстанне сховішча USB-хаста.</string>
@@ -1271,6 +1243,8 @@
     <string name="vpn_allowOnlySecureConnection">Неабаронены профіль VPN.</string>
     <string name="vpn_error_text">Націсніце, каб паўтарыць спробу падлучэння да VPN.</string>
     <string name="vpn_error_title">Памылка злучэння VPN</string>
+    <string name="vpn_fail_text_long">Не атрымалася падлучыцца да %s. Націсніце, каб кіраваць гэтым VPN.</string>
+    <string name="vpn_fail_title">VPN не падлучаны</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Закрыццё праграм для ахалоджвання планшэта</string>
     <string name="vzw_cooldown_mode_ok">ОК</string>
@@ -1333,6 +1307,7 @@
     <string name="wifi_network_available_detailed">Даступна неабароненая сетка Wi-Fi.</string>
     <string name="wifi_networks_available">Даступны сеткі Wi-Fi</string>
     <string name="wifi_networks_available_detailed">Даступны неабароненыя сеткі Wi-Fi.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s выкарыстоўвае мабільныя даныя, таму што падлучэнне па WLAN маруднае або нестабільнае.</string>
     <string name="wifi_notification_switch_wifi_detail">Ваш тэлефон пераключыўся на мабільную перадачу даных, таму што сетка Wi-Fi была нестабільная.</string>
     <string name="wifi_notification_switch_wifi_title">Пераключана на мабільную перадачу даных</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Экстранае апавяшчэнне</string>
@@ -1364,9 +1339,5 @@
     <string name="work_profile_on_message">Гэта дазволіць вам доступ да працоўных праграм, апавяшчэнняў, даных і іншых функцый працоўнага профілю.</string>
     <string name="work_profile_on_title">Уключыць працоўны профіль?</string>
     <string name="work_profile_restricted">Аўтаблакіроўшчык уключаны з максімальнымі абмежаваннямі. Для абароны вашай бяспекі немагчыма ствараць рабочыя профілі.</string>
-    <string name="work_profile_telephony_paused_text">Вы прыпынілі свае працоўныя праграмы. Вы не будзеце атрымліваць ад іх тэлефонныя выклікі або тэкставыя паведамленні.</string>
-    <string name="work_profile_telephony_paused_title">Выклікі і паведамл. выключаны</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Уключыць рабочы профіль?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">Пакуль я яе не выключу</string>
 </resources>

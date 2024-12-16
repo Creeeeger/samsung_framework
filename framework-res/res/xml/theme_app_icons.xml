@@ -160,4 +160,5 @@
     <ThemeApp className="com.samsung.android.bixby.assistanthome.AssistantHomeLauncherActivity" iconId="ic_bixby" />
     <ThemeApp className="com.samsung.android.bixby.agent" iconId="ic_bixby" />
     <ThemeApp className="com.samsung.accessibility" iconId="ic_settings" />
+    <ThemeApp className="com.sec.android.easyMover" iconId="ic_smart_switch" />
 </ThemeAppList>

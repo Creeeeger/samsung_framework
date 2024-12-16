@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Seu tablet está instável porque um chip que continha aplicativos instalados foi removido. O tablet será reiniciado em %d segundos para voltar ao normal. Salve os dados não salvos antes de o tablet ser reiniciado.</item>
+        <item quantity="other">Seu telefone está instável porque um chip que continha aplicativos instalados foi removido. O telefone será reiniciado em %d segundos para voltar ao normal. Salve os dados não salvos antes de o telefone ser reiniciado.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Seu tablet está instável porque um chip que continha aplicativos instalados foi removido. O tablet será reiniciado em %d segundo para voltar ao normal. Salve os dados não salvos antes de o tablet ser reiniciado.</item>
+        <item quantity="one">Seu telefone está instável porque um chip que continha aplicativos instalados foi removido. O telefone será reiniciado em %d segundo para voltar ao normal. Salve os dados não salvos antes de o telefone ser reiniciado.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Seu tablet será reiniciado em %d segundos</item>
+        <item quantity="other">Seu tel. será reiniciado em %d segundos</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Seu tablet será reiniciado em %d segundo</item>
+        <item quantity="one">Seu tel. será reiniciado em %d segundo</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
@@ -104,14 +104,6 @@
         <item quantity="other">%d itens</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">%d item</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">N/A</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">A rede Wi-Fi à qual você deseja se conectar só pode estar conectada a %d aparelhos de cada vez. Desconecte outros aparelhos dessa rede e tente novamente.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">A rede Wi-Fi à qual você deseja se conectar só pode estar conectada a %d aparelho de cada vez. Desconecte outros aparelhos dessa rede e tente novamente.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

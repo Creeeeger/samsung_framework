@@ -43,7 +43,7 @@
     <string name="ColrMmi">Туташкан линия ID-син Чектөө</string>
     <string name="CwMmi">Чалууну кармап туруу</string>
     <string name="DndMmi">Тынчымды алба</string>
-    <string name="EmergencyCallWarningSummary">Wi-Fi аркылуу шашылыш чалуулар иштетилген жок</string>
+    <string name="EmergencyCallWarningSummary">Шашылыш чалуу үчүн мобилдик тармак талап кылынат</string>
     <string name="EmergencyCallWarningTitle">Шашылыш чалуу жеткиликсиз</string>
     <string name="Midnight">Түн ортосу</string>
     <string name="NetworkPreferenceSwitchSummary">Тандалган тармакты өзгөртүп көрүңүз. Өзгөртүү үчүн таптаңыз.</string>
@@ -174,14 +174,19 @@
     <string name="accessibility_button_prompt_text">Атайын мүмкүнчүлүктөр баскычын таптаганыңызда иштей турган функцияны тандаңыз:</string>
     <string name="accessibility_dialog_button_allow">Ооба</string>
     <string name="accessibility_dialog_button_deny">Жок</string>
+    <string name="accessibility_dialog_button_uninstall">Чыгарып салуу</string>
+    <string name="accessibility_dialog_touch_filtered_warning">Колдонмо уруксат суроону жашырып койгондуктан, жообуңузду ырастоо мүмкүн эмес.</string>
     <string name="accessibility_edit_shortcut_menu_button_title">Атайын мүмкүнчүлүктөр баскычы менен колдонгуңуз келген функцияларды тандаңыз</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">Үндү катуулатуу/акырындатуу баскычтары менен кайсы функцияларды иштеткиңиз келет?</string>
     <string name="accessibility_enable_service_title">%1$s кызматына түзмөгүңүздү толугу менен көзөмөлдөөгө уруксат бересизби?</string>
-    <string name="accessibility_freeform_caption">%1$s колдонмосунун маалымат тилкеси.</string>
     <string name="accessibility_gesture_3finger_instructional_text">Башка функцияга которулуу үчүн үч манжаңыз менен экранды өйдө сүрүп, кармап туруңуз.</string>
     <string name="accessibility_gesture_3finger_prompt_text">Атайын мүмкүнчүлүктөр жаңсоосу аркылуу иштетиле турган функцияны тандаңыз (үч манжаңыз менен экранды ылдыйдан өйдө сүрүңүз):</string>
     <string name="accessibility_gesture_instructional_text">Функцияларды которуштуруу үчүн, эки манжаңыз менен өйдө сүрүп, кармап туруңуз.</string>
     <string name="accessibility_gesture_prompt_text">Атайын мүмкүнчүлүктөр жаңсоосу үчүн функцияны тандаңыз (эки манжаңыз менен экранды ылдыйдан өйдө сүрүңүз):</string>
+    <string name="accessibility_label_clone_profile">Клон</string>
+    <string name="accessibility_label_communal_profile">Жалпы</string>
+    <string name="accessibility_label_managed_profile">Жумуш профили</string>
+    <string name="accessibility_label_private_profile">Жеке мейкиндик</string>
     <string name="accessibility_magnification_chooser_text">Чоңойтуу</string>
     <string name="accessibility_select_shortcut_menu_title">Функцияны колдонуп баштоо үчүн аны таптап коюңуз:</string>
     <string name="accessibility_service_action_perform_description">Кызмат колдонмодо жасаган аракеттериңизге же түзмөктүн сенсорлоруна көз салып, сиздин атыңыздан буйруктарды берет.</string>
@@ -267,14 +272,17 @@
     <string name="alert_windows_notification_title">%s: башка колдонмолордун үстүнөн</string>
     <string name="alert_windows_notification_turn_off_action">Өчүрүү</string>
     <string name="allow">Уруксат берүү</string>
+    <string name="alternative_face_setup_notification_content">Манжаңыздын изи таанылбай калганда, мисалы, манжаңыз ным болсо, Жүзүнөн таанып ачуу функциясын колдонуңуз</string>
+    <string name="alternative_fp_setup_notification_content">Жүзүңүз таанылбай калганда, мисалы, күңүрт жерде турсаңыз, Манжа изи менен ачуу функциясын колдонуңуз</string>
+    <string name="alternative_unlock_setup_notification_title">Кулпуну башка жол менен ачуу</string>
     <string name="alwaysUse">Бул аракет үчүн демейки боюнча колдонулсун.</string>
     <string name="android_preparing_apk">%1$s даярдалууда.</string>
-    <string name="android_start_title">Планшет күйгүзүлүүдө…</string>
+    <string name="android_start_title">Телефон күйгүзүлүүдө…</string>
     <string name="android_system_label">Android системасы</string>
     <string name="android_upgrading_complete">Жүктөлүүдө</string>
     <string name="android_upgrading_notification_title">Система жаңырып бүтөйүн деп калды…</string>
     <string name="android_upgrading_starting_apps">Колдонмолорду иштетип баштоо</string>
-    <string name="android_upgrading_title">Планшет жаңыртылууда…</string>
+    <string name="android_upgrading_title">Телефон жаңырууда…</string>
     <string name="anr_activity_application">%2$s жооп бербей жатат</string>
     <string name="anr_activity_process">%1$s жооп бербей жатат</string>
     <string name="anr_application_process">%1$s жооп бербей жатат</string>
@@ -295,16 +303,17 @@
     <string name="app_not_found">Бул аракетти аткаруучу эч бир колдонмо табылбады</string>
     <string name="app_running_notification_text">Көбүрөөк маалымат үчүн же колдонмону токтотуш үчүн таптап коюңуз.</string>
     <string name="app_running_notification_title">%1$s иштөөдө</string>
-    <string name="app_streaming_blocked_message">Учурда буга %1$s түзмөгүңүздөн кире албайсыз. Планшетиңизден кирип көрүңүз.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Бул колдонмо кошумча коопсуздукту иштетүүнү суранып жатат. Планшетиңизден кирип көрүңүз.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Буга %1$s түзмөгүңүздөн кире албайсыз. Планшетиңизден кирип көрүңүз.</string>
+    <string name="app_streaming_blocked_message">Учурда буга %1$s түзмөгүңүздөн кире албайсыз. Анын ордуна телефондон кирип көрүңүз.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Бул колдонмо кошумча коопсуздукту иштетүүнү суранып жатат. Анын ордуна телефондон кирип көрүңүз.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">Бул колдонмо кошумча уруксаттарды берүүнү суранып жатат, бирок алып ойнотуу сеансында уруксаттарды берүүгө болбойт. Адегенде телефондо уруксат бериңиз.</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Буга %1$s түзмөгүңүздөн кире албайсыз. Анын ордуна телефондон кирип көрүңүз.</string>
     <string name="app_streaming_blocked_title">%1$s жеткиликсиз</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Камера жеткиликсиз</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">Телефондон улантуу</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Микрофон жеткиликсиз</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">Уруксат керек</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">Уруксат берүү сурамы четке кагылды</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store жеткиликсиз</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Планшеттин параметрлери жеткиликсиз</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Телефондун параметрлери жеткиликсиз</string>
     <string name="app_suspended_default_message">%1$s колдонмосу учурда жеткиликсиз. Анын жеткиликтүүлүгү %2$s тарабынан башкарылат.</string>
     <string name="app_suspended_more_details">Кеңири маалымат</string>
     <string name="app_suspended_title">Колдонмо жеткиликсиз</string>
@@ -344,13 +353,15 @@
     <string name="back_button_label">Артка</string>
     <string name="badPin">Терилген эски PIN код туура эмес.</string>
     <string name="badPuk">Терилген PUK код туура эмес.</string>
-    <string name="battery_saver_charged_notification_summary">Планшет жеткиликтүү кубатталды. Функцияны колдоно берсеңиз болот.</string>
+    <string name="battery_saver_charged_notification_summary">Телефондун кубаты жетиштүү. Функциялар мындан ары чектелбейт.</string>
     <string name="battery_saver_description">Батареяны үнөмдөөчү режимде Караңгы тема күйгүзүлүп, фондогу аракеттер, айрым визуалдык эффекттер, белгилүү бир функциялар жана айрым тармакка туташуулар чектелип же өчүрүлөт.</string>
     <string name="battery_saver_description_with_learn_more">Батареяны үнөмдөөчү режимде Караңгы тема күйгүзүлүп, фондогу аракеттер, айрым визуалдык эффекттер, белгилүү бир функциялар жана айрым тармакка туташуулар чектелип же өчүрүлөт.</string>
     <string name="battery_saver_notification_channel_name">Батареяны үнөмдөгүч</string>
     <string name="battery_saver_off_notification_title">Батареяны үнөмдөө режими өчүк</string>
     <string name="beforeOneMonthDurationPast">1 айдан ашык убакыт өттү</string>
     <string name="biometric_app_setting_name">Биометрикалык параметрлерди колдонуу</string>
+    <string name="biometric_dangling_notification_action_not_now">Азыр эмес</string>
+    <string name="biometric_dangling_notification_action_set_up">Тууралоо</string>
     <string name="biometric_dialog_default_subtitle">Улантуу үчүн биометрикалык жөндөөнү колдонуу</string>
     <string name="biometric_dialog_default_title">Өзүңүздү ырастаңыз</string>
     <string name="biometric_error_canceled">Аныктыгын текшерүү жокко чыгарылды</string>
@@ -358,6 +369,7 @@
     <string name="biometric_error_generic">Аутентификация катасы</string>
     <string name="biometric_error_hw_unavailable">Биометрикалык аппарат жеткиликсиз</string>
     <string name="biometric_error_user_canceled">Аныктыгын текшерүү жокко чыгарылды</string>
+    <string name="biometric_face_not_recognized">Жүз таанылган жок</string>
     <string name="biometric_not_recognized">Таанылган жок</string>
     <string name="biometric_or_screen_lock_app_setting_name">Биометрикалык жөндөөнү же экрандын кулпусун колдонуу</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">Улантуу үчүн биометрикалык маалыматты же экрандын кулпусун колдонуңуз</string>
@@ -377,7 +389,7 @@
     <string name="call_notification_answer_video_action">Видео</string>
     <string name="call_notification_decline_action">Четке кагуу</string>
     <string name="call_notification_hang_up_action">Чалууну бүтүрүү</string>
-    <string name="call_notification_incoming_text">Кирүүчү чалуу</string>
+    <string name="call_notification_incoming_text">Чалып жатат</string>
     <string name="call_notification_ongoing_text">Учурдагы чалуу</string>
     <string name="call_notification_screening_text">Кирүүчү чалууну иргөө</string>
     <string name="capability_desc_canCaptureFingerprintGestures">Түзмөктөгү манжа изинин сенсорунда жасалган жаңсоолорду жаздырып алат.</string>
@@ -420,11 +432,11 @@
     <string name="color_inversion_feature_name">Түстөрдү инверсиялоо</string>
     <string name="common_name">Жалпы аталышы:</string>
     <string name="concurrent_display_notification_active_content">%1$s контентти эки түзмөктө тең көрсөтүүдө</string>
-    <string name="concurrent_display_notification_active_title">Кош экран күйүк</string>
+    <string name="concurrent_display_notification_active_title">Dual Screen күйүк</string>
     <string name="concurrent_display_notification_name">Кош экран</string>
-    <string name="concurrent_display_notification_power_save_content">Dual Screen жеткиликсиз, анткени Батареяны үнөмдөгүч режими күйүк. Муну параметрлерден өчүрсөңүз болот.</string>
+    <string name="concurrent_display_notification_power_save_content">Батарея үнөмдөгүч режими күйүп тургандыктан, Dual Screen функциясы иштебейт. Аны параметрлерден өчүрүп койсоңуз болот.</string>
     <string name="concurrent_display_notification_power_save_title">Dual Screen жеткиликсиз</string>
-    <string name="concurrent_display_notification_thermal_content">Телефонуңуз ысып кеткендиктен, Кош экран функциясы жеткиликсиз</string>
+    <string name="concurrent_display_notification_thermal_content">Телефонуңуз ысып кеткендиктен, Dual Screen функциясы иштебейт</string>
     <string name="concurrent_display_notification_thermal_title">Түзмөк ысып кетти</string>
     <string name="condition_provider_service_binding_label">Шарт түзүүчү</string>
     <string name="conference_call">Конференц чалуу</string>
@@ -433,11 +445,16 @@
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">ЖАРАЙТ</string>
-    <string name="console_running_notification_message">Майнаптуулугуна таасири тиет. Аны өчүрүү үчүн операциялык тутумду жүктөгүчтү текшериңиз.</string>
+    <string name="connected_display_thermally_unavailable_notification_content">Түзмөгүңүз өтө ысып кетти жана ал муздамайынча башка экранга чыгара албайт</string>
+    <string name="connected_display_unavailable_notification_content">Башка кабелди колдонуп, кайра аракет кылыңыз</string>
+    <string name="connected_display_unavailable_notification_title">Башка экранга чыгаруу мүмкүн эмес</string>
+    <string name="console_running_notification_message">Майнаптуулугуна таасири тиет. Өчүрүү үчүн операциялык тутумду жүктөгүчтү текшериңиз.</string>
     <string name="console_running_notification_title">Сериялык консоль иштетилди</string>
     <string name="contentServiceSync">Шайкештирүү</string>
     <string name="contentServiceSyncNotificationTitle">Шайкештирилбей жатат</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">Өтө көп %s мазмунун өчүрүү аракети орун алды.</string>
+    <string name="content_description_collapsed">Жыйыштырылды</string>
+    <string name="content_description_expanded">Жайылып көрсөтүлдү</string>
     <string name="content_description_sliding_handle">Сүрүү туткасы. Коё бербей &amp; тийип туруңуз.</string>
     <string name="conversation_single_line_image_placeholder">сүрөт жөнөттү</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -450,10 +467,10 @@
     <string name="crossSimFormat_spn_cross_sim_calling">%s Кошумча чалуу ыкмасы</string>
     <string name="csd_dose_reached_warning">"Үнүн катуу кылып уга бересизби?
 
-Гарнитуранын үнүн катуу чыгарып, сунушталган убакыттан узагыраак угуп жатасыз. Этияттаңыз, кулагыңыздын угуусу начарлап кетиши мүмкүн"</string>
+Гарнитуранын үнүн катуу чыгарып, сунушталгандан узагыраак угуп жатасыз. Этияттаңыз, кулагыңыздын угуусу начарлап кетиши мүмкүн"</string>
     <string name="csd_momentary_exposure_warning">"Үнүн катуу кылып угуп жатасыз
 
-Гарнитуранын үнүн катуу чыгарып, сунушталган убакыттан узагыраак угуп жатасыз. Этияттаңыз, кулагыңыздын угуусу начарлап кетиши мүмкүн"</string>
+Гарнитуранын үнүн сунушталгандан катуураак кылып угуп жатасыз. Этияттаңыз, кулагыңыздын угуусу начарлап кетиши мүмкүн"</string>
     <string name="data_saver_description">Трафикти үнөмдөө режиминде айрым колдонмолор маалыматтарды фондо өткөрө алышпайт. Учурда сиз пайдаланып жаткан колдонмо маалыматтарды жөнөтүп/ала алат, бирок адаттагыдан азыраак өткөргөндүктөн, анын айрым функциялары талаптагыдай иштебей коюшу мүмкүн. Мисалы, сүрөттөр басылмайынча жүктөлбөйт.</string>
     <string name="data_saver_enable_button">Күйгүзүү</string>
     <string name="data_saver_enable_title">Трафикти үнөмдөө режимин иштетесизби?</string>
@@ -486,7 +503,7 @@
     <string name="decline">Баш тартуу</string>
     <string name="decline_remote_bugreport_action">ЧЕТКЕ КАГУУ</string>
     <string name="default_audio_route_category_name">Система</string>
-    <string name="default_audio_route_name">Планшет</string>
+    <string name="default_audio_route_name">Телефон</string>
     <string name="default_audio_route_name_dock_speakers">Аудио док бекет</string>
     <string name="default_audio_route_name_external_device">Тышкы түзмөк</string>
     <string name="default_audio_route_name_headphones">Кулакчын</string>
@@ -508,6 +525,7 @@
     <string name="device_state_notification_settings_button">Параметрлерге өтүү</string>
     <string name="device_state_notification_turn_off_button">Өчүрүү</string>
     <string name="device_storage_monitor_notification_channel">Түзмөктүн сактагычы</string>
+    <string name="device_unlock_notification_name">Түзмөктүн кулпусун ачуу</string>
     <string name="dial_number_using">"%s менен
 номерди терүү"</string>
     <string name="disable_accessibility_shortcut">Кыска жолду өчүрүү</string>
@@ -524,6 +542,7 @@
     <string name="dlg_ok">Жарайт</string>
     <string name="done_accessibility_shortcut_menu_button">Бүттү</string>
     <string name="done_label">Даяр</string>
+    <string name="dream_accessibility_action_click">жабуу</string>
     <string name="dream_preview_title">Алдын ала көрүү, %1$s</string>
     <string name="dump_heap_notification">%1$s эстутум чегинен ашып кетти</string>
     <string name="dump_heap_notification_detail">Үймө дамп топтолду. Бөлүшүү үчүн таптап коюңуз.</string>
@@ -550,7 +569,9 @@
     <string name="duration_years_shortest_future">%d ж. кийин</string>
     <string name="dynamic_mode_notification_channel_name">Режимдин адаттагы билдирмеси</string>
     <string name="dynamic_mode_notification_summary">Кубат үнөмдөлсө, батарея көбүрөөк убакытка жетет</string>
+    <string name="dynamic_mode_notification_summary_v2">Батареянын кубатынын мөөнөтүн узартуу үчүн Батареяны үнөмдөгүч режими күйгүзүлдү</string>
     <string name="dynamic_mode_notification_title">Батареяны үнөмдөгүч күйгүзүлдү</string>
+    <string name="dynamic_mode_notification_title_v2">Батареяны үнөмдөгүч режими күйүк</string>
     <string name="editTextMenuTitle">Текст боюнча иштер</string>
     <string name="edit_accessibility_shortcut_menu_button">Кыска жолдорду түзөтүү</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
@@ -563,8 +584,10 @@
     <string name="emergency_call_dialog_number_for_display">Өзгөчө кырдаалдар кызматы</string>
     <string name="emergency_calls_only">Кырсыктаганда гана чалуу</string>
     <string name="enablePin">Оңунан чыкпады, SIM/RUIM бөгөттөөсүн жандырыңыз.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s Сыйпалап изилдөөнү иштеткиси келет. Сыйпалап изилдөө жандырылганда, сиз манжаңыздын астында эмне бар экенин жана угуп же көрө аласыз, же планшетиңиз менен жаңсап иштей аласыз.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s Сыйпалап изилдөөнү иштеткиси келет. Сыйпалап изилдөө жандырылганда, сиз манжаңыздын астында эмне бар экенин жана угуп же көрө аласыз, же телефонуңуз менен жаңсап иштей аласыз.</string>
     <string name="enable_explore_by_touch_warning_title">Сыйпалап изилдөө жандырылсынбы?</string>
+    <string name="error_handwriting_unsupported">Бул жерге кол менен жазганга болбойт</string>
+    <string name="error_handwriting_unsupported_password">Сырсөз киргизилүүчү жерге кол менен жаза албайсыз</string>
     <string name="error_message_change_not_allowed">Мындай өзгөртүүгө администраторуңуз тарабынан тыюу салынган</string>
     <string name="error_message_title">Ката</string>
     <string name="etws_primary_default_message_earthquake">Эс алып, жакын жерден калканч издеңиз.</string>
@@ -605,7 +628,7 @@
     <string name="ext_media_safe_unmount_notification_message">SD картасы алып салынды</string>
     <string name="ext_media_safe_unmount_notification_title">SD картаны алып салуу коопсуз</string>
     <string name="ext_media_seamless_action">Аудио түзмөктү которуштуруу</string>
-    <string name="ext_media_status_bad_removal">Коопсуз өчүрүлгөн жок</string>
+    <string name="ext_media_status_bad_removal">Коопсуз өчкөн жок</string>
     <string name="ext_media_status_checking">Текшерилүүдө…</string>
     <string name="ext_media_status_ejecting">Чыгарылууда…</string>
     <string name="ext_media_status_formatting">Форматталууда…</string>
@@ -644,7 +667,7 @@
     <string name="face_acquired_too_bright">Өтө жарык. Жарыктыкты азайтып көрүңүз.</string>
     <string name="face_acquired_too_close">Телефонду алыстатыңыз</string>
     <string name="face_acquired_too_dark">Жарыгыраак жерге туруңуз</string>
-    <string name="face_acquired_too_different">Жүз таанылбай жатат. Кайталаңыз.</string>
+    <string name="face_acquired_too_different">Жүз таанылган жок. Кайра аракет кылыңыз.</string>
     <string name="face_acquired_too_far">Телефонду жакындатыңыз</string>
     <string name="face_acquired_too_high">Телефонду өйдө жылдырыңыз</string>
     <string name="face_acquired_too_left">Телефонду оңго жылдырыңыз</string>
@@ -655,6 +678,8 @@
     <string name="face_app_setting_name">Жүзүнөн таанып ачууну колдонуу</string>
     <string name="face_authenticated_confirmation_required">Жүздүн аныктыгы текшерилди, эми \"Ырастоону\" басыңыз</string>
     <string name="face_authenticated_no_confirmation_required">Жүздүн аныктыгы текшерилди</string>
+    <string name="face_dangling_notification_msg">Жүзүңүздүн үлгүсү мындан ары таанылбайт. Жүзүнөн таанып ачуу функциясын кайрадан тууралаңыз.</string>
+    <string name="face_dangling_notification_title">Жүзүнөн таанып ачуу функциясын кайрадан тууралаңыз</string>
     <string name="face_dialog_default_subtitle">Улантуу үчүн жүзүңүздү көрсөтүңүз</string>
     <string name="face_error_canceled">Жүздүн аныктыгын текшерүү жокко чыгарылды.</string>
     <string name="face_error_hw_not_available">Жүз ырасталбай жатат. Аппараттык камсыздоо жеткиликсиз.</string>
@@ -677,8 +702,6 @@
     <string name="face_recalibrate_notification_name">Жүзүнөн таанып ачуу</string>
     <string name="face_recalibrate_notification_title">Жүзүнөн таанып ачуу функциясында маселе келип чыкты</string>
     <string name="face_sensor_privacy_enabled">Жүзүнөн таанып ачуу функциясын колдонуу үчүн Параметрлер > Купуялык бөлүмүнө өтүп, <b>Камераны колдонууну</b> күйгүзүңүз</string>
-    <string name="face_setup_notification_content">Телефонуңузду карап туруп эле кулпусун ачып алыңыз</string>
-    <string name="face_setup_notification_title">Жүзүнөн таанып ачууну коюу</string>
     <string name="faceunlock_multiple_failures">Жүзүнөн таанып ачуу аракеттеринин чегинен аштыңыз</string>
     <string name="factory_reset_message">"Түзмөктү башкарган колдонмо жараксыз. Түзмөгүңүз азыр тазаланат.
 
@@ -703,7 +726,7 @@
     <string name="fingerprint_acquired_imager_dirty">Манжа изинин сенсорун тазалап, кайра аракет кылыңыз</string>
     <string name="fingerprint_acquired_imager_dirty_alt">Сенсорду тазалап, кайра аракет кылыңыз</string>
     <string name="fingerprint_acquired_immobile">Манжаңыздын абалын улам өзгөртүп коюңуз</string>
-    <string name="fingerprint_acquired_insufficient">Манжа изи таанылбай жатат. Кайра аракет кылыңыз.</string>
+    <string name="fingerprint_acquired_insufficient">Манжа изи таанылган жок. Кайра аракет кылыңыз.</string>
     <string name="fingerprint_acquired_partial">Сенсорду катуу басыңыз</string>
     <string name="fingerprint_acquired_power_press">Кубат баскычы басылганы аныкталды</string>
     <string name="fingerprint_acquired_too_bright">Өтө жарык</string>
@@ -712,21 +735,27 @@
     <string name="fingerprint_acquired_try_adjusting">Тууралап көрүңүз</string>
     <string name="fingerprint_app_setting_name">Манжа изин колдонуу</string>
     <string name="fingerprint_authenticated">Манжа изи текшерилди</string>
+    <string name="fingerprint_dangling_notification_msg_1">%s мындан ары таанылбайт.</string>
+    <string name="fingerprint_dangling_notification_msg_2">%1$s жана %2$s мындан ары таанылбайт.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_1">%s мындан ары таанылбайт. Манжа изи менен ачуу функциясын кайрадан тууралаңыз.</string>
+    <string name="fingerprint_dangling_notification_msg_all_deleted_2">%1$s жана %2$s мындан ары таанылбайт. Манжа изи менен ачуу функциясын кайрадан тууралаңыз.</string>
+    <string name="fingerprint_dangling_notification_title">Манжа изи менен ачуу функциясын кайра тууралаңыз</string>
     <string name="fingerprint_dialog_default_subtitle">Улантуу үчүн манжаңызды сканерге тийгизиңиз</string>
-    <string name="fingerprint_error_bad_calibration">Манжа изинин сенсорун колдонууга болбойт. Тейлөө кызматына кайрылыңыз</string>
-    <string name="fingerprint_error_canceled">Манжа изи иш-аракети жокко чыгарылды.</string>
-    <string name="fingerprint_error_hw_not_available">Манжа изинин аппараттык камсыздоосу жеткиликтүү эмес.</string>
-    <string name="fingerprint_error_hw_not_present">Бул түзмөктө манжа изинин сенсору жок.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">Жүз таанылган жок. Манжа изин колдонуңуз.</string>
+    <string name="fingerprint_error_bad_calibration">Манжа изинин сенсорун колдонууга болбойт. Тейлөө кызматына кайрылыңыз.</string>
+    <string name="fingerprint_error_canceled">Манжа изи менен аныктыгын текшерүү жокко чыгарылды</string>
+    <string name="fingerprint_error_hw_not_available">Манжа издеринин сканери жеткиликтүү эмес</string>
+    <string name="fingerprint_error_hw_not_present">Бул түзмөктө манжа изинин сенсору жок</string>
     <string name="fingerprint_error_lockout">Өтө көп жолу аракет кылдыңыз. Экранды кулпулоо функциясын колдонуңуз.</string>
     <string name="fingerprint_error_lockout_permanent">Өтө көп жолу аракет кылдыңыз. Экранды кулпулоо функциясын колдонуңуз.</string>
-    <string name="fingerprint_error_no_fingerprints">Бир да манжа изи катталган эмес.</string>
+    <string name="fingerprint_error_no_fingerprints">Бир да манжа изи катталган эмес</string>
     <string name="fingerprint_error_no_space">Манжа изи жөндөлбөй жатат</string>
     <string name="fingerprint_error_not_match">Манжа изи таанылган жок</string>
     <string name="fingerprint_error_power_pressed">Кубат баскычы басылды</string>
-    <string name="fingerprint_error_security_update_required">Сенсор убактылуу өчүрүлгөн.</string>
+    <string name="fingerprint_error_security_update_required">Сенсор убактылуу өчүрүлгөн</string>
     <string name="fingerprint_error_timeout">Манжа изин коюу убакыты бүтүп калды. Кайра аракет кылыңыз.</string>
     <string name="fingerprint_error_unable_to_process">Манжа изи иштетилген жок. Кайра аракет кылыңыз.</string>
-    <string name="fingerprint_error_user_canceled">Манжа изи операциясын колдонуучу жокко чыгарды.</string>
+    <string name="fingerprint_error_user_canceled">Манжа изи менен аныктыгын текшерүүнү колдонуучу жокко чыгарды</string>
     <string name="fingerprint_error_vendor_unknown">Бир жерден ката кетти. Кайра аракет кылыңыз.</string>
     <string name="fingerprint_name_template">%d-манжа</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">Манжа изин же экрандын кулпусун колдонуу</string>
@@ -734,8 +763,6 @@
     <string name="fingerprint_recalibrate_notification_content">Тейлөө кызматына кайрылыңыз.</string>
     <string name="fingerprint_recalibrate_notification_name">Кулпуланган түзмөктү манжа изи менен ачуу</string>
     <string name="fingerprint_recalibrate_notification_title">Манжа изинин сенсорун колдонууга болбойт</string>
-    <string name="fingerprint_setup_notification_content">Манжа изин кошуу үчүн басыңыз</string>
-    <string name="fingerprint_setup_notification_title">Кулпусун ачуунун көбүрөөк жолдорун жөндөңүз</string>
     <string name="fingerprint_udfps_error_not_match">Манжа изи таанылган жок</string>
     <string name="fingerprints">Манжа издери:</string>
     <string name="floating_toolbar_close_overflow_description">Ашып-ташууну жабуу</string>
@@ -758,7 +785,7 @@
     <string name="fp_power_button_enrollment_message">"Кубат баскычын бастыңыз — адатта, бул экранды өчүрөт.
 
 Манжаңыздын изин жөндөп жатканда аны акырын басып көрүңүз."</string>
-    <string name="fp_power_button_enrollment_title">Кошуп бүтүрүү үчүн экранды өчүрүңүз</string>
+    <string name="fp_power_button_enrollment_title">Бүтүрүү үчүн экранды өчүрүңүз</string>
     <string name="gadget_host_error_inflating">Виджетти кошуу мүмкүн болбоду.</string>
     <string name="geofencing_service">Географиялык аймактарга бөлүштүрүү кызматы</string>
     <string name="global_action_assist">Жардам</string>
@@ -776,7 +803,7 @@
     <string name="global_action_silent_mode_on_status">Добушу ӨЧҮК</string>
     <string name="global_action_toggle_silent_mode">Үнсүз режим</string>
     <string name="global_action_voice_assist">Үн жардамчысы</string>
-    <string name="global_actions">Планшет мүмкүнчүлүктөрү</string>
+    <string name="global_actions">Телефон мүмкүнчүлүктөрү</string>
     <string name="global_actions_airplane_mode_off_status">Учак режими ӨЧҮК</string>
     <string name="global_actions_airplane_mode_on_status">Учак режими КҮЙҮК</string>
     <string name="global_actions_toggle_airplane_mode">Учак режими</string>
@@ -795,7 +822,7 @@
     <string name="granularity_label_link">шилтеме</string>
     <string name="granularity_label_word">сөз</string>
     <string name="guest_name">Конок</string>
-    <string name="hardware">Виртуалдык баскычтоп</string>
+    <string name="hardware">Экрандагы баскычтопту колдонуу</string>
     <string name="harmful_app_warning_open_anyway">БААРЫ БИР АЧЫЛСЫН</string>
     <string name="harmful_app_warning_title">Зыянкеч колдонмо аныкталды</string>
     <string name="harmful_app_warning_uninstall">ЧЫГАРЫП САЛУУ</string>
@@ -843,7 +870,7 @@
     <string name="ime_action_search">Издөө</string>
     <string name="ime_action_send">Жөнөтүү</string>
     <string name="imei">IMEI</string>
-    <string name="immersive_cling_description">Чыгуу үчүн экранды ылдый сүрүп коюңуз.</string>
+    <string name="immersive_cling_description">Чыгуу үчүн экранды өйдө жагынан ылдый сүрүп коюңуз</string>
     <string name="immersive_cling_positive">Түшүндүм</string>
     <string name="immersive_cling_title">Толук экран режими</string>
     <string name="importance_from_person">Булар сиз үчүн маанилүү адамдар.</string>
@@ -917,17 +944,17 @@
     <string name="keyguard_password_entry_touch_hint"><font size="17">Сырсөздү терүү үчүн таптаңыз</font></string>
     <string name="keyguard_password_wrong_pin_code">PIN код туура эмес.</string>
     <string name="kg_enter_confirm_pin_hint">Сиз каалаган PIN кодду ырастаңыз</string>
-    <string name="kg_failed_attempts_almost_at_login">"Графикалык ачкычты %1$d жолу туура эмес көрсөттүңүз. %2$d жолу туура эмес көрсөтүлгөндөн кийин, планшетиңиздин кулпусун ачуу үчүн Google аккаунтуңузга кирүүгө туура келет.
+    <string name="kg_failed_attempts_almost_at_login">"Графикалык ачкычты %1$d жолу туура эмес көрсөттүңүз. %2$d жолу туура эмес көрсөтүлгөндөн кийин, телефондун кулпусун ачуу үчүн Google аккаунтуңузга кирүүгө туура келет.
 
 %3$d секундадан кийин кайталап көрсөңүз болот."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">Сиз планшетиңизди %1$d жолу ийгиликсиз бөгөттөн чыгаруу аракетин кылдыңыз. Дагы %2$d ийгиликсиз аракеттен кийин, планшет баштапкы абалына кайтарылат жана бардык берилиштериңиз өчүрүлөт.</string>
-    <string name="kg_failed_attempts_now_wiping">Сиз планшетиңизди %d жолу ийгиликсиз бөгөттөн чыгаруу аракетин кылдыңыз. Планшет баштапкы абалына кайтарылат.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">Сиз телефонуңузду %1$d жолу ийгиликсиз бөгөттөн чыгаруу аракетин кылдыңыз. Дагы %2$d ийгиликсиз аракеттен кийин, телефон баштапкы абалына кайтарылат жана бардык берилиштериңиз өчүрүлөт.</string>
+    <string name="kg_failed_attempts_now_wiping">Сиз телефонуңузду %d жолу ийгиликсиз бөгөттөн чыгаруу аракетин кылдыңыз. Телефон баштапкы абалына кайтарылат.</string>
     <string name="kg_forgot_pattern_button_text">Үлгү унутулду</string>
     <string name="kg_invalid_confirm_pin_hint">PIN-коддор туура келбеди</string>
     <string name="kg_invalid_puk">Туура PUK-кодду кайрадан териңиз. Кайталанган аракеттер SIM картаны биротоло жараксыз кылат.</string>
     <string name="kg_invalid_sim_pin_hint">Узундугу 4төн 8ге чейинки сандан турган PIN кодду териңиз.</string>
     <string name="kg_invalid_sim_puk_hint">PUK-код 8 сандан турушу керек.</string>
-    <string name="kg_login_account_recovery_hint">"Колдонуучу атыңызды же сырсөзүңүздү унутуп калдыңызбы?
+    <string name="kg_login_account_recovery_hint">"Колдонуучу атыңызды же сырсөзүңүздү унутуп койдуңузбу?
 "<b>google.com/accounts/recovery</b> дарегине кайрылыңыз.</string>
     <string name="kg_login_checking_password">Эсеп текшерилүүдө…</string>
     <string name="kg_login_instructions">Бөгөттөн чыгарыш үчүн, Google эсебиңиз менен кириңиз.</string>
@@ -986,13 +1013,13 @@
     <string name="lockscreen_access_pattern_start">Үлгү башталды</string>
     <string name="lockscreen_carrier_default">Интернет жок</string>
     <string name="lockscreen_emergency_call">Шашылыш чалуу</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Сиз планшетиңизди бөгөттөн чыгарууга %1$d жолу туура эмес аракет кылдыңыз. Дагы %2$d аракеттен кийин, планшет баштапкы абалына келтирилет жана бардык маалыматтар өчүрүлөт.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"Графикалык ачкычты %1$d жолу туура эмес тарттыңыз. Дагы %2$d жолу туура эмес тартсаңыз, планшетиңиздин кулпусун Google'га кирип ачууга туура келет.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Сиз телефонуңузду бөгөттөн чыгарууга %1$d жолу туура эмес аракет кылдыңыз. Дагы %2$d аракеттен кийин, телефон баштапкы абалына келтирилет жана бардык маалыматтар өчүрүлөт.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"Графикалык ачкычты %1$d жолу туура эмес тарттыңыз. Дагы %2$d жолу туура эмес тартсаңыз, телефонуңуздун кулпусун Google'га кирип ачууга туура келет.
 
  %3$d секундадан кийин дагы аракет кылып көрүңүз."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Сиз планшетти бөгөттөн чыгарууга %d жолу туура эмес аракет кылдыңыз. Планшет баштапкы абалына келтирилет.</string>
-    <string name="lockscreen_forgot_pattern_button_text">Сүрөт үлгүсүн унутуп калдыңызбы?</string>
-    <string name="lockscreen_glogin_account_recovery_hint">"Колдонуучу атыңызды же сырсөзүңүздү унутуп калдыңызбы?
+    <string name="lockscreen_failed_attempts_now_wiping">Сиз телефонду бөгөттөн чыгарууга %d жолу туура эмес аракет кылдыңыз. Телефон баштапкы абалына келтирилет.</string>
+    <string name="lockscreen_forgot_pattern_button_text">Сүрөт үлгүсүн унутуп койдуңузбу?</string>
+    <string name="lockscreen_glogin_account_recovery_hint">"Колдонуучу атыңызды же сырсөзүңүздү унутуп койдуңузбу?
 "<b>google.com/accounts/recovery</b> дарегине кайрылыңыз.</string>
     <string name="lockscreen_glogin_checking_password">Текшерүүдө…</string>
     <string name="lockscreen_glogin_forgot_pattern">Аккаунт менен кулпусун ачуу</string>
@@ -1006,7 +1033,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">Кулпусун ачып же Шашылыш чалуу аткаруу үчүн менюну басыңыз.</string>
     <string name="lockscreen_missing_sim_instructions">SIM карта кошуңуз.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM карта жок же окулбайт. SIM карта кошуңуз.</string>
-    <string name="lockscreen_missing_sim_message">Планшетте SIM карта жок.</string>
+    <string name="lockscreen_missing_sim_message">Телефондо SIM карта жок.</string>
     <string name="lockscreen_missing_sim_message_short">SIM карта жок</string>
     <string name="lockscreen_network_locked_message">Тармак кулпуланган</string>
     <string name="lockscreen_password_wrong">Дагы аракет кылыңыз</string>
@@ -1024,7 +1051,7 @@
     <string name="lockscreen_sim_unlock_progress_dialog_message">SIM картанын кулпусу ачылууда…</string>
     <string name="lockscreen_sound_off_label">Добушу өчүк</string>
     <string name="lockscreen_sound_on_label">Добушу күйүк</string>
-    <string name="lockscreen_storage_locked">Элементтердин жана дайындардын кулпусун ачуу</string>
+    <string name="lockscreen_storage_locked">Функциялар менен колдонмолордун кулпусун ачуу</string>
     <string name="lockscreen_too_many_failed_attempts_countdown">%d секунддан кийин кайталаңыз.</string>
     <string name="lockscreen_too_many_failed_attempts_dialog_message">"Графикалык ачкычты %1$d жолу туура эмес тарттыңыз. 
 
@@ -1046,7 +1073,7 @@
     <string name="low_internal_storage_view_text">Айрым функциялар иштебеши мүмкүн</string>
     <string name="low_internal_storage_view_text_no_boot">Системада сактагыч жетишсиз. 250МБ бош орун бар экенин текшерип туруп, өчүрүп күйгүзүңүз.</string>
     <string name="low_internal_storage_view_title">Сактагычта орун калбай баратат</string>
-    <string name="low_memory">Планшеттин сактагычы толуп калды. Орун бошотуш үчүн кээ бир файлдарды өчүрүңүз.</string>
+    <string name="low_memory">Телефондун сактагычы толуп калды. Орун бошотуш үчүн кээ бир файлдарды өчүрүңүз.</string>
     <string name="managed_profile_app_label">Жумушка тиешелүү %1$s колдонмосуна которулуу</string>
     <string name="managed_profile_label">Жумуш профилине которулуу</string>
     <string name="managed_profile_label_badge">Жумуш %1$s</string>
@@ -1202,7 +1229,9 @@
     <string name="miniresolver_call_information">Уюмуңуз жумуш колдонмолорунан гана чалууга уруксат берет</string>
     <string name="miniresolver_open_in_personal">Жеке %s колдонмосунда ачасызбы?</string>
     <string name="miniresolver_open_in_work">Жумуш %s колдонмосунда ачасызбы?</string>
-    <string name="miniresolver_open_work">Жумуш үчүн %s колдонмосун ачасызбы?</string>
+    <string name="miniresolver_open_work">%s жумуш колдонмосун ачасызбы?</string>
+    <string name="miniresolver_private_space_messages_information">SMS билдирүүлөрдү жеке Жазышуулар колдонмосунан гана жөнөтө аласыз.</string>
+    <string name="miniresolver_private_space_phone_information">Жеке \"Телефон\" колдонмосунан гана чала аласыз. Жеке \"Телефон\" колдонмосунан аткарылган чалуулар жеке чалуулар таржымалына кошулат.</string>
     <string name="miniresolver_sms_information">Уюмуңуз билдирүүлөрдү жумуш колдонмолорунан гана жөнөтүүгө уруксат берет</string>
     <string name="miniresolver_switch">Которулуу</string>
     <string name="miniresolver_switch_to_work">Жумуш колдонмосуна которуласызбы?</string>
@@ -1281,6 +1310,7 @@
     <string name="notification_channel_developer">Иштеп чыгуучунун билдирүүлөрү</string>
     <string name="notification_channel_developer_important">Иштеп чыгуучулардын маанилүү билдирүүлөрү</string>
     <string name="notification_channel_device_admin">IT администраторуңуздан келген билдирүүлөр</string>
+    <string name="notification_channel_display">Экран</string>
     <string name="notification_channel_do_not_disturb">Тынчымды алба</string>
     <string name="notification_channel_emergency_callback">Шашылыш кайра чалуу режими</string>
     <string name="notification_channel_foreground_service">Колдонмолор батареяңызды коротууда</string>
@@ -1302,6 +1332,7 @@
     <string name="notification_channel_voice_mail">Үн почтасынын билдирүүлөрү</string>
     <string name="notification_channel_vpn">VPN абалы</string>
     <string name="notification_channel_wfc">Wi-Fi аркылуу чалуу</string>
+    <string name="notification_compact_heads_up_reply">Жооп берүү</string>
     <string name="notification_content_abusive_bg_apps">%1$s фондо иштеп жатат. Батареянын колдонулушун башкаруу үчүн таптап коюңуз.</string>
     <string name="notification_content_long_running_fgs">%1$s батареянын кубатынын мөөнөтүн азайтышы мүмкүн. Жигердүү колдонмолорду көрүү үчүн таптап коюңуз.</string>
     <string name="notification_feedback_indicator">Пикир билдирүү</string>
@@ -1338,7 +1369,8 @@
     <string name="other_networks_no_internet">Тармактын Интернет жок</string>
     <string name="owner_name">Ээси</string>
     <string name="package_deleted_device_owner">Администраторуңуз жок кылып салган</string>
-    <string name="package_installed_device_owner">Администраторуңуз орнотуп койгон</string>
+    <string name="package_installed_device_owner">"Администраторуңуз орнотту.
+Берилген уруксаттарды көрүү үчүн параметрлерге өтүңүз"</string>
     <string name="package_updated_device_owner">Администраторуңуз жаңыртып койгон</string>
     <string name="passwordIncorrect">Туура эмес сырсөз.</string>
     <string name="password_keyboard_label_alpha_key">АБВ</string>
@@ -1355,7 +1387,9 @@
     <string name="permdesc_accessCoarseLocation">Колдонмо кайда жүргөнүңүздү активдүү режимде гана болжолдуу аныктай алат. Ал үчүн түзмөгүңүздө жайгашкан жерди аныктоо кызматын иштетишиңиз керек.</string>
     <string name="permdesc_accessDrmCertificates">Колдонмого DRM тастыктамаларын ишке киргизип, колдонуу мүмкүнчүлүгүн берет. Кадимки колдонмолорго эч качан талап кылынбайт.</string>
     <string name="permdesc_accessFineLocation">Колдонмо кайда жүргөнүңүздү активдүү режимде гана так аныктай алат. Ал үчүн түзмөгүңүздө жайгашкан жерди аныктоо кызматын иштетишиңиз керек. Батарея тезирээк отуруп калышы мүмкүн.</string>
+    <string name="permdesc_accessHiddenProfile">Колдонмо жашыруун профилдерди көрө алат.</string>
     <string name="permdesc_accessImsCallService">Колдонмого сизди катыштырбай туруп, IMS кызматынын жардамы менен, чалууларды жасоо мүмкүнчүлүгүн берет.</string>
+    <string name="permdesc_accessLastKnownCellId">Колдонмого телефония камсыздаган акыркы белгилүү уюлдук телефондун идентификаторун көрүү мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_accessLocationExtraCommands">"Колдонмого жайгашкан жерди табуучу кошумча жабдуучулардын буйруктарын колдонуу мүмкүнчүлүгүн берет. Ушуну менен колдонмо GPS'тин ишине жана башка жайгашкан жерлерди аныктоо кызматтарына кийлигише алат."</string>
     <string name="permdesc_accessNetworkConditions">Колдонмого тармак абалынын көрсөткүчтөрүн тыңшоо мүмкүнчүлүгүн берет. Жалпыга багышталган колдонмолордо эч качан колдонулбашы керек.</string>
     <string name="permdesc_accessNetworkState">Колдонмого желелердин бардыгы жана байланыштар сыяктуу желе маалыматтарын көргөнгө уруксат берет.</string>
@@ -1376,23 +1410,24 @@
     <string name="permdesc_bindNotificationListenerService">Ээсине эскертүү тыңшагыч кызматтын жогорку деңгээл интерфейсине туташуу мүмкүнчүлүгүн берет. Жөнөкөй колдонмолордо эч качан керектелбейт.</string>
     <string name="permdesc_bind_connection_service">Колдонмого чалууларды жасоо/кабыл алуу үчүн телефония кызматтары менен байланышууга уруксат берет.</string>
     <string name="permdesc_bind_incall_service">Сүйлөшүп жатканда экранды башкара аласыз.</string>
-    <string name="permdesc_bluetooth">Колдонмого планшеттин Bluetooth конфигурацияларын көрүү, жупталган түзмөктөр менен байланыш түзүү жана кабыл алуу уруксатын берет.</string>
-    <string name="permdesc_bluetoothAdmin">Колдонмого жергиликтүү Bluetooth планшетин конфигурациялап, ыраактагы түзмөктөрдү таап, жупташуу мүмкүнчүлүгүн берет.</string>
+    <string name="permdesc_bluetooth">Колдонмого телефондун Bluetooth конфигурацияларын көрүү, жупташкан түзмөктөр менен туташуу түзүү жана кабыл алуу уруксатын берет.</string>
+    <string name="permdesc_bluetoothAdmin">Колдонмого жергиликтүү Bluetooth телефонун конфигурациялап, ыраактагы түзмөктөрдү таап, жупташуу мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_bluetooth_advertise">Колдонмого жакын жердеги Bluetooth түзмөктөрүнө жарнама көрсөтүүгө мүмкүндүк берет</string>
     <string name="permdesc_bluetooth_connect">Колдонмого туташкан Bluetooth түзмөктөрүнө байланышканга уруксат берет</string>
     <string name="permdesc_bluetooth_scan">Колдонмого жакын жердеги Bluetooth түзмөктөрүн аныктап, жупташтырууга уруксат берет</string>
     <string name="permdesc_bodySensors">Иштеп жатканда колдонмо дене сенсорлорунун көрсөткүчтөрүн, мисалы, жүрөктүн согушу, температура жана кандагы кычкылтектин пайызын көрө алат.</string>
     <string name="permdesc_bodySensors_background">Колдонмо фондо дене сенсорлорунун көрсөткүчтөрүн, мисалы, жүрөктүн согушу, температура жана кандагы кычкылтектин пайызын көрө алат.</string>
-    <string name="permdesc_broadcastSticky">Колдонмого берүү токтогондон кийин улантыла берүүчү жабышкак берүүлөрдү жөнөтүү уруксатын берет. Муну ашыкча колдонуу, эстутумду өтө көп пайдаланууга алып келип, планшеттин жай же туруксуз иштөөсүнүнө себепкер болушу мүмкүн.</string>
+    <string name="permdesc_broadcastSticky">Колдонмого берүү токтогондон кийин улантыла берүүчү жабышкак берүүлөрдү жөнөтүү уруксатын берет. Муну ашыкча колдонуу, эстутумду өтө көп пайдаланууга алып келип, телефондун жай же туруксуз иштөөсүнүнө себепкер болушу мүмкүн.</string>
     <string name="permdesc_callCompanionApp">Колдонмого түзмөктөгү аткарылып жаткан чалууларды көрүп, көзөмөлдөөгө уруксат берет. Буга чалуулардын саны жана абалы сыяктуу маалымат кирет.</string>
     <string name="permdesc_callPhone">Колдонмого сиздин кийлигишүүңүзсүз телефон номерлерине чалуу мүмкүнчүлүгүн берет. Бул күтүлбөгөн төлөмдөргө же чалууларга алып келиши мүмкүн. Бул колдонмого кырсыктаганда жардамга келчү кызматтын номерине чалуу мүмкүнчүлүгүн бербейт. Зыянкеч колдонмолор сиздин ырастооңузсуз чалууларды аткарып, же байланыш операторлорунун коддорун терип чыгымдарга себепкер болушу мүмкүн. Бул кирүүчү чалууларды автоматтык түрдө башка номерге багыттайт.</string>
     <string name="permdesc_camera">Бул колдонмо иштеп жатканда камера менен сүрөт же видеолорду тарта алат.</string>
+    <string name="permdesc_cameraHeadlessSystemUser">Бул колдонмо камераны Аталышы жок контентти башкаруу системасы катары колдоно алат.</string>
     <string name="permdesc_cameraOpenCloseListener">Бул колдонмо камера ачылып (аны ачып жаткан колдонмо көрсөтүлгөндө) же жабылып жатканда чалууларды кабыл алат.</string>
     <string name="permdesc_changeNetworkState">Колдонмого тармактык туташуунун абалын өзгөртүү мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_changeTetherState">Колдонмо модем режимин күйгүзүп, өчүрө алат.</string>
-    <string name="permdesc_changeWifiMulticastState">Колдонмого мультикаст даректерди колдонуп, бир гана сиздин планшетиңиз эмес, Wi-Fi түйүнүндөгү бардык түзмөктөргө жөнөтүлгөн пакеттерди алууга уруксат берет. Бул мультикаст эмес абалдагыдан көбүрөөк кубат сарптайт.</string>
+    <string name="permdesc_changeWifiMulticastState">Колдонмого мультикаст даректерди колдонуп, бир гана сиздин телефонуңуз эмес, Wi-Fi түйүнүндөгү бардык түзмөктөргө жөнөтүлгөн пакеттерди алууга уруксат берет. Бул мультикаст эмес абалдагыдан көбүрөөк кубат сарптайт.</string>
     <string name="permdesc_changeWifiState">"Колдонмого Wi-Fi түйүндөрүнө туташуу жана алардан ажыроо жана түзмөктүн Wi-Fi  конфигурацияларына өзгөртүү уруксаттары берилет."</string>
-    <string name="permdesc_changeWimaxState">Колдонмого планшетти WiMAX түйүндөрүнө туташтыруу жана ажыратуу уруксаттары берилет.</string>
+    <string name="permdesc_changeWimaxState">Колдонмого телефонду WiMAX түйүндөрүнө туташтыруу жана ажыратуу уруксаттары берилет.</string>
     <string name="permdesc_companionProfileWatch">Көмөкчү колдонмого сааттарды тескөөгө уруксат берет.</string>
     <string name="permdesc_connection_manager">Колдонмого телеком туташууларын башкаруу мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_control_incall_experience">Колдонмого чалуу учурундагы колдонуучу тажрыйбасын камсыз кылуу мүмкүнчүлүгүн берет.</string>
@@ -1411,6 +1446,7 @@
     <string name="permdesc_foregroundServiceHealth">Колдонмолорго алдынкы пландагы \"health\" түрүндөгү кызматтарды колдонууга уруксат берет</string>
     <string name="permdesc_foregroundServiceLocation">Колдонмолорго алдынкы пландагы \"location\" түрүндөгү кызматтарды колдонууга уруксат берет</string>
     <string name="permdesc_foregroundServiceMediaPlayback">Колдонмолорго алдынкы пландагы \"mediaPlayback\" түрүндөгү кызматтарды колдонууга уруксат берет</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">Колдонмолорго алдыңкы пландагы \"mediaProcessing\" түрүндөгү кызматтарды колдонууга уруксат берет</string>
     <string name="permdesc_foregroundServiceMediaProjection">Колдонмолорго алдынкы пландагы \"mediaProjection\" түрүндөгү кызматтарды колдонууга уруксат берет</string>
     <string name="permdesc_foregroundServiceMicrophone">Колдонмолорго алдынкы пландагы \"microphone\" түрүндөгү кызматтарды колдонууга уруксат берет</string>
     <string name="permdesc_foregroundServicePhoneCall">Колдонмолорго алдынкы пландагы \"phoneCall\" түрүндөгү кызматтарды колдонууга уруксат берет</string>
@@ -1418,7 +1454,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">Колдонмолорго алдынкы пландагы \"specialUse\" түрүндөгү кызматтарды колдонууга уруксат берет</string>
     <string name="permdesc_foregroundServiceSystemExempted">Колдонмолорго алдынкы пландагы \"systemExempted\" түрүндөгү кызматтарды колдонууга уруксат берет</string>
     <string name="permdesc_fullScreenIntent">Колдонмого билдирмелерди кулпуланган түзмөктүн толук экранында көрсөтүүгө уруксат берет</string>
-    <string name="permdesc_getAccounts">Колдонмого планшетке белгилүү эсептердин тизмегин алуу уруксатын берет. Буларга сиз орноткон колдонмолор аркылуу түзүлгөн эсептер кириши мүмкүн.</string>
+    <string name="permdesc_getAccounts">Колдонмого телефонго белгилүү эсептердин тизмегин алуу уруксатын берет. Буларга сиз орноткон колдонмолор аркылуу түзүлгөн эсептер кириши мүмкүн.</string>
     <string name="permdesc_getPackageSize">Колдонмого өз кодун, дайындарын жана кэш өлчөмдөрүн түшүрүп алуу мүмкүнчүлүгүн берет</string>
     <string name="permdesc_getTasks">"Колдонмого учурдагы жана акыркы убакытта пайдаланылган колдонмолор тууралуу  маалымат алууга уруксат берет. Бул колдонмого түзмөктө кандай колдонмолор колдонулаарын билип алууга жол бериши мүмкүн."</string>
     <string name="permdesc_handoverStatus">Бул колдонмого учурдагы Android Beam өткөрүүлөрү жөнүндө маалымат алуу мүмкүнчүлүгүн берет</string>
@@ -1429,7 +1465,7 @@
     <string name="permdesc_invokeCarrierSetup">Ээсине оператор тарабынан берилген конфигурация колдонмосун чакыруу мүмкүнчүлүгүн берет. Жалпыга багышталган колдонмолордо эч качан колдонулбашы керек.</string>
     <string name="permdesc_killBackgroundProcesses">Колдонмого башка колдонмолордун фондо иштеп жаткан процесстерин токтотуу уруксатын берет. Бул башка колдонмолордун иштебей калышына алып келиши мүмкүн.</string>
     <string name="permdesc_manageFingerprint">Колдонмого пайдалануу үчүн манжа изинин үлгүлөрүн кошуу жана жок кылуу мүмкүндүгүн берет.</string>
-    <string name="permdesc_manageNetworkPolicy">Колдонмого тармак саясаттарын башкаруу жана колдонмого мүнөздүү эрежелерди белгилөө мүмкүнчүлүгүн берет.</string>
+    <string name="permdesc_manageNetworkPolicy">Колдонмого тармак эрежелерин башкаруу жана колдонмого мүнөздүү эрежелерди белгилөө мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_manageOngoingCalls">Колдонмого телефонуңузда аткарылып жаткан чалууларды көрүп, аларды көзөмөлдөөгө уруксат берет.</string>
     <string name="permdesc_manageOwnCalls">Чалуунун сапатын жакшыртуу максатында колдонмого чалууларын тутум аркылуу өткөрүүгө уруксат берет.</string>
     <string name="permdesc_manageProfileAndDeviceOwners">Колдонмолорго профиль ээлерин жана түзмөк ээсин орнотуу мүмкүнчүлүгүн берет.</string>
@@ -1440,17 +1476,18 @@
     <string name="permdesc_mount_unmount_filesystems">Сунуучунун суурулуучу сактагыч үчүн файл системаларын орнотуп жана орнотуудан чыгаруусуна жол ачат.</string>
     <string name="permdesc_nearby_wifi_devices">Колдонмо жакын жердеги Wi-Fi түзмөктөргө туташып, алардын жайгашкан жерин аныктап, ар кандай нерселерди өткөрө алат.</string>
     <string name="permdesc_nfc">Колдонмого Жакынкы аралыкта байланышуу (NFC) белгилери, карталары жана окугучтары менен байланышуу мүмкүнчүлүгүн берет.</string>
+    <string name="permdesc_nfcTransactionEvent">Колдонмо Коргоочу элементте аткарылган транзакциялар жөнүндө маалымат ала алат.</string>
     <string name="permdesc_observeCompanionDevicePresence">Көмөкчү колдонмого көмөкчү түзмөктөр жакын же алыс турганын аныктоого уруксат берет.</string>
-    <string name="permdesc_persistentActivity">Колдонмого өзүнүн бөлүктөрүн эстутумда туруктуу кармоого уруксат берет.Бул эстутумдун башка колдонмолорго жетиштүүлүгүн чектеши жана телефондун иштешин жайлатышы мүмкүн.</string>
+    <string name="permdesc_persistentActivity">"Колдонмого  өзүнүн бөлүктөрүн эстутумда туруктуу кармоого уруксат берет. Бул эстутумдун башка колдонмолорго жетиштүүлүгүн чектеши жана телефондун иштешин жайлатышы мүмкүн."</string>
     <string name="permdesc_postNotification">Колдонмолор билдирмелерди көрсөтө алат</string>
     <string name="permdesc_preferredPaymentInfo">Колдонмого катталган жардам же көздөлгөн жерге маршрут сыяктуу тандалган nfc төлөм кызматы жөнүндө маалыматты алууга уруксат берүү.</string>
     <string name="permdesc_processOutgoingCalls">Колдонмого кимдир-бирөөгө чалып жаткан учурда терилип жаткан номерди көрүү, ошондой эле чалууну башка номерге буруу же чалууну таптакыр токтотуп коюу мүмкүнчүлүгү берилет.</string>
     <string name="permdesc_queryAllPackages">Колдонмо бардык орнотулган топтомдорду көрөт.</string>
     <string name="permdesc_readBasicPhoneState">Колдонмого түзмөктүн негизги телефония функцияларын колдонууга мүмкүнчүлүк берет.</string>
-    <string name="permdesc_readCalendar">Бул колдонмо планшетиңизде сакталган жылнаамадагы иш-чаралардын баарын окуп жана андагы маалыматтарды бөлүшүп же сактай алат.</string>
+    <string name="permdesc_readCalendar">Бул колдонмо телефонуңузда сакталган жылнаамадагы иш-чаралардын баарын окуп жана андагы маалыматтарды бөлүшүп же сактай алат.</string>
     <string name="permdesc_readCallLog">Бул колдонмо чалууларыңыздын таржымалын окуй алат.</string>
     <string name="permdesc_readCellBroadcasts">Колдонмого түзмөгүңүз кабыл алган уюк берүүнүн билдирүүлөрүн окууга жол берет. Шашылыш эскертүү билдирүүлөрү кээ бир жерлердеги өзгөчө кырдаалдар тууралу сизди эскертүү үчүн жөнөтүлөт. Зыяндуу колдономолор шашылыш эскертүүлөр берилип жатканда, сиздин түзмөктүн иштешине жолтоо болушу мүмкүн.</string>
-    <string name="permdesc_readContacts">Колдонмо планшетиңизде сакталган байланыштардын дайын-даректерин көрө алат. Мындан тышкары, колдонмолорго планшетиңиздеги байланыштар камтылган аккаунттар да жеткиликтүү болот. Алардын катарына сиз орноткон колдонмолордо түзүлгөн аккаунттар кириши мүмкүн. Байланыштардын чоо-жайын сактоо мүмкүнчүлүгүнө ээ болгон зыянкеч программалар ал маалыматты сиздин уруксатыңызсыз башкаларга бериши мүмкүн.</string>
+    <string name="permdesc_readContacts">Колдонмо телефонуңузда сакталган байланыштардын дайын-даректерин көрө алат. Мындан тышкары, колдонмолорго телефонуңуздагы байланыштар камтылган аккаунттар да жеткиликтүү болот. Алардын катарына сиз орноткон колдонмолордо түзүлгөн аккаунттар кириши мүмкүн. Байланыштардын чоо-жайын сактоо мүмкүнчүлүгүнө ээ болгон зыянкеч программалар ал маалыматты сиздин уруксатыңызсыз башкаларга бериши мүмкүн.</string>
     <string name="permdesc_readInstallSessions">Колдонмого орнотуу сеанстарын окуу мүмкүнчүлүгүн берет. Ушуну менен, ал жигердүү топтом орнотууларынын чоо-жайын көрө алат.</string>
     <string name="permdesc_readMediaAudio">Колдонмого жалпы сактагычыңыздагы аудио файлдарды окуу мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_readMediaImages">Колдонмого жалпы сактагычыңыздагы сүрөт файлдарды окуу мүмкүнчүлүгүн берет.</string>
@@ -1458,11 +1495,11 @@
     <string name="permdesc_readNetworkUsageHistory">Колдонмого белгилүү бир тармактарга жана колдонмолорго байланыштуу тармактын колдонулушу жөнүндө таржымалды окуу мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_readPhoneNumbers">Колдонмого түзмөктүн телефон номерлерин окуу мүмкүнчүлүгү берилет.</string>
     <string name="permdesc_readPhoneState">Колдонмого түзмөктүн чалуу мүмкүнчүлүктөрүнө жетки алуу уруксатын берет. Бул уруксат колдонмого, телефондун номурун, түзмөктүн ID-син, чалуунун абалын жана байланышта чыккан номурду аныктоого жол берет.</string>
-    <string name="permdesc_readSms">Бул колдонмо планшетиңизде сакталган SMS (текст түрүндөгү) билдирүүлөрдүн баарын окуй алат.</string>
+    <string name="permdesc_readSms">Бул колдонмо телефонуңузда сакталган SMS (текст түрүндөгү) билдирүүлөрдүн баарын окуй алат.</string>
     <string name="permdesc_readSyncSettings">Колдонмого эсеп менен синхрондошуу тууралоолорун окуганга уруксат берет. Мисалы, Кишилер колдонмосу эсеп менен синхрондошкондугун аныктай алат.</string>
     <string name="permdesc_readSyncStats">Колдонмого эсептин статистикасын, синхрондоштуруу тарыхын, анын ичинде, канча берилиштер синхрондошкондугун окуганга уруксат берет.</string>
     <string name="permdesc_readVisualUserSelect">Колдонмого жалпы сактагычыңыздагы өзүңүз тандаган сүрөт жана видео файлдарын окуу мүмкүнчүлүгүн берет.</string>
-    <string name="permdesc_receiveBootCompleted">Колдонмого тутум жүктөлүп бүтөөрү менен өзүн-өзү иштетүү мүмкүнчүлүгүн берет. Бул планшеттин ишке киргизилишин кыйла создуктуруп, планшеттин үзгүлтүксүз иштешин жайлатып салышы мүмкүн.</string>
+    <string name="permdesc_receiveBootCompleted">Колдонмого тутум жүктөлүп бүтөөрү менен өзүн-өзү иштетүү мүмкүнчүлүгүн берет. Бул телефондун ишке киргизилишин кыйла создуктуруп, телефондун үзгүлтүксүз иштешин жайлатып салышы мүмкүн.</string>
     <string name="permdesc_receiveMms">Колдонмого MMS билдирүүлөрүн кабыл алууга жана аларды иштетип чыгууга уруксат берет. Бул, колдонмо сизге билгизбестен түзмөгүңүзгө жөнөтүлгөн билдирүүлөрдү мониторлой же жок кыла алат дегенди билдирет.</string>
     <string name="permdesc_receiveSms">Колдонмого SMS билдирүүлөрүн кабыл алууга жана аларды иштетип чыгууга уруксат берет. Бул, колдонмо сизге билгизбестен түзмөгүңүзгө жөнөтүлгөн билдирүүлөрдү мониторлой же жок кыла алат дегенди билдирет.</string>
     <string name="permdesc_receiveWapPush">Колдонмого WAP билдирүүлөрүн кабыл алууга жана аларды иштетип чыгууга уруксат берет. Бул, колдонмо сизге билгизбестен түзмөгүңүзгө жөнөтүлгөн билдирүүлөрдү мониторлой же жок кыла алат дегенди билдирет.</string>
@@ -1484,7 +1521,7 @@
     <string name="permdesc_sendSms">Колдонмого SMS билдирүүлөрүн жөнөтүү уруксатын берет. Бул сиз күтпөгөн чыгымдарга алып келиши мүмкүн. Зыяндуу колдонмолор сиздин ырастооңузсуз билдирүүлөрдү жөнөтүп, көп чыгымдарга себепкер болушу мүмкүн.</string>
     <string name="permdesc_setAlarm">Колдонмого ойготкуч саат колдонмосуна үн ишаратын коюу мүмкүнчүлүгүн берет. Айрым ойготкуч саат колдонмолорунда бул мүмкүнчүлүк иштебеши мүмкүн.</string>
     <string name="permdesc_setInputCalibration">Колдонмого сенсордук экрандын калибрлөө параметрлерин өзгөртүү мүмкүнчүлүгүн берет. Кадимки колдонмолорго эч качан талап кылынбайт.</string>
-    <string name="permdesc_setTimeZone">Колдонмого планшеттеги убакыт алкагын өзгөртүү мүмкүнчүлүгүн берет.</string>
+    <string name="permdesc_setTimeZone">Колдонмого телефондогу убакыт алкагын өзгөртүү мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_setWallpaper">Колдонмого системанын тушкагазын коюу мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_setWallpaperHints">Колдонмого тутум тушкагазынын өлчөмдөрүн коюу мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_sim_communication">Колдонмого SIM-картага буйруктарды жөнөтүү мүмкүнчүлүгүн берет. Бул абдан кооптуу.</string>
@@ -1497,7 +1534,7 @@
     <string name="permdesc_subscribedFeedsRead">Колдонмого учурда шайкештештирилген каналдардын чоо-жайларын алуу мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_systemAlertWindow">Бул колдонмо башка колдонмолордун же экрандын башка бөлүгүнүн үстүндө көрүнүшү мүмкүн. Ал колдонмолорду пайдаланууга же алардын көрсөтүлүшүнө тоскоолдук жаратышы мүмкүн.</string>
     <string name="permdesc_systemCamera">Бул артыкчылыктуу тутум колдонмосу системанын камерасын каалаган убакта колдонуп, сүрөткө тартып, видео жаздыра алат. Ошондой эле колдонмого android.permission.CAMERA уруксатын берүү керек</string>
-    <string name="permdesc_transmitIr">Колдонмого планшеттин инфракызыл өткөргүчүн колдонуу мүмкүнчүлүгүн берет.</string>
+    <string name="permdesc_transmitIr">Колдонмого телефондун инфракызыл өткөргүчүн колдонуу мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_turnScreenOn">Колдонмого экранды күйгүзүүгө уруксат берет.</string>
     <string name="permdesc_uninstall_shortcut">Колдонмого колдонуучунун катышуусусуз үй экранынын тез чакырмаларын жок кылуу мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_updatePackagesWithoutUserAction">Буга чейин орнотулган колдонмону автоматтык түрдө жаңыртууга мүмкүндүк берет</string>
@@ -1510,12 +1547,13 @@
     <string name="permdesc_vibrate">Колдонмого дирилдегичти көзөмөлдөө мүмкүнчүлүгүн берет.</string>
     <string name="permdesc_vibrator_state">Колдонмого дирилдөө абалына кирүүгө уруксат берет.</string>
     <string name="permdesc_videoWrite">Колдонмого видео жыйнагыңызды өзгөртүүгө мүмкүнчүлүк берет.</string>
-    <string name="permdesc_wakeLock">Колдонмо планшетти көшүү режимине өткөрбөйт.</string>
-    <string name="permdesc_writeCalendar">Бул колдонмо планшетиңизге жылнаама иш-чараларын кошуп, алып салып же өзгөртүшү мүмкүн. Бул колдонмо жылнаама ээсинин атынан билдирүүлөрдү жөнөтүп же ээсине эскертпестен иш-чараларды өзгөртүшү мүмкүн.</string>
-    <string name="permdesc_writeCallLog">Колдонмого планшетиңиздин чалуулар тизмегин, анын ичинде, чыгыш жана кириш чалууларына тиешелүү берилиштерди өзгөртүү уруксатын берет. Зыяндуу колдонмолор муну колдонуп чалуулар тизмегин өзгөртө же жок кыла алышат.</string>
-    <string name="permdesc_writeContacts">Колдонмо планшетиңизде сакталган байланыштарыңыздын дайын-даректерин өзгөртө алат. Мындан тышкары, бул уруксат колдонмолорго байланыштардын дайын-даректерин өчүрүүгө уруксат берет.</string>
+    <string name="permdesc_wakeLock">Колдонмо телефонду көшүү режимине өткөрбөйт.</string>
+    <string name="permdesc_writeCalendar">Бул колдонмо телефонуңузга жылнаама иш-чараларын кошуп, алып салып же өзгөртүшү мүмкүн. Бул колдонмо жылнаама ээсинин атынан билдирүүлөрдү жөнөтүп же ээсине эскертпестен иш-чараларды өзгөртүшү мүмкүн.</string>
+    <string name="permdesc_writeCallLog">Колдонмого телефонуңуздун чалуулар тизмегин, анын ичинде, чыгыш жана кириш чалууларына тиешелүү берилиштерди өзгөртүү уруксатын берет. Зыяндуу колдонмолор муну колдонуп чалуулар тизмегин өзгөртө же жок кыла алышат.</string>
+    <string name="permdesc_writeContacts">Колдонмо телефонуңузда сакталган байланыштарыңыздын дайын-даректерин өзгөртө алат. Мындан тышкары, бул уруксат колдонмолорго байланыштардын дайын-даректерин өчүрүүгө уруксат берет.</string>
     <string name="permdesc_writeSettings">Колдонмого системанын коопсуздук параметрлеринин дайындарын өзгөртүү мүмкүнчүлүгүн берет. Кесепттүү колдонмолор системаңыздын конфигурациясын бузуп салышы мүмкүн.</string>
     <string name="permdesc_writeSyncSettings">Колдонмого эсеп менен синхрондошуу тууралоолорун өзгөртүү уруксатын берет. Мисалы, бул Кишилер колдонмосун эсеп менен синхрондошуусун иштете алат.</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">Колдонмо башка колдонмолорго таандык шифрленген байланыш ачкычтарынын текшерүү абалдарын жаңырта алат.</string>
     <string name="permgroupdesc_activityRecognition">кыймыл-аракеттериңизге көз салып турганга мүмкүнчүлүк алат</string>
     <string name="permgroupdesc_calendar">жылнаамаңызды пайдалануу</string>
     <string name="permgroupdesc_calllog">телефондогу чалуулар тизмесин окуу жана жазуу</string>
@@ -1556,7 +1594,9 @@
     <string name="permlab_accessCoarseLocation">кайда жүргөнүмдү активдүү режимде божомолдоого уруксат берүү</string>
     <string name="permlab_accessDrmCertificates">DRM тастыктамаларына кирүү</string>
     <string name="permlab_accessFineLocation">так аныкталган жайгашкан жерге активдүү режимде гана кирүүгө уруксат берүү</string>
+    <string name="permlab_accessHiddenProfile">Жашырылган профилдерди көрүү</string>
     <string name="permlab_accessImsCallService">IMS чалуу кызматына мүмкүнчүлүк алуу</string>
+    <string name="permlab_accessLastKnownCellId">Акыркы белгилүү уюлдук телефондун идентификаторун көрүү мүмкүнчүлүгү.</string>
     <string name="permlab_accessLocationExtraCommands">жайгашкан жерди аныктагычтын кошумча буйруктарын пайдалануу</string>
     <string name="permlab_accessNetworkConditions">тармак абалынын көрсөткүчтөрүн тыңшоо</string>
     <string name="permlab_accessNetworkState">түйүн туташууларын көрүү</string>
@@ -1588,6 +1628,7 @@
     <string name="permlab_callCompanionApp">тутум аркылуу чалууларды көрүп, көзөмөлдөө.</string>
     <string name="permlab_callPhone">телефон номерлерине түз чалуу</string>
     <string name="permlab_camera">Сүрөт жана видео тартуу</string>
+    <string name="permlab_cameraHeadlessSystemUser">Колдонмого же кызматка камераны Аталышы жок контентти башкаруу системасы катары колдонууга уруксат бериңиз.</string>
     <string name="permlab_cameraOpenCloseListener">Колдонмого же кызматка камера ачылып же жабылып жатканда чалууларды кабыл алууга уруксат берүү.</string>
     <string name="permlab_changeNetworkState">тармак туташымдуулугун өзгөртүү</string>
     <string name="permlab_changeTetherState">интернет бөлүшүү байланышын өзгөртүү</string>
@@ -1612,6 +1653,7 @@
     <string name="permlab_foregroundServiceHealth">алдынкы пландагы \"health\" түрүндөгү кызматты аткаруу</string>
     <string name="permlab_foregroundServiceLocation">алдынкы пландагы \"location\" түрүндөгү кызматты аткаруу</string>
     <string name="permlab_foregroundServiceMediaPlayback">алдынкы пландагы \"mediaPlayback\" түрүндөгү кызматты аткаруу</string>
+    <string name="permlab_foregroundServiceMediaProcessing">алдыңкы пландагы \"mediaProcessing\" түрүндөгү кызматты иштетүү</string>
     <string name="permlab_foregroundServiceMediaProjection">алдынкы пландагы \"mediaProjection\" түрүндөгү кызматты аткаруу</string>
     <string name="permlab_foregroundServiceMicrophone">алдынкы пландагы \"microphone\" түрүндөгү кызматты аткаруу</string>
     <string name="permlab_foregroundServicePhoneCall">алдынкы пландагы \"phoneCall\" түрүндөгү кызматты аткаруу</string>
@@ -1641,6 +1683,7 @@
     <string name="permlab_mount_unmount_filesystems">SD карта файл системасына жөлөө</string>
     <string name="permlab_nearby_wifi_devices">Жакын жердеги Wi‑Fi түзмөктөрүнө байланышуу</string>
     <string name="permlab_nfc">Near Field Communication көзөмөлү</string>
+    <string name="permlab_nfcTransactionEvent">Коргоочу элементтеги транзакция иш-чарасы</string>
     <string name="permlab_observeCompanionDevicePresence">Көмөкчү түзмөктү аныктоо</string>
     <string name="permlab_persistentActivity">колдонмону үзгүлтүксүз иштетүү</string>
     <string name="permlab_postNotification">билдирмелерди көрсөтүү</string>
@@ -1710,12 +1753,13 @@
     <string name="permlab_uwb_ranging">Кең тилкелүү тармак аркылуу туташа турган жакын жердеги түзмөктөрдү аныктоо</string>
     <string name="permlab_vibrate">титирөөнү башкаруу</string>
     <string name="permlab_videoWrite">видео жыйнагыңызды өзгөртүү</string>
-    <string name="permlab_wakeLock">планшетти уктатпай сактоо</string>
+    <string name="permlab_wakeLock">телефонду уктатпай сактоо</string>
     <string name="permlab_writeCalendar">ээсинен уруксат албай, күнбаракка иш-аракеттерди кошуу же өзгөртүү жана конокторго чакыруу жөнөтүү</string>
     <string name="permlab_writeCallLog">чалуулар тизмегин жаздыруу</string>
     <string name="permlab_writeContacts">байланыштарыңызды өзгөртүү</string>
     <string name="permlab_writeSettings">система тууралоолорун өзгөртүү</string>
     <string name="permlab_writeSyncSettings">синхрондоштурууну өчүрүү/жандыруу</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">башка колдонмолорго таандык шифрленген байланыш ачкычтарынын текшерүү абалдарын жаңыртуу</string>
     <string name="perms_description_app">%1$s тарабынан берилди.</string>
     <string name="perms_new_perm_prefix"><font fgcolor="#ff33b5e5" size="12">ЖАҢЫ: </font></string>
     <string name="personal_apps_suspended_turn_profile_on">Күйгүзүү</string>
@@ -1753,10 +1797,10 @@
     <string name="policydesc_limitPassword">"Экран кулпусунун сырсөздөрү менен PIN'дерине уруксат берилген узундук менен белгилерди көзөмөлдөө."</string>
     <string name="policydesc_resetPassword">Экран кулпусун өзгөртөт.</string>
     <string name="policydesc_setGlobalProxy">Саясат иштетилгенде түзмөктүн глобалдык проксиси колдонулгудай кылып коюңуз. Түзмөк ээси гана глобалдык проксини коё алат.</string>
-    <string name="policydesc_watchLogin">Экрандын кулпусу ачылып жатканда туура эмес терилген сырсөздөрдүн санын текшерип, эгер алардын саны өтө эле көп болсо, планшетти кулпулаңыз же планшеттеги бардык маалыматтарды тазалап салыңыз.</string>
-    <string name="policydesc_watchLogin_secondaryUser">Экрандын кулпусун ачуу учурунда туура эмес терилген сырсөздөрдү тескөө жана сырсөз өтө көп жолу туура эмес терилген болсо, планшетти кулпулап же бул колдонуучунун бардык дайындарын тазалап салуу.</string>
-    <string name="policydesc_wipeData">Алдын-ала эскертпестен, баштапкы абалга келтирүү функциясы менен планшеттеги бардык маалыматтарды өчүрөт.</string>
-    <string name="policydesc_wipeData_secondaryUser">Бул колдонуучунун ушул планшеттеги дайындарын эскертүүсүз тазалоо.</string>
+    <string name="policydesc_watchLogin">Экрандын кулпусун ачуу аракеттерине көз салып, сырсөз өтө көп жолу туура эмес терилсе, телефонду кулпулайт же андагы бардык нерселерди өчүрүп салат.</string>
+    <string name="policydesc_watchLogin_secondaryUser">Экрандын кулпусун ачуу учурунда туура эмес терилген сырсөздөрдү тескөө жана сырсөз өтө көп жолу туура эмес терилген болсо, телефонду кулпулап же бул колдонуучунун бардык дайындарын тазалап салуу.</string>
+    <string name="policydesc_wipeData">Алдын-ала эскертпестен, баштапкы абалга келтирүү функциясы менен телефондогу бардык маалыматтарды өчүрөт.</string>
+    <string name="policydesc_wipeData_secondaryUser">Бул колдонуучунун ушул телефондогу дайындарын эскертүүсүз тазалоо.</string>
     <string name="policylab_disableCamera">Камераларды өчүрүү</string>
     <string name="policylab_disableKeyguardFeatures">Функцияларды өчүрүү</string>
     <string name="policylab_encryptedStorage">Сактагыч шифрлөөсүн коюу</string>
@@ -1773,7 +1817,7 @@
     <string name="postalTypeHome">Үй</string>
     <string name="postalTypeOther">Башка</string>
     <string name="postalTypeWork">Жумуш</string>
-    <string name="power_dialog">Планшет мүмкүнчүлүктөрү</string>
+    <string name="power_dialog">Телефон мүмкүнчүлүктөрү</string>
     <string name="power_off">Өчүрүү</string>
     <string name="prepend_shortcut_label">Меню+</string>
     <string name="preposition_for_date">%s күнү</string>
@@ -1783,9 +1827,21 @@
     <string name="print_service_installed_title">%s кызматы орнотулду</string>
     <string name="printing_disabled_by">Басып чыгаруу %s тарабынан өчүрүлдү.</string>
     <string name="private_dns_broken_detailed">Жеке DNS сервери жеткиликсиз</string>
+    <string name="private_profile_label_badge">Купуя %1$s</string>
+    <string name="private_space_biometric_prompt_title">Жеке мейкиндик</string>
+    <string name="private_space_deleted_by_admin">Жеке мейкиндик өчүрүлдү</string>
+    <string name="private_space_deleted_by_admin_details">Уюмуңуз бул көзөмөлдөнгөн түзмөктө жеке мейкиндиктерди колдонууга тыюу салат.</string>
+    <string name="private_space_set_up_screen_lock_message">Жеке мейкиндикти колдонуу үчүн бул түзмөктүн экранын кулпулаңыз</string>
     <string name="profile_encrypted_detail">Жумуш профили кулпуланган</string>
     <string name="profile_encrypted_message">Таптап жумуш профилин ачыңыз</string>
     <string name="profile_encrypted_title">Айрым функциялар иштебеши мүмкүн</string>
+    <string name="profile_label_clone">Клон</string>
+    <string name="profile_label_communal">Жалпы</string>
+    <string name="profile_label_private">Купуя</string>
+    <string name="profile_label_test">Сыноо</string>
+    <string name="profile_label_work">Жумуш</string>
+    <string name="profile_label_work_2">Жумуш 2</string>
+    <string name="profile_label_work_3">Жумуш 3</string>
     <string name="progress_erasing">Жалпы сактагыч тазаланууда…</string>
     <string name="progress_erasing_usbhost">USB сактагычты форматтоодо…</string>
     <string name="progress_unmounting">SD картасын орнотуудан чыгарууда…</string>
@@ -1803,8 +1859,10 @@
     <string name="reboot_to_update_reboot">Өчүрүлүп күйгүзүлүүдө…</string>
     <string name="reboot_to_update_title">Android системасын жаңыртуу</string>
     <string name="recent_tasks_title">Акыркы</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">Купуя билдирменин мазмуну жашырылган</string>
     <string name="redo">Кайталоо</string>
-    <string name="reduce_bright_colors_feature_name">Дагы караңгы</string>
+    <string name="reduce_bright_colors_feature_name">Кошумча караңгылатуу</string>
     <string name="region_picker_section_all">Бардык өлкөлөр</string>
     <string name="region_picker_section_suggested_bilingual">Сунушталган региондор</string>
     <string name="relationTypeAssistant">Жардамчы</string>
@@ -1880,12 +1938,36 @@
     <string name="safe_media_volume_warning">"Сунушталган деңгээлден да катуулатып уккуңуз келеби?
 
 Музыканы узакка чейин катуу уксаңыз, угууңуз начарлап кетиши мүмкүн."</string>
+    <string name="satellite_notification_how_it_works">Ал кантип иштейт</string>
+    <string name="satellite_notification_manual_summary">Мобилдик же Wi-Fi тармагына туташпай эле билдирүүлөрдү жөнөтүп, алыңыз</string>
+    <string name="satellite_notification_manual_title">Спутник аркылуу байланышасызбы?</string>
+    <string name="satellite_notification_open_message">Жазышуулар колдонмосун ачуу</string>
+    <string name="satellite_notification_summary">Сиз мобилдик же Wi-Fi тармагы жок эле билдирүүлөрдү жөнөтүп, ала аласыз</string>
+    <string name="satellite_notification_title">Спутникке автоматтык түрдө туташтырылган</string>
+    <string name="scCellularNetworkSecuritySummary">Шифрлөө, шифрленбеген тармактар жөнүндө билдирмелер</string>
+    <string name="scCellularNetworkSecurityTitle">Мобилдик тармактын коопсуздугу</string>
+    <string name="scIdentifierDisclosureIssueSummary">"Саат %1$s %2$s SIM картасы колдонулуп жатканда, жакын жердеги тармак түзмөгүңүздүн өзгөчө идентификаторун (IMSI же IMEI) жазып алды.
+
+Тактап айтканда, жүргөн жериңиз, аракеттериңиз же өздүгүңүз катталды. Бул адаттагы көрүнүш болсо да, купуялыгы жөнүндө тынчсызданган адамдарга маселе жаратышы мүмкүн."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">Саат %1$s %2$s SIM картасы колдонулуп жатканда, жакын жердеги тармак түзмөгүңүздүн өзгөчө идентификаторун (IMSI же IMEI) жазып алды.</string>
+    <string name="scIdentifierDisclosureIssueTitle">Түзмөктүн идентификатору колдонулду</string>
+    <string name="scNullCipherIssueActionGotIt">Түшүндүм</string>
+    <string name="scNullCipherIssueActionLearnMore">Кеңири маалымат</string>
+    <string name="scNullCipherIssueActionSettings">Мобилдик тармактын коопсуздук параметрлери</string>
+    <string name="scNullCipherIssueEncryptedSummary">Эми %1$s SIM картасы менен туташуу коопсуз болуп калды</string>
+    <string name="scNullCipherIssueEncryptedTitle">Шифрленген %1$s тармагына туташты</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"Учурда %1$s SIM картасын колдонсоңуз, чалууларга, билдирүүлөргө жана маалыматтарга коркунуч жаралышы мүмкүн.
+
+Байланышыңыз кайра шифрленгенде дагы бир билдирме аласыз."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">Учурда %1$s SIM картасын колдонсоңуз, чалууларга, билдирүүлөргө жана маалыматтарга коркунуч жаралышы мүмкүн</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">Шифрленбеген тармакка туташты</string>
     <string name="screen_compat_mode_hint">Муну тутум параметрлеринен кайра иштетүү > Колдонмолор > Жүктөлүп алынган.</string>
     <string name="screen_compat_mode_scale">Шкала</string>
     <string name="screen_compat_mode_show">Ар дайым көрүнсүн</string>
     <string name="screen_lock">Экран кулпусу</string>
     <string name="screen_lock_app_setting_name">Экран кулпусун колдонуу</string>
     <string name="screen_lock_dialog_default_subtitle">Улантуу үчүн экрандын кулпусун киргизиңиз</string>
+    <string name="screen_not_shared_sensitive_content">Коопсуздук үчүн колдонмодогу контент бөлүшүлгөн экрандан жашырылды</string>
     <string name="screenshot_edit">Түзөтүү</string>
     <string name="search_hint">Издөө…</string>
     <string name="search_language_hint">Тилди киргизиңиз</string>
@@ -1929,6 +2011,8 @@
     <string name="serviceErased">Ийгиликтүү тазаланды.</string>
     <string name="serviceNotProvisioned">Кызмат камсыздалган эмес.</string>
     <string name="serviceRegistered">Ийгиликтүү катталды.</string>
+    <string name="set_up_screen_lock_action_label">Экран кулпусун коюу</string>
+    <string name="set_up_screen_lock_title">Экран кулпусун коюп алыңыз</string>
     <string name="sha1_fingerprint">SHA-1 манжа изи:</string>
     <string name="sha256_fingerprint">SHA-256 манжа изи:</string>
     <string name="share">Бөлүшүү</string>
@@ -1945,7 +2029,7 @@
     <string name="shortcut_restore_unknown_issue">Кыска жол калыбына келтирилбей койду</string>
     <string name="shortcut_restored_on_lower_version">Колдонмонун мурунку версиясын иштетип жатасыз же ал бул шилтемеге шайкеш эмес</string>
     <string name="show_ime">Баскычтоп иштетилгенде экранда көрүнүп турат</string>
-    <string name="shutdown_confirm">Планшетиңиз өчүрүлөт.</string>
+    <string name="shutdown_confirm">Телефонуңуз өчүрүлөт.</string>
     <string name="shutdown_confirm_question">Жабылсынбы?</string>
     <string name="shutdown_progress">Жабылууда…</string>
     <string name="silent_mode">Үнсүз режим</string>
@@ -2043,6 +2127,7 @@
     <string name="twilight_service">Twilight кызматы</string>
     <string name="ui_translation_accessibility_translated_text">Билдирүү (%1$s) которулду.</string>
     <string name="ui_translation_accessibility_translation_finished">Билдирүү %1$s тилинен %2$s тилине которулду.</string>
+    <string name="unarchival_session_app_label">Кезекте турат...</string>
     <string name="undo">Артка кайтаруу</string>
     <string name="unpin_specific_target">%1$s бошотуу</string>
     <string name="unpin_target">Кадоодон алып коюу</string>
@@ -2115,7 +2200,7 @@
     <string name="user_switched">Учурдагы колдонуучу %1$s.</string>
     <string name="user_switching_message">%1$s дегенге которулууда…</string>
     <string name="validity_period">Жарактуу мөөнөтү:</string>
-    <string name="vdm_camera_access_denied">%1$s түзмөгүңүздөн планшетиңиздин камерасына мүмкүнчүлүк жок</string>
+    <string name="vdm_camera_access_denied">%1$s түзмөгүңүздөн телефондун камерасына мүмкүнчүлүк жок</string>
     <string name="vdm_pip_blocked">Алып ойнотуп жатканда сүрөттөгү сүрөт көрүнбөйт</string>
     <string name="vdm_secure_window">Муну алып ойнотуу учурунда көрүүгө болбойт. Анын ордуна телефондон кирип көрүңүз.</string>
     <string name="view_and_control_notification_content">%s экраныңызды көрүп, көзөмөлдөй алат. Көрүү үчүн таптап коюңуз.</string>
@@ -2199,7 +2284,7 @@
     <string name="wifi_available_sign_in">Wi-Fi түйүнүнө кирүү</string>
     <string name="wifi_calling_off_summary">Өчүк</string>
     <string name="wifi_no_internet">%1$s Интернетке туташуусу жок</string>
-    <string name="wifi_no_internet_detailed">Параметрлерди ачуу үчүн таптап коюңуз</string>
+    <string name="wifi_no_internet_detailed">Параметрлерди ачуу үчүн тийип коюңуз</string>
     <string name="window_magnification_prompt_content">Эми экрандын бир бөлүгүн чоңойто аласыз</string>
     <string name="window_magnification_prompt_title">Чоңойтуу функциясынын жаңы параметрлери</string>
     <string name="wireless_display_route_description">Зымсыз дисплей</string>
@@ -2234,7 +2319,13 @@
     <string name="zen_mode_feature_name">Тынчымды алба</string>
     <string name="zen_mode_forever">Бул функция өчүрүлгөнгө чейин</string>
     <string name="zen_mode_forever_dnd">\"Тынчымды алба\" режими өчүрүлгөнгө чейин</string>
+    <string name="zen_mode_implicit_activated">Күйүк</string>
+    <string name="zen_mode_implicit_deactivated">Өчүк</string>
+    <string name="zen_mode_implicit_trigger_description">%1$s башкарат</string>
     <string name="zen_mode_rule_name_combination">%1$s/%2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">Бардык жылнаамалар</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s, %2$s</string>
     <string name="zen_mode_until">%1$s чейин</string>
     <string name="zen_mode_until_next_day">%1$s чейин</string>
     <string name="zen_upgrade_notification_content">Бөгөттөлгөн нерселерди көрүү үчүн таптаңыз.</string>

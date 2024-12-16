@@ -86,6 +86,9 @@
     <string name="accessibility_corner_action_type_talk_to_bixby">Bixby-тай ярих</string>
     <string name="accessibility_corner_action_type_zoom_in">Ойртуулах</string>
     <string name="accessibility_corner_action_type_zoom_out">Холдуулах</string>
+    <string name="accessibility_dialog_button_allow_samsung">Зөвшөөр</string>
+    <string name="accessibility_dialog_button_deny_samsung">Татгалзах</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Устгах</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Тэжээл ба Дуу чангалах товчлууруудыг хурдан дарснаар дараах функцүүдийг асааж унтраах болно:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Хажуу болон Дуу чангалах товчлууруудыг хурдан дарснаар дараах функцүүдийг асаах эсвэл унтраана:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Тэжээл ба Дуу чангалах товчлууруудыг хурдан дарснаар %s-г асааж унтраах болно.</string>
@@ -117,6 +120,7 @@
     <string name="accessibility_sticky_keys_shift">Shift</string>
     <string name="account_addition_restrict">Хамгаалалтын бодлого энэ бүртгэлийг нэмэхээс сэргийлнэ.</string>
     <string name="account_removal_restrict">Хамгаалалтын бодлого энэ бүртгэлийг арилгахаас сэргийлнэ.</string>
+    <string name="action_bar_up_description">Удирдаж дээшлүүлэх</string>
     <string name="action_menu_overflow_description">Өөр сонголтууд</string>
     <string name="adb_active_notification_message">USB алдаа засах функцыг идэвхгүй болгохыг сонгох</string>
     <string name="adb_active_notification_title">USB алдаа засах функц холбогдсон.</string>
@@ -125,6 +129,9 @@
     <string name="advance_wifi_sharing_msg">Боломжтой Wi-Fi сүлжээ илрүүлсэн. Мобайл Хотспотдоо мобайл датагийн оронд Wi-Fi хуваалцах ашиглахыг холбо.</string>
     <string name="airplanemode_restrict">Хамгаалалтын бодлого Нислэгийн горим идэвхжүүлэхээс сэргийлнэ.</string>
     <string name="allow_settings_changes">Хамгаалалтын бодлого тохиргоог өөрчлөхөөс сэргийлнэ.</string>
+    <string name="always_allow">Үргэлж зөвшөөрөх</string>
+    <string name="app_block_button_open">Нээх</string>
+    <string name="app_block_content">%1$s %2$s хэрэглүүрийг нээхийг хүсэж байна.</string>
     <string name="app_clone_storage">Дотоод хадгалалт (Хос мессенжер)</string>
     <string name="app_continuity_guide_cling_button_choose_apps">Хэрэглүүрүүд сонго</string>
     <string name="app_continuity_guide_cling_button_not_now">Одоо биш</string>
@@ -139,32 +146,21 @@
     <string name="app_paused_dialog_by_digital_wellbeing">Та өнөөдөр %s-н бүх цагаа ашигласан. Та үүнийг Тохиргоо дотроос өөрчлөх боломжтой.</string>
     <string name="app_restricted_message_concentration_mode">Төвлөрөх горимын үед %s-г хориглосон. IT админтай холбогдож илүү ихийг мэднэ үү.</string>
     <string name="app_updating_message">%s-г шинэчилж байна. Дараа дахин оролд.</string>
-    <string name="appblock_block_subtitle1_phone">Энэ хэрэглүүрийг хортон гэж сэжиглэж байгаа тул таны утас болон хувийн мэдээллийг хамгаалахын тулд үүнийг суулгах боломжгүй.</string>
-    <string name="appblock_block_subtitle1_tablet">Энэ хэрэглүүрийг хортон гэж сэжиглэж байгаа тул таны таблет болон хувийн мэдээллийг хамгаалахын тулд үүнийг суулгах боломжгүй.</string>
-    <string name="appblock_block_subtitle2">Энэ хэрэглүүрийг хортон гэж мэдээлсэн тул суулгах боломжгүй.</string>
-    <string name="appblock_block_text1">Энэ хэрэглүүр нь баталгаатай эх сурвалжийнх биш байгаа тул таны хувийн мэдээллийг хулгайлах эсвэл задруулахад ашиглагдаж болох нууцлалтай зөвшөөрлүүдийг шаардаж байна.</string>
-    <string name="appblock_block_text2">"Хортон вирустэй хэрэглүүрүүд нь таны хувийн мэдээллийг хулгайлах, таны хувийн мэдээллийг дуурайх, таны санхүүгийн бүртгэлд нэвтрэхийн тулд нууцлалтай зөвшөөрлүүдийг ашиглаж болзошгүй.
-
-Хууль ёсны санхүүгийн байгууллагууд ZIP файл, APK файл эсвэл файлын удирдлагын хэрэглүүрүүд суулгах шаардлагагүй байдаг.
-
-Суулгаж байгаа хэрэглүүрүүдээ найдвартай эх сурвалжаас байгаа эсэхийг нь үргэлж шалгаарай."</string>
-    <string name="appblock_warn_subtitle">Энэ хэрэглүүр нь таны хувийн мэдээллийг хулгайлж эсвэл задруулж болзошгүй.</string>
+    <string name="appblock_block_text_phone">Энэ хэрэглүүрийг хортой гэж мэдэгдсэн эсвэл хортой гэж мэдэгдсэн хэрэглүүртэй төстэй байгаа учраас энэ хэрэглүүрийг суулгах боломжгүй. Энэ хэрэглүүр нь фишинг зэрэг гэмт хэрэгт ашиглагдах магадлалтай. Таны утас болон өгөгдлийг аюулгүй байлгахын тулд энэ хязгаарлалтыг алгасах боломжгүй.</string>
+    <string name="appblock_block_text_tablet">Энэ хэрэглүүрийг хортой гэж мэдэгдсэн эсвэл хортой гэж мэдэгдсэн хэрэглүүртэй төстэй байгаа учраас энэ хэрэглүүрийг суулгах боломжгүй. Энэ хэрэглүүр нь фишинг зэрэг гэмт хэрэгт ашиглагдах магадлалтай. Таны таблет болон өгөгдлийг аюулгүй байлгахын тулд энэ хязгаарлалтыг алгасах боломжгүй.</string>
+    <string name="appblock_link_text">Илүү ихийг сурах</string>
     <string name="appblock_warn_text1">"Баталгаагүй эх сурвалжаас хэрэглүүрүүд суулгавал тэдэнд таны хувийн мэдээллийг цуглуулах эсвэл таны үйл ажиллагааг хянах боломжийг олгож магадгүй.
 
 Ийм хэрэглүүрийг суулгахыг зөвлөдөггүй.
 
 Ямартай ч суулгахаар шийдэж сонгосон бол хэрэглүүрийн Нууцлалын мэдэгдлийг анхааралтай шалгаж, зөвхөн шаардлагатай зөвшөөрлүүдийг өгнө үү."</string>
-    <string name="appblock_warn_text2">"Хортон вирустэй хэрэглүүрүүд нь Харилцагчид, SMS, Гэрэл зургийн зөвшөөрлүүд зэргийг ашиглан таны хувийн мэдээллийг авах гэж голдуу оролддог.
-
-Ийм хэрэглүүрийг суулгахыг зөвлөдөггүй.
-
-Ямартай ч суулгахаар шийдэж сонгосон бол найдвартай эх сурвалжаас ирсэн эсэхийг шалгаж, өөрийн өгөгдөлд хандах бусад эрх болон зөвшөөрлүүдийг өгөхдөө болгоомжтой хандана уу."</string>
     <string name="application_default_restrict">Өөр аппыг төхөөрөмжийн админ өгөгдмөлөөр тохируулдаг.</string>
     <string name="auto_click_paused">Автоматаар товшихыг түр зогсоосон.</string>
     <string name="auto_click_resumed">Автоматаар товшихыг үргэлжлүүлсэн.</string>
     <string name="autofill_never_use_for_this_app">%s-г энэ хэрэглүүрт хэзээ ч бүү ашигла</string>
     <string name="autofill_save_cancel">Цуцлах</string>
     <string name="autofill_save_never_OK">ОК</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="backup_restrict">Хамгаалалтын бодлого Нөөцлөлтийн ашиглалтаас сэргийлнэ.</string>
     <string name="badPin2">PIN2 буруу байна. Ахин оролд.</string>
     <string name="badPuk2">Таны оруулсан PUK2 буруу байна</string>
@@ -175,8 +171,6 @@
     <string name="bluetooth_a2dp_restrict">Хамгаалалтын бодлого Bluetooth медиа аудиогийн ашиглалтаас сэргийлнэ.</string>
     <string name="bluetooth_avrcp_restrict">Хамгаалалтын бодлого Bluetooth аудио/видеоны удирдлагын ашиглалтаас сэргийлнэ.</string>
     <string name="bluetooth_bpp_restrict">Хамгаалалтын бодлого Bluetooth-ээр дамжуулан хэвлэхээс сэргийлнэ.</string>
-    <string name="bluetooth_china_popup_message">%1$s %2$s-г ашиглах зөвшөөрөл хүсч байна. Зөвшөөрөх үү?</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">Хамгаалалтын бодлого Bluetooth-ээр дамжуулан өгөгдөл дамжуулахаас сэргийлнэ.</string>
     <string name="bluetooth_desktop_restrict">Хамгаалалтын бодлого Bluetooth-ээр дамжуулан компьютертаа холбогдохоос сэргийлнэ.</string>
     <string name="bluetooth_device_restrict">Хамгаалалтын бодлого энэ Bluetooth төхөөрөмжөөр дамжуулан хослуулахаас сэргийлнэ.</string>
@@ -187,7 +181,6 @@
     <string name="bluetooth_outgoing_call_restrict">Хамгаалалтын бодлого Bluetooth-ээр дамжуулан гарах дуудлага хийхээс сэргийлнэ.</string>
     <string name="bluetooth_pairing_restrict">Хамгаалалтын бодлого Bluetooth-ээр дамжуулан хослуулахаас сэргийлнэ.</string>
     <string name="bluetooth_pbap_restrict">Хамгаалалтын бодлого Bluetooth хаягийн дэвтрийн ашиглалтаас сэргийлнэ.</string>
-    <string name="bluetooth_permission_request">Bluetooth зөвшөөрлийн хүсэлт</string>
     <string name="bluetooth_restrict">Хамгаалалтын бодлого Bluetooth-ийн ашиглалтаас сэргийлнэ.</string>
     <string name="bluetooth_sap_restrict">Хамгаалалтын бодлого Bluetooth-ээр дамжуулан SIM картандаа нэвтрэхээс сэргийлнэ.</string>
     <string name="bluetooth_security_mode_disable">Хамгаалалтын бодлого Bluetooth-ийг ашиглахаас сэргийлнэ.</string>
@@ -250,11 +243,8 @@
     <string name="ctc_plmn_locked_card">Түгжээтэй карт</string>
     <string name="d2dalloweddevice">Зөвшөөрөгдсөн төхөөрөмжүүд</string>
     <string name="data_call_restriction">Хамгаалалтын бодлого хөдөлгөөнт өгөгдлийн ашиглалтыг хязгаарлана</string>
-    <string name="data_usage_disable_mobile">Хөдөлгөөнт өгөгдлийн холболтыг хаах уу?</string>
-    <string name="data_usage_enable_mobile_warning">Багц өгөгдлөөр дамжуулан холбогдоход нэмэлт төлбөр гарч болзошгүй. Үргэлжлүүлэх үү?</string>
     <string name="data_usage_limit_body">Мобайл датаг таны төлбөрийн давтагдах төгсгөл хүртэл түр зогсооно.</string>
     <string name="data_usage_mobile_limit_snoozed_title">Таны мобайл дата хязгар хэтрсэн</string>
-    <string name="data_usage_mobile_limit_title">Мобайл дата хязгаарт хүрсэн</string>
     <string name="data_usage_rapid_app_body">%s ердийнхөөс их дата ашигласан.</string>
     <string name="data_usage_rapid_body">Таны хэрэглүүрүүд ердийнхөөс илүү дата ашигласан.</string>
     <string name="data_usage_rapid_title">Хөдөлгөөнт өгөгдлийн ашиглалт их</string>
@@ -265,6 +255,7 @@
     <string name="data_usage_warning_title_offpeak_chn">Өндр ачалн бус дтагс %s-г ашглв</string>
     <string name="data_usage_warning_title_unlimited_chn">Мобйл дтаны хурдн хязгарт хүрсн</string>
     <string name="device_disabled">Төхөөрөмж идэвхгүй болгосон. Мэдээллийн технологийн админтайгаа холбоо барь</string>
+    <string name="device_info_not_available">Боломжгүй</string>
     <string name="dex_cant_change_user_profile">Samsung DeX горимд хэрэглэгчийн профилийг өөрчлөх боломжгүй.</string>
     <string name="dex_dialog_launch_toast">Нээлттэй хэрэглүүрүүд хаагдаж болно. Samsung DeX-г асаах, унтраахаас өмнө өгөгдлөө хадгална уу.</string>
     <string name="dex_disconnected_from_device">DeX %s-с салсан. ТВ дээрээ сүлжээний холболтыг шалгана уу.</string>
@@ -273,9 +264,6 @@
     <string name="dex_launcher_mode_change">Samsung DeX рүү шилжихийн тулд %s-г хаасан.</string>
     <string name="dex_mirroring_jit_msg">Та таблет дээрээ Samsung DeX-г ажиллуулах үед хүссэн HDMI-холбосон дэлгэц дээрээ дэлгэцийг хувилж томоор харах боломжтой.</string>
     <string name="dex_mirroring_jit_title">DeX-г том дэлгэцэд хувилна уу</string>
-    <string name="dex_restart_app_dialog_button_positive">Унтрааж асаа</string>
-    <string name="dex_restart_app_dialog_message">Энэ хэрэглүүр аль хэдийн бусад дэлгэц дээр ажиллаж байна. Үүнийг энд нээхийн тулд хэрэглүүрийг дахин эхлүүлэх хэрэгтэй. Дахин эхлэхээс өмнө чухал зүйлсээ хадгална уу.</string>
-    <string name="dex_restart_app_dialog_title">%s-г дахин эхлүүлэх үү?</string>
     <string name="dex_restriction_blockerMessage">Хамгаалалтын бодлого Samsung DeX-ийн ашиглалтаас сэргийлнэ.</string>
     <string name="dex_restriction_ethernetOnly">Хамгаалалтын бодлого нь DeX дахь Wi-Fi өгөгдөл, мобайл дата, холболтыг ашиглахаас сэргийлдэг. Сүлжээний функцүүдэд утастай холболт шаардагдана.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">Аюулгүй байдлын бодлогоос шалтгаалан Samsung DeX гарахын тулд гадаад дэлгэцийг салгана уу.</string>
@@ -300,7 +288,6 @@
     <string name="digital_signature_failure_user_notification">Хэрэглэгчид %d дижитал гарын үсэг хүчингүй</string>
     <string name="disableupdate_application_restrict">Хамгаалалтын бодлого энэ програмыг шинэчлэхээс сэргийлнэ.</string>
     <string name="display_chooser_button_positive">Унтрааж асаа</string>
-    <string name="display_chooser_dont_show_again">Дахин битгий үзүүл</string>
     <string name="dlg_confirm_kill_storage_users_text">USB хадгалалтыг холбоход ашиглаж буй зарим програмыг зогсооно. Та USB хадгалалтыг салгах хүртэл тэдгээр нь боломжгүй байж болно.</string>
     <string name="dlg_confirm_kill_storage_users_title">Хадгалалтыг компьютерт холбох</string>
     <string name="dlg_error_title">USB ажиллагаа бүтэлгүйтэв</string>
@@ -315,7 +302,7 @@
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Энэ хэрэглүүрийг Олон цонхны харагдац дээр ашиглах боломжгүй.</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Энэ функцийг Олон цонхны харагдац дээр ашиглах боломжгүй.</string>
     <string name="edit_contact_at_sim_restriction">Хамгаалалтын бодлого SIM картын харилцагчдыг засварлахаас сэргийлнэ.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Зөвшөөрөгдсөн төхөөрөмжүүд</string>
+    <string name="edm_policy_not_allow_open_wifiap">Хамгаалалтын бодлого голомтын найдваргүй интернэт хуваалцах холболтын ашиглалтыг хязгаарлана</string>
     <string name="emergency_calls_only">Зөвхөн яаралтай дуудлага</string>
     <string name="ethernet_cable_connected_notification_message">Тохируулахын тулд товш</string>
     <string name="ethernet_cable_connected_notification_title">Ethernet кабель холбогдсон</string>
@@ -335,7 +322,7 @@
     <string name="ext_media_unsupported_notification_message">Энэ төхөөрөмж энэ %s-д тохирно. Товшоод тохирох форматаар тохируул.</string>
     <string name="ext_media_unsupported_notification_title">Үл тохирох %s</string>
     <string name="ext_storage_bad_removal_button">Дахин эхлүүл</string>
-    <string name="ext_storage_bad_removal_title">Таблетаа дахин эхлүүл</string>
+    <string name="ext_storage_bad_removal_title">Утсаа дахин эхлүүл</string>
     <string name="extmedia_format_button_format">Формат</string>
     <string name="extmedia_format_message_usbhost">Таны USB санд хадгалагдсан бүх файл арилгагдана. Энэ үйлдлийг буцаах боломжгүй!</string>
     <string name="extmedia_format_title_usbhost">USB санг форматлах уу?</string>
@@ -406,6 +393,7 @@
     <string name="globalactions_unable_restart_msg_fmm">Утсыг алсаас Find My Mobile-р түгжсэн тул дахин эхлүүлэх боломжгүй.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Таблетыг алсаас Find My Mobile-р түгжсэн тул дахин эхлүүлэх боломжгүй.</string>
     <string name="globalactions_unable_restart_msg_securelock">Утсыг түгжигдсэн байхад дахин эхлүүлэх боломжгүй. Хавтасыг нээж, түгжээг нь тайлаад утсыг дахин эхлүүл.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">SIM карт түгжигдсэн үед утсаа дахин эхлүүлэх боломжгүй.</string>
     <string name="hardware_key_restrict">Хамгаалалтын бодлого энэхүү хатуу товчлуурын ашиглалтаас сэргийлнэ.</string>
     <string name="hardware_sec">Дэлгэц дээрх товчлуур</string>
     <string name="hbd_translate">Бичсэн текстийг орчуул</string>
@@ -475,16 +463,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Засвар үйлчилгээний горимыг унтраахын тулд та таблетынхаа түгжээг тайлах хэрэгтэй.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Засвар үйлчилгээний горим асаалттай үед татсан өгөгдөл, хэрэглүүр суулгах, тохиргооны өөрчлөлт зэрэг юу ч хадгалагдахгүй.</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Дэлгэц.н түгжэ тохрул</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Бүртгэл үүсгэхгүйгээр эхлүүлэх</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Бүртгэл үүсгэж дахин эхлүүлэх</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Засвар үйлчилгээний горимыг асаахын тулд таны утас дахин асах шаардлагатай.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Эхлээд дэлгэцийн түгжээг тохируулна уу.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Засвар үйлчилгээний горимыг дахин эхлүүлэхийн тулд та таблетаа дахин асаах шаардлагатай.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Манай туслах ажилтнуудад таны утсанд гарсан аливаа асуудалд дүн шинжилгээ хийхэд нь туслахын тулд бид Засвар үйлчилгээний горимыг эхлүүлэхийн өмнө системийн бүртгэл үүсгэхийг зөвлөж байна.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Манай туслах ажилтан таны утсанд гарсан аливаа асуудлуудыг оношлох, дүн шинжилгээ хийхэд нь туслахын тулд бид Засвар үйлчилгээний горимыг эхлүүлэхийн өмнө системийн бүртгэл үүсгэхийг зөвлөж байна.
 
-Тэмдэглэл нь ямар хэрэглүүрүүдийг ашигласан болон саяхан гарсан алдаануудыг харуулдаг боловч бусад хувийн мэдээллийг оруулаагүй болно. Бүртгэл нь зөвхөн асуудалд дүн шинжилгээ хийхэд ашиглагдах ба өөр зорилгоор ашиглахгүй. Бүртгэлийг үүсгэхэд ойролцоогоор 2 минут орчим болно."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Манай туслах ажилтнуудад таны таблетад гарсан аливаа асуудалд дүн шинжилгээ хийхэд нь туслахын тулд бид Засвар үйлчилгээний горимыг эхлүүлэхийн өмнө системийн бүртгэл үүсгэхийг зөвлөж байна.
+Бүртгэлд зөвхөн таны утсыг засварлахад зайлшгүй шаардлагатай мэдээлэл, тухайлбал ямар хэрэглүүр ашиглаж байсан, сүүлийн үед гарсан алдаа, блоклосон утасны дугаар, файл санах ой, хадгалах багтаамж зэрэг орно. Бүртгэлийг зөвхөн асуудлыг оношлох, дүн шинжилгээ хийхэд ашиглах бөгөөд өөр зорилгоор ашиглахгүй. Бүртгэлийг үүсгэхэд ойролцоогоор 2 минут зарцуулна."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Манай туслах ажилтан таны таблетад гарсан аливаа асуудлуудыг оношлох, дүн шинжилгээ хийхэд нь туслахын тулд бид Засвар үйлчилгээний горимыг эхлүүлэхийн өмнө системийн бүртгэл үүсгэхийг зөвлөж байна.
 
-Тэмдэглэл нь ямар хэрэглүүрүүдийг ашигласан болон саяхан гарсан алдаануудыг харуулдаг боловч бусад хувийн мэдээллийг оруулаагүй болно. Бүртгэл нь зөвхөн асуудалд дүн шинжилгээ хийхэд ашиглагдах ба өөр зорилгоор ашиглахгүй. Бүртгэлийг үүсгэхэд ойролцоогоор 2 минут орчим болно."</string>
+Бүртгэлд зөвхөн таны таблетыг засварлахад зайлшгүй шаардлагатай мэдээлэл, тухайлбал ямар хэрэглүүр ашиглаж байсан, сүүлийн үед гарсан алдаа, блоклосон утасны дугаар, файл санах ой, хадгалах багтаамж зэрэг орно. Бүртгэлийг зөвхөн асуудлыг оношлох, дүн шинжилгээ хийхэд ашиглах бөгөөд өөр зорилгоор ашиглахгүй. Бүртгэлийг үүсгэхэд ойролцоогоор 2 минут зарцуулна."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Хадгалалт шинжлэх</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Таны утасны дотоод хадгалалт бүрэн дүүрсэн. Хэрэв таны хадгалалтын зай дүүрвэл зарим хэрэглүүр ба функцүүд зөв ажиллахгүй байж болно. Өөртөө хэрэгцээгүй зарим файл эсвэл хэрэглүүрүүдийг устгаж үзнэ үү. Устгасны дараа Хогийн савыг хоослохыг бүү март.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Таны таблетын дотоод хадгалалт бүрэн дүүрсэн. Хэрэв таны хадгалалтын зай дүүрвэл зарим хэрэглүүр ба функцүүд зөв ажиллахгүй байж болно. Өөртөө хэрэгцээгүй зарим файл эсвэл хэрэглүүрүүдийг устгаж үзнэ үү. Устгасны дараа Хогийн савыг хоослохыг бүү март.</string>
@@ -506,10 +494,17 @@
     <string name="maintenance_mode_outro_label">Засвар үйлчилгээний горимоос гарах</string>
     <string name="maintenance_mode_outro_textview_message_phone">Засвар үйлчилгээний горимыг унтраахын тулд та утасныхаа түгжээг тайлах хэрэгтэй. Үүнийг хийснээр бүх зүйл Засвар үйлчилгээний горимыг асаасан үеийн байдал руу буцна. Татаж авсан өгөгдөл, суулгасан хэрэглүүр эсвэл тохиргооны өөрчлөлт гэх мэт Засвар үйлчилгээний горим асаалттай үед хийсэн өөрчлөлтүүд хадгалагдахгүй.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Засвар үйлчилгээний горимыг унтраахын тулд та таблетынхаа түгжээг тайлах хэрэгтэй. Үүнийг хийснээр бүх зүйл Засвар үйлчилгээний горимыг асаасан үеийн байдал руу буцна. Татаж авсан өгөгдөл, суулгасан хэрэглүүр эсвэл тохиргооны өөрчлөлт гэх мэт Засвар үйлчилгээний горим асаалттай үед хийсэн өөрчлөлтүүд хадгалагдахгүй.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">%s нь идэвхтэй үед засвар үйлчилгээний горимыг ашиглах боломжгүй.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Хязгаарлагдмал хэрэглүүрүүд болон үндсэн дэлгэц дээр эрчим хүч хэмнэх горимыг асаалттай үед Засвар үйлчилгээний горимыг ашиглах боломжгүй.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">Засвар үйлчилгээний горимыг энэ утсан дээр дэмждэггүй.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">Засвар үйлчилгээний горимыг энэ таблет дээр дэмждэггүй.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s-г зөвхөн төхөөрөмж эзэмшигч ашиглах боломжтой</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Өгөгдлөө нөөцлөхийг зогсоож, Засварын горимыг асаах уу?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Засвар үйлчилгээний горимыг асаахын тулд та дуусаагүй нөөцлөлтөө дуусгах эсвэл устгах хэрэгтэй.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Засвар үйлчилгээний горимыг асаахын тулд та хийгдэж буй нөөцлөлтөө зогсоох хэрэгтэй.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Засвар үйлчилгээний горимыг асаахын тулд та нөөцлөх өгөгдлөө сэргээхийг зогсоох хэрэгтэй.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Төхөөрөмжийн админы хэрэглүүр</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Бүртгэл үүсгэж байна…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">Үүнд ихэнхдээ 2 минут орчим хугацаа орно. Бүртгэлийг үүсгэсний дараа таны утас Засвар үйлчилгээний горимд дахин асах бөгөөд та утсаа засвар үйлчилгээнд найдвартай хүлээлгэж өгөх боломжтой.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">Үүнд ихэнхдээ 2 минут орчим хугацаа орно. Бүртгэлийг үүсгэсний дараа таны таблет Засвар үйлчилгээний горимд дахин асах бөгөөд та таблетаа засвар үйлчилгээнд найдвартай хүлээлгэж өгөх боломжтой.</string>
@@ -532,13 +527,8 @@
     <string name="media_checking_usbhost">USB санг одоо шалгаж байна.</string>
     <string name="media_unknown_state">Гадаад медиа үл мэдэгдэх төлөвт байна.</string>
     <string name="mediaplayer_restrict">Хамгаалалтын бодлого MTP медиа тоглуулагчийн ашиглалтаас сэргийлнэ.</string>
+    <string name="message_on_crash">Автомат хориглогч блоклосон</string>
     <string name="microphone_restrict">Хамгаалалтын бодлого микрофоны ашиглалтаас сэргийлнэ.</string>
-    <string name="miniresolver_call">Дуудлага</string>
-    <string name="miniresolver_call_in_work">Ажлын хэрэглүүрээс залгах уу?</string>
-    <string name="miniresolver_call_information">Танай байгууллага зөвхөн ажлын хэрэглүүрүүдээс дуудлага хийхийг танд зөвшөөрнө.</string>
-    <string name="miniresolver_sms_information">Танай байгууллага зөвхөн ажлын хэрэглүүрүүдээс зурвас илгээхийг танд зөвшөөрнө.</string>
-    <string name="miniresolver_switch">Шилжих</string>
-    <string name="miniresolver_switch_to_work">Ажлын хэрэглүүрт шилжих үү?</string>
     <string name="mmcc_authentication_reject_name_template">%s зөвшөөрөгдөөгүй</string>
     <string name="mmcc_illegal_me_name_template">%s зөвшөөрөгдөөгүй</string>
     <string name="mmcc_illegal_ms_name_template">%s зөвшөөрөгдөөгүй</string>
@@ -550,30 +540,6 @@
     <string name="mock_location_reminder_disable">Унтраах</string>
     <string name="mock_location_reminder_title">Хуурамч байршил ассан</string>
     <string name="more_apps">Бусад хэр.</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">%s үйлчилгээ тохирохгүй. Үйлчилгээний албатай холбоо барина уу.</string>
-    <string name="mptcp_message_address_type_not_supported">%s холболт муу. Байгаа сүлжээгээр дахин холбогдож байна…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s холболт муу. Байгаа сүлжээгээр дахин холбогдож байна…</string>
-    <string name="mptcp_message_cmd_not_supported">%s сүлжээ түр зуур боломжгүй байна. Байгаа сүлжээгээр дахин холбогдож байна…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s холболт муу. Байгаа сүлжээгээр дахин холбогдож байна…</string>
-    <string name="mptcp_message_connection_refused">%s холболт муу. Байгаа сүлжээгээр дахин холбогдож байна…</string>
-    <string name="mptcp_message_data_usage_limit">Өгөгдөл ашиглах хязгаарт хүрэв. Өгөгдөл ашиглах хязгаарыг өөрчлөхдөө Тохиргоо руу оч.</string>
-    <string name="mptcp_message_host_unreachable">%s холболт муу. Байгаа сүлжээгээр дахин холбогдож байна…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">%s-г идэвхжүүлэх боломжгүй. Төхөөрөмж LTE сүлжээнд холбогдоогүй.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Олон улсын роуминг горимд %s-г идэвхжүүлэх боломжгүй.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Мобайл хотспот эсвэл USB холболт идэвхжсэн үед %s-г идэвхжүүлэх боломжгүй.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Wi-Fi Direct-г идэвхжүүлсэн үед %s-г идэвхжүүлэх боломжгүй.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Нислэгийн горим идэвхжсэн үед %s-г идэвхжүүлэх боломжгүй.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Хөдөлгөөнт дата унтарсан үед %s-г идэвхжүүлэх боломжгүй.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Үйлчилгээ үзүүлэгчээс хариулт алга байна.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">%1$s-г идэвхжүүлэх боломжгүй. Таны интернетийн багцаар %2$s боломжгүй эсвэл %3$s серверээс хариулт хүлээж аваагүй.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">%s идэвхжүүлэх хүсэлтийг илгээж болсонгүй. Боломжтой сүлжээгээр дахин холбогдож байна…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">%s-г идэвхжүүлэх боломжгүй. SIM картыг буруу оруулсан.</string>
-    <string name="mptcp_message_network_unreachable">%s холболт муу. Байгаа сүлжээгээр дахин холбогдож байна…</string>
-    <string name="mptcp_message_non_mptcp_plan">Giga Multi-Path-г идэвхжүүлэх боломжгүй. Дата багцад энэ функц тохирохгүй.</string>
-    <string name="mptcp_message_operation_disabled_overheating">Төхөөрөмж хэт халахаас сэргийлж %s-г идэвхгүй болгосон. Мобайл сүлжээгээр татаж авч байна…</string>
-    <string name="mptcp_message_server_error">%s холболт муу. Байгаа сүлжээгээр дахин холбогдож байна…</string>
-    <string name="mptcp_message_setting_disabled_overheating">%s-г идэвхжүүлэх боломжгүй. Төхөөрөмж хэт халж байна. Төхөөрөмжийг хөргөөд дахин оролдоно уу.</string>
-    <string name="mptcp_message_ttl_expired">%s сүлжээ түр зуур боломжгүй байна. Байгаа сүлжээгээр дахин холбогдож байна…</string>
     <string name="multi_user_capability_restrict">Хамгаалалтын бодлого таны төхөөрөмж дээрх олон хэрэглэгчийн чадавхаас сэргийлнэ.</string>
     <string name="multi_user_creation_restrict">Хамгаалалтын бодлого таны төхөөрөмж дээр шинэ хэрэглэгчийн бүртгэл үүсгэхээс сэргийлнэ.</string>
     <string name="multi_user_removal_restrict">Хамгаалалтын бодлого таны төхөөрөмжөөс хэрэглэгчийн бүртгэл арилгахаас сэргийлнэ.</string>
@@ -592,27 +558,25 @@
     <string name="multisound_sound_via_bluetooth_multiselection">Таны Bluetooth аудио төхөөрөмжид дуу тоглуулж байна. Энд товшиж үүнийг унтраах</string>
     <string name="multisound_sound_via_headphone">%s-н дууг таны чихэвчээр тоглуулж байна. Үүнийг унтраахын тулд энд товш.</string>
     <string name="multisound_sound_via_headphone_multiselection">Таны чихэвчээр дамжуулан дуу тоглуулж байна. Энд товшиж үүнийг унтраах.</string>
-    <string name="multisound_sound_via_phone_speaker">%s-н дуу таны таблетны чанга яригчаар дамжин тоглож байна. Үүнийг унтраахдаа энд товш.</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">Таны таблетын чанга яригчаар дамжуулан дуу тоглуулж байна. Энд товшиж үүнийг унтраах.</string>
+    <string name="multisound_sound_via_phone_speaker">%s-н дуу таны утасны чанга яригчаар дамжин тоглож байна. Үүнийг унтраахын тулд энд товш.</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">Таны утасны чанга яригчаар дамжуулан дуу тоглуулж байна. Энд товшиж үүнийг унтраах.</string>
     <string name="multisound_sound_via_usb_audio">%s-н дууг таны USB аудио төхөөрөмжөөр тоглуулж байна. Үүнийг унтраахын тулд энд товш.</string>
     <string name="multisound_sound_via_usb_audio_multiselection">Таны USB аудио төхөөрөмжөөр дамжуулан дуу тоглуулж байна. Энд товшиж үүнийг унтраах.</string>
     <string name="multisound_title">Хэрэглүүрийн дууг тусад нь гаргах</string>
     <string name="multisound_turn_off_multisound">Унтраах</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX дээр %s-г ажиллуулах боломжгүй. Таблетын горим дээр ажиллуулж үзнэ үү.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX дээр %s-г ажиллуулах боломжгүй. Энэ нь таблетын Эх дэлгэцэд зориулагдсан.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Зарим тоглоомууд зөвхөн мэдрэгчтэй дэлгэц дээр ажиллана. Хэрэв Samsung DeX дээр хулганын удирдлагууд ажиллахгүй бол оронд нь таблетын горим дээр тоглож үзнэ үү.</string>
-    <string name="my_device">Энэ таблет</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX дээр %s-г ажиллуулах боломжгүй. Утасны горим дээр ажиллуулж үзнэ үү.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s-г Samsung DeX дотор ажиллуулах боломжгүй. Энэ нь утасны Эх дэлгэцэд зориулагдсан.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Зарим тоглоомууд зөвхөн мэдрэгчтэй дэлгэц дээр ажиллана. Хэрэв Samsung DeX дээр хулганын удирдлагууд ажиллахгүй бол оронд нь утасны горим дээр тоглож үзнэ үү.</string>
+    <string name="my_device">Энэ утас</string>
     <string name="network_locked_sim_dialog_message_ais">Таны утсанд захиалсан ашиглах нөхцөл тохирохгүй байгаа тул таны SIM картыг энэ утсан дээр бүрэн ажиллуулах боломжгүй. Хэрэв танд аливаа асуулт байвал эсвэл үүний талаар илүү мэдээлэл хэрэгтэй бол, Samsung Хэрэглэгчийн үйлчилгээний байршил эсвэл энэ бүтээгдэхүүнийг борлуулсан дэлгүүртэй холбогдоно уу.</string>
     <string name="network_locked_sim_notification_text">Сүлжээний түгжээтэй SIM карт хийсэн.</string>
     <string name="network_locked_sim_notification_text_vzw">Tap here to use your phone on a different network.</string>
     <string name="new_dex_toast_change_default_home_app">Үндсэн хэрэглүүрээ One UI Эхлэл болгон өөрчил.</string>
     <string name="nfc_restrict">Хамгаалалтын бодлого NFC-н ашиглалтаас сэргийлнэ.</string>
     <string name="nosim_limited_service">Хязгаарлагдмал үйлчилгээ</string>
-    <string name="not_support_ai_key">AI түлхүүр нь таны таблеттай хараахан ажиллахгүй байна. Удахгүй шинэчлэлт гарна.</string>
-    <string name="notification_app_name_settings">Тохиргоо</string>
     <string name="notification_channel_dex_policy">Samsung DeX бодлого</string>
-    <string name="ntfs_usb_storage_readonly_mount_message">Энэ санах ой зөвхөн унших зориулалттай тул энэ нь NTFS формат ашигладаг.</string>
-    <string name="ntfs_usb_storage_readonly_mount_title">Зөвхн уншх USB санх ой нэмгдсн</string>
+    <string name="ntfs_usb_storage_readonly_mount_message">Энэ хадгалалт зөвхөн унших зориулалттай тул энэ нь NTFS формат ашигладаг.</string>
+    <string name="ntfs_usb_storage_readonly_mount_title">Зөвхн уншх USB хадгалалт нэмгдсн</string>
     <string name="overheat_limit_ok">ОК</string>
     <string name="overheat_warning_title_v2_phone">Утас хэт халж байна</string>
     <string name="overheat_warning_title_v2_tablet">Таблет хэт халж байна</string>
@@ -784,7 +748,6 @@
     <string name="permlab_scheduleExactAlarm">Сэрүүлэг ба сануулгууд тохируулна уу</string>
     <string name="permlab_spdControl">Хамгаалалтын бодлогын шинэчлэлийг удирдах</string>
     <string name="permlab_ucsPlugin">Универсал Итгэмжлэлийн Менежментийн Залгаас</string>
-    <string name="personal_apps_suspended_turn_profile_on">Асаах</string>
     <string name="phoneTypeConference">Хурал</string>
     <string name="policydesc_allow_bluetoothmode">Bluetooth ашиглахыг хориглох.</string>
     <string name="policydesc_allow_browser">Интернет ашиглахыг хориглох.</string>
@@ -792,7 +755,7 @@
     <string name="policydesc_allow_desktopsync">Компьютер синхрончлол ашиглахыг хориглох.</string>
     <string name="policydesc_allow_internetsharing">Мобайл Хотспот ашиглахыг хориглох.</string>
     <string name="policydesc_allow_irda">IrDA ашиглахыг хориглох.</string>
-    <string name="policydesc_allow_popimapemail">Таблет дээрээ POP, IMAP э-шуудан ашиглахыг хориглох.</string>
+    <string name="policydesc_allow_popimapemail">Утсан дээрээ POP, IMAP э-шуудан ашиглахыг хориглох.</string>
     <string name="policydesc_allow_storagecard">SD карт ашиглахыг хориглох.</string>
     <string name="policydesc_allow_textmessaging">Бичвэр болон мультимедиа зурвас ашиглахыг хориглох.</string>
     <string name="policydesc_allow_thirdParty">Энэ аппликейшн гадны аппликэйшнуудыг ажиллуулахаас сэргийлнэ.</string>
@@ -838,7 +801,7 @@
     <string name="pwd_change_enforced">Хамгаалалтын бодлого нь танаас нууц үгээ өөрчлөхийг шаардана</string>
     <string name="recording_fail">Микрофон %2$s-д ашиглагдах үеэр %1$s дээр ашиглах боломжгүй.</string>
     <string name="recording_popup">%s микрофон ашиглаж байна.</string>
-    <string name="recording_popup_device">Таблет</string>
+    <string name="recording_popup_device">Утас</string>
     <string name="recording_popup_with_bluetooth">%s нь Bluetooth микрофон ашиглаж байна.</string>
     <string name="recording_popup_with_device">%1$s нь %2$s-н микрофоныг ашиглаж байна.</string>
     <string name="redo">Дахн хийх</string>
@@ -903,12 +866,12 @@
     <string name="screencapture_restrict">Хамгаалалтын бодлого дэлгэцийн зураг авах функцын ашиглалтаас сэргийлнэ.</string>
     <string name="sd_card_unavailable_message">Та SD картыг ашиглах боломжгүй учир нь үүнийг өөр хэрэглэгчийн профилийг ашиглаж байхад оруулсан.</string>
     <string name="sd_card_unavailable_title">SD карт боломжгүй</string>
-    <string name="sdcard_bad_removal_message">SD картыг аюулгүй бусаар салгасан. Таблетаа санаандгүй дахин эхлэхээс сэргийлэхийн тулд хадгалаагүй өгөгдлийг хадгалж одоо дахин эхлүүлнэ үү.</string>
+    <string name="sdcard_bad_removal_message">SD картыг аюулгүй бусаар салгасан. Утсаа санаандгүй дахин эхлэхээс сэргийлэхийн тулд хадгалаагүй өгөгдлийг хадгалж одоо дахин эхлүүлнэ үү.</string>
     <string name="sdcard_batch_decrypt_noti_content">SD картын шифр тайлах</string>
     <string name="sdcard_batch_decrypt_noti_title">SD картны код тайлалт</string>
     <string name="sdcard_batch_decrypt_popup_content">Шифрлэсэн SD картыг ашиглахаас өмнө шифрийг нь тайлах ёстой. Шифр тайлахад нэг цаг буюу түүнээс урт хугацаа орж болно. Цэнэглэсэн зайтай эхлүүлж, төхөөрөмжийн шифр тайлж дуусах хүртэл залгаатай хэвээр байлга. Шифр тайлалтыг тасалдуулбал та хэсэг буюу бүх өгөгдлөө алдахад хүрч болно.</string>
     <string name="sdcard_decrypt_err_notification">SD картны код тайлахад алдаа гарав</string>
-    <string name="sdcard_decrypt_error_otherdevice">Таны SD карт дээрх зарим файлууд өөр төхөөрөмж дээр шифрлэгдсэн бөгөөд энэ таблет дээр ашиглах боломжгүй.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Таны SD карт дээрх зарим файлууд өөр төхөөрөмж дээр шифрлэгдсэн бөгөөд энэ утас дээр ашиглах боломжгүй.</string>
     <string name="sdcard_decrypt_notification">SD картны код тайлсан.</string>
     <string name="sdcard_decrypt_title_notification">SD картны код тайлалт</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">SD картын шифр тайлж байна…</string>
@@ -925,14 +888,6 @@
     <string name="sdcard_unmount_policy_noti_title">Мэдээллийн технологийн бодлогын дагуу SD картыг салгасан</string>
     <string name="sdhms_nr_control_low_battery">Таны утасны цэнэг 15%-с бага үлдсэн үед цэнэгээ хадгалахын тулд 5G-г унтраа.</string>
     <string name="sec_bluetooth_airplane_mode_toast">Bluetooth нь Нислэгийн горимд асаалттай байх болно.</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">Энэ хэрэглүүр бүтэн дэлгэц ашиглаж байна. Чиглүүлэхэд шудрах дохионууд төлөвийн мөрийг харуулна. Чиглүүлэхийн тулд төлөвийн мөр харагдаж байхад дахин шударна уу.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"Энэ хэрэглүүр бүтэн дэлгэц ашиглаж байна. Тасалдахыг багасгаж хэрэглүүрээс санамсаргүй гарахаас сэргийлэхийн тулд Үндсэн, Буцах ба Сүүлийн товчлууруудыг нуусан.
-
-Та утсаа эргүүлсэн ч гэсэн товчлуурууд үргэлж цэнэглэх портын хажууд байна. Та дэлгэцийн захаас сумаар харуулсан байдлаар дотогш шударч товчлууруудыг дахин харуулах боломжтой."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"Энэ хэрэглүүр бүтэн дэлгэцийг ашиглаж байна. Нүүр, Буцах, Сүүлд ашигласан товчлуурууд саатлыг багасгах болон хэрэглүүрээс санамсаргүйгээр гарахаас сэргийлэхийн тулд нуугдсан байна.
-
-Эдгээр товчлууруудыг дахин харагдахаар болгохын тулд сумаар үзүүлсний дагуу дэлгэцийн доод хэсгээс дээш шударна уу."</string>
     <string name="sec_monotype_default">Өгөгдмөл</string>
     <string name="sec_ringtone_category_brand_sound">Samsung брэнд дуу</string>
     <string name="sec_ringtone_category_calm">Тайван</string>
@@ -942,6 +897,10 @@
     <string name="sec_ringtone_category_open_theme">Одоогийн загварын өгөгдмөл</string>
     <string name="sec_ringtone_category_retro">Ретро</string>
     <string name="sec_ringtone_silent">Чимээгүй</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Цуцлах</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Хиймэл дагуултай холбогдохын тулд сүлжээний операторыг автоматаар Сонгох горимд тохируулах шаардлагатай.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Асаах</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Сүлжээний автомат сонголтыг асаах уу?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Микрофоны хандалтыг асааж, ярина уу.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Камерын хандалтыг асааж, %s-г ашиглана уу.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Микрофоны хандалтыг асааж, %s-г ашиглана уу.</string>
@@ -1037,6 +996,8 @@
     <string name="sem_face_error_already_in_use_by_VT">Видео дуудлагын үеэр нүүр таних аргыг ашиглах боломжгүй.</string>
     <string name="sem_face_error_camera_access_off">Камерын хандалт унтарсан тул нүүр танилтыг ашиглах боломжгүй</string>
     <string name="sem_face_error_camera_fail">Камерыг нээх боломжгүй байна. Дахин оролдоно уу.</string>
+    <string name="sem_face_error_lockout">Хэт олон буруу оролдлого хийсэн тул биометрийн баталгаажуулалт боломжгүй.</string>
+    <string name="sem_face_error_lockout_permanent">Хэт олон буруу оролдлого хийсэн тул биометрийн баталгаажуулалт боломжгүй.</string>
     <string name="sem_face_error_ppp_timeout">Та ялгамж чанараа баталгаажуулаад удаж байна. Нүүрээ бүртгүүлэхийн тулд дахин эхлэх хэрэгтэй болно.</string>
     <string name="sem_face_error_too_dark">Нүүр илрүүлэхэд хэтэрхий бараан байна</string>
     <string name="sem_face_error_too_dark_to_enroll">Хэт бараан. Гэрлийг асаах эсвэл илүү гэгээтэй газар очно уу.</string>
@@ -1052,13 +1013,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">S Pen-н зөвлөмжийг дэлгэцээс далд оруулж хурууны хээгээ уншуулна уу.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Хурууны хээ ашиглахын тулд эхлээд найдвартай дэлгэцийн түгжээний төрөл (хээ, PIN эсвэл нууц үг) тохируул.</string>
+    <string name="sem_fingerprint_error_lockout">Хэт олон буруу оролдлого хийсэн тул биометрийн баталгаажуулалт боломжгүй.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">Хэт олон буруу оролдлого хийсэн тул биометрийн баталгаажуулалт боломжгүй.</string>
     <string name="sem_fingerprint_error_onehand_mode">Нэг гарт горим дээр хурууны хээ уншихыг ашиглах боломжгүй.</string>
     <string name="sem_fingerprint_error_smart_view">%s ашиглах үеэр хурууны хээ уншуулах боломжгүй.</string>
+    <string name="sem_fingerprint_error_system_failure">Хурууны хээ мэдрэгч хариу өгөхгүй байна. Дараа дахин оролдоно уу. Хэрэв энэ хэвээр байвал утсаа дахин эхлүүлж үзнэ үү.</string>
+    <string name="sem_fingerprint_error_template_corrupt">Хурууны хээний дата эвдэрсэн. Хурууны хээгээ дахин нэмэх.</string>
     <string name="sem_fingerprint_error_wireless_charger">Хурууны хээгээ ашиглахын тулд утасгүй цэнэглэгчээс салга</string>
     <string name="sem_fingerprint_name_template">Хурууны хээ %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Дараа</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Одоо биш</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Арилгаад бүртгүүлэх</string>
+    <string name="sem_fingerprint_register_dialog_message">Хамгийн сүүлийн программ хангамжийн шинэчлэлээр хурууны хээ танилт сайжирсан. Та хурууны хээгээ арилгаж, дахин бүртгүүлэхээс нааш хурууны хээ танилтыг ашиглах боломжгүй болно.</string>
     <string name="sem_fingerprint_register_dialog_title">Хурууны хээгээ дахин бүртгүүл</string>
     <string name="sem_fingerprint_result_failed">Таарахгүй байна.</string>
     <string name="sem_fingerprint_result_retry">Дахин оролд.</string>
@@ -1078,7 +1044,7 @@
     <string name="sem_resolver_button_always_accessibility">Сонгосон хэрэглүүрийг үргэлж ашиглах</string>
     <string name="sem_resolver_button_just_once_accessibility">Сонгосон хэрэглүүрийг нэг л удаа ашиглана уу</string>
     <string name="sem_resolver_choose_what_to_do">Юу хийхээ сонгох</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Хэрэглүүрийн өгөгдмөл тохиргоог өөрчлөхийн тулд Тохиргоо > Хэрэглүүрүүд > Өгөгдмөл хэрэглүүр сонгох руу орно уу.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Энэ төрлийн файлыг нээхэд ашигладаг өгөгдмөл хэрэглүүрийг өөрчлөхийн тулд Тохиргоо > Хэрэглүүрүүд рүү очоод, одоогийн өгөгдмөл хэрэглүүрийг сонгоод, Өгөгдмөл болгож тохируулах > Өгөгдмөлүүдийг арилгах товшино уу.</string>
     <string name="sem_resolver_icon_content_description">Мэдээлэл</string>
     <string name="sem_resolver_personal_tab_accessibility">Хувийн</string>
     <string name="sem_resolver_share_live_default_text">Ойролцоох хүмүүстэй шууд хуваалц. Төхөөрөмжөө харагдахуйц болгосон хүмүүс энд харагдана.</string>
@@ -1090,9 +1056,6 @@
     <string name="sem_resolver_work_tab_accessibility">Ажил</string>
     <string name="sem_switch_off">Идэвхгүй</string>
     <string name="sem_switch_on">Идэвхтэй</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Бүх хэрэглүүрт камерын хандалт унтарсан</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Асаах</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Бүх хэрэглүүрт микрофоны хандалт унтарсан</string>
     <string name="serviceErased">Арилгалт амжилттай хийгдлээ</string>
     <string name="serviceModeAll">Бүгд</string>
     <string name="serviceModeAllConditional">нөхцөлт</string>
@@ -1102,6 +1065,7 @@
     <string name="serviceModeUnconditional">нөхцөлт бус</string>
     <string name="serviceisDisabled">Үйлчилгээг хаасан байна</string>
     <string name="serviceisEnabled">Үйлчилгээг идэвхжүүлсэн байна</string>
+    <string name="settings">Тохиргоо</string>
     <string name="sf_quick_switch_not_supported">Энэ нөхцөлд Түргэн шилжүүлэх дэмжигдээгүй.</string>
     <string name="sf_quick_switch_securefolder_view">%s-д шилжсэн.</string>
     <string name="share">Хуваалц</string>
@@ -1110,26 +1074,30 @@
     <string name="sharelist_restrict">Хамгаалалтын бодлого өгөгдөл хуваалцахаас сэргийлнэ.</string>
     <string name="show_keyboard_button">Гар товчлуур харуул</string>
     <string name="show_keyboard_button_description">%s-г чиглүүлэх мөр дээр харуулах.</string>
+    <string name="showing_esc_dialog">Та Esc товчлуурыг Буцах товчлуураар ажиллахаар тохируулж болно.</string>
     <string name="showing_touch_sensitivity_noti_action">Асаах</string>
     <string name="showing_touch_sensitivity_noti_text">Илүү нарийвчлалтай мэдрэгчтэй болохын тулд Privacy Screen эсвэл Notepaper Screen-г ашиглаж байхдаа мэдрэгчийн мэдрэгшлийг асаана уу.</string>
     <string name="showing_touch_sensitivity_noti_title">Мэдрэгчийн мэдрэгшлийг өсгөх</string>
+    <string name="side_key_double_press_archived_app">Хэрэглүүрийг архивласан. Өөр зүйл сонгоно уу.</string>
     <string name="side_key_double_press_deleted_app">Хэрэглүүрийг устгасан. Өөр зүйл сонгоно уу.</string>
     <string name="side_key_double_press_disabled_app">%s идэвхгүй болгосон. Өөр зүйл сонгоно уу.</string>
     <string name="signature_identity_toast">%s гарын үсэг зурсан</string>
     <string name="simRefresh">SIM өгөгдлийг шинэчлэн сэргээж байна</string>
     <string name="simReset">SIM-н өгөгдлийг шинэчилж байна…</string>
     <string name="sim_check_old_sim_message">Хуучин эсвэл гэмтсэн SIM картууд нь сүлжээний холболтын асуудлууд үүсгэж болзошгүй. Үйлчилгээ үзүүлэгчтэйгээ холбоо барина уу эсвэл дэлгүүрийн аль нэгээр нь зочилж солих шаардлагатай эсэхийг шалгана уу.</string>
+    <string name="sim_check_old_sim_message_skt">Хуучин эсвэл гэмтэлтэй SIM картууд нь сүлжээний холболтын асуудал үүсгэж болзошгүй. Үйлчилгээ үзүүлэгчтэй холбогдож эсвэл дэлгүүрийн аль нэгээр нь очиж солих шаардлагатай эсэхийг шалгана уу.</string>
     <string name="sim_check_old_sim_title">Таны SIM-г солих шаардлагатай байж магадгүй</string>
+    <string name="sim_check_old_sim_title_skt">Таны SIM-г солих шаардлагатай байж магадгүй</string>
     <string name="sim_count_mismatched_ds_to_ss">SIM картын горим Давхар SIM-ээс Дан SIM-д шилжсэн. Энэ тохиргоог хэрэглэхийн тулд төхөөрөмжийн үйлдвэрийн өгөгдмөл тохиргоог сэргээж, унтрааж, асаана.</string>
     <string name="sim_count_mismatched_ss_to_ds">SIM картын горим Дан SIM-ээс Давхар SIM-д шилжсэн. Энэ тохиргоог хэрэглэхийн тулд төхөөрөмжийн үйлдвэрийн өгөгдмөл тохиргоог сэргээж, унтрааж, асаана.</string>
     <string name="sim_count_mismatched_title">SIM картын горимд шилжсэн</string>
-    <string name="sim_imsreg_error_message_lgt">Таны утас SIM картыг танихгүй байгаа тул дуут дуудлага хийх боломжгүй болно. SIM картыг салгаад дахин оруулж үзнэ үү. Хэрэв энэ асуудал үргэлжилсэн хэвээр байвал та SIM картаа солих хэрэгтэй байж магадгүй. Тусламж авахыг хүсвэл LG U+ дэлгүүрт зочлох эсвэл LG U+ Хэрэглэгчийн үйлчилгээтэй 1544-0010 утсаар холбогдоно уу.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Таны таблет SIM картыг таньж чадахгүй байгаа тул дуут дуудлага хийх боломжгүй болно. SIM картаа гаргаад дахин оруулж үзнэ үү. Хэрэв асуудал үргэлжилсэн хэвээр байвал та SIM картаа солих хэрэгтэй байж магадгүй. Тусламж авахыг хүсвэл LG U+ дэлгүүрт зочлох эсвэл LG U+ Хэрэглэгчийн үйлчилгээтэй 1544-0010 утсаар холбогдоно уу.</string>
+    <string name="sim_imsreg_error_message_lgt">Таны утас SIM картыг танихгүй байгаа тул дуут дуудлага хийх боломжгүй болно. SIM картаа гаргаад дахин оруулж үзнэ үү. Энэ асуудал үргэлжилсэн хэвээр байвал та LG U+ дэлгүүр дээр SIM картаа солих хэрэгтэй болж болзошгүй.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Таны таблет SIM картыг танихгүй байгаа тул дуут дуудлага хийх боломжгүй болно. SIM картаа гаргаад дахин оруулж үзнэ үү. Энэ асуудал үргэлжилсэн хэвээр байвал та LG U+ дэлгүүр дээр SIM картаа солих хэрэгтэй болж болзошгүй.</string>
     <string name="sim_off_noti_message">Бүх SIM унтраалттай үед та дуудлага хийх, зурвас илгээх, дата ашиглах боломжгүй. Энд товшиж SIM-үүдийг асаана уу.</string>
     <string name="sim_off_noti_title">Бүх SIM-г унтраасан</string>
     <string name="sim_off_toast_message">Таны оруулсан SIM карт идэвхгүй байна. Үүнийг ашиглахын тулд Тохиргоо > Холболтууд > SIM удирдлага руу очоод, асаана уу.</string>
     <string name="sim_recognize_error_message_kt">Таны SIM карт танигдаагүй байна. SIM картыг салгаад дахин оруулж үзнэ үү. Хэрэв энэ асуудал үргэлжилсэн хэвээр байвал та SIM картаа солих хэрэгтэй байж магадгүй. Тусламж авахыг хүсвэл KT дэлгүүрт зочлох эсвэл KT Хэрэглэгчийн үйлчилгээтэй 1588-0010 утсаар холбогдоно уу.</string>
-    <string name="sim_recognize_error_message_lgt">Таны SIM карт танигдаагүй байна. SIM картыг салгаад дахин оруулж үзнэ үү. Хэрэв энэ асуудал үргэлжилсэн хэвээр байвал та SIM картаа солих хэрэгтэй байж магадгүй. Тусламж авахыг хүсвэл LG U+ дэлгүүрт зочлох эсвэл LG U+ Хэрэглэгчийн үйлчилгээтэй 1544-0010 утсаар холбогдоно уу.</string>
+    <string name="sim_recognize_error_message_lgt">Таны SIM карт танигдаагүй байна. SIM картаа гаргаад дахин оруулж үзнэ үү. Энэ асуудал үргэлжилсэн хэвээр байвал та LG U+ дэлгүүр дээрээс SIM картаа солих хэрэгтэй болж магадгүй.</string>
     <string name="sim_recognize_error_message_skt">SIM карт уншуулах боломжгүй. Зарим хэрэглүүрүүд ба функцүүд ажиллахгүй байж магадгүй. SIM картаа аваад дахин оруулаад дараа нь утсаа дахин эхлүүлнэ үү. Хэрэв энэ нь асуудлыг шийдэхгүй бол утас болон SIM картаа Хэрэглэгчийн үйлчилгээний байршилд аваачна уу.</string>
     <string name="sim_recognize_error_message_skt_tablet">SIM карт уншуулах боломжгүй. Зарим хэрэглүүрүүд ба функцүүд ажиллахгүй байж магадгүй. SIM картаа аваад дахин оруулаад дараа нь таблетаа дахин эхлүүлнэ үү. Хэрэв энэ нь асуудлыг шийдэхгүй бол таблет болон SIM картаа Хэрэглэгчийн үйлчилгээний байршилд аваачна уу.</string>
     <string name="sim_recognize_error_title_lgt">USIM карт таних боломжгүй</string>
@@ -1139,10 +1107,8 @@
     <string name="sim_removed_message_hotswap_us_tablet">Wi-Fi сүлжээнд холбогд эсвэл Мобайл дата ашиглахын тулд SIM картыг оруул.</string>
     <string name="sim_removed_title_hotswap">Оруулсан SIM карт байхгүй</string>
     <string name="sim_removed_title_hotswap_us_tablet">SIM карт хий</string>
+    <string name="smart_tip_action_click_hint_text">Хаах</string>
     <string name="smartclip_restrict">Хамгаалалтын бодлого Хялбар хайчилбар ашиглахаас сэргийлнэ.</string>
-    <string name="sms_short_code_remember_undo_instruction">Та дараа Тохиргоо > Програмууд руу очиж, үүнийг өөрчлөх боломжтой</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Та үүнийг дараа нь Тохиргоо > Хэрэглүүрүүд > Илүү их сонголт товч > Тусгай хандалт > Премиум текст зурвасын үйлчилгээг ашиглах руу ороод өөрчлөх боломжтой</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Хэрэв та ХЭЗЭЭ Ч БҮҮ ЗӨВШӨӨР дээр товшвол энэ хэрэглүүр Бичвэрт зурвас илгээх зөвшөөрлийг олгосон ч гэсэн далдаар зурвас илгээх боломжгүй болно.</string>
     <string name="ss_do_not_show_again_us">Дахин бүү харуул</string>
     <string name="sss_translate">Орчуулах</string>
     <string name="ssu_lock_body_vzw">Уучлаарай, таны төхөөрөмж яг одоо өөр зөөгч сүлжээнд идэвхжиж боломжгүй. Тусламжид %1$s дээр Verizon эсвэл %2$s-тай (урьдчилсан төлбөрт төлөвлөгөө) холбогдоно уу</string>
@@ -1173,7 +1139,6 @@
     <string name="tethered_notification_title_tmo">Tethering or Mobile Hotspot active</string>
     <string name="tethered_notification_title_verizon">Мобайл Хотспот</string>
     <string name="title_dialog_check_rotate_or_not">Автоматаар дэлгэц эргүүлэхийг унтраах уу?</string>
-    <string name="title_uds">Хэт өгөгдөл хэмнэх горим</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Утсаа тохируулж байх үед Bixby ашиглах боломжгүй.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Таблетаа тохируулах үед Bixby ашиглах боломжгүй.</string>
     <string name="toast_warning_pattern_lock">Хээний түгжээг Универсал сэлгүүр-тэй ашиглах боломжгүй. Эхлээд өөр түгжээний төрөл рүү өөрчилнө үү.</string>
@@ -1213,9 +1178,13 @@
     <string name="unknown_install_blocked_esm_title">Үл мэдэгдэх хэрэглүүрийг хориглосон</string>
     <string name="unknown_install_dlg_desc">Энэ хэрэглүүрийг зөвшөөрөгдсөн дэлгүүрээс татаж аваагүй байна. Энэ хэрэглүүрийг суулгах нь таны аюулгүй байдал болон нууцлалыг эрсдэлд оруулж болзошгүй. Хэрэглүүр таны хувийн мэдээллийг цуглуулж эсвэл таны өгөгдлийг алга болгож болзошгүй.</string>
     <string name="unknown_install_dlg_desc2">Энэ хэрэглүүр хамгийн сүүлийн үеийн хамгаалалтын функцүүдийг дэмждэггүй. Энэ хэрэглүүрийг суулгах нь дараах аюулгүй байдлын эрсдэлд хүргэж болзошгүй:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Энэ хэрэглүүрийг суулгах файл аюултай байж магадгүй. Энэ нь шаардлага хангасан хэрэглүүр биш байж магадгүй юм. Утас болон хувийн мэдээллээ хамгаалахын тулд оронд нь итгэдэг хэрэглүүрийн дэлгүүрээс уг хэрэглүүрийг суулгаарай.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Энэ хэрэглүүрийг суулгах файл аюултай байж магадгүй. Энэ нь шаардлага хангасан хэрэглүүр биш байж магадгүй юм. Таблет болон хувийн мэдээллээ хамгаалахын тулд оронд нь итгэдэг хэрэглүүрийн дэлгүүрээс уг хэрэглүүрийг суулгаарай.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">Энэ хэрэглүүрийг хортон гэж сэжиглэж байгаа тул таны утас болон өгөгдлийг эрсдэлд оруулж болзошгүй. Энэ хэрэглүүрийг суулгахыг зөвлөдөггүй.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">Энэ хэрэглүүрийг хортон гэж сэжиглэж байгаа тул таны таблет болон өгөгдлийг эрсдэлд оруулж болзошгүй. Энэ хэрэглүүрийг суулгахыг зөвлөдөггүй.</string>
-    <string name="unknown_install_dlg_general_title">Энэ хэрэглүүр нь үл мэдэгдэх эх сурвалжаас гаралтай</string>
+    <string name="unknown_install_dlg_desc_phone">Энэ хэрэглүүр нь эрх бүхий хэрэглүүрийн дэлгүүр биш юм. Утас болон хувийн мэдээллээ хамгаалахын тулд Play Store эсвэл Galaxy Store гэх мэт эрх бүхий дэлгүүрээс хэрэглүүрийг суулгана уу.</string>
+    <string name="unknown_install_dlg_desc_tablet">Энэ хэрэглүүр нь эрх бүхий хэрэглүүрийн дэлгүүр биш юм. Таблет болон хувийн мэдээллээ хамгаалахын тулд Play Store эсвэл Galaxy Store гэх мэт эрх бүхий дэлгүүрээс хэрэглүүрийг суулгана уу.</string>
+    <string name="unknown_install_dlg_general_title">Энэ хэрэглүүрийг суулгахыг зөвлөдөггүй</string>
     <string name="unknown_install_dlg_negative_button">Бүү суурилуул</string>
     <string name="unknown_install_dlg_perm_desc1">Хэрэглүүр таны хүлээн авах текст зурвасын баталгаажуулах кодыг тасалж болзошгүй.</string>
     <string name="unknown_install_dlg_perm_desc2">Гарах дуудлагыг танд мэдэгдэлгүйгээр өөр утасны дугаар руу шилжүүлж болзошгүй.</string>
@@ -1234,7 +1203,7 @@
     <string name="usb_abnormal_reset_title">USB холболт тогтворгүй</string>
     <string name="usb_abnormal_reset_toast">USB холболт тогтвортой биш байна. Кабелыг салгаж, дахин залга эсвэл өөр кабелаар оролдож үзнэ үү.</string>
     <string name="usb_accessory_notification_title">USB нэмэлт төхөөрөмжид холбогдсон</string>
-    <string name="usb_bad_removal_message">USB санах ойн төхөөрөмжийг аюулгүй бусаар салгасан. Таблетаа санаандгүй дахин эхлэхээс сэргийлэхийн тулд хадгалаагүй өгөгдлийг хадгалж одоо дахин эхлүүлнэ үү.</string>
+    <string name="usb_bad_removal_message">USB хадгалалтын төхөөрөмжийг аюулгүй бусаар салгасан. Утсаа санаандгүй дахин эхлэхээс сэргийлэхийн тулд хадгалаагүй өгөгдлийг хадгалж одоо дахин эхлүүлнэ үү.</string>
     <string name="usb_blocked_by_emergency_mode">Яаралтай тусламжийн горим дээр зарим USB функцүүд боломжгүй.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Тэжээлийг дээд зэргээр хэмнэх горимд холбогдсон USB төхөөрөмжид хамаатай функцүүдийг ашиглах боломжгүй.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Тэжээлийг дээд зэргээр хэмнэх горим ассан байхад зарим USB функцүүд хязгаарлагдмал байж болно.</string>
@@ -1243,13 +1212,15 @@
     <string name="usb_camera_connected_notification_title">Медиа төхөөрөмжийг холбосон</string>
     <string name="usb_camera_disconnected_notification_title">Медиа төхөөрөмж салсан</string>
     <string name="usb_cd_installer_notification_title">Програм хангамжийн шинэчлэл</string>
-    <string name="usb_charing_only_notification_title">Холбогдлоо</string>
+    <string name="usb_charing_only_notification_title">USB цэнэглэх</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">Автомат хориглогч хамгийн их хязгаарлалтуудтайгаар асаалттай байна.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB холболтыг хориглосон</string>
     <string name="usb_debugging_only_notification_title">Зөвхөн алдаа илрүүлж байна</string>
-    <string name="usb_host_resource_exceed_message">Энэ төхөөрөмжийг холбоход таны таблетын USB хянагчид хангалттай зай байхгүй. Энэ төхөөрөмжийг салгахыг оролдож үүнийг дахин холбоно уу.</string>
+    <string name="usb_host_resource_exceed_message">Таны утсын USB хянагчид энэ төхөөрөмжид холбогдох хангалттай нөөц байхгүй. Энэ төхөөрөмжийг салгахыг оролдож үүнийг дахин холбоно уу.</string>
     <string name="usb_host_resource_exceed_title">Хангалттай USB тохируулагч.н нөөц алга</string>
-    <string name="usb_hub_depth_exceed_message">Таны таблет нэг дор зөвхөн 5 хүртэлх USB төв холболтуудыг дэмжинэ.</string>
+    <string name="usb_hub_depth_exceed_message">Таны утас нэг дор зөвхөн 5 хүртэлх USB төв холболтуудыг дэмжинэ.</string>
     <string name="usb_hub_depth_exceed_title">Хамгийн их USB төв холболтууд</string>
-    <string name="usb_hub_power_exceed_message">Таны таблет энэ USB төхөөрөмжийг хангалттай тэжээлээр хангах боломжгүй. Үүнийг таблетдаа холбохоос өмнө төхөөрөмжийг өөрөө-тэжээл өгөх USB төвд холбоно уу.</string>
+    <string name="usb_hub_power_exceed_message">Таны утас энэ USB төхөөрөмжийг хангалттай тэжээлээр хангах боломжгүй. Үүнийг утастайгаа холбохоос өмнө төхөөрөмжийг өөрөө-тэжээл авах USB төвд холбоно уу.</string>
     <string name="usb_increase_battery_usage">USB холболт зайн хэрэглээг нэмэгдүүлж болно.</string>
     <string name="usb_mass_storage_restrict">Хамгаалалтын бодлого USB өгөгдөл хадгалалтын ашиглалтаас сэргийлнэ.</string>
     <string name="usb_midi_notification_title">MIDI холбох USB</string>
@@ -1275,8 +1246,9 @@
     <string name="usb_storage_stop_title">USB хадгалалтыг ашиглаж байна</string>
     <string name="usb_storage_title">USB холбогдсон.</string>
     <string name="usb_type_c_supply_power_notification_title">Холбогдсон төх.г USB-р цэнэглэх</string>
-    <string name="usb_unblock_by_screen_unlock">Холбогдсон USB төхөөрөмжийг ашиглахын тулд таблетынхаа түгжээг тайлна уу.</string>
-    <string name="usb_unsupport_accessory_message">Энэ USB төхөөрөмж таны таблетаар дэмжигдээгүй.</string>
+    <string name="usb_unblock_by_screen_unlock">Холбогдсон USB төхөөрөмжийг ашиглахын тулд утасныхаа түгжээг тайлна уу.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">USB төхөөрөмж ашиглахын тулд та утасныхаа түгжээг тайлж, USB төхөөрөмжийг дахин холбоно уу.</string>
+    <string name="usb_unsupport_accessory_message">Энэ USB төхөөрөмж таны утсаар дэмжигдээгүй.</string>
     <string name="usb_unsupport_accessory_title">USB төхөөрөмж дэмжигдээгүй</string>
     <string name="usb_unsupported_device">Холбогдсон USB төхөөрөмж дэмжигдээгүй.</string>
     <string name="usb_unsupported_device_title">Төхөөрөмж дэмжигдээгүй</string>
@@ -1294,31 +1266,33 @@
     <string name="usb_water_dialg_method_2_desc_2">Та сэнс эсвэл хатаагчийг зааж (зөвхөн хүйтэн агаартай) хатаах хурдыг нэмэгдүүлэх боломжтой.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"Бид таны цэнэглэгч/USB портод чийгшил эсвэл гаднын биет байгааг илрүүллээ.
 
-Цэнэглэгч/USB портод шороо, хог хаягдал зэрэг гаднын биет байгаа эсэхийг шалгана уу. Таблетаа гэмтээхээс урьдчилан сэргийлэхийн тулд цэнэглэх порт цэвэрхэн, чийг алга болтол юу ч битгий залгаарай.
+Цэнэглэгч/USB портод шороо, хог хаягдал зэрэг гаднын биет байгаа эсэхийг шалгана уу. Утсаа гэмтээхээс урьдчилан сэргийлэхийн тулд цэнэглэх порт цэвэрхэн, чийг алга болтол юу ч битгий залгаарай.
 
 Портыг хатаахын тулд чийгийг сэгсэрч гаргаад, хатах хүртэл хэдэн цаг хүлээнэ үү. Та сэнс эсвэл хатаагчийг (зөвхөн сэрүүн агаар) портод чиглүүлж хатаалтыг хурдасгах боломжтой."</string>
     <string name="usb_water_dialg_positive_button">ОК</string>
-    <string name="usb_water_dialg_support_wireless_charging">"Бид таны цэнэглэгч/USB портод чийгшил эсвэл гаднын зүйл илрүүлсэн.
+    <string name="usb_water_dialg_support_wireless_charging">"Бид таны цэнэглэгч/USB портод чийгшил эсвэл гаднын биет байгааг илрүүллээ.
 
-Цэнэглэгч/USB портод шороо, хог хаягдал зэрэг гаднын зүйлс байгаа эсэхийг шалгана уу. Таблетаа гэмтээхээс урьдчилан сэргийлэхийн тулд цэнэглэх портыг цэвэрлэж, чийг алга болох хүртэл юу ч битгий залгаарай.
+Цэнэглэгч/USB портод шороо, хог хаягдал зэрэг гаднын биет байгаа эсэхийг шалгана уу. Утсаа гэмтээхээс урьдчилан сэргийлэхийн тулд цэнэглэх порт цэвэрхэн, чийг алга болтол юу ч битгий залгаарай.
 
-Портыг хатаахын тулд чийгийг сэгсэрч гаргаад, хатах хүртэл хэдэн цаг хүлээнэ үү. Та сэнс эсвэл хатаагчийг (зөвхөн сэрүүн агаар) портод чиглүүлж хатаахыг хурдасгах боломжтой.
+Портыг хатаахын тулд чийгийг сэгсэрч гаргаад, хатах хүртэл хэдэн цаг хүлээнэ үү. Та сэнс эсвэл хатаагчийг (зөвхөн сэрүүн агаар) портод чиглүүлж хатаалтыг хурдасгах боломжтой.
 
-Энэ үеэр та таблетаа утасгүйгээр цэнэглэх боломжгүй."</string>
+Энэ үеэр та утсаа утасгүйгээр цэнэглэх боломжтой."</string>
     <string name="usb_water_notification_content">Таны цэнэглэх/USB портод чийг эсвэл гадны материал байна. Цэнэглэхийн өмнө шалгана уу.</string>
-    <string name="usb_water_notification_message">Таны цэнэглэгч/USB портонд чийг илэрлээ. Таблетаа цэнэглэхээсээ өмнө сайтар хатаана уу. Хатахад хэсэг хугацаа зарцуулагдаж болно.</string>
+    <string name="usb_water_notification_message">Таны цэнэглэгч/USB портонд чийг илэрлээ. Утсаа цэнэглэхээсээ өмнө сайтар хатаана уу. Хатахад хэсэг хугацаа зарцуулагдаж болно.</string>
     <string name="usb_water_notification_message_button">Дэлгэрэнгүй</string>
     <string name="usb_water_notification_title">Цэнэглэгч/USB портыг шалга</string>
     <string name="usbhostStorage_restrict">Хамгаалалтын бодлого USB хост хадгалалтын ашиглалтаас сэргийлнэ.</string>
-    <string name="usbmemory_added_notification_title">USB санах ойг нэмсэн</string>
-    <string name="usbmemory_readonly_mount_notification_message">Таны USB санах ойн төхөөрөмж зөв ажиллахгүй байгаа ба өгөгдөл алдахаас сэргийлэн зөвхөн уншихаар болгож тохируулагдсан. USB санах ойн төхөөрөмж дээрх өгөгдлийг нөөцлөхийг зөвлөж байна.</string>
-    <string name="usbmemory_readonly_mount_notification_title">USB санах ойд бичих боломжгүй</string>
+    <string name="usbmemory_added_notification_title">USB хадгалалтыг нэмсэн</string>
+    <string name="usbmemory_readonly_mount_notification_message">Таны USB хадгалалтын төхөөрөмж зөв ажиллахгүй байгаа ба өгөгдөл алдахаас сэргийлэн зөвхөн уншихаар болгож тохируулагдсан. USB хадгалалтын төхөөрөмж дээрх өгөгдлийг нөөцлөхийг зөвлөж байна.</string>
+    <string name="usbmemory_readonly_mount_notification_title">USB хадгалалтад бичих боломжгүй</string>
     <string name="user_encrypted_title_phone">Утсыг дахин эхлүүлсэн</string>
     <string name="user_encrypted_title_tablet">Таблетыг дахин эхлүүлсэн</string>
     <string name="voice_to_text_message_guide_toast">Энэ функцийг ашиглахын тулд та Samsung гарыг өгөгдмөл болгон тохируулах хэрэгтэй.</string>
     <string name="vpn_allowOnlySecureConnection">VPN-н хувийн мэдээлэл хамгаалалтгүй</string>
     <string name="vpn_error_text">Товшиж VPN-д дахин холбогдох гэж оролд</string>
     <string name="vpn_error_title">VPN холболтын алдаа</string>
+    <string name="vpn_fail_text_long">%s-д холбогдож чадсангүй. Энэ VPN-г удирдахын тулд товшино уу.</string>
+    <string name="vpn_fail_title">VPN холбогдоогүй байна</string>
     <string name="vzw_cooldown_mode_attention">Closing apps to cool down phone</string>
     <string name="vzw_cooldown_mode_attention_tablet">Таблетг амраахын тулд хэрглүрүд.г хааж бна</string>
     <string name="vzw_cooldown_mode_ok">OK</string>
@@ -1381,6 +1355,7 @@
     <string name="wifi_network_available_detailed">Нээлттэй Wi-Fi сүлжээ байна.</string>
     <string name="wifi_networks_available">Wi-Fi сүлжээнүүд боломжтой</string>
     <string name="wifi_networks_available_detailed">Нээлттэй Wi-Fi сүлжээ байна.</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">Таны WLAN холболт удаан эсвэл тогтворгүй байгаа тул %s хөдөлгөөнт дата ашиглаж байна.</string>
     <string name="wifi_notification_switch_wifi_detail">Wi-Fi сүлжээ тогтворгүй байсан учраас таны утас хөдөлгөөнт дата руу шилжсэн.</string>
     <string name="wifi_notification_switch_wifi_title">Мобайл дата руу шилжсэн</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Яаралтай тусламжийн мэдэгдэл</string>
@@ -1412,9 +1387,5 @@
     <string name="work_profile_on_message">Энэ нь танд ажлын хэрэглүүрүүд, мэдэгдлүүд, өгөгдөл болон бусад ажлын профилийн функцүүдэд хандахыг зөвшөөрнө.</string>
     <string name="work_profile_on_title">Ажлын профилийг асаах уу?</string>
     <string name="work_profile_restricted">Автомат хориглогч нь хамгийн их хязгаарлалттайгаар асаалттай байна. Таны хамгаалалтыг хамгаалахын тулд ажлын профайлууд үүсгэх боломжгүй.</string>
-    <string name="work_profile_telephony_paused_text">Та ажлын хэрэглүүрүүдээ түр зогсоолоо. Та тэднээс утасны дуудлага, бичвэр зурвасуудыг хүлээн авахгүй.</string>
-    <string name="work_profile_telephony_paused_title">Дуудлага болон зурвасууд идэвхгүй байна</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Ажлын профилийг асаах уу?</string>
     <string name="workspace_title">Workspace</string>
-    <string name="zen_mode_forever">Би унтраах хүртэл</string>
 </resources>

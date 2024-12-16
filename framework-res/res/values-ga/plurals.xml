@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Tá do tháibléad éagobhsaí mar gur baineadh cárta SD a raibh feidhmchláir suiteáilte air. Atosófar do tháibléad i gceann %d soicind le filleadh ar ghnáthfheidhmíocht. Sábháil aon sonraí nach bhfuil sábháilte sula n-atosófar an táibléad.</item>
+        <item quantity="other">"Tá d'fhón éagobhsaí mar gur baineadh cárta SD a raibh feidhmchláir suiteáilte air. Atosófar d'fhón i gceann %d soicind le filleadh ar ghnáthfheidhmíocht. Sábháil aon sonraí nach bhfuil sábháilte sula n-atosófar an fón."</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Tá do tháibléad éagobhsaí mar gur baineadh cárta SD a raibh feidhmchláir suiteáilte air. Atosófar do tháibléad i gceann %d soicind le filleadh ar ghnáthfheidhmíocht. Sábháil aon sonraí nach bhfuil sábháilte sula n-atosófar an táibléad.</item>
-        <item quantity="two">Tá do tháibléad éagobhsaí mar gur baineadh cárta SD a raibh feidhmchláir suiteáilte air. Atosófar do tháibléad i gceann %d shoicind le filleadh ar ghnáthfheidhmíocht. Sábháil aon sonraí nach bhfuil sábháilte sula n-atosófar an táibléad.</item>
-        <item quantity="few">Tá do tháibléad éagobhsaí mar gur baineadh cárta SD a raibh feidhmchláir suiteáilte air. Atosófar do tháibléad i gceann %d shoicind le filleadh ar ghnáthfheidhmíocht. Sábháil aon sonraí nach bhfuil sábháilte sula n-atosófar an táibléad.</item>
-        <item quantity="many">Tá do tháibléad éagobhsaí mar gur baineadh cárta SD a raibh feidhmchláir suiteáilte air. Atosófar do tháibléad i gceann %d soicind le filleadh ar ghnáthfheidhmíocht. Sábháil aon sonraí nach bhfuil sábháilte sula n-atosófar an táibléad.</item>
+        <item quantity="one">"Tá d'fhón éagobhsaí mar gur baineadh cárta SD a raibh feidhmchláir suiteáilte air. Atosófar d'fhón i gceann %d soicind le filleadh ar ghnáthfheidhmíocht. Sábháil aon sonraí nach bhfuil sábháilte sula n-atosófar an fón."</item>
+        <item quantity="two">"Tá d'fhón éagobhsaí mar gur baineadh cárta SD a raibh feidhmchláir suiteáilte air. Atosófar d'fhón i gceann %d shoicind le filleadh ar ghnáthfheidhmíocht. Sábháil aon sonraí nach bhfuil sábháilte sula n-atosófar an fón."</item>
+        <item quantity="few">"Tá d'fhón éagobhsaí mar gur baineadh cárta SD a raibh feidhmchláir suiteáilte air. Atosófar d'fhón i gceann %d shoicind le filleadh ar ghnáthfheidhmíocht. Sábháil aon sonraí nach bhfuil sábháilte sula n-atosófar an fón."</item>
+        <item quantity="many">"Tá d'fhón éagobhsaí mar gur baineadh cárta SD a raibh feidhmchláir suiteáilte air. Atosófar d'fhón i gceann %d soicind le filleadh ar ghnáthfheidhmíocht. Sábháil aon sonraí nach bhfuil sábháilte sula n-atosófar an fón."</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Atosófar do tháibléad i %d soicind</item>
+        <item quantity="other">"Atosófar d'fhón i gceann %d soicind"</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Atosófar do tháibléad in %d soicind</item>
-        <item quantity="two">Atosófar do tháibléad in %d shoicind</item>
-        <item quantity="few">Atosófar do tháibléad i %d shoicind</item>
-        <item quantity="many">Atosófar do tháibléad i %d soicind</item>
+        <item quantity="one">"Atosófar d'fhón i gceann %d soicind"</item>
+        <item quantity="two">"Atosófar d'fhón i gceann %d shoicind"</item>
+        <item quantity="few">"Atosófar d'fhón i gceann %d shoicind"</item>
+        <item quantity="many">"Atosófar d'fhón i gceann %d soicind"</item>
     </plurals>
     <plurals name="app_kills_content_v2_phone">
         <item quantity="other">"Dúnadh %d feidhmchlár go huathoibríoch mar go raibh d'fhón ag éirí róthe dá mbarr. Beidh tú in ann iad a oscailt arís níos moille tar éis do d'fhón fuarú."</item>
@@ -103,14 +103,6 @@
         <item quantity="two">%d mhír</item>
         <item quantity="few">%d mhír</item>
         <item quantity="many">%d mír</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">An líonra Wi-Fi ar mian leat nascadh leis, ní féidir é a nascadh ach le %d gléas ag an am céanna. Dínasc aon ghléasanna eile ón líonra sin, ansin triail arís.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">An líonra Wi-Fi ar mian leat nascadh leis, ní féidir é a nascadh ach le %d ghléas ag am amháin. Dínasc aon ghléasanna eile ón líonra sin, ansin triail arís.</item>
-        <item quantity="two">An líonra Wi-Fi ar mian leat nascadh leis, ní féidir é a nascadh ach le %d ghléas ag an am céanna. Dínasc aon ghléasanna eile ón líonra sin, ansin triail arís.</item>
-        <item quantity="few">An líonra Wi-Fi ar mian leat nascadh leis, ní féidir é a nascadh ach le %d ghléas ag an am céanna. Dínasc aon ghléasanna eile ón líonra sin, ansin triail arís.</item>
-        <item quantity="many">An líonra Wi-Fi ar mian leat nascadh leis, ní féidir é a nascadh ach le %d ngléas ag an am céanna. Dínasc aon ghléasanna eile ón líonra sin, ansin triail arís.</item>
     </plurals>
     <plurals name="zen_mode_duration_time_hours">
         <item quantity="other">%d uair an chloig</item>

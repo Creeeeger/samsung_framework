@@ -2537,6 +2537,7 @@
     <attr name="requiredSystemPropertyName" format="string" />
     <attr name="requiredSystemPropertyValue" format="string" />
     <attr name="justificationMode">
+        <enum name="inter_character" value="2" />
         <enum name="inter_word" value="1" />
         <enum name="none" value="0" />
     </attr>
@@ -2605,6 +2606,7 @@
         <flag name="health" value="0x00000100" />
         <flag name="location" value="0x00000008" />
         <flag name="mediaPlayback" value="0x00000002" />
+        <flag name="mediaProcessing" value="0x00002000" />
         <flag name="mediaProjection" value="0x00000020" />
         <flag name="microphone" value="0x00000080" />
         <flag name="phoneCall" value="0x00000004" />
@@ -2832,4 +2834,39 @@
     <attr name="windowNoMoveAnimation" format="boolean" />
     <attr name="settingsSubtitle" format="string" />
     <attr name="capability" format="string" />
+    <attr name="defaultLocale" format="string" />
+    <attr name="isVirtualDeviceOnly" format="boolean" />
+    <attr name="featureFlag" format="string" />
+    <attr name="systemUserOnly" format="boolean" />
+    <attr name="allow" format="boolean" />
+    <attr name="query" format="string" />
+    <attr name="queryPrefix" format="string" />
+    <attr name="queryPattern" format="string" />
+    <attr name="queryAdvancedPattern" format="string" />
+    <attr name="querySuffix" format="string" />
+    <attr name="fragmentPrefix" format="string" />
+    <attr name="fragmentPattern" format="string" />
+    <attr name="fragmentAdvancedPattern" format="string" />
+    <attr name="fragmentSuffix" format="string" />
+    <attr name="useBoundsForWidth" format="boolean" />
+    <attr name="autoTransact" format="boolean" />
+    <attr name="windowOptOutEdgeToEdgeEnforcement" format="boolean" />
+    <attr name="requireContentUriPermissionFromCaller" format="string">
+        <enum name="none" value="0" />
+        <enum name="read" value="1" />
+        <enum name="readAndWrite" value="4" />
+        <enum name="readOrWrite" value="3" />
+        <enum name="write" value="2" />
+    </attr>
+    <attr name="useLocalePreferredLineHeightForMinimum" format="boolean" />
+    <attr name="contentSensitivity">
+        <enum name="auto" value="0" />
+        <enum name="notSensitive" value="2" />
+        <enum name="sensitive" value="1" />
+    </attr>
+    <attr name="supportsConnectionlessStylusHandwriting" format="boolean" />
+    <attr name="shouldDefaultToObserveMode" format="boolean" />
+    <attr name="allowCrossUidActivitySwitchFromBelow" format="boolean" />
+    <attr name="shiftDrawingOffsetForStartOverhang" format="boolean" />
+    <attr name="windowIsFrameRatePowerSavingsBalanced" format="boolean" />
 </resources>

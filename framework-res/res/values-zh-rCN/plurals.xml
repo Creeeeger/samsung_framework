@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">由于装有应用程序的 SD 卡被取出，您的平板电脑不稳定。为了恢复正常，平板电脑将在 %d 秒后重启。请在平板电脑重启前保存任何未保存的数据。</item>
+        <item quantity="other">由于装有应用程序的 SD 卡被取出，您的手机不稳定。为了恢复正常，手机将在 %d 秒后重启。请在手机重启前保存任何未保存的数据。</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -9,7 +9,7 @@
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">您的平板电脑将在 %d 秒后重启</item>
+        <item quantity="other">您的手机将在 %d 秒后重启</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>
@@ -102,14 +102,6 @@
     </plurals>
     <plurals name="sem_chooser_preview_items">
         <item quantity="other">%d 个项目</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">N/A</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">N/A</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">您想要连接的 &lt;cst>Wi-Fi&lt;/cst> 网络一次只能连接至 %d 台设备。请从该网络断开任何其他设备连接，然后重试。</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">N/A</item>
         <item quantity="two">N/A</item>

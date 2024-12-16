@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="SDcardBlockUnmount_message">
-        <item quantity="other">Din tablet er ustabil, fordi et SD-kort med installerede apps er blevet fjernet. Din tablet genstarter om %d sekunder for at vende tilbage til normal tilstand. Gem data, der ikke er gemt, før tabletten genstarter.</item>
+        <item quantity="other">Din telefon er ustabil, fordi et SD-kort med apps på er blevet fjernet. Din telefon vil genstarte om %d sekunder for at vende tilbage til normal tilstand. Gem eventuelle ugemte data, før telefonen genstarter.</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Din tablet er ustabil, fordi et SD-kort med installerede apps er blevet fjernet. Din tablet genstarter om %d sekund for at vende tilbage til normal tilstand. Gem data, der ikke er gemt, før tabletten genstarter.</item>
+        <item quantity="one">Din telefon er ustabil, fordi et SD-kort med apps på er blevet fjernet. Din telefon vil genstarte om %d sekund for at vende tilbage til normal tilstand. Gem eventuelle ugemte data, før telefonen genstarter.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
     </plurals>
     <plurals name="SDcardBlockUnmount_title">
-        <item quantity="other">Tabletten genstarter om %d sekunder</item>
+        <item quantity="other">Din telefon genstarter om %d sekunder</item>
         <item quantity="zero">N/A</item>
-        <item quantity="one">Tabletten genstarter om %d sekund</item>
+        <item quantity="one">Din telefon genstarter om %d sekund</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>
@@ -104,14 +104,6 @@
         <item quantity="other">%d elementer</item>
         <item quantity="zero">N/A</item>
         <item quantity="one">%d element</item>
-        <item quantity="two">N/A</item>
-        <item quantity="few">N/A</item>
-        <item quantity="many">N/A</item>
-    </plurals>
-    <plurals name="wifi_kt_iptv_connection_fail_toast_content">
-        <item quantity="other">Det Wi-Fi-netværk, du gerne vil oprette forbindelse til, kan kun være forbundet til %d enheder ad gangen. Afbryd eventuelle andre enheders forbindelse til det pågældende netværk, og prøv derefter igen.</item>
-        <item quantity="zero">N/A</item>
-        <item quantity="one">Det Wi-Fi-netværk, du gerne vil oprette forbindelse til, kan kun være forbundet til %d enhed ad gangen. Afbryd eventuelle andre enheders forbindelse til det pågældende netværk, og prøv derefter igen.</item>
         <item quantity="two">N/A</item>
         <item quantity="few">N/A</item>
         <item quantity="many">N/A</item>

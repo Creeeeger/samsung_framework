@@ -47,7 +47,7 @@
     <string name="ColrMmi">連接的線路 ID 限制</string>
     <string name="CwMmi">來電等待</string>
     <string name="DndMmi">勿干擾</string>
-    <string name="EmergencyCallWarningSummary">無法透過 Wi‑Fi 撥打緊急電話</string>
+    <string name="EmergencyCallWarningSummary">撥打緊急電話需要使用行動網路</string>
     <string name="EmergencyCallWarningTitle">無法撥打緊急電話</string>
     <string name="Midnight">午夜</string>
     <string name="NetworkPreferenceSwitchSummary">請嘗試變更偏好的網路。輕觸即可變更。</string>
@@ -258,7 +258,12 @@
     <string name="accessibility_corner_action_type_zoom_in">放大</string>
     <string name="accessibility_corner_action_type_zoom_out">縮小</string>
     <string name="accessibility_dialog_button_allow">允許</string>
+    <string name="accessibility_dialog_button_allow_samsung">允許</string>
     <string name="accessibility_dialog_button_deny">拒絕</string>
+    <string name="accessibility_dialog_button_deny_samsung">拒絕</string>
+    <string name="accessibility_dialog_button_uninstall">解除安裝</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">解除安裝</string>
+    <string name="accessibility_dialog_touch_filtered_warning">應用程式遮擋了權限要求，因此系統無法驗證你的回覆。</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">快速按下電源鍵與音量增加鍵將開啟或關閉下列功能：</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">同時按下側邊按鈕與音量增加按鈕並迅速放開將開啟或關閉下列功能：</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">快速按下電源鍵與音量增加鍵將開啟或關閉 %s。</string>
@@ -272,17 +277,20 @@
     <string name="accessibility_edit_shortcut_menu_button_title">選擇要搭配無障礙工具按鈕使用的功能</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">選擇要搭配音量快速鍵使用的功能</string>
     <string name="accessibility_enable_service_title">要將裝置的完整控制權授予「%1$s」嗎？</string>
-    <string name="accessibility_freeform_caption">「%1$s」的說明文字列。</string>
     <string name="accessibility_gesture_3finger_instructional_text">如要切換不同的功能，請用三指向上滑動並按住。</string>
     <string name="accessibility_gesture_3finger_prompt_text">選擇要搭配無障礙手勢 (用三指從螢幕底部向上滑動) 使用的功能：</string>
     <string name="accessibility_gesture_instructional_text">如要切換不同的功能，請用兩指向上滑動並按住。</string>
     <string name="accessibility_gesture_prompt_text">選擇要搭配無障礙手勢 (用兩指從螢幕底部向上滑動) 使用的功能：</string>
+    <string name="accessibility_label_clone_profile">複製</string>
+    <string name="accessibility_label_communal_profile">共通</string>
+    <string name="accessibility_label_managed_profile">工作資料夾</string>
+    <string name="accessibility_label_private_profile">私人空間</string>
     <string name="accessibility_magnification_chooser_text">放大</string>
     <string name="accessibility_select_different_function">您可前往 [設定] > [協助工具] > [進階設定] 來選擇不同功能。</string>
     <string name="accessibility_select_shortcut_menu_title">輕觸即可開始使用所需功能：</string>
     <string name="accessibility_service_action_perform_description">可追蹤你與應用程式或硬體感應器的互動，並代表你與應用程式進行互動。</string>
     <string name="accessibility_service_action_perform_title">查看及執行動作</string>
-    <string name="accessibility_service_screen_control_description">可讀取螢幕上的所有內容及在其他應用程式上顯示內容。</string>
+    <string name="accessibility_service_screen_control_description">可讀取螢幕上的所有內容，並在其他應用程式上顯示內容。</string>
     <string name="accessibility_service_screen_control_title">查看及控制螢幕</string>
     <string name="accessibility_service_warning_description">如果你有無障礙服務需求，建議可將完整控制權授予具有相關功能的應用程式，但請勿將完整控制權授予大多數的應用程式。</string>
     <string name="accessibility_shortcut_cannot_use_dex_mode">Samsung DeX 中無法執行 %s。請嘗試以手機模式執行。</string>
@@ -345,7 +353,7 @@
     <string name="action_bar_home_description">瀏覽首頁</string>
     <string name="action_bar_home_description_format">%1$s：%2$s</string>
     <string name="action_bar_home_subtitle_description_format">%1$s - %2$s：%3$s</string>
-    <string name="action_bar_up_description">向上瀏覽</string>
+    <string name="action_bar_up_description">向上導覽</string>
     <string name="action_menu_overflow_description">更多選項</string>
     <string name="action_mode_done">完成</string>
     <string name="activity_chooser_view_dialog_title_default">選擇活動</string>
@@ -385,19 +393,25 @@
     <string name="alert_windows_notification_turn_off_action">關閉</string>
     <string name="allow">允許</string>
     <string name="allow_settings_changes">安全性原則會防止變更設定。</string>
+    <string name="alternative_face_setup_notification_content">當指紋無法辨識時 (例如手指溼溼的)，可使用人臉解鎖功能</string>
+    <string name="alternative_fp_setup_notification_content">當人臉無法辨識時 (例如光線不足)，可使用指紋解鎖功能</string>
+    <string name="alternative_unlock_setup_notification_title">試試其他解鎖方式</string>
     <string name="alwaysUse">設為預設應用程式。</string>
+    <string name="always_allow">一律允許</string>
     <string name="android_preparing_apk">正在準備升級「%1$s」。</string>
-    <string name="android_start_title">平板電腦正在啟動…</string>
+    <string name="android_start_title">手機正在啟動…</string>
     <string name="android_system_label">Android 系統</string>
     <string name="android_upgrading_complete">啟動完成。</string>
     <string name="android_upgrading_notification_title">正在完成系統更新…</string>
     <string name="android_upgrading_starting_apps">正在啟動應用程式。</string>
-    <string name="android_upgrading_title">平板電腦正在更新…</string>
+    <string name="android_upgrading_title">手機正在更新…</string>
     <string name="anr_activity_application">「%2$s」沒有回應</string>
     <string name="anr_activity_process">「%1$s」沒有回應</string>
     <string name="anr_application_process">「%1$s」沒有回應</string>
     <string name="anr_process">「%1$s」程序沒有回應</string>
     <string name="anr_title" />
+    <string name="app_block_button_open">開啟</string>
+    <string name="app_block_content">%1$s 想開啟 %2$s 應用程式。</string>
     <string name="app_blocked_message">「%1$s」目前無法使用。</string>
     <string name="app_blocked_title">應用程式無法使用</string>
     <string name="app_category_accessibility">無障礙工具</string>
@@ -426,42 +440,31 @@
     <string name="app_restricted_message_concentration_mode">%s 已於專注模式期間遭封鎖。請聯絡 IT 管理員進一步瞭解。</string>
     <string name="app_running_notification_text">輕觸即可瞭解詳情或停止應用程式。</string>
     <string name="app_running_notification_title">「%1$s」目前正在執行</string>
-    <string name="app_streaming_blocked_message">目前無法在 %1$s 上存取這個項目，請改用平板電腦。</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">這個應用程式要求進行額外的安全性驗證，請改用平板電腦。</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">無法在 %1$s 上存取這個項目，請改用平板電腦。</string>
+    <string name="app_streaming_blocked_message">目前無法在 %1$s 上存取這個應用程式，請改用手機。</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">這個應用程式要求進行額外的安全性驗證，請改用手機。</string>
+    <string name="app_streaming_blocked_message_for_permission_request">這個應用程式要求額外權限，但串流期間無法授權。請先在手機上授予權限。</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">無法在 %1$s 上存取這個應用程式，請改用手機。</string>
     <string name="app_streaming_blocked_title">無法存取「%1$s」</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">無法使用相機</string>
     <string name="app_streaming_blocked_title_for_fingerprint_dialog">請繼續在手機上操作</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">無法使用麥克風</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">需要相關權限</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">權限要求遭拒</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">無法存取 Play 商店</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">無法使用平板電腦設定</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">無法使用手機設定</string>
     <string name="app_suspended_default_message">目前無法使用「%1$s」。這項設定是由「%2$s」管理。</string>
     <string name="app_suspended_more_details">瞭解詳情</string>
     <string name="app_suspended_title">應用程式目前無法使用</string>
     <string name="app_suspended_unsuspend_message">取消暫停應用程式</string>
     <string name="app_updating_message">%s 正在更新。請稍後再試。</string>
     <string name="app_upgrading_toast">正在升級「%1$s」…</string>
-    <string name="appblock_block_subtitle1_phone">由於偵測到惡意程式碼，為保護您的手機和個人資料，無法安裝此應用程式。</string>
-    <string name="appblock_block_subtitle1_tablet">由於偵測到惡意程式碼，為保護您的平板和個人資料，無法安裝此應用程式。</string>
-    <string name="appblock_block_subtitle2">此應用程式已遭檢舉為惡意應用程式，無法安裝。</string>
-    <string name="appblock_block_text1">此應用程式來源未經驗證且要求存取敏感權限，可能竊取或洩漏您的個資。</string>
-    <string name="appblock_block_text2">"惡意應用程式可能會使用敏感權限來竊取您的個資、假冒您的身分或存取您的金融帳戶。
-
-合法金融機構不會要求安裝 ZIP 檔案、APK 檔或檔案管理員應用程式。
-
-請務必確保您安裝的應用程式來源受信任。"</string>
-    <string name="appblock_warn_subtitle">此應用程式可能會竊取或洩漏您的個資。</string>
+    <string name="appblock_block_text_phone">該應用程式已遭檢舉為惡意程式或與遭檢舉為惡意程式的應用程式雷同，因此無法安裝。應用程式可能被用於網路釣魚等犯罪行為。為保護手機和資料的安全，無法繞過此限制。</string>
+    <string name="appblock_block_text_tablet">該應用程式已遭檢舉為惡意程式或與遭檢舉為惡意程式的應用程式雷同，因此無法安裝。應用程式可能被用於網路釣魚等犯罪行為。為保護平板和資料的安全，無法繞過此限制。</string>
+    <string name="appblock_link_text">深入瞭解</string>
     <string name="appblock_warn_text1">"安裝來源未經驗證的應用程式可能會允許應用程式蒐集您的個資或追蹤您的活動。
 
 不建議安裝此應用程式。
 
 若仍選擇安裝，請仔細檢閱該應用程式的 [隱私權注意事項]，並確認僅允許必要權限。"</string>
-    <string name="appblock_warn_text2">"惡意應用程式通常會嘗試使用 [聯絡人]、[簡訊] 和 [相片] 權限來獲取您的個人資訊。
-
-不建議安裝此應用程式。
-
-若仍選擇安裝此應用程式，請確認其為受信任的來源，並多加留意資料權限的開放或其他存取設定。"</string>
     <string name="application_default_restrict">裝置管理員已將另一個應用程式設為預設。</string>
     <string name="as_app_forced_to_restricted_bucket">已將「%1$s」移入受限制的值區</string>
     <string name="auto_click_paused">已暫停自動點擊。</string>
@@ -493,6 +496,7 @@
     <string name="autofill_save_type_payment_card">付款卡</string>
     <string name="autofill_save_type_username">使用者名稱</string>
     <string name="autofill_save_yes">儲存</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="autofill_update_title">要更新 <b>%1$s</b> 中的內容嗎？</string>
     <string name="autofill_update_title_with_2types">要更新 <b>%3$s</b> 中的%1$s和%2$s嗎？</string>
     <string name="autofill_update_title_with_3types">要更新 <b>%4$s</b> 中的%1$s、%2$s和%3$s嗎？</string>
@@ -506,7 +510,7 @@
     <string name="badPuk">你輸入的 PUK 不正確。</string>
     <string name="badPuk2">您輸入的 PUK2 碼不正確。</string>
     <string name="batt_cooldown_mode_ok">確定</string>
-    <string name="battery_saver_charged_notification_summary">平板電腦電力充足，各項功能不再受到限制。</string>
+    <string name="battery_saver_charged_notification_summary">手機電力充足，各項功能不再受到限制。</string>
     <string name="battery_saver_description">省電模式會開啟深色主題，並限制或關閉背景活動、某些視覺效果、特定功能和部分網路連線。</string>
     <string name="battery_saver_description_with_learn_more">省電模式會開啟深色主題，並限制或關閉背景活動、某些視覺效果、特定功能和部分網路連線。</string>
     <string name="battery_saver_notification_channel_name">省電模式</string>
@@ -520,6 +524,7 @@
     <string name="biometric_error_generic">驗證時發生錯誤</string>
     <string name="biometric_error_hw_unavailable">無法使用生物特徵辨識硬體</string>
     <string name="biometric_error_user_canceled">已取消驗證</string>
+    <string name="biometric_face_not_recognized">無法辨識臉孔</string>
     <string name="biometric_not_recognized">無法辨識</string>
     <string name="biometric_or_screen_lock_app_setting_name">使用生物特徵辨識或螢幕鎖定功能</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">請使用生物特徵辨識或螢幕鎖定功能驗證身分，才能繼續操作</string>
@@ -531,8 +536,6 @@
     <string name="bluetooth_airplane_mode_toast">藍牙將在飛航模式下保持開啟狀態</string>
     <string name="bluetooth_avrcp_restrict">安全性原則會防止藍牙音訊/視訊控制的使用。</string>
     <string name="bluetooth_bpp_restrict">安全性原則會防止經藍牙列印。</string>
-    <string name="bluetooth_china_popup_message">%1$s 正在要求取得使用 %2$s 的權限。允許嗎？</string>
-    <string name="bluetooth_china_popup_title">藍牙</string>
     <string name="bluetooth_data_transfer_restrict">安全性原則會防止經藍牙傳輸資料。</string>
     <string name="bluetooth_desktop_restrict">安全性原則會防止經藍牙連接至桌面。</string>
     <string name="bluetooth_device_restrict">安全性原則會防止與此藍牙裝置的配對。</string>
@@ -543,7 +546,6 @@
     <string name="bluetooth_outgoing_call_restrict">安全性原則會防止經藍牙撥出電話。</string>
     <string name="bluetooth_pairing_restrict">安全性原則會防止藍牙配對。</string>
     <string name="bluetooth_pbap_restrict">安全性原則會防止藍牙通訊錄的使用。</string>
-    <string name="bluetooth_permission_request">藍牙許可要求</string>
     <string name="bluetooth_restrict">安全性原則會防止藍牙的使用。</string>
     <string name="bluetooth_sap_restrict">安全性原則會防止您的 SIM 卡遭他人經藍牙存取。</string>
     <string name="bluetooth_security_mode_disable">安全性原則會防止藍牙的使用。</string>
@@ -574,7 +576,7 @@
     <string name="call_notification_screening_text">正在過濾來電</string>
     <string name="camera_restrict">安全性原則可防止相機的使用。</string>
     <string name="can_not_install_app">無法安裝應用程式。應用程式尚未針對 %s 的使用最佳化。</string>
-    <string name="can_not_open_searcle_on_the_lockscreen">無法在鎖定螢幕上圈出項目即可搜索。</string>
+    <string name="can_not_open_searcle_on_the_lockscreen">無法在鎖定螢幕上圈選搜尋。</string>
     <string name="cannot_open_app_concentration_mode">無法開啟應用程式</string>
     <string name="capability_desc_canCaptureFingerprintGestures">可以擷取使用者對裝置的指紋感應器執行的手勢。</string>
     <string name="capability_desc_canControlMagnification">控管顯示畫面的縮放等級和位置。</string>
@@ -668,12 +670,17 @@
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">確定</string>
+    <string name="connected_display_thermally_unavailable_notification_content">裝置過熱，請等到降溫後再將畫面鏡像投放至螢幕</string>
+    <string name="connected_display_unavailable_notification_content">請改用其他傳輸線，然後再試一次</string>
+    <string name="connected_display_unavailable_notification_title">無法將畫面鏡像投放至螢幕</string>
     <string name="console_running_notification_message">效能已受到影響。如要停用，請檢查系統啟動載入程式。</string>
     <string name="console_running_notification_title">已啟用序列主控台</string>
     <string name="constrained_status_bar_device_locked">裝置已鎖定</string>
     <string name="contentServiceSync">同步處理</string>
     <string name="contentServiceSyncNotificationTitle">無法同步處理</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">嘗試刪除的「%s」數量過多。</string>
+    <string name="content_description_collapsed">已收合</string>
+    <string name="content_description_expanded">已展開</string>
     <string name="content_description_sliding_handle">滑動控制。持續輕觸。</string>
     <string name="conversation_single_line_image_placeholder">傳送了一張圖片</string>
     <string name="conversation_single_line_name_display">%1$s：</string>
@@ -696,15 +703,13 @@
     <string name="ctc_plmn_locked_card">鎖住的卡</string>
     <string name="d2dalloweddevice">允許的裝置</string>
     <string name="data_call_restriction">安全政策限制行動數據的使用。</string>
-    <string name="data_saver_description">「數據節省模式」可防止部分應用程式在背景收發資料，以節省數據用量。你目前使用的應用程式可以存取資料，但存取頻率可能不如平時高。舉例來說，圖片可能不會自動顯示，在你輕觸後才會顯示。</string>
+    <string name="data_saver_description">「數據節省模式」可防止部分應用程式在背景收發資料，以節省數據用量。目前使用中的單一應用程式仍可存取資料，但存取頻率可能會變低。舉例來說，圖片可能要等到你輕觸後才會顯示。</string>
     <string name="data_saver_enable_button">開啟</string>
     <string name="data_saver_enable_title">要開啟數據節省模式嗎？</string>
-    <string name="data_usage_disable_mobile">停用行動數據連接嗎？</string>
-    <string name="data_usage_enable_mobile_warning">透過數據傳輸連線可能會產生額外費用。要繼續嗎？</string>
     <string name="data_usage_limit_body">帳單週期結束前，將暫停使用行動數據。</string>
     <string name="data_usage_limit_snoozed_body">你已使用 %s，超出設定上限</string>
     <string name="data_usage_mobile_limit_snoozed_title">超過行動數據上限</string>
-    <string name="data_usage_mobile_limit_title">已達行動數據流量上限</string>
+    <string name="data_usage_mobile_limit_title">已達到行動數據用量上限</string>
     <string name="data_usage_rapid_app_body">%s 耗用的數據比平常多。</string>
     <string name="data_usage_rapid_body">您的應用程式耗用的數據比平常多。</string>
     <string name="data_usage_rapid_title">高行動數據用量</string>
@@ -736,7 +741,7 @@
     <string name="decline">拒絕</string>
     <string name="decline_remote_bugreport_action">拒絕</string>
     <string name="default_audio_route_category_name">系統</string>
-    <string name="default_audio_route_name">平板電腦</string>
+    <string name="default_audio_route_name">手機</string>
     <string name="default_audio_route_name_dock_speakers">座架喇叭</string>
     <string name="default_audio_route_name_external_device">外部裝置</string>
     <string name="default_audio_route_name_headphones">耳機</string>
@@ -754,11 +759,13 @@
     <string name="deprecated_target_sdk_message">這個應用程式是專為舊版 Android 所打造，因此可能無法正常運作，且不提供最新的安全性和隱私保護服務。請檢查是否有更新版本，或與應用程式的開發人員聯絡。</string>
     <string name="description_target_unlock_tablet">滑動即可解鎖。</string>
     <string name="device_disabled">裝置已停用。請聯絡 IT 管理員。</string>
+    <string name="device_info_not_available">無法使用</string>
     <string name="device_ownership_relinquished">管理員將這部裝置開放給個人使用</string>
     <string name="device_policy_manager_service">政策管理工具服務</string>
     <string name="device_state_notification_settings_button">前往「設定」</string>
     <string name="device_state_notification_turn_off_button">停用</string>
     <string name="device_storage_monitor_notification_channel">裝置儲存空間</string>
+    <string name="device_unlock_notification_name">裝置解鎖</string>
     <string name="dex_cant_change_user_profile">Samsung DeX 模式中無法變更使用者設定檔。</string>
     <string name="dex_dialog_launch_toast">已開啟的應用程式可能會關閉。開始或結束 Samsung DeX 前，請記得儲存您的資料。</string>
     <string name="dex_disconnected_from_device">DeX 和 %s 的連接已中斷。請查看電視的網路連線。</string>
@@ -767,9 +774,6 @@
     <string name="dex_launcher_mode_change">已關閉%s來切換為 Samsung DeX。</string>
     <string name="dex_mirroring_jit_msg">在平板上執行 Samsung DeX 時，即可於任一透過 HDMI 連線的顯示器上鏡射螢幕，享有更大的畫面。</string>
     <string name="dex_mirroring_jit_title">將 DeX 鏡射至大螢幕</string>
-    <string name="dex_restart_app_dialog_button_positive">重新啟動</string>
-    <string name="dex_restart_app_dialog_message">此應用程式已於其他顯示器上執行。若要在此處開啟，需重新啟動應用程式。重新啟動前，請確認您已儲存所有重要資料。</string>
-    <string name="dex_restart_app_dialog_title">重新啟動 %s 嗎？</string>
     <string name="dex_restriction_blockerMessage">安全性原則會防止 Samsung DeX 的使用。</string>
     <string name="dex_restriction_ethernetOnly">安全性原則會防止您使用 Wi-Fi 數據、行動數據與 DeX 網路共享。網路功能需使用有線連線。</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">基於安全性原則，請中斷連接外接顯示器以結束 Samsung DeX。</string>
@@ -798,7 +802,6 @@
     <string name="disableupdate_application_restrict">安全性政策可防止更新此應用程式。</string>
     <string name="dismiss_action">關閉</string>
     <string name="display_chooser_button_positive">重新啟動</string>
-    <string name="display_chooser_dont_show_again">不要再顯示</string>
     <string name="display_manager_built_in_display_name">內建畫面</string>
     <string name="display_manager_hdmi_display_name">HDMI 螢幕</string>
     <string name="display_manager_overlay_display_name">第 %1$d 個重疊效果</string>
@@ -820,6 +823,7 @@
     <string name="dpm_wifi_misc_network_insecure">安全性原則會防止使用不安全的 Wi-Fi 網路。</string>
     <string name="dpm_wifi_misc_wifi_disabled">安全性原則可防止 Wi-Fi 的使用。</string>
     <string name="dpm_wifi_user_profiles_denied">安全性原則會防止新增 Wi-Fi 網路。</string>
+    <string name="dream_accessibility_action_click">關閉</string>
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">無法在多重視窗檢視中使用此應用程式。</string>
     <string name="dream_preview_title">預覽，%1$s</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">無法在多重視窗檢視中使用此功能。</string>
@@ -848,11 +852,13 @@
     <string name="duration_years_shortest_future">%d 年後</string>
     <string name="dynamic_mode_notification_channel_name">日常安排模式資訊通知</string>
     <string name="dynamic_mode_notification_summary">降低電池用量，以便延長電池續航力</string>
+    <string name="dynamic_mode_notification_summary_v2">已開啟省電模式，延長電池續航力</string>
     <string name="dynamic_mode_notification_title">已開啟省電模式</string>
+    <string name="dynamic_mode_notification_title_v2">省電模式已開啟</string>
     <string name="editTextMenuTitle">文字動作</string>
     <string name="edit_accessibility_shortcut_menu_button">編輯捷徑</string>
     <string name="edit_contact_at_sim_restriction">安全性政策可防止編輯 SIM 卡聯絡人。</string>
-    <string name="edm_policy_not_allow_open_wifiap">允許的裝置</string>
+    <string name="edm_policy_not_allow_open_wifiap">安全性政策將限制不安全的無線基地台網路分享使用。</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
     <string name="elapsed_time_short_format_mm_ss">%1$02d:%2$02d</string>
     <string name="emailTypeCustom">自訂</string>
@@ -863,8 +869,10 @@
     <string name="emergency_call_dialog_number_for_display">緊急電話號碼</string>
     <string name="emergency_calls_only">僅限緊急電話</string>
     <string name="enablePin">操作失敗，請啟用 SIM/RUIM 鎖定。</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s 需要啟用「輕觸探索」。開啟這項功能時，系統會在你的手指輕觸螢幕上的物件時顯示或朗讀說明，你也可以執行手勢來與平板電腦互動。</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s 需要啟用「輕觸探索」。開啟這項功能時，系統會在你的手指輕觸螢幕上的物件時顯示或朗讀說明，你也可以執行手勢來與手機互動。</string>
     <string name="enable_explore_by_touch_warning_title">啟用輕觸探索？</string>
+    <string name="error_handwriting_unsupported">這個欄位無法使用手寫功能</string>
+    <string name="error_handwriting_unsupported_password">密碼欄位無法使用手寫功能</string>
     <string name="error_message_change_not_allowed">你的管理員不允許這項變更</string>
     <string name="error_message_title">錯誤</string>
     <string name="ethernet_cable_connected_notification_message">點擊以設定。</string>
@@ -927,7 +935,7 @@
     <string name="ext_media_unsupported_notification_message">本裝置不支援此 %s。請輕觸以透過支援的格式設定。</string>
     <string name="ext_media_unsupported_notification_title">不支援的 %s</string>
     <string name="ext_storage_bad_removal_button">重新啟動</string>
-    <string name="ext_storage_bad_removal_title">重新啟動平板</string>
+    <string name="ext_storage_bad_removal_title">重新啟動手機</string>
     <string name="extmedia_format_button_format">格式</string>
     <string name="extmedia_format_message">儲存卡上的所有資料都會消失。</string>
     <string name="extmedia_format_message_usbhost">USB 儲存裝置上儲存的所有檔案即將遭到清除。這項動作無法復原！</string>
@@ -949,7 +957,7 @@
     <string name="face_acquired_too_bright">亮度過高，請嘗試使用較柔和的照明方式。</string>
     <string name="face_acquired_too_close">請將手機拿遠一點</string>
     <string name="face_acquired_too_dark">光線不足</string>
-    <string name="face_acquired_too_different">無法辨識這張臉，請再試一次。</string>
+    <string name="face_acquired_too_different">無法辨識臉孔，請再試一次。</string>
     <string name="face_acquired_too_far">請將手機拿近一點</string>
     <string name="face_acquired_too_high">請將手機舉高一點</string>
     <string name="face_acquired_too_left">請將手機向右移</string>
@@ -982,8 +990,6 @@
     <string name="face_recalibrate_notification_name">人臉解鎖</string>
     <string name="face_recalibrate_notification_title">人臉解鎖功能發生問題</string>
     <string name="face_sensor_privacy_enabled">如要使用人臉解鎖功能，請前往「設定」>「隱私權」開啟<b>攝影機存取權</b></string>
-    <string name="face_setup_notification_content">看著手機就能解鎖</string>
-    <string name="face_setup_notification_title">設定人臉解鎖功能</string>
     <string name="faceunlock_multiple_failures">已超過人臉解鎖嘗試次數上限</string>
     <string name="factory_reset_message">"無法使用管理應用程式，系統現在將清除你裝置中的資料。
 
@@ -1019,20 +1025,21 @@
     <string name="fingerprint_app_setting_name">使用指紋</string>
     <string name="fingerprint_authenticated">指紋驗證成功</string>
     <string name="fingerprint_dialog_default_subtitle">使用指紋完成驗證才能繼續操作</string>
-    <string name="fingerprint_error_bad_calibration">指紋感應器無法使用，請洽詢維修供應商</string>
-    <string name="fingerprint_error_canceled">指紋作業已取消。</string>
-    <string name="fingerprint_error_hw_not_available">指紋硬體無法使用。</string>
-    <string name="fingerprint_error_hw_not_present">這個裝置沒有指紋感應器。</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">無法辨識臉孔，請改用指紋。</string>
+    <string name="fingerprint_error_bad_calibration">指紋感應器無法使用，請洽詢維修供應商。</string>
+    <string name="fingerprint_error_canceled">指紋作業已取消</string>
+    <string name="fingerprint_error_hw_not_available">指紋辨識硬體無法使用</string>
+    <string name="fingerprint_error_hw_not_present">這個裝置沒有指紋感應器</string>
     <string name="fingerprint_error_lockout">嘗試次數過多，請改用螢幕鎖定功能。</string>
     <string name="fingerprint_error_lockout_permanent">嘗試次數過多，請改用螢幕鎖定功能。</string>
-    <string name="fingerprint_error_no_fingerprints">未登錄任何指紋。</string>
+    <string name="fingerprint_error_no_fingerprints">未登錄任何指紋</string>
     <string name="fingerprint_error_no_space">無法設定指紋</string>
     <string name="fingerprint_error_not_match">指紋辨識失敗</string>
     <string name="fingerprint_error_power_pressed">已按下電源鍵</string>
-    <string name="fingerprint_error_security_update_required">感應器已暫時停用。</string>
+    <string name="fingerprint_error_security_update_required">感應器已暫時停用</string>
     <string name="fingerprint_error_timeout">指紋設定逾時，請再試一次。</string>
     <string name="fingerprint_error_unable_to_process">無法處理指紋，請再試一次。</string>
-    <string name="fingerprint_error_user_canceled">使用者已取消指紋驗證作業。</string>
+    <string name="fingerprint_error_user_canceled">使用者已取消指紋驗證作業</string>
     <string name="fingerprint_error_vendor_unknown">發生錯誤，請再試一次。</string>
     <string name="fingerprint_name_template">手指 %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">使用指紋或螢幕鎖定功能</string>
@@ -1040,8 +1047,6 @@
     <string name="fingerprint_recalibrate_notification_content">請洽詢維修供應商。</string>
     <string name="fingerprint_recalibrate_notification_name">指紋解鎖</string>
     <string name="fingerprint_recalibrate_notification_title">指紋感應器無法使用</string>
-    <string name="fingerprint_setup_notification_content">輕觸即可新增指紋</string>
-    <string name="fingerprint_setup_notification_title">設定更多解鎖方式</string>
     <string name="fingerprint_udfps_error_not_match">指紋辨識失敗</string>
     <string name="fingerprints">指紋</string>
     <string name="firmwarerecovery_restrict">安全性原則會限制韌體復原。</string>
@@ -1131,7 +1136,7 @@
     <string name="global_action_toggle_sealed_mode">加密模式</string>
     <string name="global_action_toggle_silent_mode">靜音模式</string>
     <string name="global_action_voice_assist">語音小幫手</string>
-    <string name="global_actions">平板電腦選項</string>
+    <string name="global_actions">電話選項</string>
     <string name="global_actions_airplane_mode_off_status">飛航模式為 [關閉]</string>
     <string name="global_actions_airplane_mode_on_status">飛航模式為 [開啟]</string>
     <string name="global_actions_toggle_airplane_mode">飛航模式</string>
@@ -1152,6 +1157,7 @@
     <string name="globalactions_unable_restart_msg_fmm">已透過 [尋找我的手機] 遠端鎖定手機，因此無法重新啟動。</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">已透過 [尋找我的手機] 遠端鎖定平板，因此無法重新啟動。</string>
     <string name="globalactions_unable_restart_msg_securelock">鎖定時無法重新啟動手機。請掀開皮套並解鎖來重新啟動手機。</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">SIM 卡鎖定時無法重新啟動手機。</string>
     <string name="gnss_service">GNSS 服務</string>
     <string name="gnss_time_update_service">GNSS 時間更新服務</string>
     <string name="gpsNotifMessage">要求者：%1$s (%2$s)</string>
@@ -1167,7 +1173,7 @@
     <string name="granularity_label_link">連結</string>
     <string name="granularity_label_word">字詞</string>
     <string name="guest_name">訪客</string>
-    <string name="hardware">顯示虛擬鍵盤</string>
+    <string name="hardware">使用螢幕小鍵盤</string>
     <string name="hardware_key_restrict">安全性原則會防止此硬體保護鎖的使用。</string>
     <string name="hardware_sec">螢幕鍵盤</string>
     <string name="harmful_app_warning_open_anyway">仍要開啟</string>
@@ -1280,7 +1286,7 @@
     <string name="keyboardview_keycode_cancel">取消</string>
     <string name="keyboardview_keycode_delete">Delete 鍵</string>
     <string name="keyboardview_keycode_done">完成</string>
-    <string name="keyboardview_keycode_enter">Enter 鍵</string>
+    <string name="keyboardview_keycode_enter">Enter</string>
     <string name="keyboardview_keycode_mode_change">模式變更</string>
     <string name="keyboardview_keycode_shift">Shift 鍵</string>
     <string name="keygaurd_accessibility_media_controls">媒體控制項</string>
@@ -1316,11 +1322,11 @@
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>輕觸即可輸入密碼&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">PIN 碼不正確。</string>
     <string name="kg_enter_confirm_pin_hint">確認所需的 PIN 碼</string>
-    <string name="kg_failed_attempts_almost_at_login">"你的解鎖圖案已畫錯 %1$d 次，如果再嘗試 %2$d 次仍未成功，系統就會要求你透過電子郵件帳戶解除平板電腦的鎖定狀態。
+    <string name="kg_failed_attempts_almost_at_login">"你的解鎖圖案已畫錯 %1$d 次，如果再嘗試 %2$d 次仍未成功，系統就會要求你透過電子郵件帳戶解除手機的鎖定狀態。
 
 請在 %3$d 秒後再試一次。"</string>
-    <string name="kg_failed_attempts_almost_at_wipe">你嘗試解除這個平板電腦的鎖定已失敗 %1$d 次，目前還剩 %2$d 次機會。如果失敗次數超過限制，平板電腦將恢復原廠設定，所有使用者資料都會遺失。</string>
-    <string name="kg_failed_attempts_now_wiping">你嘗試解除這個平板電腦的鎖定已失敗 %d 次，平板電腦現在將恢復原廠設定。</string>
+    <string name="kg_failed_attempts_almost_at_wipe">你嘗試解除這支手機的鎖定已失敗 %1$d 次，目前還剩 %2$d 次機會。如果失敗次數超過限制，手機將恢復原廠設定，所有使用者資料都會遺失。</string>
+    <string name="kg_failed_attempts_now_wiping">你嘗試解除這支手機的鎖定已失敗 %d 次，手機現在將恢復原廠設定。</string>
     <string name="kg_forgot_pattern_button_text">忘記圖案</string>
     <string name="kg_invalid_confirm_pin_hint">PIN 碼不符</string>
     <string name="kg_invalid_puk">重新輸入正確的 PUK 碼。如果錯誤次數過多，SIM 卡將會永久停用。</string>
@@ -1375,7 +1381,7 @@
     <string name="knoxvpn_title">已連線至 VPN</string>
     <string name="lacking_filenode_internal_storage_view_text">您已在手機上建立太多檔案。應用程式可能無法正確運作且將無法再啟動手機。請備份所有重要資料並將手機重設為原廠設定。</string>
     <string name="lacking_filenode_internal_storage_view_title">檔案系統上限</string>
-    <string name="language_picker_regions_section_suggested">建議的語言</string>
+    <string name="language_picker_regions_section_suggested">建議地區</string>
     <string name="language_picker_section_all">所有語言</string>
     <string name="language_picker_section_show_all">所有語言</string>
     <string name="language_picker_section_show_other">其他語言</string>
@@ -1408,11 +1414,11 @@
     <string name="lockscreen_carrier_default">沒有服務</string>
     <string name="lockscreen_carrier_noservice">（無服務）</string>
     <string name="lockscreen_emergency_call">緊急撥號</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">你嘗試解除這個平板電腦的鎖定已失敗 %1$d 次，目前還剩 %2$d 次機會。如果失敗次數超過限制，平板電腦將恢復原廠設定，所有使用者資料都會遺失。</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"你的解鎖圖案已畫錯 %1$d 次，如果再嘗試 %2$d 次仍未成功，系統就會要求你使用你的 Google 登入資訊解除平板電腦的鎖定狀態。
+    <string name="lockscreen_failed_attempts_almost_at_wipe">你嘗試解除這支手機的鎖定已失敗 %1$d 次，目前還剩 %2$d 次機會。如果失敗次數超過限制，手機將恢復原廠設定，所有使用者資料都會遺失。</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"你的解鎖圖案已畫錯 %1$d 次，如果再試 %2$d 次仍未成功，系統就會要求你使用你的 Google 登入資訊解除手機的鎖定狀態。
 
 請在 %3$d 秒後再試一次。"</string>
-    <string name="lockscreen_failed_attempts_now_wiping">你嘗試解除這個平板電腦的鎖定已失敗 %d 次，平板電腦現在將恢復原廠設定。</string>
+    <string name="lockscreen_failed_attempts_now_wiping">你嘗試解除這支手機的鎖定已失敗 %d 次，手機現在將恢復原廠設定。</string>
     <string name="lockscreen_forgot_pattern_button_text">忘記解鎖圖案？</string>
     <string name="lockscreen_glogin_account_recovery_hint">"忘了使用者名稱或密碼？
 請造訪 "<b>google.com/accounts/recovery</b>。</string>
@@ -1428,7 +1434,7 @@
     <string name="lockscreen_instructions_when_pattern_enabled">按下 [Menu] 解鎖或撥打緊急電話。</string>
     <string name="lockscreen_missing_sim_instructions">請新增 SIM 卡。</string>
     <string name="lockscreen_missing_sim_instructions_long">找不到 SIM 卡或 SIM 卡無法讀取，請新增 SIM 卡。</string>
-    <string name="lockscreen_missing_sim_message">平板電腦中沒有 SIM 卡。</string>
+    <string name="lockscreen_missing_sim_message">手機中沒有 SIM 卡。</string>
     <string name="lockscreen_missing_sim_message_short">沒有 SIM 卡</string>
     <string name="lockscreen_network_locked_message">網路已鎖定</string>
     <string name="lockscreen_password_wrong">再試一次</string>
@@ -1468,7 +1474,7 @@
     <string name="low_internal_storage_view_text">部分系統功能可能無法運作</string>
     <string name="low_internal_storage_view_text_no_boot">系統儲存空間不足。請確定你已釋出 250MB 的可用空間，然後重新啟動。</string>
     <string name="low_internal_storage_view_title">儲存空間即將用盡</string>
-    <string name="low_memory">平板電腦的儲存空間已滿。請刪除一些檔案，以釋放出可用空間。</string>
+    <string name="low_memory">手機儲存空間已滿。請刪除一些檔案，以釋放可用空間。</string>
     <string name="ltb_kill_content_v2_phone">%s 造成您的手機過熱，因此已自動關閉。您可待手機降溫後再次開啟。</string>
     <string name="ltb_kill_content_v2_tablet">%s 造成您的平板過熱，因此已自動關閉。您可待平板降溫後再次開啟。</string>
     <string name="ltb_warning_button">不要關閉</string>
@@ -1488,16 +1494,16 @@
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">將需解鎖平板才能關閉維護模式。</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">維護模式開啟期間所發生的任何動作都不會予以儲存，例如下載資料、應用程式安裝或設定變更等。</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">設定螢幕鎖定</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">不建立記錄直接重新啟動</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">建立記錄並重新啟動</string>
     <string name="maintenance_mode_intro_dialog_message_phone">需重新啟動手機以開啟維護模式。</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">請先設定螢幕鎖定方式。</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">需重新啟動平板以開啟維護模式。</string>
     <string name="maintenance_mode_intro_dialog_textview_message_phone">"為協助技術人員剖析手機的所有問題，建議您在啟動維護模式之前，先建立系統記錄。
 
-此記錄將顯示應用程式使用記錄與近期可能發生的所有錯誤，但不包含任何其他個人資訊。此記錄僅供問題剖析使用，不作任何其他用途。一般約需 2 分鐘的時間來建立記錄。"</string>
+此記錄僅包含使用的應用程式、近期發生的錯誤、封鎖的手機號碼以及檔案儲存空間容量等基本資訊以供手機維修之用。此記錄僅供問題診斷與剖析使用，不作任何其他用途。一般約需 2 分鐘的時間來建立記錄。"</string>
     <string name="maintenance_mode_intro_dialog_textview_message_tablet">"為協助技術人員剖析平板的所有問題，建議您在啟動維護模式之前，先建立系統記錄。
 
-此記錄將顯示應用程式使用記錄與近期可能發生的所有錯誤，但不包含任何其他個人資訊。此記錄僅供問題剖析使用，不作任何其他用途。一般約需 2 分鐘的時間來建立記錄。"</string>
+此記錄僅包含使用的應用程式、近期發生的錯誤、封鎖的手機號碼以及檔案儲存空間容量等基本資訊以供平板維修之用。此記錄僅供問題診斷與剖析使用，不作任何其他用途。一般約需 2 分鐘的時間來建立記錄。"</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">分析儲存空間</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">您的手機內部儲存空間即將用盡。若儲存空間不足，某些應用程式與功能將無法正常運作。建議刪除一些不必要的檔案或應用程式。刪除後別忘了清空垃圾筒。</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">您的平板內部儲存空間即將用盡。若儲存空間不足，某些應用程式與功能將無法正常運作。建議刪除一些不必要的檔案或應用程式。刪除後別忘了清空垃圾筒。</string>
@@ -1519,10 +1525,17 @@
     <string name="maintenance_mode_outro_label">結束維護模式</string>
     <string name="maintenance_mode_outro_textview_message_phone">需解鎖手機才能關閉維護模式。執行此動作將使所有資料恢復先前開啟維護模式的狀態。開啟維護模式後所進行的變更，如下載的資料、安裝的應用程式或設定變更等都不會予以儲存。</string>
     <string name="maintenance_mode_outro_textview_message_tablet">需解鎖平板才能關閉維護模式。執行此動作將使所有資料恢復先前開啟維護模式的狀態。開啟維護模式後所進行的變更，如下載的資料、安裝的應用程式或設定變更等都不會予以儲存。</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">開啟%s時無法使用維護模式。</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">開啟省電模式並限制應用程式與首頁螢幕時，無法使用維護模式。</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">這部手機不支援維護模式。</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">這部平板不支援維護模式。</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s僅可由裝置擁有者使用。</string>
     <string name="maintenance_mode_stop_backup_dialog_message">停止備份資料並開啟 [維護模式] 嗎？</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">若要開啟維護模式，請先將未完成的備份程序完成或刪除。</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">若要開啟維護模式，請先停止進行中的備份程序。</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">若要開啟維護模式，請先停止還原備份資料。</string>
+    <string name="maintenance_mode_toast_text_device_admin">裝置管理員應用程式</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">正在建立記錄…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">此程序一般約需 2 分鐘的時間。待記錄建立後，手機將以維護模式重新啟動且可安心移交手機進行維護。</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">此程序一般約需 2 分鐘的時間。待記錄建立後，平板將以維護模式重新啟動且可安心移交平板進行維護。</string>
@@ -1672,6 +1685,7 @@
     <string name="menu_shift_shortcut_label">Shift +</string>
     <string name="menu_space_shortcut_label">空白鍵</string>
     <string name="menu_sym_shortcut_label">Sym +</string>
+    <string name="message_on_crash">已遭自動封鎖程式封鎖</string>
     <string name="mic_access_off_toast">麥克風已封鎖</string>
     <string name="mic_access_on_toast">麥克風已可使用</string>
     <string name="microphone_restrict">安全性原則會防止麥克風的使用。</string>
@@ -1694,15 +1708,17 @@
     <string name="mime_type_spreadsheet_ext">%1$s 試算表</string>
     <string name="mime_type_video">影片</string>
     <string name="mime_type_video_ext">%1$s 影片</string>
-    <string name="miniresolver_call">通話</string>
-    <string name="miniresolver_call_in_work">透過工作應用程式撥號嗎？</string>
-    <string name="miniresolver_call_information">公司僅允許您透過工作應用程式撥號。</string>
+    <string name="miniresolver_call">撥號</string>
+    <string name="miniresolver_call_in_work">要透過工作應用程式撥號嗎？</string>
+    <string name="miniresolver_call_information">貴機構僅允許透過工作應用程式撥打電話</string>
     <string name="miniresolver_open_in_personal">要在個人用「%s」中開啟嗎？</string>
     <string name="miniresolver_open_in_work">要在工作用「%s」中開啟嗎？</string>
     <string name="miniresolver_open_work">要開啟工作用「%s」嗎？</string>
-    <string name="miniresolver_sms_information">公司僅允許您透過工作應用程式傳訊。</string>
+    <string name="miniresolver_private_space_messages_information">使用個人的訊息應用程式時，只能傳送簡訊。</string>
+    <string name="miniresolver_private_space_phone_information">只能使用個人「電話」應用程式撥打電話。透過個人「電話」應用程式撥出的電話會顯示在個人通話記錄中。</string>
+    <string name="miniresolver_sms_information">貴機構僅允許透過工作應用程式傳送訊息</string>
     <string name="miniresolver_switch">切換</string>
-    <string name="miniresolver_switch_to_work">切換到工作應用程式嗎？</string>
+    <string name="miniresolver_switch_to_work">要切換到工作應用程式嗎？</string>
     <string name="miniresolver_use_personal_browser">使用個人瀏覽器</string>
     <string name="miniresolver_use_work_browser">使用工作瀏覽器</string>
     <string name="minute">分鐘</string>
@@ -1736,30 +1752,6 @@
     <string name="month_day_year" formatted="false">%Y 年 %-m 月 %-e 日</string>
     <string name="more_apps">其他應用程式</string>
     <string name="more_item_label">更多</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">不支援%s服務。請聯絡客服中心。</string>
-    <string name="mptcp_message_address_type_not_supported">%s 連線訊號不佳。正在透過可用網路重新連接…</string>
-    <string name="mptcp_message_busy_ntime_wait">%s 連線訊號不佳。正在透過可用網路重新連接…</string>
-    <string name="mptcp_message_cmd_not_supported">%s 網路暫時無法使用。正在透過可用網路重新連接…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">%s 連線訊號不佳。正在透過可用網路重新連接…</string>
-    <string name="mptcp_message_connection_refused">%s 連線訊號不佳。正在透過可用網路重新連接…</string>
-    <string name="mptcp_message_data_usage_limit">已達數據用量上限。若要變更數據用量上限，請前往設定。</string>
-    <string name="mptcp_message_host_unreachable">%s 連線訊號不佳。正在透過可用網路重新連接…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">無法啟用 %s。裝置未連接至 LTE 網路。</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">國際漫遊時無法啟用 %s。</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">[行動無線基地台] 或 [USB 網路共享] 啟用時無法啟用 %s。</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Wi-Fi Direct 啟用時無法啟用%s。</string>
-    <string name="mptcp_message_mptcp_capability_airplane">[飛航模式] 啟用時無法啟用 %s。</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">[行動數據] 關閉時無法啟用 %s。</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">沒有來自系統業者的回應。</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">無法啟用 %1$s。您的網際網路方案不支援 %2$s 或未從 %3$s 伺服器收到回應。</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">無法傳送%s啟動要求。正在透過可用網路重新連接…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">無法啟用 %s。插入的 SD 卡有誤。</string>
-    <string name="mptcp_message_network_unreachable">%s 連線訊號不佳。正在透過可用網路重新連接…</string>
-    <string name="mptcp_message_non_mptcp_plan">無法啟用 Giga Multi-Path。資費方案不支援該功能。</string>
-    <string name="mptcp_message_operation_disabled_overheating">為了避免裝置過熱，已停用%s。正在改由行動網路下載…</string>
-    <string name="mptcp_message_server_error">%s 連線訊號不佳。正在透過可用網路重新連接…</string>
-    <string name="mptcp_message_setting_disabled_overheating">無法啟用 %s。裝置過熱。請等到裝置降溫再重試。</string>
-    <string name="mptcp_message_ttl_expired">%s 網路暫時無法使用。正在透過可用網路重新連接…</string>
     <string name="mte_override_notification_message">這麼做可能會影響效能和穩定性，請重新啟動以停用這項功能。如果該功能是透過 arm64.memtag.bootctl 啟用，請先設為 none。</string>
     <string name="mte_override_notification_title">已啟用實驗 MTE</string>
     <string name="multi_user_capability_restrict">安全性原則會防止您裝置上的多重使用者功能。</string>
@@ -1780,18 +1772,18 @@
     <string name="multisound_sound_via_bluetooth_multiselection">現正於藍牙音訊裝置上播放音效。輕觸此處即可關閉該功能</string>
     <string name="multisound_sound_via_headphone">正在透過耳機播放 %s 音效。請輕觸此處來關閉。</string>
     <string name="multisound_sound_via_headphone_multiselection">現正透過耳機播放音效。輕觸此處即可關閉該功能。</string>
-    <string name="multisound_sound_via_phone_speaker">正在透過平板揚聲器播放 %s 音效。請輕觸此處來關閉。</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">現正透過平板揚聲器播放音效。輕觸此處即可關閉該功能。</string>
+    <string name="multisound_sound_via_phone_speaker">正在透過電話揚聲器播放 %s 音效。請輕觸此處來關閉。</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">現正透過手機揚聲器播放音效。輕觸此處即可關閉該功能。</string>
     <string name="multisound_sound_via_usb_audio">正在透過 USB 音訊裝置播放 %s 音效。請輕觸此處來關閉。</string>
     <string name="multisound_sound_via_usb_audio_multiselection">現正透過 USB 音訊裝置播放音效。輕觸此處即可關閉該功能。</string>
     <string name="multisound_title">隔離應用程式音效</string>
     <string name="multisound_turn_off_multisound">關閉</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX 中無法執行 %s。請嘗試以平板模式執行。</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX 中無法執行 %s。其設計是專供平板主螢幕使用。</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">部分遊戲僅可於觸控螢幕上執行。若無法在 Samsung DeX 中操控滑鼠，請嘗試改以平板模式操作。</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">Samsung DeX 中無法執行 %s。請嘗試以手機模式執行。</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">Samsung DeX 中無法執行 %s。其設計是專供手機主螢幕使用。</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">部分遊戲僅可於觸控螢幕上執行。若無法在 Samsung DeX 中操控滑鼠，請嘗試改以手機模式操作。</string>
     <string name="music_recognition_manager_service">音樂辨識管理員服務</string>
     <string name="muted_by">「%1$s」正在關閉部分音效</string>
-    <string name="my_device">此平板</string>
+    <string name="my_device">此手機</string>
     <string name="nas_upgrade_notification_content">目前是由加強型通知功能提供建議的操作和回覆內容。系統已不再支援 Android 自動調整通知功能。</string>
     <string name="nas_upgrade_notification_disable_action">關閉</string>
     <string name="nas_upgrade_notification_enable_action">確定</string>
@@ -1831,7 +1823,6 @@
     <string name="nosim_limited_service">已限制的服務</string>
     <string name="not_checked">未勾選</string>
     <string name="not_selected">未選取</string>
-    <string name="not_support_ai_key">AI 按鍵尚不支援您的平板。即將開放更新，敬請期待。</string>
     <string name="notification_action_check_bg_apps">查看運作中的應用程式</string>
     <string name="notification_alerted_content_description">已提醒</string>
     <string name="notification_app_name_settings">設定</string>
@@ -1840,7 +1831,7 @@
     <string name="notification_appops_microphone_active">麥克風</string>
     <string name="notification_appops_overlay_active">顯示在畫面上的其他應用程式上層</string>
     <string name="notification_channel_abusive_bg_apps">背景活動</string>
-    <string name="notification_channel_accessibility_magnification">放大</string>
+    <string name="notification_channel_accessibility_magnification">放\ufffd\ufffd\ufffd</string>
     <string name="notification_channel_accessibility_security_policy">無障礙功能使用情形</string>
     <string name="notification_channel_account">帳戶狀態</string>
     <string name="notification_channel_alerts">快訊</string>
@@ -1850,6 +1841,7 @@
     <string name="notification_channel_developer_important">重要開發人員訊息</string>
     <string name="notification_channel_device_admin">來自 IT 管理員的快訊</string>
     <string name="notification_channel_dex_policy">Samsung DeX 政策</string>
+    <string name="notification_channel_display">螢幕</string>
     <string name="notification_channel_do_not_disturb">零打擾</string>
     <string name="notification_channel_emergency_callback">緊急回撥模式</string>
     <string name="notification_channel_foreground_service">正在耗用電量的應用程式</string>
@@ -1912,7 +1904,8 @@
     <string name="overheat_warning_title_v2_tablet">平板過熱</string>
     <string name="owner_name">擁有者</string>
     <string name="package_deleted_device_owner">已由你的管理員刪除</string>
-    <string name="package_installed_device_owner">已由你的管理員安裝</string>
+    <string name="package_installed_device_owner">"這是管理員安裝的套件。
+你可以前往設定查看授予的權限"</string>
     <string name="package_module">套件</string>
     <string name="package_night_mode_dialog_got_it">瞭解了</string>
     <string name="package_night_mode_dialog_message">為節省電量，%s 正在執行深色模式。您可前往 [設定實驗室] 切換為淺色模式。</string>
@@ -1932,10 +1925,12 @@
     <string name="perm_costs_money">這可能需要付費</string>
     <string name="permdesc_acceptHandovers">允許應用程式繼續進行在其他應用程式中發起的通話。</string>
     <string name="permdesc_accessBackgroundLocation">這個應用程式隨時都能取得位置資訊 (包括未使用應用程式時)。</string>
-    <string name="permdesc_accessCoarseLocation">只有在你使用時，這個應用程式才能透過定位服務取得你的概略位置。你必須在裝置上開啟定位服務，這個應用程式才能取得位置資訊。</string>
+    <string name="permdesc_accessCoarseLocation">只有在你使用時，這個應用程式才能透過定位服務取得你的大概位置。你必須在裝置上開啟定位服務，這個應用程式才能取得位置資訊。</string>
     <string name="permdesc_accessDrmCertificates">允許應用程式佈建及使用 DRM 憑證 (一般應用程式並不需要)。</string>
     <string name="permdesc_accessFineLocation">只有在你使用時，這個應用程式才能透過定位服務取得你的精確位置。你必須在裝置上開啟定位服務，這個應用程式才能取得位置資訊。這麼做可能會增加電池用量。</string>
+    <string name="permdesc_accessHiddenProfile">允許應用程式存取隱藏的設定檔。</string>
     <string name="permdesc_accessImsCallService">允許應用程式自動使用 IMS 服務撥打電話。</string>
+    <string name="permdesc_accessLastKnownCellId">允許應用程式存取最後已知的基地台 ID (由電信業者提供)。</string>
     <string name="permdesc_accessLocationExtraCommands">允許應用程式存取額外位置資訊提供者指令。這項設定可能會造成應用程式干擾 GPS 或其他位置資訊來源的運作。</string>
     <string name="permdesc_accessNetworkConditions">允許應用程式監聽網路狀況觀察資訊 (一般應用程式並不需要)。</string>
     <string name="permdesc_accessNetworkState">允許應用程式查看網路連線相關資訊，例如有哪些網路，以及已連上哪些網路。</string>
@@ -1956,23 +1951,24 @@
     <string name="permdesc_bindNotificationListenerService">允許應用程式繫結至通知接聽器服務的頂層介面 (一般應用程式不需使用)。</string>
     <string name="permdesc_bind_connection_service">允許應用程式與電話語音服務互動以撥接電話。</string>
     <string name="permdesc_bind_incall_service">允許應用程式控制使用者看到通話螢幕的時機和方式。</string>
-    <string name="permdesc_bluetooth">允許應用程式查看平板電腦的藍牙設定，以及建立和接受與其他配對裝置的連線。</string>
-    <string name="permdesc_bluetoothAdmin">允許應用程式設定本機藍牙平板電腦，以及搜尋遠端裝置並配對連線。</string>
+    <string name="permdesc_bluetooth">允許應用程式查看手機的藍牙設定，以及建立和接受與其他配對裝置的連線。</string>
+    <string name="permdesc_bluetoothAdmin">允許應用程式設定本機藍牙手機，以及搜尋遠端裝置並配對連線。</string>
     <string name="permdesc_bluetooth_advertise">允許應用程式向附近的藍牙裝置廣播</string>
     <string name="permdesc_bluetooth_connect">允許應用程式與已配對的藍牙裝置連線</string>
     <string name="permdesc_bluetooth_scan">允許應用程式探索鄰近藍牙裝置並進行配對</string>
     <string name="permdesc_bodySensors">允許應用程式在使用期間存取人體感應器資料，例如心率、體溫和血氧比例。</string>
     <string name="permdesc_bodySensors_background">允許應用程式在背景執行時存取人體感應器資料，例如心率、體溫和血氧比例。</string>
-    <string name="permdesc_broadcastSticky">允許應用程式傳送記憶廣播，這類廣播在廣播動作結束後仍繼續存在。請注意，過度使用此功能可能導致平板電腦使用過多的記憶體，導致平板電腦的執行速度變慢或不穩定。</string>
+    <string name="permdesc_broadcastSticky">允許應用程式傳送記憶廣播，這類廣播在廣播動作結束後仍繼續存在。請注意，過度使用此功能可能導致手機使用過多的記憶體，導致手機的執行速度變慢或不穩定。</string>
     <string name="permdesc_callCompanionApp">允許應用程式查看及控管在裝置上撥出的電話，包括撥打的電話號碼和通話狀態等資訊。</string>
     <string name="permdesc_callPhone">允許應用程式在你未操作的情況下自行撥打電話號碼，但可能產生非預期的費用或撥打非預期的電話。請注意，這項權限並不允許應用程式撥打緊急電話號碼。惡意應用程式可能利用此功能擅自撥打電話或撥打電信業者的代碼，導致來電自動轉接到其他號碼，增加不必要的額外支出。</string>
     <string name="permdesc_camera">這個應用程式在使用期間可以使用相機拍照及錄影。</string>
+    <string name="permdesc_cameraHeadlessSystemUser">這個應用程式可運用無使用者介面系統使用者權限存取相機。</string>
     <string name="permdesc_cameraOpenCloseListener">當任何相機裝置在開啟 (由應用程式) 或關閉時，這個應用程式就能接收回呼。</string>
     <string name="permdesc_changeNetworkState">允許應用程式變更網路連線狀態。</string>
     <string name="permdesc_changeTetherState">允許應用程式變更共用網路的連線狀態。</string>
-    <string name="permdesc_changeWifiMulticastState">允許應用程式接收透過多點傳播位址傳送給 Wi-Fi 網路上所有裝置 (而不只是傳送給你的平板電腦) 的封包。這項設定會比非多點傳播模式耗用更多電力。</string>
+    <string name="permdesc_changeWifiMulticastState">允許應用程式接收透過多點傳播位址傳送給 Wi-Fi 網路上所有裝置 (而不只是傳送給你的手機) 的封包。這項設定會比非多點傳播模式耗用更多電力。</string>
     <string name="permdesc_changeWifiState">允許應用程式與 Wi-Fi 存取點連線或中斷連線，並可變更 Wi-Fi 網路的裝置設定。</string>
-    <string name="permdesc_changeWimaxState">允許應用程式建立或中斷平板電腦與 WiMAX 網路的連線。</string>
+    <string name="permdesc_changeWimaxState">允許應用程式建立或中斷手機與 WiMAX 網路的連線。</string>
     <string name="permdesc_companionProfileWatch">允許隨附應用程式管理智慧手錶。</string>
     <string name="permdesc_connection_manager">允許應用程式管理電信連線。</string>
     <string name="permdesc_control_incall_experience">允許應用程式向使用者提供通話體驗。</string>
@@ -1993,6 +1989,7 @@
     <string name="permdesc_foregroundServiceHealth">允許應用程式搭配「health」類型使用前景服務</string>
     <string name="permdesc_foregroundServiceLocation">允許應用程式搭配「location」類型使用前景服務</string>
     <string name="permdesc_foregroundServiceMediaPlayback">允許應用程式搭配「mediaPlayback」類型使用前景服務</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">允許應用程式使用「mediaProcessing」類型的前景服務</string>
     <string name="permdesc_foregroundServiceMediaProjection">允許應用程式搭配「mediaProjection」類型使用前景服務</string>
     <string name="permdesc_foregroundServiceMicrophone">允許應用程式搭配「microphone」類型使用前景服務</string>
     <string name="permdesc_foregroundServicePhoneCall">允許應用程式搭配「phoneCall」類型使用前景服務</string>
@@ -2000,7 +1997,7 @@
     <string name="permdesc_foregroundServiceSpecialUse">允許應用程式搭配「specialUse」類型使用前景服務</string>
     <string name="permdesc_foregroundServiceSystemExempted">允許應用程式搭配「systemExempted」類型使用前景服務</string>
     <string name="permdesc_fullScreenIntent">允許應用程式在已鎖定的裝置上以全螢幕活動的形式顯示通知</string>
-    <string name="permdesc_getAccounts">允許應用程式取得平板電腦上所記憶的帳戶清單，其中可能包括你安裝的應用程式所建立的任何帳戶。</string>
+    <string name="permdesc_getAccounts">允許應用程式取得手機上所記憶的帳戶清單，其中可能包括你安裝的應用程式所建立的任何帳戶。</string>
     <string name="permdesc_getAppList">允許應用程式讀取安裝的應用程式清單。</string>
     <string name="permdesc_getPackageSize">允許應用程式擷取本身的程式碼、資料及快取大小</string>
     <string name="permdesc_getTasks">允許應用程式擷取最近執行工作的資訊。這項設定可讓應用程式找出裝置所用程式的相關資訊。</string>
@@ -2098,17 +2095,18 @@
     <string name="permdesc_mount_unmount_filesystems">允許應用程式安裝和解除安裝可攜儲存裝置的檔案系統。</string>
     <string name="permdesc_nearby_wifi_devices">允許應用程式顯示鄰近的 Wi-Fi 裝置的資料、與其連線並判斷相對位置</string>
     <string name="permdesc_nfc">允許應用程式與近距離無線通訊 (NFC) 電子感應標籤、卡片及感應器進行通訊。</string>
+    <string name="permdesc_nfcTransactionEvent">允許應用程式接收在安全元件上發生的交易相關資訊。</string>
     <string name="permdesc_observeCompanionDevicePresence">允許隨附應用程式在配對裝置靠近或遠離時偵測裝置目前的狀態。</string>
-    <string name="permdesc_persistentActivity">允許應用程式的部分內容常駐在記憶體中。這項設定可能會限制其他應用程式可用的記憶體，並拖慢平板電腦運作速度。</string>
+    <string name="permdesc_persistentActivity">允許應用程式讓部分內容佔用記憶體，持續執行。這項設定可能會限制其他應用程式可用的記憶體，並拖慢手機運作速度。</string>
     <string name="permdesc_postNotification">允許應用程式顯示通知</string>
     <string name="permdesc_preferredPaymentInfo">允許應用程式取得首選 NFC 付費服務資訊，例如已註冊的輔助工具和路線目的地。</string>
     <string name="permdesc_processOutgoingCalls">允許應用程式在撥打電話期間查看撥出的電話號碼，並可選擇改撥其他號碼或中斷通話。</string>
     <string name="permdesc_queryAllPackages">允許應用程式查看所有已安裝的套件。</string>
     <string name="permdesc_readBasicPhoneState">允許應用程式存取裝置的基本電話通訊功能。</string>
-    <string name="permdesc_readCalendar">這個應用程式可讀取所有儲存在平板電腦上的日曆活動資訊，以及共用或儲存日曆資料。</string>
+    <string name="permdesc_readCalendar">這個應用程式可讀取所有儲存在手機上的日曆活動資訊，以及共用或儲存日曆資料。</string>
     <string name="permdesc_readCallLog">這個應用程式可讀取通話記錄。</string>
     <string name="permdesc_readCellBroadcasts">允許應用程式讀取你裝置收到的區域廣播訊息。某些地點會發出區域廣播警示，警告你有緊急狀況發生。請注意，惡意應用程式可能會在裝置收到緊急區域廣播時，干擾裝置的效能或運作。</string>
-    <string name="permdesc_readContacts">允許應用程式讀取平板電腦上儲存的聯絡人資料。如果你已在平板電腦上的帳戶建立聯絡人，應用程式也將可以存取這些帳戶，當中可能包括你安裝的應用程式所建立的帳戶。這項權限可讓應用程式儲存你的聯絡人資料，惡意應用程式也可能在你不知情的情況下洩露你的聯絡人資料。</string>
+    <string name="permdesc_readContacts">允許應用程式讀取手機上儲存的聯絡人資料。如果你已在手機上的帳戶建立聯絡人，應用程式也將可以存取這些帳戶，當中可能包括你安裝的應用程式所建立的帳戶。這項權限可讓應用程式儲存你的聯絡人資料，惡意應用程式也可能在你不知情的情況下洩露你的聯絡人資料。</string>
     <string name="permdesc_readInstallSessions">允許應用程式讀取安裝工作階段。應用程式將可查看目前的套件安裝詳細資料。</string>
     <string name="permdesc_readMediaAudio">允許應用程式讀取共用儲存空間中的音訊檔案。</string>
     <string name="permdesc_readMediaImages">允許應用程式讀取共用儲存空間中的圖片檔案。</string>
@@ -2116,11 +2114,11 @@
     <string name="permdesc_readNetworkUsageHistory">允許應用程式讀取特定網路和應用程式的網路使用記錄。</string>
     <string name="permdesc_readPhoneNumbers">允許應用程式存取裝置上的電話號碼資料。</string>
     <string name="permdesc_readPhoneState">允許應用程式使用裝置的電話功能。這項權限可讓應用程式判讀手機號碼和裝置 ID、是否正在通話中，以及所撥打的對方號碼。</string>
-    <string name="permdesc_readSms">這個應用程式可讀取所有儲存在平板電腦上的簡訊。</string>
+    <string name="permdesc_readSms">這個應用程式可讀取所有儲存在手機上的簡訊。</string>
     <string name="permdesc_readSyncSettings">允許應用程式讀取帳戶的同步處理設定，例如判斷「使用者」應用程式是否和某個帳戶進行同步處理。</string>
     <string name="permdesc_readSyncStats">允許應用程式讀取帳戶的同步處理統計資料，包括同步處理活動記錄，以及同步處理的資料量。</string>
     <string name="permdesc_readVisualUserSelect">允許應用程式讀取你在共用儲存空間中選取的圖片和影片檔案。</string>
-    <string name="permdesc_receiveBootCompleted">允許應用程式在系統完成開機程序後立即自行啟動。這會增加平板電腦的開機時間，而且會因為系統一直執行該應用程式導致平板電腦的整體運作速度變慢。</string>
+    <string name="permdesc_receiveBootCompleted">允許應用程式在系統完成開機程序後立即自行啟動。這會增加手機的開機時間，而且會因為系統一直執行該應用程式導致手機的整體運作速度變慢。</string>
     <string name="permdesc_receiveMms">允許應用程式接收和處理多媒體訊息。這項設定可讓應用程式監控傳送至你裝置的訊息，或在你閱讀訊息前擅自刪除訊息。</string>
     <string name="permdesc_receiveSms">允許應用程式接收和處理簡訊。這項設定可讓應用程式監控傳送至你裝置的訊息，或在你閱讀訊息前擅自刪除訊息。</string>
     <string name="permdesc_receiveWapPush">允許應用程式接收和處理 WAP 訊息。這項權限也能讓應用程式監控訊息，或在你閱讀訊息前擅自刪除訊息。</string>
@@ -2142,7 +2140,7 @@
     <string name="permdesc_sendSms">允許應用程式傳送簡訊，但可能產生非預期的費用。惡意應用程式可能利用此功能擅自傳送簡訊，增加你不必要的額外支出。</string>
     <string name="permdesc_setAlarm">允許應用程式在安裝的鬧鐘應用程式中設定鬧鐘，某些鬧鐘應用程式可能無法執行這項功能。</string>
     <string name="permdesc_setInputCalibration">允許應用程式修改觸控螢幕的校正參數 (一般應用程式並不需要)。</string>
-    <string name="permdesc_setTimeZone">允許應用程式變更平板電腦的時區。</string>
+    <string name="permdesc_setTimeZone">允許應用程式變更手機的時區。</string>
     <string name="permdesc_setWallpaper">允許應用程式設定系統桌布。</string>
     <string name="permdesc_setWallpaperHints">允許應用程式設定系統桌布大小的提示。</string>
     <string name="permdesc_sim_communication">允許應用程式傳送指令到 SIM 卡。這麼做非常危險。</string>
@@ -2156,7 +2154,7 @@
     <string name="permdesc_subscribedFeedsRead">允許應用程式取得目前已同步處理的資訊提供詳細資料。</string>
     <string name="permdesc_systemAlertWindow">這個應用程式可顯示在其他應用程式上方或畫面中的其他位置。你可能會無法照常使用應用程式，且其他應用程式的顯示方式可能會受到影響。</string>
     <string name="permdesc_systemCamera">這個具有特殊權限的系統應用程式隨時可以使用系統攝影機拍照及錄影。此外，你也必須將 android.permission.CAMERA 權限授予這個應用程式</string>
-    <string name="permdesc_transmitIr">允許應用程式使用平板電腦的紅外線傳送器。</string>
+    <string name="permdesc_transmitIr">允許應用程式使用手機的紅外線傳送器。</string>
     <string name="permdesc_turnScreenOn">允許應用程式開啟螢幕。</string>
     <string name="permdesc_ucsPlugin">搭配第三方憑證儲存空間外掛程式使用。</string>
     <string name="permdesc_uninstall_shortcut">允許應用程式自動移除主畫面捷徑。</string>
@@ -2170,12 +2168,13 @@
     <string name="permdesc_vibrate">允許應用程式控制震動。</string>
     <string name="permdesc_vibrator_state">允許應用程式存取震動功能狀態。</string>
     <string name="permdesc_videoWrite">允許應用程式修改你的影片收藏。</string>
-    <string name="permdesc_wakeLock">允許應用程式防止平板電腦進入休眠狀態。</string>
-    <string name="permdesc_writeCalendar">這個應用程式可在平板電腦上新增、移除或變更日曆活動。提醒你，這個應用程式可能會以日曆擁有者的名義傳送訊息，或是在不通知日曆擁有者的情況下變更活動內容。</string>
-    <string name="permdesc_writeCallLog">允許應用程式修改平板電腦的通話記錄，包括來電和已撥電話相關資料。請注意，惡意應用程式可能濫用此功能刪除或修改你的通話記錄。</string>
-    <string name="permdesc_writeContacts">允許應用程式修改平板電腦上儲存的聯絡人資料。這項權限可讓應用程式刪除聯絡人資料。</string>
+    <string name="permdesc_wakeLock">允許應用程式防止手機進入休眠狀態。</string>
+    <string name="permdesc_writeCalendar">這個應用程式可在手機上新增、移除或變更日曆活動。提醒你，這個應用程式可能會以日曆擁有者的名義傳送訊息，或是在不通知日曆擁有者的情況下變更活動內容。</string>
+    <string name="permdesc_writeCallLog">允許應用程式修改手機的通話記錄，包括來電和已撥電話相關資料。請注意，惡意應用程式可能濫用此功能刪除或修改你的通話記錄。</string>
+    <string name="permdesc_writeContacts">允許應用程式修改手機上儲存的聯絡人資料。這項權限可讓應用程式刪除聯絡人資料。</string>
     <string name="permdesc_writeSettings">允許應用程式修改系統設定資料。請注意，惡意應用程式可能利用此功能破壞系統設定。</string>
     <string name="permdesc_writeSyncSettings">允許應用程式修改帳戶的同步處理設定，例如讓「使用者」應用程式與某個帳戶進行同步處理。</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">允許應用程式更新 E2EE 聯絡人金鑰的驗證狀態，這些金鑰為其他應用程式所有</string>
     <string name="permgroupdesc_activityRecognition">存取你的體能活動記錄</string>
     <string name="permgroupdesc_calendar">存取你的日曆</string>
     <string name="permgroupdesc_calllog">讀取及寫入通話記錄</string>
@@ -2214,10 +2213,12 @@
 權限要求。"</string>
     <string name="permlab_acceptHandover">繼續進行來自其他應用程式的通話</string>
     <string name="permlab_accessBackgroundLocation">在背景存取位置資訊</string>
-    <string name="permlab_accessCoarseLocation">僅可在前景中取得概略位置</string>
+    <string name="permlab_accessCoarseLocation">僅可在前景中取得大概位置</string>
     <string name="permlab_accessDrmCertificates">存取 DRM 憑證</string>
     <string name="permlab_accessFineLocation">僅可在前景中取得精確位置</string>
+    <string name="permlab_accessHiddenProfile">存取隱藏的設定檔</string>
     <string name="permlab_accessImsCallService">存取 IMS 撥號服務</string>
+    <string name="permlab_accessLastKnownCellId">存取最後已知的基地台 ID。</string>
     <string name="permlab_accessLocationExtraCommands">接收額外的位置提供者指令</string>
     <string name="permlab_accessNetworkConditions">監聽網路狀況觀察資訊</string>
     <string name="permlab_accessNetworkState">查看網路連線</string>
@@ -2249,6 +2250,7 @@
     <string name="permlab_callCompanionApp">查看及控管透過系統撥打的電話。</string>
     <string name="permlab_callPhone">直接撥打電話號碼</string>
     <string name="permlab_camera">拍攝相片和影片</string>
+    <string name="permlab_cameraHeadlessSystemUser">允許應用程式或服務以無使用者介面系統使用者權限存取相機。</string>
     <string name="permlab_cameraOpenCloseListener">允許應用程式或服務接收相機裝置開啟或關閉的相關回呼。</string>
     <string name="permlab_changeNetworkState">變更網路連線</string>
     <string name="permlab_changeTetherState">變更數據連線</string>
@@ -2276,6 +2278,7 @@
     <string name="permlab_foregroundServiceHealth">搭配「health」類型執行前景服務</string>
     <string name="permlab_foregroundServiceLocation">搭配「location」類型執行前景服務</string>
     <string name="permlab_foregroundServiceMediaPlayback">搭配「mediaPlayback」類型執行前景服務</string>
+    <string name="permlab_foregroundServiceMediaProcessing">執行「mediaProcessing」類型的前景服務</string>
     <string name="permlab_foregroundServiceMediaProjection">搭配「mediaProjection」類型執行前景服務</string>
     <string name="permlab_foregroundServiceMicrophone">搭配「microphone」類型執行前景服務</string>
     <string name="permlab_foregroundServicePhoneCall">搭配「phoneCall」類型執行前景服務</string>
@@ -2376,6 +2379,7 @@
     <string name="permlab_mount_unmount_filesystems">存取 SD 卡檔案系統</string>
     <string name="permlab_nearby_wifi_devices">與鄰近的 Wi-Fi 裝置互動</string>
     <string name="permlab_nfc">控制近距離無線通訊</string>
+    <string name="permlab_nfcTransactionEvent">安全元件交易事件</string>
     <string name="permlab_observeCompanionDevicePresence">偵測裝置目前的狀態</string>
     <string name="permlab_persistentActivity">一律執行應用程式</string>
     <string name="permlab_postNotification">顯示通知</string>
@@ -2448,12 +2452,13 @@
     <string name="permlab_uwb_ranging">判斷附近超寬頻裝置間的相對位置</string>
     <string name="permlab_vibrate">控制震動</string>
     <string name="permlab_videoWrite">修改你的影片收藏</string>
-    <string name="permlab_wakeLock">防止平板電腦進入休眠狀態</string>
+    <string name="permlab_wakeLock">防止手機進入待命狀態</string>
     <string name="permlab_writeCalendar">在未經擁有者同意的情況下新增或修改日曆活動，以及傳送電子郵件給邀請對象</string>
     <string name="permlab_writeCallLog">寫入通話記錄</string>
     <string name="permlab_writeContacts">修改你的聯絡人</string>
     <string name="permlab_writeSettings">修改系統設定</string>
     <string name="permlab_writeSyncSettings">開啟及關閉同步功能</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">更新 E2EE 聯絡人金鑰的驗證狀態，這些金鑰為其他應用程式所有</string>
     <string name="perms_description_app">由「%1$s」提供。</string>
     <string name="perms_new_perm_prefix">&lt;font fgcolor=#ff33b5e5 size=12>新增：&lt;/font></string>
     <string name="personal_apps_suspended_turn_profile_on">開啟</string>
@@ -2490,7 +2495,7 @@
     <string name="policydesc_allow_desktopsync">防止桌機同步的使用。</string>
     <string name="policydesc_allow_internetsharing">防止行動網路基地台的使用。</string>
     <string name="policydesc_allow_irda">防止 IrDA 的使用。</string>
-    <string name="policydesc_allow_popimapemail">防止在平板上使用 POP 與 IMAP 電子郵件。</string>
+    <string name="policydesc_allow_popimapemail">防止在手機上使用 POP 與 IMAP 電子郵件。</string>
     <string name="policydesc_allow_storagecard">防止 SD 卡的使用。</string>
     <string name="policydesc_allow_textmessaging">防止文字與多媒體訊息的使用。</string>
     <string name="policydesc_allow_thirdParty">此應用程式可防止第三方應用程式的執行。</string>
@@ -2508,10 +2513,10 @@
     <string name="policydesc_setGlobalProxy">設定政策啟用時要使用的裝置全域 Proxy。只有裝置擁有者可以設定全域 Proxy。</string>
     <string name="policydesc_unsigned_app">此應用程式可防止未知來源的應用程式執行。</string>
     <string name="policydesc_unsigned_pkg">此應用程式可防止未知來源的應用程式安裝。</string>
-    <string name="policydesc_watchLogin">監控螢幕解鎖時密碼輸入錯誤的次數；如果密碼輸入錯誤的次數過多，則會鎖住平板電腦或全部清除平板電腦中的資料。</string>
-    <string name="policydesc_watchLogin_secondaryUser">監控螢幕解鎖密碼輸入錯誤的次數；如果輸入錯誤的次數超過上限，系統會將平板電腦鎖定，或將這個使用者的資料全部清除。</string>
-    <string name="policydesc_wipeData">恢復原廠設定，不提出警告就直接清除平板電腦的資料。</string>
-    <string name="policydesc_wipeData_secondaryUser">將這個使用者的資料從這台平板電腦中清除，而不事先發出警告。</string>
+    <string name="policydesc_watchLogin">監控螢幕解鎖時密碼輸入錯誤的次數；如果密碼輸入錯誤的次數過多，則會鎖住手機或清除手機的所有資料。</string>
+    <string name="policydesc_watchLogin_secondaryUser">監控螢幕解鎖密碼輸入錯誤的次數；如果輸入錯誤的次數超過上限，系統會將手機鎖定，或將這個使用者的資料全部清除。</string>
+    <string name="policydesc_wipeData">恢復原廠設定，不提出警告就直接清除手機的資料。</string>
+    <string name="policydesc_wipeData_secondaryUser">將這個使用者的資料從這支手機中清除，而不事先發出警告。</string>
     <string name="policylab_allow_bluetoothmode">停用藍牙</string>
     <string name="policylab_allow_browser">停用網際網路</string>
     <string name="policylab_allow_camera">停用相機</string>
@@ -2545,7 +2550,7 @@
     <string name="postalTypeHome">住家</string>
     <string name="postalTypeOther">其他</string>
     <string name="postalTypeWork">公司</string>
-    <string name="power_dialog">平板電腦選項</string>
+    <string name="power_dialog">電話選項</string>
     <string name="power_off">關機</string>
     <string name="prepend_shortcut_label">[Menu] +</string>
     <string name="preposition_for_date">於 %s</string>
@@ -2557,6 +2562,8 @@
     <string name="print_service_installed_title">已安裝「%s」服務</string>
     <string name="printing_disabled_by">「%s」已停用列印功能。</string>
     <string name="private_dns_broken_detailed">無法存取私人 DNS 伺服器</string>
+    <string name="private_profile_label_badge">私人 %1$s</string>
+    <string name="private_space_set_up_screen_lock_message">如要使用私人空間，請在這部裝置設定螢幕鎖定功能</string>
     <string name="profile_encrypted_detail">工作資料夾目前處於鎖定狀態</string>
     <string name="profile_encrypted_detail_workspace_premium">已鎖定 %s</string>
     <string name="profile_encrypted_detail_workspace_prime">已鎖定工作設定檔</string>
@@ -2566,6 +2573,13 @@
     <string name="profile_encrypted_message_workspace_prime">解鎖工作設定檔以取得工作應用程式相關通知。</string>
     <string name="profile_encrypted_title">部分功能可能遭到鎖定</string>
     <string name="profile_encrypted_title_secure_folder">安全資料夾已鎖定。</string>
+    <string name="profile_label_clone">副本</string>
+    <string name="profile_label_communal">通用</string>
+    <string name="profile_label_private">私人</string>
+    <string name="profile_label_test">測試</string>
+    <string name="profile_label_work">工作</string>
+    <string name="profile_label_work_2">工作 2</string>
+    <string name="profile_label_work_3">工作 3</string>
     <string name="profile_restarting_message_premium">%1$s 遭鎖定時，您將無法收到工作應用程式的所有通知。請輕觸此處來解鎖 %2$s。</string>
     <string name="profile_restarting_message_prime">工作設定檔遭鎖定時，您將無法收到工作應用程式的所有通知。請輕觸此處來解鎖工作設定檔。</string>
     <string name="profile_restarting_title_premium">已鎖定 %s</string>
@@ -2591,9 +2605,11 @@
     <string name="recent_tasks_title">最新的</string>
     <string name="recording_fail">當 %2$s 正使用麥克風時，無法存取 %1$s。</string>
     <string name="recording_popup">%s 正在使用麥克風。</string>
-    <string name="recording_popup_device">平板</string>
+    <string name="recording_popup_device">電話</string>
     <string name="recording_popup_with_bluetooth">%s 正在使用藍牙麥克風。</string>
     <string name="recording_popup_with_device">%1$s 正在使用%2$s的麥克風。</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">系統已隱藏含有私密資訊的通知內容</string>
     <string name="redo">取消復原</string>
     <string name="reduce_bright_colors_feature_name">極暗</string>
     <string name="region_picker_section_all">所有地區</string>
@@ -2724,6 +2740,29 @@
     <string name="samsung_global_action_restart">重新啟動</string>
     <string name="samsung_keyboard_settings">三星鍵盤設定</string>
     <string name="sanitized_content_text_sf">已隱藏內容</string>
+    <string name="satellite_notification_how_it_works">運作方式</string>
+    <string name="satellite_notification_manual_summary">即使沒有行動或 Wi-Fi 網路，還是可以收發訊息</string>
+    <string name="satellite_notification_manual_title">要使用衛星訊息功能嗎？</string>
+    <string name="satellite_notification_open_message">開啟「訊息」應用程式</string>
+    <string name="satellite_notification_summary">你可以收發訊息，沒有行動/Wi-Fi 網路也無妨</string>
+    <string name="satellite_notification_title">已自動連上衛星</string>
+    <string name="scCellularNetworkSecuritySummary">加密 (網路未加密通知)</string>
+    <string name="scCellularNetworkSecurityTitle">行動網路安全性</string>
+    <string name="scIdentifierDisclosureIssueSummary">"在 %1$s，鄰近網路使用你的「%2$s」SIM 卡時，記錄了你的裝置專屬 ID (IMSI 或 IMEI)。
+
+這代表鄰近網路記錄了你的位置、活動或身分資訊。儘管這種情況很常見，但注重隱私的人可能會認為這是個問題。"</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">在 %1$s，鄰近網路使用你的「%2$s」SIM 卡時，記錄了你的裝置專屬 ID (IMSI 或 IMEI)</string>
+    <string name="scIdentifierDisclosureIssueTitle">已存取裝置 ID</string>
+    <string name="scNullCipherIssueActionGotIt">我知道了</string>
+    <string name="scNullCipherIssueActionLearnMore">瞭解詳情</string>
+    <string name="scNullCipherIssueActionSettings">行動網路安全性設定</string>
+    <string name="scNullCipherIssueEncryptedSummary">現在連上「%1$s」SIM 卡更加安全</string>
+    <string name="scNullCipherIssueEncryptedTitle">已連上加密網路「%1$s」</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"目前使用「%1$s」SIM 卡時，通話、訊息和資料較容易受到攻擊。
+
+連線再次加密時，你會收到另一則通知。"</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">目前使用「%1$s」SIM 卡時，通話、訊息和資料較容易受到攻擊</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">已連上未加密網路</string>
     <string name="scan_text">截取文字</string>
     <string name="screen_compat_mode_hint">前往 [系統設定] > [應用程式] > [下載] 重新啟用這個模式。</string>
     <string name="screen_compat_mode_scale">比例</string>
@@ -2734,16 +2773,17 @@
     <string name="screen_lock">螢幕鎖定</string>
     <string name="screen_lock_app_setting_name">使用螢幕鎖定功能</string>
     <string name="screen_lock_dialog_default_subtitle">如要繼續操作，請輸入螢幕鎖定憑證</string>
+    <string name="screen_not_shared_sensitive_content">為安全起見，分享螢幕畫面未顯示應用程式內容</string>
     <string name="screencapture_restrict">安全性原則會防止螢幕擷取的使用。</string>
     <string name="screenshot_edit">編輯</string>
     <string name="sd_card_unavailable_message">SIM 卡插入的同時正由其他使用者設定檔佔用中，因此您無法啟用。</string>
     <string name="sd_card_unavailable_title">SD 卡不可用</string>
-    <string name="sdcard_bad_removal_message">SD 卡未安全移除。為防止平板意外重新啟動，請先儲存尚未儲存的資料並立即重新啟動。</string>
+    <string name="sdcard_bad_removal_message">SD 卡未安全移除。為防止手機意外重新啟動，請先儲存尚未儲存的資料並立即重新啟動。</string>
     <string name="sdcard_batch_decrypt_noti_content">解密 SD 卡</string>
     <string name="sdcard_batch_decrypt_noti_title">SD 卡解密</string>
     <string name="sdcard_batch_decrypt_popup_content">加密的 SD 卡於使用前必須先解密。解密需要一小時或更久。以充滿的電池啟動並保持手機與插頭的連接，直到解密完成。中斷解密程序可能會導致遺失部分或全部資料。</string>
     <string name="sdcard_decrypt_err_notification">SD 卡解密發生錯誤。</string>
-    <string name="sdcard_decrypt_error_otherdevice">SD 卡上的某些檔案是透過其他裝置加密，無法在此平板上使用。</string>
+    <string name="sdcard_decrypt_error_otherdevice">SD 卡上的某些檔案是透過其他裝置加密，無法在此手機上使用。</string>
     <string name="sdcard_decrypt_notification">SD 卡已解密。</string>
     <string name="sdcard_decrypt_title_notification">SD 卡解密</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">正在解密 SD 卡…</string>
@@ -2760,21 +2800,13 @@
     <string name="sdcard_unmount_policy_noti_title">因 IT 政策，將卸載 SD 卡。</string>
     <string name="sdhms_nr_control_low_battery">手機剩餘電量不到 15% 時關閉 5G。</string>
     <string name="search_hint">搜尋…</string>
-    <string name="search_language_hint">請輸入語言名稱</string>
+    <string name="search_language_hint">請輸入語言</string>
     <string name="searchview_description_clear">清除查詢</string>
     <string name="searchview_description_query">搜尋查詢</string>
     <string name="searchview_description_search">搜尋</string>
     <string name="searchview_description_submit">提交查詢</string>
     <string name="searchview_description_voice">語音搜尋</string>
     <string name="sec_bluetooth_airplane_mode_toast">飛航模式將保留藍牙功能。</string>
-    <string name="sec_immersive_cling_button_ok">確定</string>
-    <string name="sec_immersive_cling_guide_text_gesture">此應用程式使用全螢幕顯示。滑動瀏覽手勢將顯示狀態列。若要瀏覽，請於狀態列可見時再次滑動。</string>
-    <string name="sec_immersive_cling_guide_text_phone">"此應用程式正在使用全螢幕。已隱藏首頁、返回與最近使用的應用程式按鈕來大幅降低干擾，並防止您意外關閉應用程式。
-
-即便您旋轉手機，按鈕位置仍將永遠顯示於充電埠旁。您可以依箭頭指示從螢幕邊緣往內滑動來讓按鈕重新顯示。"</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"此應用程式正在使用全螢幕。已隱藏首頁、返回與最近使用的應用程式按鈕來大幅降低干擾，並防止您意外關閉應用程式。
-
-若要讓按鈕重新顯示，請依箭頭所示從螢幕底部向上滑動。"</string>
     <string name="sec_monotype_default">預設</string>
     <string name="sec_ringtone_category_brand_sound">三星品牌主題曲</string>
     <string name="sec_ringtone_category_calm">沉靜</string>
@@ -2784,6 +2816,10 @@
     <string name="sec_ringtone_category_open_theme">目前主題的預設</string>
     <string name="sec_ringtone_category_retro">復古</string>
     <string name="sec_ringtone_silent">靜音</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">取消</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">若要連接衛星，請將網路業者設為 [自動選擇]。</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">開啟</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">開啟自動選取網路嗎？</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">請開啟麥克風存取權來說話。</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">請開啟相機存取權以使用 %s。</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">請開啟麥克風存取權以使用 %s。</string>
@@ -2891,6 +2927,8 @@
     <string name="sem_face_error_already_in_use_by_VT">視訊通話期間無法使用臉部辨識。</string>
     <string name="sem_face_error_camera_access_off">相機存取權已遭關閉，因此無法使用臉部辨識</string>
     <string name="sem_face_error_camera_fail">無法開啟相機。請重試。</string>
+    <string name="sem_face_error_lockout">嘗試錯誤太多次，目前暫時無法使用生物辨識驗證。</string>
+    <string name="sem_face_error_lockout_permanent">嘗試錯誤太多次，目前暫時無法使用生物辨識驗證。</string>
     <string name="sem_face_error_ppp_timeout">距上次驗證身分已有一段時間。需要重新啟動才能註冊臉部。</string>
     <string name="sem_face_error_too_dark">光線太暗，無法偵測臉部</string>
     <string name="sem_face_error_too_dark_to_enroll">光線太暗。請試著開燈或移至光線充足的地方。</string>
@@ -2906,13 +2944,18 @@
     <string name="sem_fingerprint_acquired_tsp_block">請將 S Pen 筆尖移開螢幕以掃描您的指紋。</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">若要使用指紋，請先設定一組安全螢幕鎖定類型 (圖形、數字密碼或密碼)。</string>
+    <string name="sem_fingerprint_error_lockout">嘗試錯誤太多次，目前暫時無法使用生物辨識驗證。</string>
+    <string name="sem_fingerprint_error_lockout_permanent">嘗試錯誤太多次，目前暫時無法使用生物辨識驗證。</string>
     <string name="sem_fingerprint_error_onehand_mode">單手模式中無法使用指紋掃描器。</string>
     <string name="sem_fingerprint_error_smart_view">使用 %s 時無法掃描指紋。</string>
+    <string name="sem_fingerprint_error_system_failure">指紋感應器沒有回應。請稍後再試一次。若此問題仍持續存在，建議重新啟動手機。</string>
+    <string name="sem_fingerprint_error_template_corrupt">指紋資料已損毀。請重新新增指紋。</string>
     <string name="sem_fingerprint_error_wireless_charger">請中斷連接無線充電器來使用指紋</string>
     <string name="sem_fingerprint_name_template">指紋 %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">稍後</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">現在不要</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">先移除再註冊</string>
+    <string name="sem_fingerprint_register_dialog_message">最新軟體更新針對指紋辨識進行改善。請先移除指紋並重新註冊始可使用指紋辨識。</string>
     <string name="sem_fingerprint_register_dialog_title">重新註冊指紋</string>
     <string name="sem_fingerprint_result_failed">不符合。</string>
     <string name="sem_fingerprint_result_retry">請重試。</string>
@@ -2932,7 +2975,7 @@
     <string name="sem_resolver_button_always_accessibility">一律使用所選應用程式</string>
     <string name="sem_resolver_button_just_once_accessibility">僅使用一次所選應用程式</string>
     <string name="sem_resolver_choose_what_to_do">選取欲執行動作</string>
-    <string name="sem_resolver_go_to_settings_tips_description">若要變更預設應用程式設定，請前往 [設定] > [應用程式] > [選擇預設應用程式]。</string>
+    <string name="sem_resolver_go_to_settings_tips_description">若要變更用以開啟此類型檔案的預設應用程式，請前往 [設定] > [應用程式]，選取目前的預設應用程式，然後輕觸 [設為預設] > [清除預設]。</string>
     <string name="sem_resolver_icon_content_description">資訊</string>
     <string name="sem_resolver_personal_tab_accessibility">個人</string>
     <string name="sem_resolver_share_live_default_text">立即與附近的成員分享。裝置可供搜尋的成員將顯示於此。</string>
@@ -2948,9 +2991,9 @@
     <string name="sending">傳送中…</string>
     <string name="sensor_notification_service">感應器通知服務</string>
     <string name="sensor_privacy_notification_channel_label">感應器隱私權</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">已關閉所有應用程式的相機存取權</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">開啟</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">已關閉所有應用程式的麥克風存取權</string>
+    <string name="sensor_privacy_start_use_camera_notification_content_title">將裝置相機解除封鎖</string>
+    <string name="sensor_privacy_start_use_dialog_turn_on_button">解除封鎖</string>
+    <string name="sensor_privacy_start_use_mic_notification_content_title">將裝置麥克風解除封鎖</string>
     <string name="sensor_privacy_start_use_notification_content_text">允許「%s」<b/>及所有應用程式和服務使用</string>
     <string name="serial_number">序號：</string>
     <string name="serviceClassData">資料</string>
@@ -2975,6 +3018,9 @@
     <string name="serviceRegistered">註冊成功。</string>
     <string name="serviceisDisabled">服務已停用。</string>
     <string name="serviceisEnabled">服務已啟用。</string>
+    <string name="set_up_screen_lock_action_label">設定螢幕鎖定功能</string>
+    <string name="set_up_screen_lock_title">設定螢幕鎖定功能</string>
+    <string name="settings">設定</string>
     <string name="sf_quick_switch_not_supported">此情況下不支援快速切換。</string>
     <string name="sf_quick_switch_securefolder_view">已切換為%s。</string>
     <string name="sha1_fingerprint">SHA-1 指紋：</string>
@@ -2995,15 +3041,17 @@
     <string name="shortcut_restore_signature_mismatch">應用程式簽署不相符，因此無法還原捷徑</string>
     <string name="shortcut_restore_unknown_issue">無法還原捷徑</string>
     <string name="shortcut_restored_on_lower_version">應用程式版本已降級或與這個捷徑不相容</string>
-    <string name="show_ime">使用實體鍵盤時仍繼續顯示虛擬鍵盤</string>
+    <string name="show_ime">使用實體鍵盤時仍繼續顯示螢幕小鍵盤</string>
     <string name="show_keyboard_button">顯示鍵盤按鈕</string>
     <string name="show_keyboard_button_description">在導覽列上顯示 %s。</string>
+    <string name="showing_esc_dialog">您可設定將 Esc 鍵作為返回按鈕。</string>
     <string name="showing_touch_sensitivity_noti_action">開啟</string>
     <string name="showing_touch_sensitivity_noti_text">使用平板防窺保護膜或平板專用書寫膜時，開啟 [觸控靈敏度] 以取得更精確的觸控反應。</string>
     <string name="showing_touch_sensitivity_noti_title">增加觸控靈敏度</string>
-    <string name="shutdown_confirm">你的平板電腦將會關機。</string>
+    <string name="shutdown_confirm">手機即將關機。</string>
     <string name="shutdown_confirm_question">你要關機嗎？</string>
     <string name="shutdown_progress">關機中…</string>
+    <string name="side_key_double_press_archived_app">應用程式已封存。請選擇其他項目。</string>
     <string name="side_key_double_press_deleted_app">應用程式已解除安裝。請選擇其他項目。</string>
     <string name="side_key_double_press_disabled_app">%s 已停用。請選擇其他項目。</string>
     <string name="signature_identity_toast">%s 簽署者：</string>
@@ -3016,18 +3064,20 @@
     <string name="sim_added_message">請重新啟動裝置，才能使用行動網路。</string>
     <string name="sim_added_title">已新增 SIM 卡</string>
     <string name="sim_check_old_sim_message">舊版或損壞的 SIM 卡可能導致網路連線發生問題。請聯絡電信業者或造訪任一門市來確認是否需要更換。</string>
+    <string name="sim_check_old_sim_message_skt">舊版或損壞的 SIM 卡可能導致網路連線發生問題。請聯絡電信業者或造訪任一門市來確認是否需要更換。</string>
     <string name="sim_check_old_sim_title">SIM 卡可能需要更換</string>
+    <string name="sim_check_old_sim_title_skt">可能需要更換 SIM 卡</string>
     <string name="sim_count_mismatched_ds_to_ss">SIM 卡模式已從雙 SIM 卡切換為單 SIM 卡。若要套用此設定，裝置將重置為原廠預設設定並重新啟動。</string>
     <string name="sim_count_mismatched_ss_to_ds">SIM 卡模式已從單 SIM 卡切換為雙 SIM 卡。若要套用此設定，裝置將重置為原廠預設設定並重新啟動。</string>
     <string name="sim_count_mismatched_title">已切換 SIM 卡模式</string>
     <string name="sim_done_button">完成</string>
-    <string name="sim_imsreg_error_message_lgt">系統無法辨識您的 SIM 卡，因此手機無法撥打語音通話。建議移除 SIM 卡再重新插入。若問題仍持續發生，可能需要更換 SIM 卡。如需協助，請造訪 LG U+ 門市或致電 1544-0010 聯絡 LG U+客服中心。</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">系統無法辨識您的 SIM 卡，因此平板無法撥打語音通話。建議移除 SIM 卡再重新插入。若問題仍持續發生，可能需要更換 SIM 卡。如需協助，請造訪 LG U+ 門市或致電 1544-0010 聯絡 LG U+客服中心。</string>
+    <string name="sim_imsreg_error_message_lgt">系統未能辨識您的 SIM 卡，因此手機無法撥打語音通話。建議移除 SIM 卡再重新插入。若問題仍持續發生，可能需要前往 LG U+ 門市更換 SIM 卡。</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">系統未能辨識您的 SIM 卡，因此平板無法撥打語音通話。建議移除 SIM 卡再重新插入。若問題仍持續發生，可能需要前往 LG U+ 門市更換 SIM 卡。</string>
     <string name="sim_off_noti_message">關閉所有 SIM 卡將無法撥號、傳送簡訊或使用數據。請輕觸這裡來開啟 SIM 卡。</string>
     <string name="sim_off_noti_title">已關閉所有 SIM 卡</string>
     <string name="sim_off_toast_message">您插入的 SIM 卡已停用。若要使用，請前往 [設定] > [連線] > [SIM 卡管理工具]，然後選擇開啟。</string>
     <string name="sim_recognize_error_message_kt">系統無法辨識您的 SIM 卡。建議移除 SIM 卡再重新插入。若問題仍持續發生，可能需要更換 SIM 卡。如需協助，請造訪 KT 門市或致電 1588-0010 聯絡 KT 客服中心。</string>
-    <string name="sim_recognize_error_message_lgt">系統無法辨識您的 SIM 卡。建議移除 SIM 卡再重新插入。若問題仍持續發生，可能需要更換 SIM 卡。如需協助，請造訪 LG U+ 門市或致電 1544-0010 聯絡 LG U+客服中心。</string>
+    <string name="sim_recognize_error_message_lgt">系統無法辨識您的 SIM 卡。建議移除 SIM 卡再重新插入。若問題仍持續發生，可能需前往 LG U+ 門市更換 SIM 卡。</string>
     <string name="sim_recognize_error_message_skt">無法讀取 SIM 卡。部分應用程式和功能無法運作。請先移除 SIM 卡再重新插入，接著重新啟動手機。若仍無法解決問題，請攜帶手機和 SIM 卡親臨客服門市。</string>
     <string name="sim_recognize_error_message_skt_tablet">無法讀取 SIM 卡。部分應用程式和功能無法運作。請先移除 SIM 卡再重新插入，接著重新啟動平板。若仍無法解決問題，請攜帶平板和 SIM 卡親臨客服門市。</string>
     <string name="sim_recognize_error_title_lgt">無法辨識 USIM 卡</string>
@@ -3047,6 +3097,7 @@
     <string name="skip_button_label">略過</string>
     <string name="slice_more_content">+ %1$d</string>
     <string name="slices_permission_request">「%1$s」想要顯示「%2$s」的區塊</string>
+    <string name="smart_tip_action_click_hint_text">關閉</string>
     <string name="smartclip_restrict">安全性原則會防止自由截圖的使用。</string>
     <string name="sms_control_message">「%1$s」正在傳送大量簡訊。你要允許這個應用程式繼續傳送簡訊嗎？</string>
     <string name="sms_control_no">拒絕</string>
@@ -3060,9 +3111,7 @@
     <string name="sms_short_code_confirm_never_allow">一律不允許</string>
     <string name="sms_short_code_details">這<b>可能會透過你的行動帳戶計費</b>。</string>
     <string name="sms_short_code_remember_choice">記住我的選擇</string>
-    <string name="sms_short_code_remember_undo_instruction">可在之後前往設定 > 應用程式變更此設定</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">您稍後可前往 [設定] > [應用程式] > [更多選項按鈕] > [特殊存取] > [使用 premium 簡訊服務] 進行變更。</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">若您輕觸 [永不允許]，即使 [傳送文字訊息] 權限設為允許，此應用程式仍將無法於背景中傳送訊息。</string>
+    <string name="sms_short_code_remember_undo_instruction">你日後可在 [設定] > [應用程式] 中進行變更。</string>
     <string name="smv_application">應用程式 %1$s (處理程序 %2$s) 已違反其自行強制實施的嚴格模式 (StrictMode) 政策。</string>
     <string name="smv_process">處理程序 %1$s 已違反其自行強制實施的嚴格模式 (StrictMode) 政策。</string>
     <string name="splash_screen_view_branding_description">應用程式品牌圖片</string>
@@ -3147,7 +3196,6 @@
     <string name="time_picker_radial_mode_description">切換至時鐘模式來輸入時間。</string>
     <string name="time_picker_text_input_mode_description">切換至文字輸入模式來輸入時間。</string>
     <string name="title_dialog_check_rotate_or_not">關閉自動旋轉螢幕嗎？</string>
-    <string name="title_uds">超省數據模式</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">設定手機時無法使用 Bixby。</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">設定平板時無法使用 Bixby。</string>
     <string name="toast_warning_pattern_lock">無法透過通用開關使用圖形鎖定。請先變更為其他鎖定方式。</string>
@@ -3177,6 +3225,7 @@
     <string name="ucm_smartcard_is_encrypting_phone">正在透過智慧卡加密手機…</string>
     <string name="ui_translation_accessibility_translated_text">已翻譯%1$s。</string>
     <string name="ui_translation_accessibility_translation_finished">訊息內容已從%1$s翻成%2$s。</string>
+    <string name="unarchival_session_app_label">待處理…</string>
     <string name="undo">復原</string>
     <string name="unknown_install_activity_warning_title">可疑惡意應用程式</string>
     <string name="unknown_install_blocked_dlg_desc">此應用程式可能遭惡意程式碼入侵，因此無法安裝。</string>
@@ -3196,9 +3245,13 @@
     <string name="unknown_install_blocked_esm_title">已封鎖未知應用程式</string>
     <string name="unknown_install_dlg_desc">無法透過核可商店下載此應用程式。安裝此應用程式可能產生安全與隱私風險。應用程式可能蒐集您的個人資訊或導致資料遺失。</string>
     <string name="unknown_install_dlg_desc2">此應用程式不支援最新的安全性功能。安裝此應用程式可能導致下列安全性風險：</string>
+    <string name="unknown_install_dlg_desc_global_phone">此應用程式安裝檔案可能不安全。可能不是原有應用程式。為了保護您的手機和個人資料，請改從信任的應用程式商店來安裝應用程式。</string>
+    <string name="unknown_install_dlg_desc_global_tablet">此應用程式安裝檔案可能不安全。可能不是原有應用程式。為了保護您的平板和個人資料，請改從信任的應用程式商店來安裝應用程式。</string>
     <string name="unknown_install_dlg_desc_phishing_phone">此應用程式疑似遭惡意程式碼攻擊，且可能使手機和資料暴露在風險中。不建議安裝此應用程式。</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">此應用程式疑似遭惡意程式碼攻擊，且可能使平板和資料暴露在風險中。不建議安裝此應用程式。</string>
-    <string name="unknown_install_dlg_general_title">此應用程式的來源未知</string>
+    <string name="unknown_install_dlg_desc_phone">此應用程式並非來自授權應用程式商店。為保護手機和個資，請前往 Play 商店或三星應用商店等授權商店安裝該應用程式。</string>
+    <string name="unknown_install_dlg_desc_tablet">此應用程式並非來自授權應用程式商店。為保護平板和個資，請前往 Play 商店或三星應用商店等授權商店安裝該應用程式。</string>
+    <string name="unknown_install_dlg_general_title">不建議安裝此應用程式</string>
     <string name="unknown_install_dlg_negative_button">不要安裝</string>
     <string name="unknown_install_dlg_perm_desc1">應用程式可能會攔截您收到的簡訊驗證碼。</string>
     <string name="unknown_install_dlg_perm_desc2">撥出電話可能會在您不知情的情況下，重新導向不同電話號碼。</string>
@@ -3228,7 +3281,7 @@
     <string name="usb_abnormal_reset_title">USB 連線不穩定</string>
     <string name="usb_abnormal_reset_toast">USB 連線不穩定。請拔除傳輸線再插入，或嘗試使用其他傳輸線。</string>
     <string name="usb_accessory_notification_title">已連接至 USB 配件</string>
-    <string name="usb_bad_removal_message">USB 儲存裝置未安全移除。為防止平板意外重新啟動，請先儲存尚未儲存的資料並立即重新啟動。</string>
+    <string name="usb_bad_removal_message">USB 儲存裝置未安全移除。為防止手機意外重新啟動，請先儲存尚未儲存的資料並立即重新啟動。</string>
     <string name="usb_blocked_by_emergency_mode">緊急模式中不支援部分 USB 功能。</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">超省電模式啟用時，無法使用與已連接 USB 裝置相關的功能。</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">超省電模式開啟時部分 USB 功能可能受限。</string>
@@ -3238,7 +3291,9 @@
     <string name="usb_camera_disconnected_notification_title">媒體裝置已中斷連接</string>
     <string name="usb_cd_installer_notification_title">軟體更新</string>
     <string name="usb_charging_notification_title">正在透過 USB 為這個裝置充電</string>
-    <string name="usb_charing_only_notification_title">已連接</string>
+    <string name="usb_charing_only_notification_title">正在透過 USB 充電</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">已開啟自動封鎖程式與安全限制設定。</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">USB 連線遭封鎖</string>
     <string name="usb_contaminant_detected_message">系統已自動停用 USB 連接埠。輕觸即可瞭解詳情。</string>
     <string name="usb_contaminant_detected_title">USB 連接埠中有液體或灰塵</string>
     <string name="usb_contaminant_not_detected_message">手機目前沒有偵測到液體或灰塵。</string>
@@ -3250,11 +3305,11 @@
     <string name="usb_host_cable_disconnected_notification_title">已中斷 USB 連接器連接。</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">無法存取此裝置。已連接的裝置需要外部電源供應。</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">高功率 USB 裝置已連接。</string>
-    <string name="usb_host_resource_exceed_message">平板的 USB 控制器資源不足，無法連接此裝置。請嘗試中斷連接裝置後再次連接。</string>
+    <string name="usb_host_resource_exceed_message">手機的 USB 控制器資源不足，無法連接此裝置。請嘗試中斷連接裝置後再次連接。</string>
     <string name="usb_host_resource_exceed_title">USB 控制器資源不足</string>
-    <string name="usb_hub_depth_exceed_message">平板一次最多僅支援 5 個 USB 集線器的連線。</string>
+    <string name="usb_hub_depth_exceed_message">手機一次最多僅支援 5 個 USB 集線器的連線。</string>
     <string name="usb_hub_depth_exceed_title">USB 集線器的連線上限</string>
-    <string name="usb_hub_power_exceed_message">平板無法提供此 USB 裝置充足的電量。裝置與手機連接前，請先將其連接可自行供電的 USB 集線器。</string>
+    <string name="usb_hub_power_exceed_message">手機無法提供此 USB 裝置充足的電量。裝置與手機連接前，請先將其連接可自行供電的 USB 集線器。</string>
     <string name="usb_increase_battery_usage">USB 連線可能增加耗電量。</string>
     <string name="usb_keyboard_connected_notification_title">鍵盤已連接</string>
     <string name="usb_keyboard_disconnected_notification_title">鍵盤已中斷連接</string>
@@ -3297,8 +3352,9 @@
     <string name="usb_ums_connected_notification_message_usbhost">USB 大量儲存裝置被意外移除。</string>
     <string name="usb_ums_connected_notification_title_usbhost">USB 大容量儲存裝置已連接</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">已安全移除 USB 大量儲存裝置。</string>
-    <string name="usb_unblock_by_screen_unlock">解鎖平板即可使用連接的 USB 裝置。</string>
-    <string name="usb_unsupport_accessory_message">您的平板不支援此 USB 裝置。</string>
+    <string name="usb_unblock_by_screen_unlock">解鎖手機即可使用連接的 USB 裝置。</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">若要使用 USB 裝置，請解鎖手機並重新連接 USB 裝置。</string>
+    <string name="usb_unsupport_accessory_message">您的手機不支援此 USB 裝置。</string>
     <string name="usb_unsupport_accessory_title">不支援 USB 裝置</string>
     <string name="usb_unsupported_audio_accessory_message">此外接裝置與這支手機不相容。輕觸即可瞭解詳情。</string>
     <string name="usb_unsupported_audio_accessory_title">偵測到類比音訊配件</string>
@@ -3319,19 +3375,19 @@
     <string name="usb_water_dialg_method_2_desc_2">您可透過將電風扇或吹風機 (僅限冷風) 朝連接埠吹以加速烘乾。</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"系統偵測到充電/USB 連接埠受潮或存在異物。
 
-請檢查充電/USB 連接埠是否有灰塵或碎屑等異物。為避免損傷平板，請等待充電埠清潔完畢且水分清除後再行插入傳輸線。
+請檢查充電/USB 連接埠是否有灰塵或碎屑等異物。為避免損傷手機，請等待充電埠清潔完畢且水分清除後再行插入傳輸線。
 
 若要使充電埠乾透，請將水分甩乾，並待其自然乾燥，這可能需要數小時的時間。您可將連接埠對準電扇或吹風機 (限用冷風) 來加速乾透過程。"</string>
     <string name="usb_water_dialg_positive_button">確定</string>
     <string name="usb_water_dialg_support_wireless_charging">"系統偵測到充電/USB 連接埠受潮或存在異物。
 
-請檢查充電/USB 連接埠是否有灰塵或碎屑等異物。為避免損傷平板，請務必等待充電埠清潔完畢且水分清除後再行插入傳輸線。
+請檢查充電/USB 連接埠是否有灰塵或碎屑等異物。為避免損傷手機，請等待充電埠清潔完畢且水分清除後再行插入傳輸線。
 
-若要使充電埠乾透，請將水分甩乾，並待其自然乾燥，這可能需要數小時的時間。您可將連接埠對準電扇或吹風機 (限用冷風) 來加速乾燥過程。
+若要使充電埠乾透，請將水分甩乾，並待其自然乾燥，這可能需要數小時的時間。您可將連接埠對準電扇或吹風機 (限用冷風) 來加速乾透過程。
 
-於此同時，您可使用無線方式來為平板充電。"</string>
+於此同時，您可使用無線方式來為手機充電。"</string>
     <string name="usb_water_notification_content">充電/ USB 埠存在水分或異物。請檢查後再充電。</string>
-    <string name="usb_water_notification_message">在您的充電器/USB 連接埠偵測到水分。為平板充電前，請確認其完全乾燥。連接埠乾透可能需要一些時間。</string>
+    <string name="usb_water_notification_message">在您的充電器/USB 連接埠偵測到水分。為手機充電前，請確認其完全乾燥。連接埠乾透可能需要一些時間。</string>
     <string name="usb_water_notification_message_button">詳細資料</string>
     <string name="usb_water_notification_title">檢查充電器/USB 連接埠</string>
     <string name="usbhostStorage_restrict">安全性原則會防止 USB 主機儲存裝置的使用。</string>
@@ -3349,7 +3405,7 @@
     <string name="user_switched">目前的使用者是 %1$s。</string>
     <string name="user_switching_message">正在切換至%1$s…</string>
     <string name="validity_period">有效期間：</string>
-    <string name="vdm_camera_access_denied">無法從 %1$s 存取平板電腦的相機</string>
+    <string name="vdm_camera_access_denied">無法從 %1$s 存取手機的相機</string>
     <string name="vdm_pip_blocked">串流播放時無法查看子母畫面</string>
     <string name="vdm_secure_window">串流播放時無法存取這項內容，請改用手機。</string>
     <string name="view_and_control_notification_content">「%s」可以查看及控管你的螢幕。輕觸即可查看。</string>
@@ -3374,11 +3430,13 @@
     <string name="vpn_allowOnlySecureConnection">VPN 設定檔不安全</string>
     <string name="vpn_error_text">輕觸以嘗試重新連接至 VPN。</string>
     <string name="vpn_error_title">VPN 連線錯誤</string>
+    <string name="vpn_fail_text_long">無法連接 %s。請輕觸來管理此 VPN。</string>
+    <string name="vpn_fail_title">VPN 未連線</string>
     <string name="vpn_lockdown_config">變更網路或 VPN 設定</string>
-    <string name="vpn_lockdown_connected">已連線至永久連線的 VPN</string>
-    <string name="vpn_lockdown_connecting">正在連線至永久連線的 VPN…</string>
-    <string name="vpn_lockdown_disconnected">已中斷連線至永久連線的 VPN</string>
-    <string name="vpn_lockdown_error">無法連上永久連線的 VPN</string>
+    <string name="vpn_lockdown_connected">已連線至永久連線 VPN</string>
+    <string name="vpn_lockdown_connecting">正在連線至永久連線 VPN…</string>
+    <string name="vpn_lockdown_disconnected">已中斷連線至永久連線 VPN</string>
+    <string name="vpn_lockdown_error">無法連上永久連線 VPN</string>
     <string name="vpn_text">輕觸一下即可管理網路。</string>
     <string name="vpn_text_long">已連線至 %s，輕觸一下即可管理網路。</string>
     <string name="vpn_title">VPN 已啟用</string>
@@ -3500,6 +3558,7 @@
     <string name="wifi_networks_available_detailed">有開放的 Wi-Fi 網路可用。</string>
     <string name="wifi_no_internet">%1$s 沒有網際網路連線</string>
     <string name="wifi_no_internet_detailed">輕觸即可查看選項</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">您的 WLAN 連線速度慢或不穩定，因此 %s 正在使用行動數據。</string>
     <string name="wifi_notification_switch_wifi_detail">Wi-Fi 網路不穩定，已將您的手機切換至行動數據。</string>
     <string name="wifi_notification_switch_wifi_title">已切換為行動數據</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">緊急通知</string>
@@ -3541,9 +3600,9 @@
     <string name="work_profile_on_message">此設定可供您存取工作應用程式、通知、資料及其他工作設定檔功能。</string>
     <string name="work_profile_on_title">開啟工作設定檔嗎？</string>
     <string name="work_profile_restricted">已開啟 [自動封鎖程式] 的最大限制設定。為保障您的安全，無法建立工作設定檔。</string>
-    <string name="work_profile_telephony_paused_text">您已暫停工作應用程式。將不會收到相關來電或簡訊。</string>
-    <string name="work_profile_telephony_paused_title">已關閉來電與訊息</string>
-    <string name="work_profile_telephony_paused_turn_on_button">開啟工作設定檔嗎？</string>
+    <string name="work_profile_telephony_paused_text">你已暫停工作應用程式，因此將無法接聽電話或接收訊息。</string>
+    <string name="work_profile_telephony_paused_title">通話與訊息功能已關閉</string>
+    <string name="work_profile_telephony_paused_turn_on_button">取消暫停工作應用程式</string>
     <string name="workspace_title">Workspace</string>
     <string name="write_fail_reason_cancelled">已取消</string>
     <string name="write_fail_reason_cannot_write">寫入內容時發生錯誤</string>
@@ -3564,9 +3623,15 @@
     <string name="zen_mode_duration_minutes_summary">{count,plural, =1{1 分鐘 (直到 {formattedTime})}other{# 分鐘 (直到 {formattedTime})}}</string>
     <string name="zen_mode_duration_minutes_summary_short">{count,plural, =1{1 分鐘 (直到 {formattedTime})}other{# 分鐘 (直到 {formattedTime})}}</string>
     <string name="zen_mode_feature_name">零打擾</string>
-    <string name="zen_mode_forever">直到關閉</string>
+    <string name="zen_mode_forever">直到你關閉為止</string>
     <string name="zen_mode_forever_dnd">直到你關閉「零打擾」模式</string>
+    <string name="zen_mode_implicit_activated">已啟用</string>
+    <string name="zen_mode_implicit_deactivated">已停用</string>
+    <string name="zen_mode_implicit_trigger_description">由「%1$s」管理</string>
     <string name="zen_mode_rule_name_combination">%1$s/%2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">任何日曆</string>
+    <string name="zen_mode_trigger_summary_divider_text">"、 "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s - %2$s</string>
     <string name="zen_mode_until">結束時間：%1$s</string>
     <string name="zen_mode_until_next_day">結束時間：%1$s</string>
     <string name="zen_upgrade_notification_content">輕觸即可查看遭封鎖的項目。</string>

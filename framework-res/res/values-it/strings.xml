@@ -10,7 +10,7 @@
     <string name="httpErrorBadUrl">"Apertura della pagina non riuscita perché l'URL non è valido."</string>
     <string name="httpErrorUnsupportedScheme">Protocollo non supportato.</string>
     <string name="no">Annulla</string>
-    <string name="ok">OK</string>
+    <string name="ok">Ok</string>
     <string name="paste">Incolla</string>
     <string name="search_go">Cerca</string>
     <string name="selectAll">Seleziona tutto</string>
@@ -44,7 +44,7 @@
     <string name="ColrMmi">Limitazione ID linea connessa</string>
     <string name="CwMmi">Avviso di chiamata</string>
     <string name="DndMmi">Non disturbare</string>
-    <string name="EmergencyCallWarningSummary">Impossibile fare chiamate di emergenza tramite Wi‑Fi</string>
+    <string name="EmergencyCallWarningSummary">Per le chiamate di emergenza è necessaria una rete mobile</string>
     <string name="EmergencyCallWarningTitle">Chiamate di emergenza non disponibili</string>
     <string name="Midnight">Mezzanotte</string>
     <string name="NetworkPreferenceSwitchSummary">Prova a cambiare la rete preferita. Tocca per cambiare.</string>
@@ -255,7 +255,12 @@
     <string name="accessibility_corner_action_type_zoom_in">Zoom avanti</string>
     <string name="accessibility_corner_action_type_zoom_out">Zoom indietro</string>
     <string name="accessibility_dialog_button_allow">Consenti</string>
+    <string name="accessibility_dialog_button_allow_samsung">Consenti</string>
     <string name="accessibility_dialog_button_deny">Rifiuta</string>
+    <string name="accessibility_dialog_button_deny_samsung">Nega</string>
+    <string name="accessibility_dialog_button_uninstall">Disinstalla</string>
+    <string name="accessibility_dialog_button_uninstall_samsung">Disinstalla</string>
+    <string name="accessibility_dialog_touch_filtered_warning">"Un'app nasconde la tua richiesta di autorizzazione, per cui non abbiamo potuto verificare la tua risposta."</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung">Premete rapidamente i tasti Accensione e Volume su per attivare o disattivare le seguenti funzioni:</string>
     <string name="accessibility_direct_access_multiple_service_warning_samsung_side_key">Premete rapidamente i pulsanti Laterale e Volume su per attivare o disattivare le seguenti funzioni:</string>
     <string name="accessibility_direct_access_single_service_warning_samsung">Premete rapidamente i tasti Accensione e Volume su per attivare o disattivare %s.</string>
@@ -269,11 +274,14 @@
     <string name="accessibility_edit_shortcut_menu_button_title">Scegli le funzionalità da usare con il pulsante Accessibilità</string>
     <string name="accessibility_edit_shortcut_menu_volume_title">Scegli le funzionalità da usare con la scorciatoia dei tasti del volume</string>
     <string name="accessibility_enable_service_title">Vuoi consentire a %1$s di avere il controllo totale del tuo dispositivo?</string>
-    <string name="accessibility_freeform_caption">Barra del titolo di %1$s.</string>
     <string name="accessibility_gesture_3finger_instructional_text">"Per spostarti tra le funzionalità, scorri verso l'alto con tre dita e tieni premuto."</string>
     <string name="accessibility_gesture_3finger_prompt_text">"Scegli una funzionalità da usare con il gesto di accessibilità (scorrimento verso l'alto dalla parte inferiore dello schermo con tre dita):"</string>
     <string name="accessibility_gesture_instructional_text">"Per spostarti tra le funzionalità, scorri verso l'alto con due dita e tieni premuto."</string>
     <string name="accessibility_gesture_prompt_text">"Scegli una funzionalità da usare con il gesto di accessibilità (scorrimento verso l'alto dalla parte inferiore dello schermo con due dita):"</string>
+    <string name="accessibility_label_clone_profile">Clone</string>
+    <string name="accessibility_label_communal_profile">Condiviso</string>
+    <string name="accessibility_label_managed_profile">Profilo di lavoro</string>
+    <string name="accessibility_label_private_profile">Spazio privato</string>
     <string name="accessibility_magnification_chooser_text">Ingrandimento</string>
     <string name="accessibility_select_different_function">Potete selezionare una funzione diversa in Impostazioni > Accessibilità > Impostazioni avanzate.</string>
     <string name="accessibility_select_shortcut_menu_title">Tocca una funzionalità per iniziare a usarla:</string>
@@ -342,7 +350,7 @@ Puoi associare questa scorciatoia a un'altra funzionalità in Impostazioni > Acc
     <string name="action_bar_home_description">Vai alla home page</string>
     <string name="action_bar_home_description_format">%1$s, %2$s</string>
     <string name="action_bar_home_subtitle_description_format">%1$s, %2$s, %3$s</string>
-    <string name="action_bar_up_description">Vai in alto</string>
+    <string name="action_bar_up_description">Menu precedente</string>
     <string name="action_menu_overflow_description">Altre opzioni</string>
     <string name="action_mode_done">Fine</string>
     <string name="activity_chooser_view_dialog_title_default">Scegli attività</string>
@@ -382,19 +390,25 @@ Puoi associare questa scorciatoia a un'altra funzionalità in Impostazioni > Acc
     <string name="alert_windows_notification_turn_off_action">Disattiva</string>
     <string name="allow">Consenti</string>
     <string name="allow_settings_changes">I criteri di protezione impediscono la modifica delle impostazioni.</string>
+    <string name="alternative_face_setup_notification_content">Usa lo Sblocco con il Volto se la tua impronta non viene riconosciuta, ad esempio se hai le dita bagnate</string>
+    <string name="alternative_fp_setup_notification_content">"Usa lo Sblocco con l'Impronta se il tuo volto non viene riconosciuto, ad esempio se non c'è abbastanza luce"</string>
+    <string name="alternative_unlock_setup_notification_title">"Prova un'altra modalità di sblocco"</string>
     <string name="alwaysUse">Usa come predefinita per questa azione.</string>
+    <string name="always_allow">Consenti sempre</string>
     <string name="android_preparing_apk">%1$s in preparazione.</string>
-    <string name="android_start_title">Avvio del tablet…</string>
+    <string name="android_start_title">Avvio del telefono…</string>
     <string name="android_system_label">Sistema Android</string>
     <string name="android_upgrading_complete">"Conclusione dell'avvio."</string>
     <string name="android_upgrading_notification_title">Completamento aggiornamento di sistema…</string>
     <string name="android_upgrading_starting_apps">Avvio app.</string>
-    <string name="android_upgrading_title">Aggiornamento del tablet…</string>
+    <string name="android_upgrading_title">Aggiornamento del telefono…</string>
     <string name="anr_activity_application">"L'app %2$s non risponde"</string>
     <string name="anr_activity_process">"L'app %1$s non risponde"</string>
     <string name="anr_application_process">"L'app %1$s non risponde"</string>
     <string name="anr_process">Il processo %1$s non risponde</string>
     <string name="anr_title" />
+    <string name="app_block_button_open">Apri</string>
+    <string name="app_block_content">%1$s vuole aprire l’applicazione %2$s.</string>
     <string name="app_blocked_message">"L'app %1$s non è al momento disponibile."</string>
     <string name="app_blocked_title">"L'app non è disponibile"</string>
     <string name="app_category_accessibility">Accessibilità</string>
@@ -423,42 +437,31 @@ Puoi associare questa scorciatoia a un'altra funzionalità in Impostazioni > Acc
     <string name="app_restricted_message_concentration_mode">L’applicazione %s è bloccata quando la modalità Concentrazione è attivata. Per ulteriori informazioni, contattate l’amministratore IT.</string>
     <string name="app_running_notification_text">"Tocca per ulteriori informazioni o per interrompere l'app."</string>
     <string name="app_running_notification_title">%1$s è in esecuzione</string>
-    <string name="app_streaming_blocked_message">Al momento non è possibile accedere a questa app su %1$s. Prova a usare il tablet.</string>
-    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Questa app richiede maggiore sicurezza. Prova a usare il tablet.</string>
-    <string name="app_streaming_blocked_message_for_settings_dialog">Non è possibile accedere a questa impostazione su %1$s. Prova a usare il tablet.</string>
+    <string name="app_streaming_blocked_message">Al momento non è possibile accedere a questa app su %1$s. Prova a usare il telefono.</string>
+    <string name="app_streaming_blocked_message_for_fingerprint_dialog">Questa app richiede maggiore sicurezza. Prova a usare il telefono.</string>
+    <string name="app_streaming_blocked_message_for_permission_request">"Questa app richiede autorizzazioni aggiuntive, ma non è possibile concedere autorizzazioni in una sessione di streaming. Devi prima concedere l'autorizzazione sul tuo smartphone."</string>
+    <string name="app_streaming_blocked_message_for_settings_dialog">Non è possibile accedere su %1$s. Prova a usare il telefono.</string>
     <string name="app_streaming_blocked_title">%1$s non disponibile</string>
     <string name="app_streaming_blocked_title_for_camera_dialog">Fotocamera non disponibile</string>
-    <string name="app_streaming_blocked_title_for_fingerprint_dialog">Continua sul telefono</string>
+    <string name="app_streaming_blocked_title_for_fingerprint_dialog">Continua sullo smartphone</string>
     <string name="app_streaming_blocked_title_for_microphone_dialog">Microfono non disponibile</string>
-    <string name="app_streaming_blocked_title_for_permission_dialog">Autorizzazione necessaria</string>
+    <string name="app_streaming_blocked_title_for_permission_dialog">Richiesta di autorizzazione rifiutata</string>
     <string name="app_streaming_blocked_title_for_playstore_dialog">Play Store non disponibile</string>
-    <string name="app_streaming_blocked_title_for_settings_dialog">Impostazioni del tablet non disponibili</string>
+    <string name="app_streaming_blocked_title_for_settings_dialog">Impostazioni del telefono non disponibili</string>
     <string name="app_suspended_default_message">%1$s non è al momento disponibile. Viene gestita tramite %2$s.</string>
     <string name="app_suspended_more_details">Scopri di più</string>
     <string name="app_suspended_title">App non disponibile</string>
     <string name="app_suspended_unsuspend_message">Riattiva app</string>
     <string name="app_updating_message">%s è in fase di aggiornamento. Riprovate più tardi.</string>
     <string name="app_upgrading_toast">"Upgrade dell'app %1$s…"</string>
-    <string name="appblock_block_subtitle1_phone">Per la sicurezza dello smartphone e dei dati personali, l’applicazione non può essere installata perché sospetta e potenzialmente dannosa.</string>
-    <string name="appblock_block_subtitle1_tablet">Per la sicurezza del tablet e dei dati personali, l’applicazione non può essere installata perché sospetta e potenzialmente dannosa.</string>
-    <string name="appblock_block_subtitle2">Impossibile installare l’applicazione perché è stata segnalata come dannosa.</string>
-    <string name="appblock_block_text1">Questa applicazione non proviene da un’origine verificata e richiede autorizzazioni sensibili che potrebbero essere utilizzate per rubare o divulgare i vostri dati personali.</string>
-    <string name="appblock_block_text2">"Le applicazioni dannose possono utilizzare le autorizzazioni sensibili per rubare i vostri dati personali, impersonarvi o accedere ai vostri conti finanziari.
-
-Le istituzioni finanziarie legittime non richiedono l’installazione di file ZIP, APK o applicazioni di gestione file.
-
-Assicuratevi sempre che le applicazioni che installate provengano da un’origine affidabile."</string>
-    <string name="appblock_warn_subtitle">Questa applicazione potrebbe rubare o diffondere le vostre informazioni personali.</string>
+    <string name="appblock_block_text_phone">Impossibile installare l’applicazione perché è stata segnalata come dannosa o è simile a un’applicazione segnalata come dannosa. L’installazione potrebbe essere utilizzata per reati come il phishing. Per la sicurezza dello smartphone e dei dati, questa restrizione non può essere bypassata.</string>
+    <string name="appblock_block_text_tablet">Impossibile installare l’applicazione perché è stata segnalata come dannosa o è simile a un’applicazione segnalata come dannosa. L’installazione potrebbe essere utilizzata per reati come il phishing. Per la sicurezza del tablet e dei dati, questa restrizione non può essere bypassata.</string>
+    <string name="appblock_link_text">Ulteriori informazioni</string>
     <string name="appblock_warn_text1">"L’installazione di applicazioni provenienti da origini non verificate può consentire a tali applicazioni di raccogliere i dati personali dell’utente o di tracciarne l’attività.
 
 Non è consigliabile installare l’applicazione.
 
 Se scegliete di installarla comunque, esaminate attentamente la Comunicazione sulla privacy dell’applicazione e assicuratevi di concedere soltanto le autorizzazioni necessarie."</string>
-    <string name="appblock_warn_text2">"Spesso le applicazioni dannose cercano di ottenere informazioni personali attraverso le autorizzazioni relative a Rubrica, SMS e Foto.
-
-Non è consigliabile installare l’applicazione.
-
-Se scegliete di installare comunque l’applicazione, assicuratevi che provenga da un’origine affidabile e fate attenzione nel concedere le autorizzazioni o altri tipi di accesso ai vostri dati."</string>
     <string name="application_default_restrict">"Un'altra applicazione è stata impostata come predefinita dall'amministratore del dispositivo."</string>
     <string name="as_app_forced_to_restricted_bucket">%1$s è stato inserito nel bucket RESTRICTED</string>
     <string name="auto_click_paused">Clic automatico in pausa.</string>
@@ -490,9 +493,10 @@ Se scegliete di installare comunque l’applicazione, assicuratevi che provenga 
     <string name="autofill_save_type_payment_card">carta di pagamento</string>
     <string name="autofill_save_type_username">nome utente</string>
     <string name="autofill_save_yes">Salva</string>
+    <string name="autofill_service_label_samsung_pass">Samsung Pass</string>
     <string name="autofill_update_title">Vuoi aggiornare su <b>%1$s</b>?</string>
     <string name="autofill_update_title_with_2types">Vuoi aggiornare %1$s e %2$s su <b>%3$s</b>?</string>
-    <string name="autofill_update_title_with_3types">Vuoi aggiornare questi elementi su <b>%4$s</b>: %1$s, %2$s e %3$s?</string>
+    <string name="autofill_update_title_with_3types">Vuoi aggiornare i seguenti dati in <b>%4$s</b>: %1$s, %2$s e %3$s?</string>
     <string name="autofill_update_title_with_type">Vuoi aggiornare %1$s su <b>%2$s</b>?</string>
     <string name="autofill_update_yes">Aggiorna</string>
     <string name="autofill_window_title">Compilazione automatica %1$s</string>
@@ -503,7 +507,7 @@ Se scegliete di installare comunque l’applicazione, assicuratevi che provenga 
     <string name="badPuk">Il PUK digitato è errato.</string>
     <string name="badPuk2">Il codice PUK2 inserito non è corretto</string>
     <string name="batt_cooldown_mode_ok">OK</string>
-    <string name="battery_saver_charged_notification_summary">Il tablet ha carica sufficiente. Funzionalità non più limitate.</string>
+    <string name="battery_saver_charged_notification_summary">Il telefono ha carica sufficiente. Funzionalità non più limitate.</string>
     <string name="battery_saver_description">"Il risparmio energetico attiva il tema scuro e limita o disattiva l'attività in background, nonché alcuni effetti visivi, funzionalità e connessioni di rete."</string>
     <string name="battery_saver_description_with_learn_more">"Il risparmio energetico attiva il tema scuro e limita o disattiva l'attività in background, nonché alcuni effetti visivi, funzionalità e connessioni di rete."</string>
     <string name="battery_saver_notification_channel_name">Risparmio energetico</string>
@@ -517,6 +521,7 @@ Se scegliete di installare comunque l’applicazione, assicuratevi che provenga 
     <string name="biometric_error_generic">"Errore durante l'autenticazione"</string>
     <string name="biometric_error_hw_unavailable">Hardware biometrico non disponibile</string>
     <string name="biometric_error_user_canceled">Autenticazione annullata</string>
+    <string name="biometric_face_not_recognized">Volto non riconosciuto</string>
     <string name="biometric_not_recognized">Non riconosciuto</string>
     <string name="biometric_or_screen_lock_app_setting_name">Usa la biometria o il blocco schermo</string>
     <string name="biometric_or_screen_lock_dialog_default_subtitle">Per continuare devi usare i tuoi dati biometrici o il tuo blocco schermo</string>
@@ -528,8 +533,6 @@ Se scegliete di installare comunque l’applicazione, assicuratevi che provenga 
     <string name="bluetooth_airplane_mode_toast">"Il Bluetooth rimane attivo durante l'uso della modalità aereo"</string>
     <string name="bluetooth_avrcp_restrict">"I criteri di protezione impediscono l'uso del controllo audio/video Bluetooth."</string>
     <string name="bluetooth_bpp_restrict">I criteri di protezione impediscono la stampa con Bluetooth.</string>
-    <string name="bluetooth_china_popup_message">"%1$s richiede l'autorizzazione all'uso di %2$s. Concederla?"</string>
-    <string name="bluetooth_china_popup_title">Bluetooth</string>
     <string name="bluetooth_data_transfer_restrict">I criteri di protezione impediscono i trasferimenti di dati con Bluetooth.</string>
     <string name="bluetooth_desktop_restrict">I criteri di protezione impediscono la connessione al desktop con Bluetooth.</string>
     <string name="bluetooth_device_restrict">"I criteri di protezione impediscono l'associazione con questo dispositivo Bluetooth."</string>
@@ -540,7 +543,6 @@ Se scegliete di installare comunque l’applicazione, assicuratevi che provenga 
     <string name="bluetooth_outgoing_call_restrict">"I criteri di protezione impediscono l'esecuzione di chiamate in uscita con Bluetooth."</string>
     <string name="bluetooth_pairing_restrict">"I criteri di protezione impediscono l'associazione Bluetooth."</string>
     <string name="bluetooth_pbap_restrict">"I criteri di protezione impediscono l'uso della rubrica Bluetooth."</string>
-    <string name="bluetooth_permission_request">Richiesta di autorizzazione Bluetooth</string>
     <string name="bluetooth_restrict">"I criteri di protezione impediscono l'uso del Bluetooth."</string>
     <string name="bluetooth_sap_restrict">"I criteri di protezione impediscono l'accesso alla scheda SIM con Bluetooth."</string>
     <string name="bluetooth_security_mode_disable">I criteri di protezione impediscono l’uso del Bluetooth.</string>
@@ -665,12 +667,17 @@ Se scegliete di installare comunque l’applicazione, assicuratevi che provenga 
     <string name="config_pdp_reject_service_not_subscribed" />
     <string name="config_pdp_reject_user_authentication_failed" />
     <string name="confirm_battery_saver">OK</string>
+    <string name="connected_display_thermally_unavailable_notification_content">Il tuo dispositivo è troppo caldo e non può eseguire il mirroring al display finché non si raffredda</string>
+    <string name="connected_display_unavailable_notification_content">Usa un altro cavo e riprova</string>
+    <string name="connected_display_unavailable_notification_title">Impossibile eseguire il mirroring al display</string>
     <string name="console_running_notification_message">Ci sono conseguenze sulle prestazioni. Per disattivare, seleziona il bootloader.</string>
     <string name="console_running_notification_title">Console seriale attivata</string>
     <string name="constrained_status_bar_device_locked">Dispositivo bloccato</string>
     <string name="contentServiceSync">Sinc</string>
     <string name="contentServiceSyncNotificationTitle">Impossibile sincronizzare</string>
     <string name="contentServiceTooManyDeletesNotificationDesc">Numero eccessivo di tentativi di eliminazione di %s.</string>
+    <string name="content_description_collapsed">Visualizzazione compressa</string>
+    <string name="content_description_expanded">Visualizzazione espansa</string>
     <string name="content_description_sliding_handle">Maniglia scorrevole. Tocca e tieni premuto.</string>
     <string name="conversation_single_line_image_placeholder">"ha inviato un'immagine"</string>
     <string name="conversation_single_line_name_display">%1$s:</string>
@@ -686,9 +693,9 @@ utilizzando %s"</string>
     <string name="csd_dose_reached_warning">"Vuoi continuare ad ascoltare a un volume alto?
 
 Il volume delle cuffie è rimasto alto per un periodo superiore a quello raccomandato, con il rischio di danneggiare l'udito"</string>
-    <string name="csd_momentary_exposure_warning">"Rilevato un suono forte
+    <string name="csd_momentary_exposure_warning">"Rilevato suono forte
 
-Il volume delle cuffie è più alto di quello raccomandato, con il rischio di danneggiare l'udito"</string>
+Il volume delle cuffie è più alto di quello raccomandato e potrebbe danneggiare il tuo udito"</string>
     <string name="ctc_plmn_check_card">Controlla scheda</string>
     <string name="ctc_plmn_locked_card">Scheda bloccata</string>
     <string name="d2dalloweddevice">Dispositivi consentiti</string>
@@ -696,12 +703,10 @@ Il volume delle cuffie è più alto di quello raccomandato, con il rischio di da
     <string name="data_saver_description">"Per contribuire a ridurre l'utilizzo dei dati, la funzionalità Risparmio dati impedisce ad alcune app di inviare o ricevere dati in background. Un'app in uso può accedere ai dati, ma potrebbe farlo con meno frequenza. Per esempio, è possibile che le immagini non vengano visualizzate finché non le tocchi."</string>
     <string name="data_saver_enable_button">Attiva</string>
     <string name="data_saver_enable_title">Attivare Risparmio dati?</string>
-    <string name="data_usage_disable_mobile">Disabilitare la connessione dati del dispositivo?</string>
-    <string name="data_usage_enable_mobile_warning">La connessione a pacchetti dati può determinare costi aggiuntivi. Continuare?</string>
     <string name="data_usage_limit_body">La connessione dati è sospesa fino alla fine del ciclo di fatturazione.</string>
     <string name="data_usage_limit_snoozed_body">Hai superato di %s il limite impostato</string>
     <string name="data_usage_mobile_limit_snoozed_title">Oltre il limite connessione dati</string>
-    <string name="data_usage_mobile_limit_title">Limite connessione dati raggiunto</string>
+    <string name="data_usage_mobile_limit_title">Limite dati mobili raggiunto</string>
     <string name="data_usage_rapid_app_body">%s ha utilizzato più dati del solito.</string>
     <string name="data_usage_rapid_body">Le applicazioni hanno utilizzato più dati del solito.</string>
     <string name="data_usage_rapid_title">Utilizzo dati cellulare elevato</string>
@@ -733,7 +738,7 @@ Il volume delle cuffie è più alto di quello raccomandato, con il rischio di da
     <string name="decline">Rifiuto</string>
     <string name="decline_remote_bugreport_action">RIFIUTO</string>
     <string name="default_audio_route_category_name">Sistema</string>
-    <string name="default_audio_route_name">Tablet</string>
+    <string name="default_audio_route_name">Telefono</string>
     <string name="default_audio_route_name_dock_speakers">Altoparlanti dock</string>
     <string name="default_audio_route_name_external_device">Dispositivo esterno</string>
     <string name="default_audio_route_name_headphones">Cuffie audio</string>
@@ -751,11 +756,13 @@ Il volume delle cuffie è più alto di quello raccomandato, con il rischio di da
     <string name="deprecated_target_sdk_message">"Questa app è stata progettata per una versione precedente di Android. Potrebbe non funzionare correttamente e non include le protezioni della sicurezza e della privacy più recenti. Verifica la presenza di un aggiornamento o contatta lo sviluppatore dell'app."</string>
     <string name="description_target_unlock_tablet">Fai scorrere per sbloccare.</string>
     <string name="device_disabled">"Dispositivo disabilitato. Contattate l'amministratore IT."</string>
+    <string name="device_info_not_available">Non disponibile.</string>
     <string name="device_ownership_relinquished">"L'amministratore ha abbandonato il dispositivo per uso personale"</string>
     <string name="device_policy_manager_service">Servizio Device Policy Manager</string>
     <string name="device_state_notification_settings_button">Vai a Impostazioni</string>
     <string name="device_state_notification_turn_off_button">Disattiva</string>
     <string name="device_storage_monitor_notification_channel">Memoria dispositivo</string>
+    <string name="device_unlock_notification_name">Sblocco dispositivo</string>
     <string name="dex_cant_change_user_profile">Impossibile modificare il profilo utente nella modalità Samsung DeX.</string>
     <string name="dex_dialog_launch_toast">Le applicazioni aperte potrebbero chiudersi. Salvate i dati prima di attivare o disattivare Samsung DeX.</string>
     <string name="dex_disconnected_from_device">DeX disconnessa da %s. Verificate la connessione di rete sul TV.</string>
@@ -764,9 +771,6 @@ Il volume delle cuffie è più alto di quello raccomandato, con il rischio di da
     <string name="dex_launcher_mode_change">%s chiusa per passare a Samsung DeX.</string>
     <string name="dex_mirroring_jit_msg">Quando eseguite Samsung DeX sul tablet, potete condividerne lo schermo su qualsiasi schermo più grande mediante un collegamento HDMI.</string>
     <string name="dex_mirroring_jit_title">Condividi DeX su schermo grande</string>
-    <string name="dex_restart_app_dialog_button_positive">Riavvia</string>
-    <string name="dex_restart_app_dialog_message">L’applicazione è già in esecuzione su un altro schermo. Per aprirla qui, occorre riavviare l’applicazione. Prima del riavvio, salvate i contenuti importanti.</string>
-    <string name="dex_restart_app_dialog_title">Riavviare %s?</string>
     <string name="dex_restriction_blockerMessage">"I criteri di protezione impediscono l'uso di Samsung DeX."</string>
     <string name="dex_restriction_ethernetOnly">I criteri di sicurezza impediscono l’uso di dati Wi-Fi, connessione dati e tethering in DeX. Per le funzioni di rete occorre una connessione cablata.</string>
     <string name="dex_toast_b2b_disconnect_external_display_to_exit">In base ai criteri di protezione, disconnettete lo schermo esterno per uscire da Samsung DeX.</string>
@@ -795,7 +799,6 @@ utilizzando %s"</string>
     <string name="disableupdate_application_restrict">"I criteri di protezione impediscono l'aggiornamento di questa applicazione."</string>
     <string name="dismiss_action">Ignora</string>
     <string name="display_chooser_button_positive">Riavvia</string>
-    <string name="display_chooser_dont_show_again">Non mostrare più</string>
     <string name="display_manager_built_in_display_name">Schermo incorporato</string>
     <string name="display_manager_hdmi_display_name">Schermo HDMI</string>
     <string name="display_manager_overlay_display_name">Overlay n. %1$d</string>
@@ -817,6 +820,7 @@ utilizzando %s"</string>
     <string name="dpm_wifi_misc_network_insecure">"I criteri di protezione impediscono l'uso di reti Wi-Fi non sicure."</string>
     <string name="dpm_wifi_misc_wifi_disabled">"I criteri di protezione non consentono l'uso del Wi-Fi."</string>
     <string name="dpm_wifi_user_profiles_denied">"I criteri di protezione impediscono l'aggiunta di reti Wi-Fi."</string>
+    <string name="dream_accessibility_action_click">chiudi</string>
     <string name="dream_cant_use_this_app_in_multi_window_view_tpop">Impossibile utilizzare questa applicazione nella visualizzazione Multischermo.</string>
     <string name="dream_preview_title">%1$s in anteprima</string>
     <string name="dream_st_tpop_cant_use_this_feature_in_multi_window_view">Impossibile utilizzare questa funzione nella visualizzazione Multischermo.</string>
@@ -845,11 +849,13 @@ utilizzando %s"</string>
     <string name="duration_years_shortest_future">tra %d a</string>
     <string name="dynamic_mode_notification_channel_name">Notifica di informazioni sulla modalità Routine</string>
     <string name="dynamic_mode_notification_summary">"Riduzione dell'utilizzo di batteria per estenderne la durata"</string>
+    <string name="dynamic_mode_notification_summary_v2">Risparmio energetico è attivo per aumentare la durata della batteria</string>
     <string name="dynamic_mode_notification_title">Risparmio energetico attivato</string>
+    <string name="dynamic_mode_notification_title_v2">Risparmio energetico attivo</string>
     <string name="editTextMenuTitle">Azioni testo</string>
     <string name="edit_accessibility_shortcut_menu_button">Modifica scorciatoie</string>
     <string name="edit_contact_at_sim_restriction">I criteri di protezione impediscono la modifica dei contatti della scheda SIM.</string>
-    <string name="edm_policy_not_allow_open_wifiap">Dispositivi consentiti</string>
+    <string name="edm_policy_not_allow_open_wifiap">"I criteri di protezione limitano l'utilizzo di tethering non sicuro per l'hotspot."</string>
     <string name="elapsed_time_short_format_h_mm_ss">%1$d:%2$02d:%3$02d</string>
     <string name="elapsed_time_short_format_mm_ss">%1$02d:%2$02d</string>
     <string name="emailTypeCustom">Personalizzato</string>
@@ -860,8 +866,10 @@ utilizzando %s"</string>
     <string name="emergency_call_dialog_number_for_display">Numero di emergenza</string>
     <string name="emergency_calls_only">Solo chiamate di emergenza</string>
     <string name="enablePin">Operazione non riuscita; attiva blocco SIM/RUIM.</string>
-    <string name="enable_explore_by_touch_warning_message">%1$s vuole attivare la funzione Esplora al tocco. Quando la funzione Esplora al tocco è attiva, puoi ascoltare o visualizzare le descrizioni di ciò che stai toccando oppure interagire con il tablet tramite gesti.</string>
+    <string name="enable_explore_by_touch_warning_message">%1$s vuole attivare la funzione Esplora al tocco. Quando la funzione Esplora al tocco è attiva, puoi ascoltare o visualizzare le descrizioni di ciò che stai toccando oppure interagire con il telefono tramite gesti.</string>
     <string name="enable_explore_by_touch_warning_title">Attivare Esplora al tocco?</string>
+    <string name="error_handwriting_unsupported">La scrittura a mano libera non è supportata in questo campo</string>
+    <string name="error_handwriting_unsupported_password">La scrittura a mano libera non è supportata nei campi per le password</string>
     <string name="error_message_change_not_allowed">"Questa modifica non è consentita dall'amministratore"</string>
     <string name="error_message_title">Errore</string>
     <string name="ethernet_cable_connected_notification_message">Tocca per eseguire la configurazione.</string>
@@ -924,7 +932,7 @@ utilizzando %s"</string>
     <string name="ext_media_unsupported_notification_message">Questo dispositivo non supporta questa %s. Toccate per effettuare la configurazione con un formato supportato.</string>
     <string name="ext_media_unsupported_notification_title">%s non supportata</string>
     <string name="ext_storage_bad_removal_button">Riavvia</string>
-    <string name="ext_storage_bad_removal_title">Riavviate il tablet</string>
+    <string name="ext_storage_bad_removal_title">Riavviate lo smartphone</string>
     <string name="extmedia_format_button_format">Formato</string>
     <string name="extmedia_format_message">Tutti i dati sulla scheda andranno persi.</string>
     <string name="extmedia_format_message_usbhost">"Tutti i file memorizzati nell'archivio USB verranno cancellati. Questa azione non può essere annullata."</string>
@@ -934,7 +942,7 @@ utilizzando %s"</string>
     <string name="face_acquired_dark_glasses_detected_alt">Sono stati rilevati occhiali scuri. Il tuo volto deve essere visibile per intero.</string>
     <string name="face_acquired_insufficient">Impossibile creare il modello del volto. Riprova.</string>
     <string name="face_acquired_mouth_covering_detected_alt">Il tuo volto è coperto. Deve essere visibile per intero.</string>
-    <string name="face_acquired_not_detected">"Volto non visible. Tieni lo smartphone all'altezza degli occhi."</string>
+    <string name="face_acquired_not_detected">"Volto non visibile. Tieni lo smartphone all'altezza degli occhi."</string>
     <string name="face_acquired_obscured">Rimuovi tutto ciò che ti nasconde il viso</string>
     <string name="face_acquired_pan_too_extreme">Guarda dritto nello smartphone</string>
     <string name="face_acquired_poor_gaze">Guarda più direttamente verso il dispositivo.</string>
@@ -946,7 +954,7 @@ utilizzando %s"</string>
     <string name="face_acquired_too_bright">Troppa luce. Prova con una luce più soft.</string>
     <string name="face_acquired_too_close">Allontana il telefono</string>
     <string name="face_acquired_too_dark">Luce insufficiente</string>
-    <string name="face_acquired_too_different">Impossibile riconoscere il volto. Riprova.</string>
+    <string name="face_acquired_too_different">Volto non riconosciuto. Riprova.</string>
     <string name="face_acquired_too_far">Avvicina il telefono</string>
     <string name="face_acquired_too_high">Sposta lo smartphone più in alto</string>
     <string name="face_acquired_too_left">Sposta lo smartphone verso destra</string>
@@ -954,34 +962,32 @@ utilizzando %s"</string>
     <string name="face_acquired_too_much_motion">Troppo movimento. Tieni fermo il telefono.</string>
     <string name="face_acquired_too_right">Sposta lo smartphone verso sinistra</string>
     <string name="face_acquired_too_similar">Cambia leggermente la posizione della testa</string>
-    <string name="face_app_setting_name">Usa lo sblocco con il volto</string>
+    <string name="face_app_setting_name">Usa lo Sblocco con il Volto</string>
     <string name="face_authenticated_confirmation_required">Volto autenticato, premi Conferma</string>
     <string name="face_authenticated_no_confirmation_required">Volto autenticato</string>
     <string name="face_dialog_default_subtitle">Usa il tuo volto per continuare</string>
     <string name="face_error_canceled">Operazione associata al volto annullata.</string>
     <string name="face_error_hw_not_available">Imposs. verificare volto. Hardware non disponibile.</string>
-    <string name="face_error_hw_not_present">Sblocco con il volto non è supportato su questo dispositivo</string>
+    <string name="face_error_hw_not_present">Sblocco con il Volto non è supportato su questo dispositivo</string>
     <string name="face_error_lockout">Troppi tentativi. Riprova più tardi.</string>
-    <string name="face_error_lockout_permanent">Troppi tentativi. Sblocco con il volto non disponibile.</string>
+    <string name="face_error_lockout_permanent">Troppi tentativi. Sblocco con il Volto non disponibile.</string>
     <string name="face_error_lockout_screen_lock">Troppi tentativi. Inserisci il blocco schermo.</string>
     <string name="face_error_no_space">Imposs. salvare dati nuovi volti. Elimina un volto vecchio.</string>
-    <string name="face_error_not_enrolled">Non hai configurato lo sblocco con il volto</string>
+    <string name="face_error_not_enrolled">Non hai configurato lo Sblocco con il Volto</string>
     <string name="face_error_security_update_required">Sensore temporaneamente disattivato.</string>
-    <string name="face_error_timeout">Riprova lo sblocco con il volto</string>
+    <string name="face_error_timeout">Riprova lo Sblocco con il Volto</string>
     <string name="face_error_unable_to_process">Impossibile verificare il volto. Riprova.</string>
-    <string name="face_error_user_canceled">"Sblocco con il volto annullato dall'utente"</string>
+    <string name="face_error_user_canceled">"Sblocco con il Volto annullato dall'utente"</string>
     <string name="face_error_vendor_unknown">Si è verificato un errore. Riprova.</string>
     <string name="face_icon_content_description">Icona volto</string>
     <string name="face_name_template">Volto %d</string>
-    <string name="face_or_screen_lock_app_setting_name">Usa lo sblocco con il volto o il blocco schermo</string>
+    <string name="face_or_screen_lock_app_setting_name">Usa lo Sblocco con il Volto o il blocco schermo</string>
     <string name="face_or_screen_lock_dialog_default_subtitle">Per continuare devi usare il tuo volto o il tuo blocco schermo</string>
     <string name="face_recalibrate_notification_content">Tocca per eliminare il tuo modello del volto e poi riaggiungi il tuo volto</string>
-    <string name="face_recalibrate_notification_name">Sblocco con il volto</string>
-    <string name="face_recalibrate_notification_title">Problema con Sblocco con il volto</string>
-    <string name="face_sensor_privacy_enabled">Per utilizzare lo sblocco con il volto, attiva <b>"l'accesso alla fotocamera"</b> in Impostazioni > Privacy</string>
-    <string name="face_setup_notification_content">Sblocca il telefono guardandolo</string>
-    <string name="face_setup_notification_title">Configura lo sblocco con il volto</string>
-    <string name="faceunlock_multiple_failures">Numero massimo di tentativi di sblocco con il volto superato</string>
+    <string name="face_recalibrate_notification_name">Sblocco con il Volto</string>
+    <string name="face_recalibrate_notification_title">Problema con Sblocco con il Volto</string>
+    <string name="face_sensor_privacy_enabled">Per utilizzare lo Sblocco con il Volto, attiva <b>"l'accesso alla fotocamera"</b> in Impostazioni > Privacy</string>
+    <string name="faceunlock_multiple_failures">Numero massimo di tentativi di Sblocco con il Volto superato</string>
     <string name="factory_reset_message">"Impossibile usare l'app di amministrazione. Il dispositivo verrà resettato.
 
 Per eventuali domande, contatta l'amministratore della tua organizzazione."</string>
@@ -1006,7 +1012,7 @@ Per eventuali domande, contatta l'amministratore della tua organizzazione."</str
     <string name="fingerprint_acquired_imager_dirty">Pulisci il sensore di impronte digitali e riprova</string>
     <string name="fingerprint_acquired_imager_dirty_alt">Pulisci il sensore e riprova</string>
     <string name="fingerprint_acquired_immobile">Cambia leggermente la posizione del dito ogni volta</string>
-    <string name="fingerprint_acquired_insufficient">"Impossibile riconoscere l'impronta. Riprova."</string>
+    <string name="fingerprint_acquired_insufficient">Impronta non riconosciuta. Riprova.</string>
     <string name="fingerprint_acquired_partial">Premi con decisione sul sensore</string>
     <string name="fingerprint_acquired_power_press">Rilevata pressione tasto di accensione</string>
     <string name="fingerprint_acquired_too_bright">Troppa luce</string>
@@ -1016,29 +1022,28 @@ Per eventuali domande, contatta l'amministratore della tua organizzazione."</str
     <string name="fingerprint_app_setting_name">"Usa l'impronta"</string>
     <string name="fingerprint_authenticated">Impronta autenticata</string>
     <string name="fingerprint_dialog_default_subtitle">Utilizza la tua impronta per continuare</string>
-    <string name="fingerprint_error_bad_calibration">Impossibile usare il sensore di impronte digitali. Contatta un fornitore di servizi di riparazione</string>
-    <string name="fingerprint_error_canceled">"Operazione associata all'impronta annullata."</string>
-    <string name="fingerprint_error_hw_not_available">"Hardware per l'impronta non disponibile."</string>
-    <string name="fingerprint_error_hw_not_present">Questo dispositivo non dispone di sensore di impronte.</string>
+    <string name="fingerprint_dialog_use_fingerprint_instead">"Volto non riconosciuto. Usa l'impronta."</string>
+    <string name="fingerprint_error_bad_calibration">Impossibile usare il sensore di impronte digitali. Contatta un fornitore di servizi di riparazione.</string>
+    <string name="fingerprint_error_canceled">"Operazione associata all'impronta annullata"</string>
+    <string name="fingerprint_error_hw_not_available">Lettore di impronte digitali non disponibile</string>
+    <string name="fingerprint_error_hw_not_present">Questo dispositivo non è dotato di sensore di impronte</string>
     <string name="fingerprint_error_lockout">Troppi tentativi. Usa il blocco schermo.</string>
     <string name="fingerprint_error_lockout_permanent">Troppi tentativi. Usa il blocco schermo.</string>
-    <string name="fingerprint_error_no_fingerprints">Nessuna impronta digitale registrata.</string>
+    <string name="fingerprint_error_no_fingerprints">Nessuna impronta registrata</string>
     <string name="fingerprint_error_no_space">"Impossibile configurare l'impronta"</string>
     <string name="fingerprint_error_not_match">Impronta non riconosciuta</string>
     <string name="fingerprint_error_power_pressed">Tasto di accensione premuto</string>
-    <string name="fingerprint_error_security_update_required">Sensore temporaneamente disattivato.</string>
+    <string name="fingerprint_error_security_update_required">Sensore temporaneamente disattivato</string>
     <string name="fingerprint_error_timeout">Timeout configurazione impronta. Riprova.</string>
     <string name="fingerprint_error_unable_to_process">"Impossibile elaborare l'impronta. Riprova."</string>
-    <string name="fingerprint_error_user_canceled">"Operazione di autenticazione dell'impronta annullata dall'utente."</string>
+    <string name="fingerprint_error_user_canceled">"Operazione di autenticazione dell'impronta annullata dall'utente"</string>
     <string name="fingerprint_error_vendor_unknown">Si è verificato un errore. Riprova.</string>
     <string name="fingerprint_name_template">Dito %d</string>
     <string name="fingerprint_or_screen_lock_app_setting_name">"Usa l'impronta o il blocco schermo"</string>
     <string name="fingerprint_or_screen_lock_dialog_default_subtitle">Per continuare devi usare la tua impronta o il tuo blocco schermo</string>
     <string name="fingerprint_recalibrate_notification_content">Contatta un fornitore di servizi di riparazione.</string>
-    <string name="fingerprint_recalibrate_notification_name">"Sblocco con l'impronta"</string>
+    <string name="fingerprint_recalibrate_notification_name">"Sblocco con l'Impronta"</string>
     <string name="fingerprint_recalibrate_notification_title">Impossibile utilizzare il sensore di impronte digitali</string>
-    <string name="fingerprint_setup_notification_content">"Tocca per aggiungere un'impronta"</string>
-    <string name="fingerprint_setup_notification_title">Configura altri modi per sbloccare</string>
     <string name="fingerprint_udfps_error_not_match">Impronta non riconosciuta</string>
     <string name="fingerprints">Fingerprint:</string>
     <string name="firmwarerecovery_restrict">I criteri di protezione limitano il recupero del firmware.</string>
@@ -1128,7 +1133,7 @@ Prova a toccare leggermente il tasto di accensione durante la configurazione del
     <string name="global_action_toggle_sealed_mode">Modalità Kiosk</string>
     <string name="global_action_toggle_silent_mode">Modalità silenziosa</string>
     <string name="global_action_voice_assist">Voice Assist</string>
-    <string name="global_actions">Opzioni tablet</string>
+    <string name="global_actions">Opzioni telefono</string>
     <string name="global_actions_airplane_mode_off_status">Modalità aereo non attiva</string>
     <string name="global_actions_airplane_mode_on_status">Modalità aereo attiva</string>
     <string name="global_actions_toggle_airplane_mode">Modalità aereo</string>
@@ -1149,6 +1154,7 @@ Prova a toccare leggermente il tasto di accensione durante la configurazione del
     <string name="globalactions_unable_restart_msg_fmm">Impossibile riavviare perché lo smartphone è stato bloccato da remoto tramite Trova dispositivo personale.</string>
     <string name="globalactions_unable_restart_msg_fmm_tablet">Impossibile riavviare perché il tablet è stato bloccato da remoto tramite Trova dispositivo personale.</string>
     <string name="globalactions_unable_restart_msg_securelock">Impossibile riavviare lo smartphone mentre è bloccato. Aprite la cover e sbloccate lo smartphone per riavviarlo.</string>
+    <string name="globalactions_unable_restart_msg_sim_card_locked">Impossibile riavviare lo smartphone quando la scheda SIM è bloccata.</string>
     <string name="gnss_service">Servizio GNSS</string>
     <string name="gnss_time_update_service">"Servizio di aggiornamento dell'orario GNSS"</string>
     <string name="gpsNotifMessage">Richiesto da %1$s (%2$s)</string>
@@ -1164,7 +1170,7 @@ Prova a toccare leggermente il tasto di accensione durante la configurazione del
     <string name="granularity_label_link">link</string>
     <string name="granularity_label_word">parola</string>
     <string name="guest_name">Ospite</string>
-    <string name="hardware">Mostra tastiera virtuale</string>
+    <string name="hardware">Usa tastiera sullo schermo</string>
     <string name="hardware_key_restrict">"I criteri di protezione impediscono l'uso di questa chiave hardware."</string>
     <string name="hardware_sec">Tastiera sullo schermo</string>
     <string name="harmful_app_warning_open_anyway">APRI COMUNQUE</string>
@@ -1284,7 +1290,7 @@ Vuoi abbandonare la pagina?"</string>
     <string name="keyguard_accessibility_add_widget">Aggiungi widget.</string>
     <string name="keyguard_accessibility_camera">Fotocamera</string>
     <string name="keyguard_accessibility_expand_lock_area">Espandi area di sblocco.</string>
-    <string name="keyguard_accessibility_face_unlock">Sblocco con il volto.</string>
+    <string name="keyguard_accessibility_face_unlock">Sblocco con il Volto.</string>
     <string name="keyguard_accessibility_password_unlock">Sblocco con password.</string>
     <string name="keyguard_accessibility_pattern_area">Area sequenza.</string>
     <string name="keyguard_accessibility_pattern_unlock">Sblocco con sequenza.</string>
@@ -1313,11 +1319,11 @@ Vuoi abbandonare la pagina?"</string>
     <string name="keyguard_password_entry_touch_hint">&lt;font size=17>Tocca per inserire la password&lt;/font></string>
     <string name="keyguard_password_wrong_pin_code">Codice PIN errato.</string>
     <string name="kg_enter_confirm_pin_hint">Conferma il codice PIN desiderato</string>
-    <string name="kg_failed_attempts_almost_at_login">"%1$d tentativi errati di inserimento della sequenza di sblocco. Dopo altri %2$d tentativi falliti, ti verrà chiesto di sbloccare il tablet con un account email.
+    <string name="kg_failed_attempts_almost_at_login">"%1$d tentativi errati di inserimento della sequenza di sblocco. Dopo altri %2$d tentativi falliti, ti verrà chiesto di sbloccare il telefono con un account email.
 
  Riprova tra %3$d secondi."</string>
-    <string name="kg_failed_attempts_almost_at_wipe">%1$d tentativi errati di sblocco del tablet. Dopo altri %2$d tentativi falliti, il tablet verrà sottoposto a un ripristino dei dati di fabbrica e tutti i dati utente andranno persi.</string>
-    <string name="kg_failed_attempts_now_wiping">%d tentativi errati di sblocco del tablet. Il tablet verrà sottoposto a un ripristino dei dati di fabbrica.</string>
+    <string name="kg_failed_attempts_almost_at_wipe">%1$d tentativi errati di sblocco del telefono. Dopo altri %2$d tentativi falliti, il telefono verrà sottoposto a un ripristino dei dati di fabbrica e tutti i dati utente andranno persi.</string>
+    <string name="kg_failed_attempts_now_wiping">%d tentativi errati di sblocco del telefono. Il telefono verrà sottoposto a un ripristino dei dati di fabbrica.</string>
     <string name="kg_forgot_pattern_button_text">Sequenza dimenticata</string>
     <string name="kg_invalid_confirm_pin_hint">I codici PIN non corrispondono</string>
     <string name="kg_invalid_puk">Inserisci di nuovo il codice PUK corretto. Ripetuti tentativi comportano la disattivazione definitiva della scheda SIM.</string>
@@ -1405,11 +1411,11 @@ Riprova tra %2$d secondi."</string>
     <string name="lockscreen_carrier_default">Nessun servizio</string>
     <string name="lockscreen_carrier_noservice">(Nessun servizio)</string>
     <string name="lockscreen_emergency_call">Emergenza</string>
-    <string name="lockscreen_failed_attempts_almost_at_wipe">Hai erroneamente tentato di sbloccare il tablet %1$d volte. Dopo altri %2$d tentativi non riusciti, il tablet verrà sottoposto a un ripristino dati di fabbrica e tutti i dati utente andranno persi.</string>
-    <string name="lockscreen_failed_attempts_almost_glogin">"%1$d tentativi errati di inserimento della sequenza di sblocco. Dopo altri %2$d tentativi falliti, ti verrà chiesto di sbloccare il tablet con i tuoi dati di accesso Google.
+    <string name="lockscreen_failed_attempts_almost_at_wipe">Hai erroneamente tentato di sbloccare il telefono %1$d volte. Dopo altri %2$d tentativi non riusciti, il telefono verrà sottoposto a un ripristino dati di fabbrica e tutti i dati utente andranno persi.</string>
+    <string name="lockscreen_failed_attempts_almost_glogin">"%1$d tentativi errati di inserimento della sequenza di sblocco. Dopo altri %2$d tentativi falliti, ti verrà chiesto di sbloccare il telefono con i tuoi dati di accesso Google.
 
  Riprova tra %3$d secondi."</string>
-    <string name="lockscreen_failed_attempts_now_wiping">Hai erroneamente tentato di sbloccare il tablet %d volte. Il tablet ora verrà sottoposto a un ripristino dati di fabbrica.</string>
+    <string name="lockscreen_failed_attempts_now_wiping">Hai erroneamente tentato di sbloccare il telefono %d volte. Il telefono ora verrà sottoposto a un ripristino dati di fabbrica.</string>
     <string name="lockscreen_forgot_pattern_button_text">Hai dimenticato la sequenza?</string>
     <string name="lockscreen_glogin_account_recovery_hint">"Hai dimenticato il nome utente o la password?
 Visita "<b>google.com/accounts/recovery</b>.</string>
@@ -1425,7 +1431,7 @@ Visita "<b>google.com/accounts/recovery</b>.</string>
     <string name="lockscreen_instructions_when_pattern_enabled">Premi Menu per sbloccare o effettuare chiamate di emergenza.</string>
     <string name="lockscreen_missing_sim_instructions">Aggiungi una SIM.</string>
     <string name="lockscreen_missing_sim_instructions_long">SIM mancante o non leggibile. Aggiungi una SIM.</string>
-    <string name="lockscreen_missing_sim_message">Nessuna SIM presente nel tablet.</string>
+    <string name="lockscreen_missing_sim_message">Nessuna SIM presente nel telefono.</string>
     <string name="lockscreen_missing_sim_message_short">Nessuna SIM presente</string>
     <string name="lockscreen_network_locked_message">Rete bloccata</string>
     <string name="lockscreen_password_wrong">Riprova</string>
@@ -1465,7 +1471,7 @@ Riprova tra %2$d secondi."</string>
     <string name="low_internal_storage_view_text">Alcune funzioni di sistema potrebbero non funzionare</string>
     <string name="low_internal_storage_view_text_no_boot">Memoria insufficiente per il sistema. Assicurati di avere 250 MB di spazio libero e riavvia.</string>
     <string name="low_internal_storage_view_title">Spazio di archiviazione in esaurimento</string>
-    <string name="low_memory">Spazio di archiviazione del tablet esaurito. Elimina alcuni file per liberare spazio.</string>
+    <string name="low_memory">Spazio di archiviazione del telefono esaurito. Elimina alcuni file per liberare spazio.</string>
     <string name="ltb_kill_content_v2_phone">%s è stata chiusa perché provocava il surriscaldamento dello smartphone. Potrete riaprirla più tardi, dopo che lo smartphone si sarà raffreddato.</string>
     <string name="ltb_kill_content_v2_tablet">%s è stata chiusa perché provocava il surriscaldamento del tablet. Potrete riaprirla più tardi, dopo che il tablet si sarà raffreddato.</string>
     <string name="ltb_warning_button">Non chiudere</string>
@@ -1485,16 +1491,16 @@ Riprova tra %2$d secondi."</string>
     <string name="maintenance_mode_intro_description_need_to_unlock_tablet">Per disattivare la modalità Manutenzione, occorre sbloccare il tablet.</string>
     <string name="maintenance_mode_intro_description_nothing_will_be_saved">Non verrà salvato nulla di ciò che accade quando la modalità Manutenzione è attivata (ad esempio dati scaricati, installazioni di applicazioni o modifiche delle impostazioni).</string>
     <string name="maintenance_mode_intro_dialog_button_text_set_screen_lock">Imposta blocco schermo</string>
-    <string name="maintenance_mode_intro_dialog_checkbox_text">Riavvia senza creare un registro</string>
+    <string name="maintenance_mode_intro_dialog_checkbox_text">Crea registro e riavvia</string>
     <string name="maintenance_mode_intro_dialog_message_phone">Per attivare la modalità Manutenzione, è necessario riavviare lo smartphone.</string>
     <string name="maintenance_mode_intro_dialog_message_set_screen_lock_first">Impostate prima un blocco schermo.</string>
     <string name="maintenance_mode_intro_dialog_message_tablet">Per attivare la modalità Manutenzione, è necessario riavviare il tablet.</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Per aiutare il personale dell’assistenza ad analizzare eventuali problemi con lo smartphone, è consigliabile creare un registro di sistema prima di avviare la modalità Manutenzione.
+    <string name="maintenance_mode_intro_dialog_textview_message_phone">"Per aiutare il personale dell’assistenza a diagnosticare e analizzare eventuali problemi con lo smartphone, è consigliabile creare un registro di sistema prima di avviare la modalità Manutenzione.
 
-Il registro mostra le applicazioni utilizzate e gli eventuali errori che si sono verificati di recente, ma non include altre informazioni personali. Il registro viene utilizzato unicamente per analizzare i problemi e non per altri scopi. La creazione del registro richiede in genere circa 2 minuti."</string>
-    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Per aiutare il personale dell’assistenza ad analizzare eventuali problemi con il tablet, è consigliabile creare un registro di sistema prima di avviare la modalità Manutenzione.
+Il registro include informazioni essenziali per la riparazione dello smartphone, ad esempio le applicazioni utilizzate, gli errori che si sono verificati di recente, i numeri di telefono bloccati e la capacità di archiviazione dei file. Il registro viene utilizzato unicamente per diagnosticare e analizzare i problemi e non per altri scopi. La creazione del registro richiede in genere circa 2 minuti."</string>
+    <string name="maintenance_mode_intro_dialog_textview_message_tablet">"Per aiutare il personale dell’assistenza a diagnosticare e analizzare eventuali problemi con il tablet, è consigliabile creare un registro di sistema prima di avviare la modalità Manutenzione.
 
-Il registro mostra le applicazioni utilizzate e gli eventuali errori che si sono verificati di recente, ma non include altre informazioni personali. Il registro viene utilizzato unicamente per analizzare i problemi e non per altri scopi. La creazione del registro richiede in genere circa 2 minuti."</string>
+Il registro include informazioni essenziali per la riparazione del tablet, ad esempio le applicazioni utilizzate, gli errori che si sono verificati di recente, i numeri di telefono bloccati e la capacità di archiviazione dei file. Il registro viene utilizzato unicamente per diagnosticare e analizzare i problemi e non per altri scopi. La creazione del registro richiede in genere circa 2 minuti."</string>
     <string name="maintenance_mode_intro_low_storage_dialog_button_text">Analizza archiviazione</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_phone">Lo spazio di archiviazione interno dello smartphone è quasi completamente piena. Se lo spazio di archiviazione viene esaurito, alcune funzioni e applicazioni potrebbero smettere di funzionare correttamente. Provate a eliminare alcuni file o applicazioni che non servono più. Dopo l’eliminazione, non dimenticare di svuotare il Cestino.</string>
     <string name="maintenance_mode_intro_low_storage_dialog_message_tablet">Lo spazio di archiviazione interno del tablet è quasi completamente pieno. Se lo spazio di archiviazione viene esaurito, alcune funzioni e applicazioni potrebbero smettere di funzionare correttamente. Provate a eliminare alcuni file o applicazioni che non servono più. Dopo l’eliminazione, non dimenticare di svuotare il Cestino.</string>
@@ -1516,10 +1522,17 @@ Il registro mostra le applicazioni utilizzate e gli eventuali errori che si sono
     <string name="maintenance_mode_outro_label">Esci dalla modalità Manutenzione</string>
     <string name="maintenance_mode_outro_textview_message_phone">Occorrerà sbloccare lo smartphone per disattivare la modalità Manutenzione. A questo punto, tutto tornerà allo stato antecedente alla prima attivazione della modalità Manutenzione. Le modifiche apportate mentre la modalità Manutenzione è attivata, ad esempio i dati scaricati, le applicazioni installate o le modifiche alle impostazioni, non verranno salvate.</string>
     <string name="maintenance_mode_outro_textview_message_tablet">Occorrerà sbloccare il tablet per disattivare la modalità Manutenzione. A questo punto, tutto tornerà allo stato antecedente alla prima attivazione della modalità Manutenzione. Le modifiche apportate mentre la modalità Manutenzione è attivata, ad esempio i dati scaricati, le applicazioni installate o le modifiche alle impostazioni, non verranno salvate.</string>
+    <string name="maintenance_mode_proxy_cant_be_used_toast_message">Non è possibile utilizzare la modalità Manutenzione mentre è attiva la modalità %s.</string>
+    <string name="maintenance_mode_proxy_cant_use_while_mpsm_toast_message">Impossibile utilizzare la modalità Manutenzione quando Risparmio energetico è attivato con schermata Home e applicazioni limitate.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_phone">La modalità Manutenzione non è supportata su questo smartphone.</string>
+    <string name="maintenance_mode_proxy_isnt_supported_toast_message_tablet">La modalità Manutenzione non è supportata su questo tablet.</string>
+    <string name="maintenance_mode_proxy_only_be_used_toast_message">%s può essere utilizzato solo dal proprietario del dispositivo.</string>
     <string name="maintenance_mode_stop_backup_dialog_message">Arrestare il backup dei dati e attivare la modalità Manutenzione?</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backed_up_failed">Per attivare la modalità Manutenzione, occorre terminare o eliminare il backup non completato.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_backing_up">Per attivare la modalità Manutenzione, occorre arrestare il backup in corso.</string>
     <string name="maintenance_mode_stop_backup_dialog_message_restoring">Per attivare la modalità Manutenzione, occorre arrestare il ripristino dei dati di backup.</string>
+    <string name="maintenance_mode_toast_text_device_admin">Applicazione amministratore dispositivo</string>
+    <string name="maintenance_mode_toast_text_samsung_dex">Samsung DeX</string>
     <string name="maintenance_mode_view_dump_textview_message_creating">Creazione del registro in corso…</string>
     <string name="maintenance_mode_view_dump_textview_message_phone">L’operazione richiede in genere circa 2 minuti. Una volta creato il registro, lo smartphone viene riavviato in modalità Manutenzione e potrete tranquillamente affidarlo alla manutenzione.</string>
     <string name="maintenance_mode_view_dump_textview_message_tablet">L’operazione richiede in genere circa 2 minuti. Una volta creato il registro, il tablet viene riavviato in modalità Manutenzione e potrete tranquillamente affidarlo alla manutenzione.</string>
@@ -1669,6 +1682,7 @@ Il tablet verrà riavviato a breve."</string>
     <string name="menu_shift_shortcut_label">MAIUSC +</string>
     <string name="menu_space_shortcut_label">spazio</string>
     <string name="menu_sym_shortcut_label">SYM +</string>
+    <string name="message_on_crash">Bloccato da Blocco automatico</string>
     <string name="mic_access_off_toast">Microfono bloccato</string>
     <string name="mic_access_on_toast">Microfono disponibile</string>
     <string name="microphone_restrict">"I criteri di protezione impediscono l'uso del microfono."</string>
@@ -1692,14 +1706,16 @@ Il tablet verrà riavviato a breve."</string>
     <string name="mime_type_video">Video</string>
     <string name="mime_type_video_ext">Video %1$s</string>
     <string name="miniresolver_call">Chiama</string>
-    <string name="miniresolver_call_in_work">Chiamare dall’applicazione di lavoro?</string>
-    <string name="miniresolver_call_information">L’organizzazione vi consente solo di effettuare chiamate dalle applicazioni di lavoro.</string>
+    <string name="miniresolver_call_in_work">"Chiamare dall'app di lavoro?"</string>
+    <string name="miniresolver_call_information">La tua organizzazione consente di fare chiamate solo dalle app di lavoro</string>
     <string name="miniresolver_open_in_personal">"Aprire nell'app %s personale?"</string>
     <string name="miniresolver_open_in_work">"Aprire nell'app %s di lavoro?"</string>
     <string name="miniresolver_open_work">"Aprire l'app %s di lavoro?"</string>
-    <string name="miniresolver_sms_information">L’organizzazione vi consente solo di inviare messaggi dalle applicazioni di lavoro.</string>
-    <string name="miniresolver_switch">Cambia</string>
-    <string name="miniresolver_switch_to_work">Passare all’applicazione di lavoro?</string>
+    <string name="miniresolver_private_space_messages_information">Puoi inviare messaggi SMS solo dalla tua app Messaggi personale.</string>
+    <string name="miniresolver_private_space_phone_information">Puoi effettuare chiamate solo dalla tua app Telefono personale. Le chiamate effettuate con la tua app Telefono personale verranno aggiunte alla tua cronologia chiamate personale.</string>
+    <string name="miniresolver_sms_information">La tua organizzazione consente di inviare messaggi solo dalle app di lavoro</string>
+    <string name="miniresolver_switch">Passa</string>
+    <string name="miniresolver_switch_to_work">"Vuoi passare all'app di lavoro?"</string>
     <string name="miniresolver_use_personal_browser">Usa il browser personale</string>
     <string name="miniresolver_use_work_browser">Usa il browser di lavoro</string>
     <string name="minute">min</string>
@@ -1733,30 +1749,6 @@ Il tablet verrà riavviato a breve."</string>
     <string name="month_day_year" formatted="false">%d %B %Y</string>
     <string name="more_apps">Altre app</string>
     <string name="more_item_label">Altro</string>
-    <string name="mptcp_message_MA_setting_off_before_reboot">Servizio %s non supportato. Contattate il servizio clienti.</string>
-    <string name="mptcp_message_address_type_not_supported">Servizio %s al momento non disponibile. Riconnessione con rete disponibile in corso…</string>
-    <string name="mptcp_message_busy_ntime_wait">Servizio %s al momento non disponibile. Riconnessione con rete disponibile in corso…</string>
-    <string name="mptcp_message_cmd_not_supported">Rete %s al momento non disponibile. Riconnessione con rete disponibile in corso…</string>
-    <string name="mptcp_message_connection_not_allowed_by_ruleset">Servizio %s al momento non disponibile. Riconnessione con rete disponibile in corso…</string>
-    <string name="mptcp_message_connection_refused">Servizio %s al momento non disponibile. Riconnessione con rete disponibile in corso…</string>
-    <string name="mptcp_message_data_usage_limit">Avete raggiunto il limite di uso dei dati. Per modificare tale limite, andate in Impostazioni.</string>
-    <string name="mptcp_message_host_unreachable">Servizio %s al momento non disponibile. Riconnessione con rete disponibile in corso…</string>
-    <string name="mptcp_message_mptcp_capability_LteRegistered">Impossibile attivare %s. Dispositivo non connesso alla rete LTE.</string>
-    <string name="mptcp_message_mptcp_capability_Roaming">Impossibile attivare %s durante il roaming internazionale.</string>
-    <string name="mptcp_message_mptcp_capability_TetheringMode">Impossibile attivare %s mentre il Router Wi-Fi o il tethering USB sono attivati.</string>
-    <string name="mptcp_message_mptcp_capability_WifiDirect">Impossibile abilitare %s quando Wi-Fi Direct è attivo.</string>
-    <string name="mptcp_message_mptcp_capability_airplane">Impossibile attivare %s mentre la Modalita offline è attiva.</string>
-    <string name="mptcp_message_mptcp_capability_getMobileDataEnabled">Impossibile attivare %s mentre la connessione dati è disattiva.</string>
-    <string name="mptcp_message_mptcp_capability_noresponse">Nessuna risposta dal gestore telefonico.</string>
-    <string name="mptcp_message_mptcp_capability_packege_authfail">Impossibile abilitare %1$s. %2$s non è disponibile con il pacchetto Internet in uso oppure il server %3$s non ha risposto.</string>
-    <string name="mptcp_message_mptcp_capability_sendfail">Attivazione %s non riuscita. Riconnessione con reti disponibili in corso…</string>
-    <string name="mptcp_message_mptcp_capability_simstatus">Impossibile attivare %s. Scheda SIM inserita errata.</string>
-    <string name="mptcp_message_network_unreachable">Servizio %s al momento non disponibile. Riconnessione con rete disponibile in corso…</string>
-    <string name="mptcp_message_non_mptcp_plan">Impossibile attivare Unisci Fastweb Mobile e Wi-Fi. Il piano dati non supporta la funzione.</string>
-    <string name="mptcp_message_operation_disabled_overheating">%s disattivata per impedire il surriscaldamento del dispositivo. Download con rete mobile in corso…</string>
-    <string name="mptcp_message_server_error">Servizio %s al momento non disponibile. Riconnessione con rete disponibile in corso…</string>
-    <string name="mptcp_message_setting_disabled_overheating">Impossibile attivare %s perché il dispositivo si sta surriscaldando. Aspettate che il dispositivo si sia raffreddato e riprovate.</string>
-    <string name="mptcp_message_ttl_expired">Rete %s al momento non disponibile. Riconnessione con rete disponibile in corso…</string>
     <string name="mte_override_notification_message">Questa funzionalità potrebbe influire su prestazioni e stabilità. Riavvia il dispositivo per disattivare la funzionalità. Se viene attivata usando arm64.memtag.bootctl, impostala prima su none.</string>
     <string name="mte_override_notification_title">Funzionalità MTE sperimentale attivata</string>
     <string name="multi_user_capability_restrict">"I criteri di protezione impediscono l'accesso di più utenti al dispositivo."</string>
@@ -1777,18 +1769,18 @@ Il tablet verrà riavviato a breve."</string>
     <string name="multisound_sound_via_bluetooth_multiselection">L’audio è in riproduzione sul dispositivo audio Bluetooth. Toccate qui per disattivare</string>
     <string name="multisound_sound_via_headphone">"L'audio di %s è in riproduzione tramite le cuffie. Toccate qui per disattivarlo."</string>
     <string name="multisound_sound_via_headphone_multiselection">L’audio è in riproduzione tramite le cuffie. Toccate qui per disattivare.</string>
-    <string name="multisound_sound_via_phone_speaker">"L'audio di %s è in riproduzione tramite l'altoparlante del tablet. Toccate qui per disattivarlo."</string>
-    <string name="multisound_sound_via_phone_speaker_multiselection">L’audio è in riproduzione tramite l’altoparlante del tablet. Toccate qui per disattivare.</string>
+    <string name="multisound_sound_via_phone_speaker">"L'audio di %s è in riproduzione tramite l'altoparlante del telefono. Toccate qui per disattivarlo."</string>
+    <string name="multisound_sound_via_phone_speaker_multiselection">L’audio è in riproduzione tramite l’altoparlante del telefono. Toccate qui per disattivare.</string>
     <string name="multisound_sound_via_usb_audio">"L'audio di %s è in riproduzione tramite il dispositivo audio USB. Toccate qui per disattivarlo."</string>
     <string name="multisound_sound_via_usb_audio_multiselection">L’audio è in riproduzione tramite il dispositivo audio USB. Toccate qui per disattivare.</string>
     <string name="multisound_title">Separa audio applicazione</string>
     <string name="multisound_turn_off_multisound">Disattiva</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s non può essere eseguita in Samsung DeX. Provate a eseguirla nella modalità Tablet.</string>
-    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s non può essere eseguita in Samsung DeX perché è progettata per le schermate Home dei tablet.</string>
-    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Alcuni giochi funzionano soltanto sui touchscreen. Se i controlli del mouse non funzionano in Samsung DeX, provate a giocare in modalità Tablet.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_doesnt_support_multiwindow">%s non può essere eseguita in Samsung DeX. Provate a eseguirla nella modalità Telefono.</string>
+    <string name="multiwindow_desktop_policy_text_cant_run_for_home_screen">%s non può essere eseguita in Samsung DeX perché è progettata per le schermate Home dei telefoni.</string>
+    <string name="multiwindow_forced_resizable_samsung_dex_for_game">Alcuni giochi funzionano soltanto sui touchscreen. Se i controlli del mouse non funzionano in Samsung DeX, provate a giocare in modalità Telefono.</string>
     <string name="music_recognition_manager_service">Servizio di gestione del riconoscimento della musica</string>
     <string name="muted_by">%1$s sta disattivando alcuni suoni</string>
-    <string name="my_device">Questo tablet</string>
+    <string name="my_device">Questo smartphone</string>
     <string name="nas_upgrade_notification_content">Ora le risposte e le azioni suggerite vengono fornite dalle notifiche avanzate. Le notifiche adattive Android non sono più supportate.</string>
     <string name="nas_upgrade_notification_disable_action">Disattiva</string>
     <string name="nas_upgrade_notification_enable_action">OK</string>
@@ -1828,7 +1820,6 @@ Le notifiche avanzate possono accedere ai contenuti di una notifica, incluse le 
     <string name="nosim_limited_service">Servizio limitato</string>
     <string name="not_checked">deselezionato</string>
     <string name="not_selected">non selezionato</string>
-    <string name="not_support_ai_key">Il tasto AI non funziona ancora con il tablet. Presto sarà disponibile un aggiornamento.</string>
     <string name="notification_action_check_bg_apps">Verifica le app attive</string>
     <string name="notification_alerted_content_description">Avviso inviato</string>
     <string name="notification_app_name_settings">Impostazioni</string>
@@ -1847,6 +1838,7 @@ Le notifiche avanzate possono accedere ai contenuti di una notifica, incluse le 
     <string name="notification_channel_developer_important">Messaggi importanti relativi agli sviluppatori</string>
     <string name="notification_channel_device_admin">"Avvisi dall'amministratore IT"</string>
     <string name="notification_channel_dex_policy">Criteri di Samsung DeX</string>
+    <string name="notification_channel_display">Display</string>
     <string name="notification_channel_do_not_disturb">Non disturbare</string>
     <string name="notification_channel_emergency_callback">Modalità di richiamata di emergenza</string>
     <string name="notification_channel_foreground_service">App che consumano la batteria</string>
@@ -1888,8 +1880,8 @@ Le notifiche avanzate possono accedere ai contenuti di una notifica, incluse le 
     <string name="notification_verified_content_description">Verificata</string>
     <string name="notification_work_profile_content_description">Profilo di lavoro</string>
     <string name="now_string_shortest">ora</string>
-    <string name="ntfs_usb_storage_readonly_mount_message">Questa memoria è di sola lettura perché utilizza il formato NTFS.</string>
-    <string name="ntfs_usb_storage_readonly_mount_title">Memoria USB sola lettura aggiunta</string>
+    <string name="ntfs_usb_storage_readonly_mount_message">Questa spazio di archiviazione è di sola lettura perché utilizza il formato NTFS.</string>
+    <string name="ntfs_usb_storage_readonly_mount_title">Arch. USB sola lettura aggiunta</string>
     <string name="number_picker_decrement_button">Riduci</string>
     <string name="number_picker_increment_button">Aumenta</string>
     <string name="number_picker_increment_scroll_action">"Scorri verso l'alto per aumentare il valore e verso il basso per diminuirlo."</string>
@@ -1909,7 +1901,8 @@ Le notifiche avanzate possono accedere ai contenuti di una notifica, incluse le 
     <string name="overheat_warning_title_v2_tablet">Surriscaldamento tablet</string>
     <string name="owner_name">Proprietario</string>
     <string name="package_deleted_device_owner">"Eliminato dall'amministratore"</string>
-    <string name="package_installed_device_owner">"Installato dall'amministratore"</string>
+    <string name="package_installed_device_owner">"Installato dall'amministratore.
+Vai alle impostazioni per visualizzare le autorizzazioni"</string>
     <string name="package_module">Pacchetto</string>
     <string name="package_night_mode_dialog_got_it">OK</string>
     <string name="package_night_mode_dialog_message">%s è in esecuzione in modalità Notte per ridurre il consumo della batteria. Potete passare alla modalità Luce in Labs delle Impostazioni.</string>
@@ -1932,7 +1925,9 @@ Le notifiche avanzate possono accedere ai contenuti di una notifica, incluse le 
     <string name="permdesc_accessCoarseLocation">"Questa app può recuperare la tua posizione approssimativa dai Servizi di geolocalizzazione quando l'app è in uso. L'impostazione Servizi di geolocalizzazione deve essere attiva sul tuo dispositivo perché l'app possa recuperare la tua posizione."</string>
     <string name="permdesc_accessDrmCertificates">"Consente a un'app di fornire e utilizzare ceritificati DRM. Questa opzione non deve essere utilizzata per app normali."</string>
     <string name="permdesc_accessFineLocation">"Questa app può recuperare la tua posizione precisa dai Servizi di geolocalizzazione quando l'app è in uso. L'impostazione Servizi di geolocalizzazione deve essere attiva sul tuo dispositivo perché l'app possa recuperare la tua posizione. Questa operazione potrebbe comportare un maggior consumo della batteria."</string>
+    <string name="permdesc_accessHiddenProfile">"Consente all'app di accedere ai profili nascosti."</string>
     <string name="permdesc_accessImsCallService">"Consente all'app di utilizzare il servizio IMS per fare chiamate senza il tuo intervento."</string>
+    <string name="permdesc_accessLastKnownCellId">"Consente a un'app di accedere all'ultimo ID cella noto fornito dal servizio di telefonia."</string>
     <string name="permdesc_accessLocationExtraCommands">"Consente all'app di accedere a ulteriori comandi del fornitore di posizione. Ciò potrebbe consentire all'app di interferire con il funzionamento del GPS o di altre fonti di geolocalizzazione."</string>
     <string name="permdesc_accessNetworkConditions">"Consente a un'applicazione di ascoltare le osservazioni sulle condizioni di rete. Da non utilizzare mai con app normali."</string>
     <string name="permdesc_accessNetworkState">"Consente all'applicazione di visualizzare informazioni sulle connessioni di rete, ad esempio le reti esistenti e connesse."</string>
@@ -1953,23 +1948,24 @@ Le notifiche avanzate possono accedere ai contenuti di una notifica, incluse le 
     <string name="permdesc_bindNotificationListenerService">"Consente al titolare di vincolarsi all'interfaccia di primo livello di un servizio listener di notifica. Non dovrebbe mai essere necessaria per le normali applicazioni."</string>
     <string name="permdesc_bind_connection_service">"Consente all'app di interagire con i servizi di telefonia per effettuare/ricevere chiamate."</string>
     <string name="permdesc_bind_incall_service">"Consente all'app di stabilire quando e come l'utente vede lo schermo durante una chiamata."</string>
-    <string name="permdesc_bluetooth">"Consente all'applicazione di visualizzare la configurazione del Bluetooth sul tablet e di stabilire e accettare connessioni con dispositivi accoppiati."</string>
-    <string name="permdesc_bluetoothAdmin">"Consente all'applicazione di configurare il tablet Bluetooth locale e di rilevare ed effettuare l'accoppiamento con dispositivi remoti."</string>
+    <string name="permdesc_bluetooth">"Consente all'applicazione di visualizzare la configurazione del Bluetooth sul telefono e di stabilire e accettare connessioni con dispositivi accoppiati."</string>
+    <string name="permdesc_bluetoothAdmin">"Consente all'applicazione di configurare il telefono Bluetooth locale e di rilevare ed effettuare l'accoppiamento con dispositivi remoti."</string>
     <string name="permdesc_bluetooth_advertise">"Consente all'app di trasmettere annunci ai dispositivi Bluetooth nelle vicinanze"</string>
     <string name="permdesc_bluetooth_connect">"Consente all'app di connettersi ai dispositivi Bluetooth accoppiati"</string>
     <string name="permdesc_bluetooth_scan">"Consente all'app di rilevare e accoppiare dispositivi Bluetooth nelle vicinanze"</string>
     <string name="permdesc_bodySensors">"Autorizza l'app ad accedere ai dati dei sensori del corpo, ad esempio battito cardiaco, temperatura e percentuale di ossigeno nel sangue, mentre l'app è in uso."</string>
     <string name="permdesc_bodySensors_background">"Autorizza l'app ad accedere ai dati dei sensori del corpo, ad esempio battito cardiaco, temperatura e percentuale di ossigeno nel sangue, mentre l'app è in background."</string>
-    <string name="permdesc_broadcastSticky">"Consente all'applicazione di inviare broadcast permanenti, che permangono anche al termine del broadcast. Un uso eccessivo potrebbe rendere il tablet lento o instabile causando un uso eccessivo della memoria."</string>
+    <string name="permdesc_broadcastSticky">"Consente all'applicazione di inviare broadcast permanenti, che permangono anche al termine del broadcast. Un uso eccessivo potrebbe rendere il telefono lento o instabile causando un uso eccessivo della memoria."</string>
     <string name="permdesc_callCompanionApp">"Consente all'app di visualizzare e controllare le chiamate in corso sul dispositivo. Sono incluse informazioni quali i numeri e lo stato relativi alle chiamate."</string>
     <string name="permdesc_callPhone">"Consente all'app di chiamare numeri di telefono senza il tuo intervento. Questo potrebbe comportare chiamate o addebiti imprevisti. Tieni presente che l'app non può chiamare numeri di emergenza. Le app dannose potrebbero generare dei costi effettuando chiamate senza la tua conferma o componendo codici di operatori a causa dei quali le chiamate in arrivo vengono deviate automaticamente su un altro numero."</string>
     <string name="permdesc_camera">"Questa app può scattare foto e registrare video tramite la fotocamera mentre l'app è in uso."</string>
+    <string name="permdesc_cameraHeadlessSystemUser">Questa app può accedere alla fotocamera come utente di sistema senza testa.</string>
     <string name="permdesc_cameraOpenCloseListener">Questa app può ricevere callback quando una videocamera viene aperta (da una specifica applicazione) o chiusa.</string>
     <string name="permdesc_changeNetworkState">"Consente all'applicazione di modificare lo stato di connettività della rete."</string>
     <string name="permdesc_changeTetherState">"Consente all'applicazione di modificare lo stato di connettività di rete tethering."</string>
-    <string name="permdesc_changeWifiMulticastState">"Consente all'applicazione di ricevere pacchetti inviati a tutti i dispositivi su una rete Wi-Fi utilizzando indirizzi multicast, non solo il tuo tablet. Viene consumata più batteria rispetto alla modalità non multicast."</string>
+    <string name="permdesc_changeWifiMulticastState">"Consente all'applicazione di ricevere pacchetti inviati a tutti i dispositivi su una rete Wi-Fi utilizzando indirizzi multicast, non solo il tuo telefono. Viene consumata più batteria rispetto alla modalità non multicast."</string>
     <string name="permdesc_changeWifiState">"Consente all'applicazione di connettersi/disconnettersi da punti di accesso Wi-Fi e di apportare modifiche alla configurazione del dispositivo per le reti Wi-Fi."</string>
-    <string name="permdesc_changeWimaxState">"Consente all'applicazione di connettere/disconnettere il tablet dalle reti WiMAX."</string>
+    <string name="permdesc_changeWimaxState">"Consente all'applicazione di connettere/disconnettere il telefono dalle reti WiMAX."</string>
     <string name="permdesc_companionProfileWatch">"Consente a un'app complementare di gestire gli smartwatch."</string>
     <string name="permdesc_connection_manager">"Consente all'app di gestire connessioni di telecomunicazione."</string>
     <string name="permdesc_control_incall_experience">"Consente all'app di offrire un'esperienza utente durante le chiamate."</string>
@@ -1990,6 +1986,7 @@ Le notifiche avanzate possono accedere ai contenuti di una notifica, incluse le 
     <string name="permdesc_foregroundServiceHealth">"Consente all'app di usare i servizi in primo piano con il tipo \"health\""</string>
     <string name="permdesc_foregroundServiceLocation">"Consente all'app di usare i servizi in primo piano con il tipo \"location\""</string>
     <string name="permdesc_foregroundServiceMediaPlayback">"Consente all'app di usare i servizi in primo piano con il tipo \"mediaPlayback\""</string>
+    <string name="permdesc_foregroundServiceMediaProcessing">"Consente all'app di usare i servizi in primo piano con il tipo \"mediaProcessing\""</string>
     <string name="permdesc_foregroundServiceMediaProjection">"Consente all'app di usare i servizi in primo piano con il tipo \"mediaProjection\""</string>
     <string name="permdesc_foregroundServiceMicrophone">"Consente all'app di usare i servizi in primo piano con il tipo \"microphone\""</string>
     <string name="permdesc_foregroundServicePhoneCall">"Consente all'app di usare i servizi in primo piano con il tipo \"phoneCall\""</string>
@@ -1997,7 +1994,7 @@ Le notifiche avanzate possono accedere ai contenuti di una notifica, incluse le 
     <string name="permdesc_foregroundServiceSpecialUse">"Consente all'app di usare i servizi in primo piano con il tipo \"specialUse\""</string>
     <string name="permdesc_foregroundServiceSystemExempted">"Consente all'app di usare i servizi in primo piano con il tipo \"systemExempted\""</string>
     <string name="permdesc_fullScreenIntent">"Consente all'app di visualizzare le notifiche sotto forma di attività in modalità a schermo intero su un dispositivo bloccato"</string>
-    <string name="permdesc_getAccounts">"Consente all'applicazione di accedere all'elenco degli account noti al tablet. Ciò può includere eventuali account creati da applicazioni installate."</string>
+    <string name="permdesc_getAccounts">"Consente all'applicazione di accedere all'elenco degli account noti al telefono. Ciò può includere eventuali account creati da applicazioni installate."</string>
     <string name="permdesc_getAppList">Consente a un’applicazione di leggere l’elenco delle applicazioni installate.</string>
     <string name="permdesc_getPackageSize">"Consente all'applicazione di recuperare il suo codice, i suoi dati e le dimensioni della cache"</string>
     <string name="permdesc_getTasks">"Consente all'applicazione di recuperare informazioni sulle attività attualmente e recentemente in esecuzione. Ciò potrebbe consentire all'applicazione di scoprire informazioni sulle applicazioni in uso sul dispositivo."</string>
@@ -2095,17 +2092,18 @@ RESTITUIRE A"</string>
     <string name="permdesc_mount_unmount_filesystems">"Consente all'applicazione di collegare e scollegare i file system per la memoria rimovibile."</string>
     <string name="permdesc_nearby_wifi_devices">"Consente all'app di trasmettere annunci e connettersi a dispositivi Wi‑Fi vicini e di stabilirne la posizione relativa."</string>
     <string name="permdesc_nfc">"Consente all'applicazione di comunicare con tag, schede e lettori NFC (Near Field Communication)."</string>
+    <string name="permdesc_nfcTransactionEvent">"Consente all'app di ricevere informazioni sulle transazioni in corso su Secure Element."</string>
     <string name="permdesc_observeCompanionDevicePresence">"Consente a un'app complementare di osservare la presenza di dispositivi complementari quando i dispositivi sono nelle vicinanze o lontani."</string>
-    <string name="permdesc_persistentActivity">"Consente all'applicazione di rendere persistenti in memoria alcune sue parti. Ciò può limitare la memoria disponibile per altre applicazioni, rallentando il tablet."</string>
+    <string name="permdesc_persistentActivity">"Consente all'applicazione di rendere persistenti in memoria alcune sue parti. Ciò può limitare la memoria disponibile per altre applicazioni, rallentando il telefono."</string>
     <string name="permdesc_postNotification">"Consente all'app di mostrare notifiche"</string>
     <string name="permdesc_preferredPaymentInfo">"Consente all'app di recuperare informazioni del servizio di pagamento NFC preferito, quali destinazione della route e identificatori applicazione registrati."</string>
     <string name="permdesc_processOutgoingCalls">"Consente all'app di rilevare il numero digitato durante una chiamata in uscita, con la possibilità di reindirizzare la telefonata a un numero diverso o interromperla del tutto."</string>
     <string name="permdesc_queryAllPackages">"Consente a un'app di visualizzare tutti i pacchetti installati."</string>
     <string name="permdesc_readBasicPhoneState">"Consente all'app di accedere alle funzionalità di telefonia di base del dispositivo."</string>
-    <string name="permdesc_readCalendar">Questa app può leggere tutti gli eventi di calendario memorizzati sul tablet e condividere o salvare i dati di calendario.</string>
+    <string name="permdesc_readCalendar">Questa app può leggere tutti gli eventi di calendario memorizzati sul telefono e condividere o salvare i dati di calendario.</string>
     <string name="permdesc_readCallLog">Questa app può leggere la cronologia chiamate.</string>
     <string name="permdesc_readCellBroadcasts">"Consente all'applicazione di leggere i messaggi cell broadcast ricevuti dal dispositivo. Gli avvisi cell broadcast vengono trasmessi in alcune località per avvertire di eventuali situazioni di emergenza. Le app dannose potrebbero interferire con le prestazioni o con il funzionamento del dispositivo quando si riceve un messaggio cell broadcast di emergenza."</string>
-    <string name="permdesc_readContacts">"Consente all'app di leggere i dati relativi ai contatti memorizzati sul tablet. Le app avranno inoltre accesso agli account memorizzati sul tablet su cui sono stati creati contatti. Potrebbero essere inclusi gli account creati da app installate. Questa autorizzazione consente alle app di salvare i dati dei tuoi contatti e app dannose potrebbero condividere i dati dei contatti a tua insaputa."</string>
+    <string name="permdesc_readContacts">"Consente all'app di leggere i dati relativi ai contatti memorizzati sul telefono. Le app avranno inoltre accesso agli account memorizzati sul telefono su cui sono stati creati contatti. Potrebbero essere inclusi gli account creati da app installate. Questa autorizzazione consente alle app di salvare i dati dei tuoi contatti e app dannose potrebbero condividere i dati dei contatti a tua insaputa."</string>
     <string name="permdesc_readInstallSessions">"Consente a un'applicazione di leggere le sessioni di installazione. L'app può conoscere i dettagli sulle installazioni di pacchetti attive."</string>
     <string name="permdesc_readMediaAudio">"Consente all'app di leggere i file audio dal tuo spazio di archiviazione condiviso."</string>
     <string name="permdesc_readMediaImages">"Consente all'app di leggere i file immagine dal tuo spazio di archiviazione condiviso."</string>
@@ -2113,11 +2111,11 @@ RESTITUIRE A"</string>
     <string name="permdesc_readNetworkUsageHistory">"Consente all'applicazione di leggere dati storici di utilizzo della rete per reti e applicazioni specifiche."</string>
     <string name="permdesc_readPhoneNumbers">"Consente all'app di accedere ai numeri di telefono del dispositivo."</string>
     <string name="permdesc_readPhoneState">"Consente all'applicazione di accedere alle funzioni telefoniche del dispositivo. Questa autorizzazione consente all'applicazione di determinare il numero di telefono e gli ID dei dispositivi, se una chiamata è attiva e il numero remoto connesso da una chiamata."</string>
-    <string name="permdesc_readSms">Questa app può leggere tutti i messaggi di testo (SMS) memorizzati sul tablet.</string>
+    <string name="permdesc_readSms">Questa app può leggere tutti i messaggi di testo (SMS) memorizzati sul telefono.</string>
     <string name="permdesc_readSyncSettings">"Consente all'applicazione di leggere le impostazioni di sincronizzazione per un account. Ad esempio, questa autorizzazione può determinare se l'applicazione Persone è sincronizzata con un account."</string>
     <string name="permdesc_readSyncStats">"Consente a un'applicazione di leggere le statistiche di sincronizzazione per un account, incluse la cronologia degli eventi di sincronizzazione e la quantità di dati sincronizzati."</string>
     <string name="permdesc_readVisualUserSelect">"Consente all'app di leggere i file immagine e video che selezioni dal tuo spazio di archiviazione condiviso."</string>
-    <string name="permdesc_receiveBootCompleted">"Consente all'applicazione di avviarsi non appena termina l'avvio del sistema. Ciò può rallentare l'avvio del tablet e consentire all'applicazione di rallentare il funzionamento generale del tablet restando sempre in esecuzione."</string>
+    <string name="permdesc_receiveBootCompleted">"Consente all'applicazione di avviarsi non appena termina l'avvio del sistema. Ciò può rallentare l'avvio del telefono e consentire all'applicazione di rallentare il funzionamento generale del telefono restando sempre in esecuzione."</string>
     <string name="permdesc_receiveMms">"Consente all'applicazione di ricevere ed elaborare messaggi MMS. Significa che l'applicazione potrebbe monitorare o eliminare i messaggi inviati al tuo dispositivo senza mostrarteli."</string>
     <string name="permdesc_receiveSms">"Consente all'applicazione di ricevere ed elaborare messaggi SMS. Significa che l'applicazione potrebbe monitorare o eliminare i messaggi inviati al tuo dispositivo senza mostrarteli."</string>
     <string name="permdesc_receiveWapPush">"Consente all'applicazione di ricevere ed elaborare messaggi WAP. Questa autorizzazione include la facoltà di monitorare o eliminare i messaggi che ti vengono inviati senza mostrarteli."</string>
@@ -2139,7 +2137,7 @@ RESTITUIRE A"</string>
     <string name="permdesc_sendSms">"Consente all'applicazione di inviare messaggi SMS. Ciò potrebbe comportare costi imprevisti. Applicazioni dannose potrebbero generare dei costi inviando messaggi senza la tua conferma."</string>
     <string name="permdesc_setAlarm">"Consente all'applicazione di impostare una sveglia in un'applicazione sveglia installata. È possibile che alcune applicazioni sveglia non possano implementare questa funzione."</string>
     <string name="permdesc_setInputCalibration">"Consente all'app di modificare i parametri di calibrazione del touch screen. Questa opzione non deve essere utilizzata per le app normali."</string>
-    <string name="permdesc_setTimeZone">"Consente all'applicazione di modificare il fuso orario del tablet."</string>
+    <string name="permdesc_setTimeZone">"Consente all'applicazione di modificare il fuso orario del telefono."</string>
     <string name="permdesc_setWallpaper">"Consente all'applicazione di impostare lo sfondo del sistema."</string>
     <string name="permdesc_setWallpaperHints">"Consente all'applicazione di impostare i suggerimenti per le dimensioni dello sfondo del sistema."</string>
     <string name="permdesc_sim_communication">"Consente all'app di inviare comandi alla SIM. Questo è molto pericoloso."</string>
@@ -2153,7 +2151,7 @@ RESTITUIRE A"</string>
     <string name="permdesc_subscribedFeedsRead">"Consente all'applicazione di ottenere dettagli sui feed attualmente sincronizzati."</string>
     <string name="permdesc_systemAlertWindow">"Questa app può essere visualizzata sopra ad altre app o altre parti dello schermo. Ciò potrebbe interferire con il normale utilizzo dell'app e modificare la modalità di visualizzazione delle altre app."</string>
     <string name="permdesc_systemCamera">"Questa app di sistema o con privilegi può scattare foto e registrare video tramite una videocamera di sistema in qualsiasi momento. Richiede che anche l'app disponga dell'autorizzazione android.permission.CAMERA"</string>
-    <string name="permdesc_transmitIr">"Consente all'app di utilizzare il trasmettitore a infrarossi del tablet."</string>
+    <string name="permdesc_transmitIr">"Consente all'app di utilizzare il trasmettitore a infrarossi del telefono."</string>
     <string name="permdesc_turnScreenOn">"Consente all'app di attivare lo schermo."</string>
     <string name="permdesc_ucsPlugin">Utilizzate plug-in di archiviazione delle credenziali di terze parti.</string>
     <string name="permdesc_uninstall_shortcut">"Consente all'applicazione di rimuovere le scorciatoie della schermata Home automaticamente."</string>
@@ -2167,12 +2165,13 @@ RESTITUIRE A"</string>
     <string name="permdesc_vibrate">"Consente all'applicazione di controllare la vibrazione."</string>
     <string name="permdesc_vibrator_state">"Consente all'app di accedere allo stato di vibrazione."</string>
     <string name="permdesc_videoWrite">"Consente all'app di modificare la tua raccolta di video."</string>
-    <string name="permdesc_wakeLock">"Consente all'applicazione di impedire lo stand-by del tablet."</string>
-    <string name="permdesc_writeCalendar">Questa app può aggiungere, rimuovere o modificare eventi di calendario sul tablet. Può inviare messaggi che possono sembrare inviati dai proprietari del calendario o modificare eventi senza notificare i proprietari.</string>
-    <string name="permdesc_writeCallLog">"Consente all'applicazione di modificare il registro chiamate del tablet, inclusi i dati sulle chiamate in arrivo e in uscita. Le applicazioni dannose potrebbero farne uso per cancellare o modificare il registro chiamate."</string>
-    <string name="permdesc_writeContacts">"Consente all'app di modificare i dati relativi ai contatti memorizzati sul tablet. Questa autorizzazione consente alle app di eliminare i dati dei contatti."</string>
+    <string name="permdesc_wakeLock">"Consente all'applicazione di impedire lo stand-by del telefono."</string>
+    <string name="permdesc_writeCalendar">Questa app può aggiungere, rimuovere o modificare eventi di calendario sul telefono. Può inviare messaggi che possono sembrare inviati dai proprietari del calendario o modificare eventi senza notificare i proprietari.</string>
+    <string name="permdesc_writeCallLog">"Consente all'applicazione di modificare il registro chiamate del telefono, inclusi i dati sulle chiamate in arrivo e in uscita. Le applicazioni dannose potrebbero farne uso per cancellare o modificare il registro chiamate."</string>
+    <string name="permdesc_writeContacts">"Consente all'app di modificare i dati relativi ai contatti memorizzati sul telefono. Questa autorizzazione consente alle app di eliminare i dati dei contatti."</string>
     <string name="permdesc_writeSettings">"Consente all'applicazione di modificare i dati delle impostazioni di sistema. Le applicazioni dannose potrebbero compromettere la configurazione di sistema."</string>
     <string name="permdesc_writeSyncSettings">"Consente a un'applicazione di modificare le impostazioni di sincronizzazione per un account. Ad esempio, può servire per attivare la sincronizzazione dell'applicazione Persone con un account."</string>
+    <string name="permdesc_writeVerificationStateE2eeContactKeys">"Consente all'app di aggiornare gli stati di verifica delle chiavi di contatto E2EE di proprietà di altre app"</string>
     <string name="permgroupdesc_activityRecognition">"Possono accedere all'attività fisica"</string>
     <string name="permgroupdesc_calendar">Possono accedere al calendario</string>
     <string name="permgroupdesc_calllog">Possono leggere e modificare il registro chiamate del telefono</string>
@@ -2180,11 +2179,11 @@ RESTITUIRE A"</string>
     <string name="permgroupdesc_contacts">Possono accedere ai contatti</string>
     <string name="permgroupdesc_location">Possono accedere alla posizione di questo dispositivo</string>
     <string name="permgroupdesc_microphone">Possono registrare audio</string>
-    <string name="permgroupdesc_nearby_devices">Consente di rilevare dispositivi nelle vicinanze e di connettersi a tali dispositivi</string>
+    <string name="permgroupdesc_nearby_devices">rilevare e connettersi a dispositivi nelle vicinanze</string>
     <string name="permgroupdesc_notifications">Visualizzazione di notifiche</string>
     <string name="permgroupdesc_phone">Possono eseguire e gestire le telefonate</string>
-    <string name="permgroupdesc_readMediaAural">accesso a musica e audio sul tuo dispositivo</string>
-    <string name="permgroupdesc_readMediaVisual">accesso a foto e video sul tuo dispositivo</string>
+    <string name="permgroupdesc_readMediaAural">accedere a musica e audio sul tuo dispositivo</string>
+    <string name="permgroupdesc_readMediaVisual">accedere a foto e video sul tuo dispositivo</string>
     <string name="permgroupdesc_sensors">Possono accedere ai dati dei sensori relativi ai tuoi parametri vitali</string>
     <string name="permgroupdesc_sms">Possono inviare e visualizzare SMS</string>
     <string name="permgroupdesc_storage">accedere a foto, contenuti multimediali e file sul dispositivo</string>
@@ -2214,7 +2213,9 @@ per l'account %s."</string>
     <string name="permlab_accessCoarseLocation">Accesso alla posizione approssimativa solo in primo piano</string>
     <string name="permlab_accessDrmCertificates">accesso a certificati DRM</string>
     <string name="permlab_accessFineLocation">accesso alla posizione esatta solo in primo piano</string>
+    <string name="permlab_accessHiddenProfile">Accedi ai profili nascosti</string>
     <string name="permlab_accessImsCallService">accesso al servizio di chiamata IMS</string>
+    <string name="permlab_accessLastKnownCellId">"Accedi all'ultimo ID cella noto."</string>
     <string name="permlab_accessLocationExtraCommands">accesso a comandi aggiuntivi provider di geolocalizz.</string>
     <string name="permlab_accessNetworkConditions">ascolto delle osservazioni sulle condizioni di rete</string>
     <string name="permlab_accessNetworkState">visualizzazione connessioni di rete</string>
@@ -2246,6 +2247,7 @@ per l'account %s."</string>
     <string name="permlab_callCompanionApp">visualizzazione e controllo delle chiamate tramite il sistema.</string>
     <string name="permlab_callPhone">chiamata diretta n. telefono</string>
     <string name="permlab_camera">acquisizione di foto e video</string>
+    <string name="permlab_cameraHeadlessSystemUser">"Consenti a un'applicazione o a un servizio di accedere alla fotocamera come utente di sistema senza testa."</string>
     <string name="permlab_cameraOpenCloseListener">"Consenti a un'applicazione o a un servizio di ricevere callback relativi all'apertura o alla chiusura di videocamere."</string>
     <string name="permlab_changeNetworkState">modifica connettività di rete</string>
     <string name="permlab_changeTetherState">modifica della connettività tethering</string>
@@ -2273,6 +2275,7 @@ per l'account %s."</string>
     <string name="permlab_foregroundServiceHealth">Esecuzione di servizi in primo piano con il tipo \"health\"</string>
     <string name="permlab_foregroundServiceLocation">Esecuzione di servizi in primo piano con il tipo \"location\"</string>
     <string name="permlab_foregroundServiceMediaPlayback">Esecuzione di servizi in primo piano con il tipo \"mediaPlayback\"</string>
+    <string name="permlab_foregroundServiceMediaProcessing">Eseguire servizi in primo piano con il tipo \"mediaProcessing\"</string>
     <string name="permlab_foregroundServiceMediaProjection">Esecuzione di servizi in primo piano con il tipo \"mediaProjection\"</string>
     <string name="permlab_foregroundServiceMicrophone">Esecuzione di servizi in primo piano con il tipo \"microphone\"</string>
     <string name="permlab_foregroundServicePhoneCall">Esecuzione di servizi in primo piano con il tipo \"phoneCall\"</string>
@@ -2373,6 +2376,7 @@ per l'account %s."</string>
     <string name="permlab_mount_unmount_filesystems">accesso al filesystem della scheda SD</string>
     <string name="permlab_nearby_wifi_devices">Interazione con dispositivi Wi-Fi vicini</string>
     <string name="permlab_nfc">controllo Near Field Communication</string>
+    <string name="permlab_nfcTransactionEvent">Evento di transazione Secure Element</string>
     <string name="permlab_observeCompanionDevicePresence">Osservare la presenza di dispositivi complementari</string>
     <string name="permlab_persistentActivity">esecuzione permanente delle applicazioni</string>
     <string name="permlab_postNotification">Visualizzazione di notifiche</string>
@@ -2445,12 +2449,13 @@ per l'account %s."</string>
     <string name="permlab_uwb_ranging">Possibilità di stabilire la posizione relativa tra dispositivi a banda ultralarga nelle vicinanze</string>
     <string name="permlab_vibrate">controllo vibrazione</string>
     <string name="permlab_videoWrite">modifica della tua raccolta di video</string>
-    <string name="permlab_wakeLock">disattivazione stand-by del tablet</string>
+    <string name="permlab_wakeLock">disattivazione stand-by del telefono</string>
     <string name="permlab_writeCalendar">aggiunta o modifica di eventi di calendario e invio di email agli ospiti a insaputa dei proprietari</string>
     <string name="permlab_writeCallLog">scrittura del registro chiamate</string>
     <string name="permlab_writeContacts">modifica dei contatti personali</string>
     <string name="permlab_writeSettings">modifica delle impostazioni di sistema</string>
     <string name="permlab_writeSyncSettings">attivazione e disattivazione della sincronizzazione</string>
+    <string name="permlab_writeVerificationStateE2eeContactKeys">Aggiorna gli stati di verifica delle chiavi di contatto E2EE di proprietà di altre app</string>
     <string name="perms_description_app">Fornito da %1$s.</string>
     <string name="perms_new_perm_prefix">&lt;font fgcolor=#ff33b5e5 size=12>NUOVA: &lt;/font></string>
     <string name="personal_apps_suspended_turn_profile_on">Attiva</string>
@@ -2487,7 +2492,7 @@ per l'account %s."</string>
     <string name="policydesc_allow_desktopsync">"Impedisce l'utilizzo della sincronizzazione desktop."</string>
     <string name="policydesc_allow_internetsharing">Impedisce l’utilizzo del Router Wi-Fi.</string>
     <string name="policydesc_allow_irda">"Impedisce l'utilizzo di IrDA."</string>
-    <string name="policydesc_allow_popimapemail">"Impedisce l'utilizzo delle e-mail POP e IMAP sul tablet."</string>
+    <string name="policydesc_allow_popimapemail">"Impedisce l'utilizzo delle e-mail POP e IMAP sul telefono."</string>
     <string name="policydesc_allow_storagecard">"Impedisce l'utilizzo delle schede SD."</string>
     <string name="policydesc_allow_textmessaging">"Impedisce l'utilizzo della messaggistica di testo e multimediale."</string>
     <string name="policydesc_allow_thirdParty">"Questa applicazione è in grado di impedire l'esecuzione delle applicazioni di terze parti."</string>
@@ -2505,10 +2510,10 @@ per l'account %s."</string>
     <string name="policydesc_setGlobalProxy">Imposta il proxy globale del dispositivo in modo da utilizzarlo mentre la norma è attiva. Il proxy globale può essere impostato solo dal proprietario del dispositivo.</string>
     <string name="policydesc_unsigned_app">"Questa applicazione è in grado di impedire l'esecuzione di applicazioni provenienti da fonti sconosciute."</string>
     <string name="policydesc_unsigned_pkg">"Questa applicazione è in grado di impedire l'installazione di applicazioni provenienti da fonti sconosciute."</string>
-    <string name="policydesc_watchLogin">Monitora il numero di password errate digitate durante lo sblocco dello schermo e blocca il tablet o cancella tutti i dati del tablet se vengono digitate troppe password errate.</string>
-    <string name="policydesc_watchLogin_secondaryUser">"Monitora il numero di password errate digitate durante lo sblocco dello schermo e blocca il tablet o resetta tutti i dati dell'utente se è stato raggiunto il limite massimo consentito."</string>
-    <string name="policydesc_wipeData">Cancella i dati del tablet senza preavviso eseguendo un ripristino dati di fabbrica.</string>
-    <string name="policydesc_wipeData_secondaryUser">"Resetta i dati dell'utente sul tablet senza preavviso."</string>
+    <string name="policydesc_watchLogin">Monitora il numero di password errate digitate durante lo sblocco dello schermo e blocca il telefono o cancella tutti i dati del telefono se vengono digitate troppe password errate.</string>
+    <string name="policydesc_watchLogin_secondaryUser">"Monitora il numero di password errate digitate durante lo sblocco dello schermo e blocca il telefono o resetta tutti i dati dell'utente se è stato raggiunto il limite massimo consentito."</string>
+    <string name="policydesc_wipeData">Cancella i dati del telefono senza preavviso eseguendo un ripristino dei dati di fabbrica.</string>
+    <string name="policydesc_wipeData_secondaryUser">"Resetta i dati dell'utente sul telefono senza preavviso."</string>
     <string name="policylab_allow_bluetoothmode">Disattiva Bluetooth</string>
     <string name="policylab_allow_browser">Disattiva Internet</string>
     <string name="policylab_allow_camera">Disattiva fotocamere</string>
@@ -2542,7 +2547,7 @@ per l'account %s."</string>
     <string name="postalTypeHome">Casa</string>
     <string name="postalTypeOther">Altro</string>
     <string name="postalTypeWork">Lavoro</string>
-    <string name="power_dialog">Opzioni tablet</string>
+    <string name="power_dialog">Opzioni telefono</string>
     <string name="power_off">Spegni</string>
     <string name="prepend_shortcut_label">Menu+</string>
     <string name="preposition_for_date">%s</string>
@@ -2554,6 +2559,8 @@ per l'account %s."</string>
     <string name="print_service_installed_title">Servizio %s installato</string>
     <string name="printing_disabled_by">Stampa disattivata da %s.</string>
     <string name="private_dns_broken_detailed">Non è possibile accedere al server DNS privato</string>
+    <string name="private_profile_label_badge">%1$s privato</string>
+    <string name="private_space_set_up_screen_lock_message">Per utilizzare il tuo spazio privato, imposta un blocco schermo sul dispositivo</string>
     <string name="profile_encrypted_detail">Profilo di lavoro bloccato</string>
     <string name="profile_encrypted_detail_workspace_premium">%s bloccato</string>
     <string name="profile_encrypted_detail_workspace_prime">Profilo di lavoro bloccato</string>
@@ -2563,6 +2570,13 @@ per l'account %s."</string>
     <string name="profile_encrypted_message_workspace_prime">Sblocca il profilo di lavoro per ricevere notifiche sulle applicazioni di lavoro.</string>
     <string name="profile_encrypted_title">Alcune funzionalità sono limitate</string>
     <string name="profile_encrypted_title_secure_folder">Area Personale bloccata.</string>
+    <string name="profile_label_clone">Clone</string>
+    <string name="profile_label_communal">Condiviso</string>
+    <string name="profile_label_private">Privato</string>
+    <string name="profile_label_test">Test</string>
+    <string name="profile_label_work">Lavoro</string>
+    <string name="profile_label_work_2">Lavoro 2</string>
+    <string name="profile_label_work_3">Lavoro 3</string>
     <string name="profile_restarting_message_premium">Quando %1$s è bloccato non ricevete tutte le notifiche dalle applicazioni di lavoro. Toccate qui per sbloccare %2$s.</string>
     <string name="profile_restarting_message_prime">Quando il profilo di lavoro è bloccato non ricevete tutte le notifiche dalle applicazioni di lavoro. Toccate qui per sbloccare il profilo di lavoro.</string>
     <string name="profile_restarting_title_premium">Applicazione %s bloccata</string>
@@ -2588,9 +2602,11 @@ per l'account %s."</string>
     <string name="recent_tasks_title">Recenti</string>
     <string name="recording_fail">Impossibile usare il microfono in %1$s quando è in uso in %2$s.</string>
     <string name="recording_popup">%s sta usando il microfono.</string>
-    <string name="recording_popup_device">Tablet</string>
+    <string name="recording_popup_device">Telefono</string>
     <string name="recording_popup_with_bluetooth">%s sta usando il microfono Bluetooth.</string>
     <string name="recording_popup_with_device">%1$s sta usando il microfono del dispositivo %2$s.</string>
+    <string name="redacted_notification_action_title" />
+    <string name="redacted_notification_message">Contenuti sensibili della notifica nascosti</string>
     <string name="redo">Ripeti</string>
     <string name="reduce_bright_colors_feature_name">Attenuazione extra</string>
     <string name="region_picker_section_all">Tutte le regioni</string>
@@ -2721,6 +2737,29 @@ L'ascolto ad alto volume per lunghi periodi di tempo potrebbe danneggiare l'udit
     <string name="samsung_global_action_restart">Riavvia</string>
     <string name="samsung_keyboard_settings">Impostazioni Tastiera Samsung</string>
     <string name="sanitized_content_text_sf">Contenuti nascosti</string>
+    <string name="satellite_notification_how_it_works">Come funziona</string>
+    <string name="satellite_notification_manual_summary">Invia e ricevi messaggi senza una rete mobile o Wi-Fi</string>
+    <string name="satellite_notification_manual_title">Utilizzare i messaggi via satellite?</string>
+    <string name="satellite_notification_open_message">Apri Messaggi</string>
+    <string name="satellite_notification_summary">Puoi inviare e ricevere messaggi senza una rete mobile o Wi-Fi</string>
+    <string name="satellite_notification_title">Connessione automatica al satellite</string>
+    <string name="scCellularNetworkSecuritySummary">Crittografia, notifiche per reti non criptate</string>
+    <string name="scCellularNetworkSecurityTitle">Sicurezza di rete mobile</string>
+    <string name="scIdentifierDisclosureIssueSummary">"Alle ore %1$s una rete nelle vicinanze ha registrato l'ID univoco (IMSI o IMEI) del tuo dispositivo mentre era in uso la tua SIM %2$s.
+
+Questo significa che la tua posizione, attività o identità è stata registrata. Si tratta di una prassi comune, ma potrebbe rappresentare un problema per le persone preoccupate riguardo alla privacy."</string>
+    <string name="scIdentifierDisclosureIssueSummaryNotification">"Alle ore %1$s una rete nelle vicinanze ha registrato l'ID univoco (IMSI o IMEI) del tuo dispositivo mentre era in uso la tua SIM %2$s"</string>
+    <string name="scIdentifierDisclosureIssueTitle">"È stato eseguito un accesso all'ID dispositivo"</string>
+    <string name="scNullCipherIssueActionGotIt">Ok</string>
+    <string name="scNullCipherIssueActionLearnMore">Scopri di più</string>
+    <string name="scNullCipherIssueActionSettings">Impostazioni della sicurezza di rete mobile</string>
+    <string name="scNullCipherIssueEncryptedSummary">La connessione della SIM %1$s ora è più sicura</string>
+    <string name="scNullCipherIssueEncryptedTitle">Connesso alla rete criptata %1$s</string>
+    <string name="scNullCipherIssueNonEncryptedSummary">"Chiamate, messaggi e dati al momento sono più vulnerabili quando usi la tua SIM %1$s.
+
+Quando la tua connessione sarà nuovamente criptata, riceverai un'altra notifica."</string>
+    <string name="scNullCipherIssueNonEncryptedSummaryNotification">Chiamate, messaggi e dati al momento sono più vulnerabili quando usi la tua SIM %1$s</string>
+    <string name="scNullCipherIssueNonEncryptedTitle">Connesso a una rete non criptata</string>
     <string name="scan_text">Estrai testo</string>
     <string name="screen_compat_mode_hint">Riattivala in Impostazioni di sistema > Applicazioni > Scaricate.</string>
     <string name="screen_compat_mode_scale">Scala</string>
@@ -2731,16 +2770,17 @@ L'ascolto ad alto volume per lunghi periodi di tempo potrebbe danneggiare l'udit
     <string name="screen_lock">Blocco schermo</string>
     <string name="screen_lock_app_setting_name">Usa il blocco schermo</string>
     <string name="screen_lock_dialog_default_subtitle">Inserisci il blocco schermo per continuare</string>
+    <string name="screen_not_shared_sensitive_content">"Contenuti dell'app nascosti dalla condivisione schermo per sicurezza"</string>
     <string name="screencapture_restrict">"I criteri di protezione impediscono l'acquisizione delle schermate."</string>
     <string name="screenshot_edit">Modifica</string>
     <string name="sd_card_unavailable_message">Impossibile utilizzare la scheda SD perché è stata inserita quando era in uso un altro profilo.</string>
     <string name="sd_card_unavailable_title">Scheda SD non disponibile</string>
-    <string name="sdcard_bad_removal_message">Una scheda SD è stata rimossa in modo non sicuro. Per impedire il riavvio improvviso del tablet, salvate eventuali dati non salvati e riavviatelo adesso.</string>
+    <string name="sdcard_bad_removal_message">Una scheda SD è stata rimossa in modo non sicuro. Per impedire il riavvio improvviso dello smartphone, salvate eventuali dati non salvati e riavviatelo adesso.</string>
     <string name="sdcard_batch_decrypt_noti_content">Decrittografa scheda SD</string>
     <string name="sdcard_batch_decrypt_noti_title">Decrittografia scheda SD</string>
     <string name="sdcard_batch_decrypt_popup_content">"La scheda SD crittografata deve essere decrittografata prima dell'utilizzo. Il processo di decrittografia potrebbe richiedere un'ora o più. Avviarlo con batteria carica e mantenere il dispositivo collegato fino al completamento della decrittografia. L'interruzione del processo può causare la perdita parziale o totale dei dati."</string>
     <string name="sdcard_decrypt_err_notification">Si è verificato un errore durante la decrittogr. della scheda SD.</string>
-    <string name="sdcard_decrypt_error_otherdevice">Alcuni file sulla scheda SD sono stati crittografati su un altro dispositivo e non possono essere utilizzati su questo tablet.</string>
+    <string name="sdcard_decrypt_error_otherdevice">Alcuni file sulla scheda SD sono stati crittografati su un altro dispositivo e non possono essere utilizzati su questo smartphone.</string>
     <string name="sdcard_decrypt_notification">Scheda SD decrittografata.</string>
     <string name="sdcard_decrypt_title_notification">Decrittografia scheda SD</string>
     <string name="sdcard_decrypt_title_ongoing_second_storage">Decrittografia scheda SD…</string>
@@ -2764,14 +2804,6 @@ L'ascolto ad alto volume per lunghi periodi di tempo potrebbe danneggiare l'udit
     <string name="searchview_description_submit">Invia query</string>
     <string name="searchview_description_voice">Ricerca vocale</string>
     <string name="sec_bluetooth_airplane_mode_toast">Il Bluetooth resterà attivo in modalità Offline.</string>
-    <string name="sec_immersive_cling_button_ok">OK</string>
-    <string name="sec_immersive_cling_guide_text_gesture">L’applicazione sta usando la modalità a schermo intero. I gesti di trascinamento per la navigazione consentono di vedere la barra di stato. Per spostarvi, trascinate di nuovo mentre la barra di stato è visibile.</string>
-    <string name="sec_immersive_cling_guide_text_phone">"L’applicazione sta usando la modalità a schermo intero. I pulsanti Home, Indietro e Applicazioni recenti sono nascosti per ridurre al minimo le distrazioni e per impedirvi di uscire involontariamente dall’applicazione.
-
-Anche ruotando lo smartphone, i pulsanti si trovano sempre accanto alla porta di ricarica. Potete visualizzare di nuovo i pulsanti trascinando verso l’interno dal bordo dello schermo come mostra la freccia."</string>
-    <string name="sec_immersive_cling_guide_text_tablet">"L’applicazione sta usando la modalità a schermo intero. I pulsanti Home, Indietro e Applicazioni recenti sono nascosti per ridurre al minimo le distrazioni e per impedirvi di uscire involontariamente dall’applicazione.
-
-Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo schermo come mostra la freccia."</string>
     <string name="sec_monotype_default">Predefinito</string>
     <string name="sec_ringtone_category_brand_sound">Suono a marchio Samsung</string>
     <string name="sec_ringtone_category_calm">Rilassante</string>
@@ -2781,6 +2813,10 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="sec_ringtone_category_open_theme">Impostazione predefinita del tema corrente</string>
     <string name="sec_ringtone_category_retro">Retrò</string>
     <string name="sec_ringtone_silent">Silenzioso</string>
+    <string name="sec_satellite_manual_selection_state_popup_cancel">Annulla</string>
+    <string name="sec_satellite_manual_selection_state_popup_message">Per connettervi a un satellite, l’operatore di rete va impostato su Seleziona automaticamente.</string>
+    <string name="sec_satellite_manual_selection_state_popup_ok">Attiva</string>
+    <string name="sec_satellite_manual_selection_state_popup_title">Attivare la selezione automatica della rete?</string>
     <string name="sec_sensor_privacy_mic_access_off_state_tts">Attivate l’accesso al microfono per parlare.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_camera">Attivate l’accesso alla fotocamera per utilizzare %s.</string>
     <string name="sec_sensor_privacy_start_use_notification_content_text_microphone">Attivate l’accesso al microfono per utilizzare %s.</string>
@@ -2888,6 +2924,8 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="sem_face_error_already_in_use_by_VT">Impossibile utilizzare il riconoscimento del viso durante le videochiamate.</string>
     <string name="sem_face_error_camera_access_off">Impossibile usare il riconoscimento del viso perché l’accesso alla fotocamera è disattivato</string>
     <string name="sem_face_error_camera_fail">Impossibile aprire la fotocamera. Riprovate.</string>
+    <string name="sem_face_error_lockout">La verifica biometrica non è disponibile a causa del numero eccessivo di tentativi errati.</string>
+    <string name="sem_face_error_lockout_permanent">La verifica biometrica non è disponibile a causa del numero eccessivo di tentativi errati.</string>
     <string name="sem_face_error_ppp_timeout">È da un po’ che non confermate la vostra identità. Dovete ricominciare daccapo per registrare il viso.</string>
     <string name="sem_face_error_too_dark">Troppo buio per rilevare il viso</string>
     <string name="sem_face_error_too_dark_to_enroll">Troppo buio. Provate ad accendere una luce o a spostarvi in un luogo più luminoso.</string>
@@ -2903,13 +2941,18 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="sem_fingerprint_acquired_tsp_block">Allontanate la punta della S Pen dallo schermo per eseguire la scansione dell’impronta digitale.</string>
     <string name="sem_fingerprint_app_smart_view">Smart View</string>
     <string name="sem_fingerprint_error_insecure_biometrics">Per utilizzare le impronte digitali, impostate prima un tipo di blocco schermo sicuro (segno, PIN o password).</string>
+    <string name="sem_fingerprint_error_lockout">La verifica biometrica non è disponibile a causa del numero eccessivo di tentativi errati.</string>
+    <string name="sem_fingerprint_error_lockout_permanent">La verifica biometrica non è disponibile a causa del numero eccessivo di tentativi errati.</string>
     <string name="sem_fingerprint_error_onehand_mode">Impossibile utilizzare lo scanner dell’impronta digitale in Modalità con una mano.</string>
     <string name="sem_fingerprint_error_smart_view">Impossibile effettuare la scansione dell’impronta digitale mentre %s è in uso.</string>
+    <string name="sem_fingerprint_error_system_failure">Il sensore di impronte digitali non risponde. Riprovate più tardi. Se l’errore persiste, provate a riavviare lo smartphone.</string>
+    <string name="sem_fingerprint_error_template_corrupt">"I dati dell'impronta digitale sono stati danneggiati. Aggiungete nuovamente le impronte digitali."</string>
     <string name="sem_fingerprint_error_wireless_charger">"Allontanate il dispositivo dal caricatore wireless per utilizzare l'impronta digitale"</string>
     <string name="sem_fingerprint_name_template">Impronta digitale %d</string>
     <string name="sem_fingerprint_register_dialog_button_later">Più tardi</string>
     <string name="sem_fingerprint_register_dialog_button_not_now_vzw">Non ora</string>
     <string name="sem_fingerprint_register_dialog_button_remove_and_register">Rimuovi e registra</string>
+    <string name="sem_fingerprint_register_dialog_message">Nell’ultimo aggiornamento software è stato migliorato il riconoscimento delle impronte digitali. Per poter utilizzare tale funzione, rimuovete le impronte digitali e registratele nuovamente.</string>
     <string name="sem_fingerprint_register_dialog_title">Registra di nuovo imp. digitali</string>
     <string name="sem_fingerprint_result_failed">Nessuna corrispondenza.</string>
     <string name="sem_fingerprint_result_retry">Riprovate.</string>
@@ -2929,7 +2972,7 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="sem_resolver_button_always_accessibility">Usa sempre l’applicazione selezionata</string>
     <string name="sem_resolver_button_just_once_accessibility">Usa l’applicazione selezionata solo una volta</string>
     <string name="sem_resolver_choose_what_to_do">Scelta dell’azione</string>
-    <string name="sem_resolver_go_to_settings_tips_description">Per modificare le impostazioni predefinite dell’applicazione, andate in Impostazioni > Applicazioni > Scegli applicazioni predefinite.</string>
+    <string name="sem_resolver_go_to_settings_tips_description">Per modificare l’applicazione predefinita utilizzata per aprire questo tipo di file, andate in Impostazioni > Applicazioni, selezionate l’applicazione predefinita corrente, quindi toccate Imposta come predefinito > Cancella predefiniti.</string>
     <string name="sem_resolver_icon_content_description">Informazioni</string>
     <string name="sem_resolver_personal_tab_accessibility">Personale</string>
     <string name="sem_resolver_share_live_default_text">Condividete subito con le persone vicine. Le persone che hanno reso visibili i dispositivi vengono visualizzate qui.</string>
@@ -2945,9 +2988,9 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="sending">Invio…</string>
     <string name="sensor_notification_service">Servizio di notifica dei sensori</string>
     <string name="sensor_privacy_notification_channel_label">Privacy relativa ai sensori</string>
-    <string name="sensor_privacy_start_use_camera_notification_content_title">Accesso a fotocam. disatt. per tutte le app</string>
-    <string name="sensor_privacy_start_use_dialog_turn_on_button">Attiva</string>
-    <string name="sensor_privacy_start_use_mic_notification_content_title">Accesso a microfono disatt. per tutte le app</string>
+    <string name="sensor_privacy_start_use_camera_notification_content_title">Sblocca la fotocamera del dispositivo</string>
+    <string name="sensor_privacy_start_use_dialog_turn_on_button">Sblocca</string>
+    <string name="sensor_privacy_start_use_mic_notification_content_title">Sblocca il microfono del dispositivo</string>
     <string name="sensor_privacy_start_use_notification_content_text">Per <b>%s</b>, nonché per tutti i servizi e le app</string>
     <string name="serial_number">Numero di serie:</string>
     <string name="serviceClassData">Dati</string>
@@ -2972,6 +3015,9 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="serviceRegistered">Registrazione effettuata.</string>
     <string name="serviceisDisabled">Il servizio è disattivato.</string>
     <string name="serviceisEnabled">Servizio attivato.</string>
+    <string name="set_up_screen_lock_action_label">Imposta il blocco schermo</string>
+    <string name="set_up_screen_lock_title">Imposta un blocco schermo</string>
+    <string name="settings">Impostazioni</string>
     <string name="sf_quick_switch_not_supported">La funzione Passaggio rapido non è supportata in questa situazione.</string>
     <string name="sf_quick_switch_securefolder_view">Passaggio a %s effettuato.</string>
     <string name="sha1_fingerprint">Fingerprint SHA-1:</string>
@@ -2995,12 +3041,14 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="show_ime">Tieni sullo schermo quando è attiva la tastiera fisica</string>
     <string name="show_keyboard_button">Mostra il pulsante Tastiera</string>
     <string name="show_keyboard_button_description">Mostra %s sulla barra di navigazione.</string>
+    <string name="showing_esc_dialog">Potete impostare il tasto Esc in modo che funzioni come il pulsante Indietro.</string>
     <string name="showing_touch_sensitivity_noti_action">Attiva</string>
     <string name="showing_touch_sensitivity_noti_text">Consente di attivare Sensibilità tocco durante l’utilizzo della Pellicola protettiva per lo schermo o della Copertura frontale per una migliore esperienza di scrittura, per una velocità di risposta touch più accurata.</string>
     <string name="showing_touch_sensitivity_noti_title">Aumenta sensibilità tocco</string>
-    <string name="shutdown_confirm">Il tablet verrà spento.</string>
+    <string name="shutdown_confirm">Il telefono verrà spento.</string>
     <string name="shutdown_confirm_question">Spegnere?</string>
     <string name="shutdown_progress">Spegnimento…</string>
+    <string name="side_key_double_press_archived_app">Applicazione archiviata. Scegliete qualcos’altro.</string>
     <string name="side_key_double_press_deleted_app">Applicazione disinstallata. Scegliete qualcos’altro.</string>
     <string name="side_key_double_press_disabled_app">App %s disabilitata. Scegliete qualcos’altro.</string>
     <string name="signature_identity_toast">%s firmata da</string>
@@ -3013,18 +3061,20 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="sim_added_message">Riavvia il dispositivo per accedere alla rete mobile.</string>
     <string name="sim_added_title">SIM aggiunta</string>
     <string name="sim_check_old_sim_message">Le schede SIM vecchie o danneggiate possono causare problemi di connessione alla rete. Contattate il gestore telefonico o visitate uno dei suoi punti vendita per verificare se occorre sostituirla.</string>
+    <string name="sim_check_old_sim_message_skt">Le schede SIM vecchie o danneggiate possono causare problemi di connessione alla rete. Contattate il gestore telefonico o visitate uno dei suoi punti vendita per verificare se occorre sostituirla.</string>
     <string name="sim_check_old_sim_title">Potrebbe essere necessario sostituire la SIM</string>
+    <string name="sim_check_old_sim_title_skt">Potrebbe essere richiesta la sostituzione della SIM</string>
     <string name="sim_count_mismatched_ds_to_ss">La modalità della scheda SIM è stata modificata da Dual SIM a SIM singola. Per applicare questa impostazione, il dispositivo verrà ripristinato alle impostazioni predefinite di fabbrica e verrà riavviato.</string>
     <string name="sim_count_mismatched_ss_to_ds">La modalità della scheda SIM è stata modificata da SIM singola a Dual SIM. Per applicare questa impostazione, il dispositivo verrà ripristinato alle impostazioni predefinite di fabbrica e verrà riavviato.</string>
     <string name="sim_count_mismatched_title">Modalità della scheda SIM modificata</string>
     <string name="sim_done_button">Fine</string>
-    <string name="sim_imsreg_error_message_lgt">Lo smartphone non può effettuare chiamate vocali perché non riconosce la scheda SIM. Provate a rimuovere la scheda SIM e a inserirla di nuovo. Se il problema persiste, potreste dover sostituire la scheda SIM. Per assistenza, visitate un negozio LG U+ o contattate il Servizio clienti LG U+ al numero 1544-0010.</string>
-    <string name="sim_imsreg_error_message_lgt_tablet">Il tablet non può effettuare chiamate vocali perché non riconosce la scheda SIM. Provate a rimuovere la scheda SIM e a inserirla di nuovo. Se il problema persiste, potreste dover sostituire la scheda SIM. Per assistenza, visitate un negozio LG U+ o contattate il Servizio clienti LG U+ al numero 1544-0010.</string>
+    <string name="sim_imsreg_error_message_lgt">Lo smartphone non può effettuare chiamate vocali perché non riconosce la scheda SIM. Provate a rimuovere la scheda SIM e a inserirla di nuovo. Se il problema persiste, potreste dover sostituire la scheda SIM presso un negozio LG U+.</string>
+    <string name="sim_imsreg_error_message_lgt_tablet">Il tablet non può effettuare chiamate vocali perché non riconosce la scheda SIM. Provate a rimuovere la scheda SIM e a inserirla di nuovo. Se il problema persiste, potreste dover sostituire la scheda SIM presso un negozio LG U+.</string>
     <string name="sim_off_noti_message">Quando tutte le SIM sono disattivate non potete effettuare chiamate, inviare messaggi o utilizzare i dati. Toccate qui per attivare le schede SIM.</string>
     <string name="sim_off_noti_title">Tutte le SIM sono disattivate</string>
     <string name="sim_off_toast_message">La scheda SIM che avete inserito è disattivata. Per utilizzarla, andate in Impostazioni > Connessioni > Gestione SIM, quindi attivatela.</string>
     <string name="sim_recognize_error_message_kt">Scheda SIM non riconosciuta. Provate a rimuovere la scheda SIM e a inserirla di nuovo. Se il problema persiste, potreste dover sostituire la scheda SIM. Per assistenza, visitate un negozio KT o contattate il Servizio clienti KT al numero 1588-0010.</string>
-    <string name="sim_recognize_error_message_lgt">Scheda SIM non riconosciuta. Provate a rimuovere la scheda SIM e a inserirla di nuovo. Se il problema persiste, potreste dover sostituire la scheda SIM. Per assistenza, visitate un negozio LG U+ o contattate il Servizio clienti LG U+ al numero 1544-0010.</string>
+    <string name="sim_recognize_error_message_lgt">Scheda SIM non riconosciuta. Provate a rimuovere la scheda SIM e a inserirla di nuovo. Se il problema persiste, potreste dover sostituire la scheda SIM presso un negozio LG U+.</string>
     <string name="sim_recognize_error_message_skt">Impossibile leggere la scheda SIM. Alcune applicazioni e funzioni potrebbero non funzionare. Rimuovete e reinserite la scheda SIM, quindi riavviate lo smartphone. Se il problema persiste, portate lo smartphone e la scheda SIM presso un centro di assistenza clienti.</string>
     <string name="sim_recognize_error_message_skt_tablet">Impossibile leggere la scheda SIM. Alcune applicazioni e funzioni potrebbero non funzionare. Rimuovete e reinserite la scheda SIM, quindi riavviate il tablet. Se il problema persiste, portate il tablet e la scheda SIM presso un centro di assistenza clienti.</string>
     <string name="sim_recognize_error_title_lgt">Impossibile riconoscere la scheda USIM</string>
@@ -3044,6 +3094,7 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="skip_button_label">Salta</string>
     <string name="slice_more_content">+ %1$d</string>
     <string name="slices_permission_request">"L'app %1$s vuole mostrare porzioni dell'app %2$s"</string>
+    <string name="smart_tip_action_click_hint_text">Chiudi</string>
     <string name="smartclip_restrict">"I criteri di protezione impediscono l'uso di Cattura contenuto."</string>
     <string name="sms_control_message"><b>%1$s</b>" sta inviando molti SMS. Vuoi consentire all'applicazione di continuare a inviare messaggi?"</string>
     <string name="sms_control_no">Rifiuta</string>
@@ -3057,9 +3108,7 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="sms_short_code_confirm_never_allow">Non consentire mai</string>
     <string name="sms_short_code_details"><b>Potrebbero essere effettuati addebiti</b>" sull'account del tuo gestore di telefonia mobile."</string>
     <string name="sms_short_code_remember_choice">Memorizza la mia scelta</string>
-    <string name="sms_short_code_remember_undo_instruction">È possibile modificare questa impostazione in un secondo momento andando in Impostazioni > Applicazioni</string>
-    <string name="sms_short_code_remember_undo_instruction_details_path">Potete modificare questa impostazione in un secondo momento andando in Impostazioni > Applicazioni > pulsante Altre opzioni > Accesso speciale > Usa servizi SMS premium</string>
-    <string name="sms_short_code_send_sms_permission_disclaimer">Toccando NON CONSENTIRE MAI, questa applicazione non potrà inviare messaggi in background anche se avete concesso l’autorizzazione Invia messaggi di testo.</string>
+    <string name="sms_short_code_remember_undo_instruction">Modifica: Impostazioni > Applicazioni</string>
     <string name="smv_application">"L'applicazione %1$s (processo %2$s) ha violato la norma StrictMode autoimposta."</string>
     <string name="smv_process">Il processo %1$s ha violato la norma StrictMode autoimposta.</string>
     <string name="splash_screen_view_branding_description">"Immagine del branding dell'applicazione"</string>
@@ -3144,7 +3193,6 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="time_picker_radial_mode_description">"Passa alla modalità orologio per inserire l'ora."</string>
     <string name="time_picker_text_input_mode_description">"Passa alla modalità di immissione testo per inserire l'ora."</string>
     <string name="title_dialog_check_rotate_or_not">Disattivare Rotazione automatica schermo?</string>
-    <string name="title_uds">Modalità Risparmio dati avanzato</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_phone">Impossibile utilizzare Bixby durante la configurazione dello smartphone.</string>
     <string name="toast_can_not_use_bixby_while_setupwizard_on_tablet">Impossibile utilizzare Bixby durante la configurazione del tablet.</string>
     <string name="toast_warning_pattern_lock">Il blocco con segno non può essere utilizzato con Interruttore universale. Passate innanzitutto a un altro tipo di blocco.</string>
@@ -3174,6 +3222,7 @@ Per visualizzare di nuovo i pulsanti, trascinate dal basso verso l’alto sullo 
     <string name="ucm_smartcard_is_encrypting_phone">Crittografia Smartcard sul telefono…</string>
     <string name="ui_translation_accessibility_translated_text">Messaggio %1$s tradotto.</string>
     <string name="ui_translation_accessibility_translation_finished">Messaggio tradotto dalla lingua %1$s alla lingua %2$s.</string>
+    <string name="unarchival_session_app_label">In attesa…</string>
     <string name="undo">Annulla</string>
     <string name="unknown_install_activity_warning_title">Sospetta applicazione dannosa</string>
     <string name="unknown_install_blocked_dlg_desc">Impossibile installare l’applicazione perché potrebbe essere dannosa.</string>
@@ -3193,9 +3242,13 @@ Per rimuovere questa protezione, andate in Impostazioni > Sicurezza e privacy > 
     <string name="unknown_install_blocked_esm_title">Applicazione sconosciuta bloccata</string>
     <string name="unknown_install_dlg_desc">L’applicazione non è stata scaricata da uno store approvato. L’installazione di questa applicazione può comportare un rischio per la sicurezza e la privacy. L’applicazione potrebbe raccogliere informazioni personali o causare la perdita di dati.</string>
     <string name="unknown_install_dlg_desc2">L’applicazione non supporta le funzioni di sicurezza più recenti. L’installazione di questa applicazione può comportare i seguenti rischi per la sicurezza:</string>
+    <string name="unknown_install_dlg_desc_global_phone">Il file di installazione dell’applicazione potrebbe non essere sicuro. Potrebbe non essere l’applicazione indicata. Per proteggere lo smartphone e i dati personali, installate l’applicazione da un app store affidabile.</string>
+    <string name="unknown_install_dlg_desc_global_tablet">Il file di installazione dell’applicazione potrebbe non essere sicuro. Potrebbe non essere l’applicazione indicata. Per proteggere il tablet e i dati personali, installate l’applicazione da un app store affidabile.</string>
     <string name="unknown_install_dlg_desc_phishing_phone">C’è il sospetto che questa applicazione sia dannosa e potrebbe mettere a rischio i dati e lo smartphone. Non è consigliabile installare l’applicazione.</string>
     <string name="unknown_install_dlg_desc_phishing_tablet">C’è il sospetto che questa applicazione sia dannosa e potrebbe mettere a rischio i dati e il tablet. Non è consigliabile installare l’applicazione.</string>
-    <string name="unknown_install_dlg_general_title">L’applicazione proviene da un’origine sconosciuta</string>
+    <string name="unknown_install_dlg_desc_phone">Questa applicazione non proviene da un app store autorizzato. Per salvaguardare lo smartphone e le vostre informazioni personali, installate l’applicazione da un app store autorizzato, come il Play Store o il Galaxy Store.</string>
+    <string name="unknown_install_dlg_desc_tablet">Questa applicazione non proviene da un app store autorizzato. Per salvaguardare il tablet e le vostre informazioni personali, installate l’applicazione da un app store autorizzato, come il Play Store o il Galaxy Store.</string>
+    <string name="unknown_install_dlg_general_title">Non è consigliabile installare questa applicazione</string>
     <string name="unknown_install_dlg_negative_button">Non installare</string>
     <string name="unknown_install_dlg_perm_desc1">L’applicazione potrebbe intercettare i codici di verifica dai messaggi di testo che ricevete.</string>
     <string name="unknown_install_dlg_perm_desc2">Le chiamate in uscita potrebbero essere reindirizzate a un numero di telefono diverso a vostra insaputa.</string>
@@ -3225,7 +3278,7 @@ Per rimuovere questa protezione, andate in Impostazioni > Sicurezza e privacy > 
     <string name="usb_abnormal_reset_title">La connessione USB è instabile</string>
     <string name="usb_abnormal_reset_toast">La connessione USB è instabile. Scollegate e ricollegate il cavo o provate con un altro cavo.</string>
     <string name="usb_accessory_notification_title">Connesso ad accessorio USB</string>
-    <string name="usb_bad_removal_message">Un dispositivo di archiviazione USB è stato rimosso in modo non sicuro. Per impedire il riavvio improvviso del tablet, salvate eventuali dati non salvati e riavviatelo adesso.</string>
+    <string name="usb_bad_removal_message">Un dispositivo di archiviazione USB è stato rimosso in modo non sicuro. Per impedire il riavvio improvviso dello smartphone, salvate eventuali dati non salvati e riavviatelo adesso.</string>
     <string name="usb_blocked_by_emergency_mode">Alcune funzioni USB non sono disponibili in Modalità di emergenza.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode">Impossibile utilizzare le funzioni relative al dispositivo USB connesso mentre la modalità di risparmio energetico massimo è attivata.</string>
     <string name="usb_blocked_by_maximum_power_saving_mode_all">Alcune funzioni USB risultano limitate mentre la modalità Risparmio energetico massimo è attivata.</string>
@@ -3235,7 +3288,9 @@ Per rimuovere questa protezione, andate in Impostazioni > Sicurezza e privacy > 
     <string name="usb_camera_disconnected_notification_title">Dispositivo multimediale disconnesso</string>
     <string name="usb_cd_installer_notification_title">Aggiornamento software</string>
     <string name="usb_charging_notification_title">Dispositivo in carica tramite USB</string>
-    <string name="usb_charing_only_notification_title">Connesso</string>
+    <string name="usb_charing_only_notification_title">Ricarica USB</string>
+    <string name="usb_connection_blocked_by_auto_blocker_message">L’opzione Blocco automatico è attivata con restrizioni massime.</string>
+    <string name="usb_connection_blocked_by_auto_blocker_title">Connessione USB bloccata</string>
     <string name="usb_contaminant_detected_message">La porta USB viene disattivata automaticamente. Tocca per avere ulteriori informazioni.</string>
     <string name="usb_contaminant_detected_title">Liquidi o detriti nella porta USB</string>
     <string name="usb_contaminant_not_detected_message">Il telefono non rileva più liquidi o detriti.</string>
@@ -3247,11 +3302,11 @@ Per rimuovere questa protezione, andate in Impostazioni > Sicurezza e privacy > 
     <string name="usb_host_cable_disconnected_notification_title">Connettore USB disconnesso.</string>
     <string name="usb_host_high_pwr_device_connected_notification_message">Impossibile accedere al dispositivo. Il dispositivo connesso necessita di alimentazione esterna.</string>
     <string name="usb_host_high_pwr_device_connected_notification_title">Dispositivo USB ad alta potenza connesso.</string>
-    <string name="usb_host_resource_exceed_message">Il controller USB del tablet non dispone di risorse sufficienti per collegare il dispositivo. Provate a scollegare e ricollegare il dispositivo.</string>
+    <string name="usb_host_resource_exceed_message">Il controller USB dello smartphone non dispone di risorse sufficienti per collegare il dispositivo. Provate a scollegare e ricollegare il dispositivo.</string>
     <string name="usb_host_resource_exceed_title">Risorse controller USB insufficienti</string>
-    <string name="usb_hub_depth_exceed_message">Il tablet supporta solo fino a 5 connessioni hub USB contemporaneamente.</string>
+    <string name="usb_hub_depth_exceed_message">Lo smartphone supporta solo fino a 5 connessioni hub USB contemporaneamente.</string>
     <string name="usb_hub_depth_exceed_title">Numero max connessioni hub USB</string>
-    <string name="usb_hub_power_exceed_message">Il tablet non è in grado di fornire energia sufficiente per il dispositivo USB. Collegate il dispositivo a un hub USB autoalimentato prima di collegarlo al tablet.</string>
+    <string name="usb_hub_power_exceed_message">Lo smartphone non è in grado di fornire energia sufficiente per il dispositivo USB. Collegate il dispositivo a un hub USB autoalimentato prima di collegarlo allo smartphone.</string>
     <string name="usb_increase_battery_usage">La connessione USB può aumentare l’uso della batteria.</string>
     <string name="usb_keyboard_connected_notification_title">Tastiera connessa</string>
     <string name="usb_keyboard_disconnected_notification_title">Tastiera disconnessa</string>
@@ -3294,8 +3349,9 @@ Per rimuovere questa protezione, andate in Impostazioni > Sicurezza e privacy > 
     <string name="usb_ums_connected_notification_message_usbhost">Memoria di massa USB rimossa in modo imprevisto.</string>
     <string name="usb_ums_connected_notification_title_usbhost">Memoria di massa USB connessa</string>
     <string name="usb_ums_safe_unmount_notification_message_usbhost">Memoria di massa USB rimossa in sicurezza.</string>
-    <string name="usb_unblock_by_screen_unlock">Sbloccate il tablet per utilizzare il dispositivo USB connesso.</string>
-    <string name="usb_unsupport_accessory_message">Questo dispositivo USB non è supportato dal tablet in uso.</string>
+    <string name="usb_unblock_by_screen_unlock">Sbloccate lo smartphone per utilizzare il dispositivo USB connesso.</string>
+    <string name="usb_unblock_by_screen_unlock_reconnect">Per utilizzare il dispositivo USB, sbloccate lo smartphone e ricollegate il dispositivo USB.</string>
+    <string name="usb_unsupport_accessory_message">Questo dispositivo USB non è supportato dallo smartphone in uso.</string>
     <string name="usb_unsupport_accessory_title">Dispositivo USB non supportato</string>
     <string name="usb_unsupported_audio_accessory_message">Il dispositivo collegato non è compatibile con questo telefono. Tocca per avere ulteriori informazioni.</string>
     <string name="usb_unsupported_audio_accessory_title">Accessorio audio analogico rilevato</string>
@@ -3316,25 +3372,25 @@ Per rimuovere questa protezione, andate in Impostazioni > Sicurezza e privacy > 
     <string name="usb_water_dialg_method_2_desc_2">Potete accelerare l’asciugatura puntando un ventilatore o un asciugacapelli (solo aria fredda) verso la porta.</string>
     <string name="usb_water_dialg_not_support_wireless_charging">"È stata rilevata umidità o presenza di materiale estraneo nella porta di ricarica/USB.
 
-Verificate che nella porta di ricarica/USB non siano presenti materiali estranei, come polvere o detriti. Per evitare danni al tablet, non collegate nessun cavo finché la porta di ricarica non è pulita e senza umidità.
+Verificate che nella porta di ricarica/USB non siano presenti materiali estranei, come polvere o detriti. Per evitare danni allo smartphone, non collegate nessun cavo finché la porta di ricarica non è pulita e senza umidità.
 
 Per asciugare la porta, rimuovete l’umidità e attendete che si asciughi. Dal momento che questo processo può richiedere diverse ore, potete velocizzarlo dirigendo il getto d’aria di un ventilatore o un asciugacapelli (solo aria fredda) verso la porta."</string>
     <string name="usb_water_dialg_positive_button">OK</string>
     <string name="usb_water_dialg_support_wireless_charging">"È stata rilevata umidità o presenza di materiale estraneo nella porta di ricarica/USB.
 
-Verificate che nella porta di ricarica/USB non siano presenti materiali estranei, come polvere o detriti. Per evitare danni al tablet, non collegate nessun cavo finché la porta di ricarica non è pulita e senza umidità.
+Verificate che nella porta di ricarica/USB non siano presenti materiali estranei, come polvere o detriti. Per evitare danni allo smartphone, non collegate nessun cavo finché la porta di ricarica non è pulita e senza umidità.
 
 Per asciugare la porta, rimuovete l’umidità e attendete che si asciughi. Dal momento che questo processo può richiedere diverse ore, potete velocizzarlo dirigendo il getto d’aria di un ventilatore o un asciugacapelli (solo aria fredda) verso la porta.
 
-Nel frattempo, potete ricaricare il tablet in modalità wireless."</string>
+Nel frattempo, potete ricaricare lo smartphone in modalità wireless."</string>
     <string name="usb_water_notification_content">Umidità o materiale estraneo presente nella porta di ricarica/USB. Verificate prima di caricare.</string>
-    <string name="usb_water_notification_message">"È stata rilevata dell'umidità nella porta del caricabatterie/USB. Assicuratevi che sia asciutta prima di ricaricare il tablet. Potrebbero essere necessari alcuni istanti prima che la porta si asciughi completamente."</string>
+    <string name="usb_water_notification_message">"È stata rilevata dell'umidità nella porta del caricabatterie/USB. Assicuratevi che sia asciutta prima di ricaricare il telefono. Potrebbero essere necessari alcuni istanti prima che la porta si asciughi completamente."</string>
     <string name="usb_water_notification_message_button">Dettagli</string>
     <string name="usb_water_notification_title">Controlla porta caricabatt./USB</string>
     <string name="usbhostStorage_restrict">"I criteri di protezione impediscono l'uso dell'archiviazione USB."</string>
-    <string name="usbmemory_added_notification_title">Memoria USB aggiunta</string>
+    <string name="usbmemory_added_notification_title">Spazio di archiviaz. USB aggiunto</string>
     <string name="usbmemory_readonly_mount_notification_message">Il dispositivo di archiviazione USB non funziona correttamente ed è stato impostato su sola lettura per impedire la perdita dei dati. È consigliabile effettuare il backup dei dati del dispositivo di archiviazione USB.</string>
-    <string name="usbmemory_readonly_mount_notification_title">Imposs. scrivere su memoria USB</string>
+    <string name="usbmemory_readonly_mount_notification_title">Imposs. scrivere su archiv. USB</string>
     <string name="use_a_different_app">"Utilizza un'app diversa"</string>
     <string name="user_creation_account_exists">"Consentire a %1$s di creare un nuovo utente con l'account %2$s (esiste già un utente con questo account)?"</string>
     <string name="user_creation_adding">"Consentire a %1$s di creare un nuovo utente con l'account %2$s?"</string>
@@ -3346,7 +3402,7 @@ Nel frattempo, potete ricaricare il tablet in modalità wireless."</string>
     <string name="user_switched">Utente corrente %1$s.</string>
     <string name="user_switching_message">Passaggio a %1$s…</string>
     <string name="validity_period">Validità:</string>
-    <string name="vdm_camera_access_denied">Impossibile accedere alla fotocamera del tablet dal tuo %1$s</string>
+    <string name="vdm_camera_access_denied">Impossibile accedere alla fotocamera del telefono dal tuo %1$s</string>
     <string name="vdm_pip_blocked">Impossibile visualizzare Picture in picture durante lo streaming</string>
     <string name="vdm_secure_window">Impossibile accedere a questi contenuti durante lo streaming. Prova a usare il telefono.</string>
     <string name="view_and_control_notification_content">%s può visualizzare e controllare il tuo schermo. Tocca per verificare.</string>
@@ -3371,6 +3427,8 @@ Nel frattempo, potete ricaricare il tablet in modalità wireless."</string>
     <string name="vpn_allowOnlySecureConnection">Il profilo VPN non è protetto.</string>
     <string name="vpn_error_text">Toccate per provare a riconnettervi alla rete VPN.</string>
     <string name="vpn_error_title">Errore di connessione VPN</string>
+    <string name="vpn_fail_text_long">Impossibile connettersi a %s. Toccate per gestire questa VPN.</string>
+    <string name="vpn_fail_title">VPN non connessa</string>
     <string name="vpn_lockdown_config">Cambia le impostazioni VPN o di rete</string>
     <string name="vpn_lockdown_connected">VPN sempre attiva connessa</string>
     <string name="vpn_lockdown_connecting">Connessione a VPN sempre attiva…</string>
@@ -3423,7 +3481,7 @@ Vuoi chiuderla?"</string>
     <string name="wfd_vpn_connected_toast">Connessione %s terminata a causa della connessione VPN.</string>
     <string name="whichApplication">"Completa l'azione con"</string>
     <string name="whichApplicationLabel">Completa azione</string>
-    <string name="whichApplicationNamed">Completamento azione con %1$s</string>
+    <string name="whichApplicationNamed">"Completa l'azione con %1$s"</string>
     <string name="whichEditApplication">Modifica con</string>
     <string name="whichEditApplicationLabel">Modifica</string>
     <string name="whichEditApplicationNamed">Modifica con %1$s</string>
@@ -3497,6 +3555,7 @@ Vuoi chiuderla?"</string>
     <string name="wifi_networks_available_detailed">Sono disponibili reti Wi-Fi aperte.</string>
     <string name="wifi_no_internet">%1$s non ha accesso a Internet</string>
     <string name="wifi_no_internet_detailed">Tocca per le opzioni</string>
+    <string name="wifi_notification_app_using_data_acceleration_detail">%s utilizza la connessione dati perché la connessione WLAN è lenta o instabile.</string>
     <string name="wifi_notification_switch_wifi_detail">Il telefono è passato alla connessione dati perché la rete Wi-Fi non era stabile.</string>
     <string name="wifi_notification_switch_wifi_title">Passaggio a connessione dati effettuato</string>
     <string name="wifi_notification_tcp_backhaul_detection_channel_emergency">Notifiche di emergenza</string>
@@ -3538,9 +3597,9 @@ Vuoi chiuderla?"</string>
     <string name="work_profile_on_message">In questo modo potrete accedere ad applicazioni di lavoro, notifiche, dati e altre funzioni del profilo di lavoro.</string>
     <string name="work_profile_on_title">Attivare il profilo di lavoro?</string>
     <string name="work_profile_restricted">Blocco automatico attivato con restrizioni massime. Per motivi di sicurezza, la creazione di profili di lavoro è bloccata.</string>
-    <string name="work_profile_telephony_paused_text">Avete messo in pausa le applicazioni di lavoro. Non riceverete chiamate telefoniche o messaggi di testo da tali applicazioni.</string>
-    <string name="work_profile_telephony_paused_title">Chiamate e messaggi disattivati</string>
-    <string name="work_profile_telephony_paused_turn_on_button">Attivare il profilo di lavoro?</string>
+    <string name="work_profile_telephony_paused_text">Hai messo in pausa le app di lavoro. Non riceverai telefonate o messaggi.</string>
+    <string name="work_profile_telephony_paused_title">Chiamate e messaggi sono disattivati</string>
+    <string name="work_profile_telephony_paused_turn_on_button">Riattiva app lavoro</string>
     <string name="workspace_title">Workspace</string>
     <string name="write_fail_reason_cancelled">Annullato</string>
     <string name="write_fail_reason_cannot_write">Errore nella scrittura dei contenuti</string>
@@ -3561,9 +3620,15 @@ Vuoi chiuderla?"</string>
     <string name="zen_mode_duration_minutes_summary">{count,plural, =1{Per un minuto (fino alle ore {formattedTime})}many{Per # minuti (fino alle ore {formattedTime})}other{Per # minuti (fino alle ore {formattedTime})}}</string>
     <string name="zen_mode_duration_minutes_summary_short">{count,plural, =1{Per 1 min (fino alle ore {formattedTime})}many{Per # min (fino alle ore {formattedTime})}other{Per # min (fino alle ore {formattedTime})}}</string>
     <string name="zen_mode_feature_name">Non disturbare</string>
-    <string name="zen_mode_forever">Finché non viene disattivato</string>
+    <string name="zen_mode_forever">Fino alla disattivazione</string>
     <string name="zen_mode_forever_dnd">Fino alla disattivazione di Non disturbare</string>
+    <string name="zen_mode_implicit_activated">On</string>
+    <string name="zen_mode_implicit_deactivated">Off</string>
+    <string name="zen_mode_implicit_trigger_description">Gestione: app %1$s</string>
     <string name="zen_mode_rule_name_combination">%1$s/%2$s</string>
+    <string name="zen_mode_trigger_event_calendar_any">Qualsiasi calendario</string>
+    <string name="zen_mode_trigger_summary_divider_text">", "</string>
+    <string name="zen_mode_trigger_summary_range_symbol_combination">%1$s - %2$s</string>
     <string name="zen_mode_until">Fino a %1$s</string>
     <string name="zen_mode_until_next_day">Fino a: %1$s</string>
     <string name="zen_upgrade_notification_content">Tocca per controllare le notifiche bloccate.</string>
